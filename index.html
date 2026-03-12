@@ -2350,12 +2350,25 @@ function openGpay() {
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('emailStatus').style.display = 'none';
 
-  // Update UPI deep link button with actual amount
-  const upiLink = 'upi://pay?pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' + window._gpayTotal + '&cu=INR&tn=' + encodeURIComponent(window._gpayOrderId);
+  // Build UPI deep links with properly formatted amount
+  const amt = window._gpayTotal.toFixed(2);
+  const upiId = 'indiabusinessinternational@okicici';
+  const upiName = 'India%20Business%20International';
+  const tn = encodeURIComponent(window._gpayOrderId);
+
+  // GPay-specific Android intent (most reliable for GPay)
+  const gpayIntent = 'intent://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn +
+    '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
+  // PhonePe-specific intent
+  const phonepeIntent = 'intent://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn +
+    '#Intent;scheme=upi;package=com.phonepe.app;end';
+  // Generic UPI for Paytm and BHIM
+  const upiLink = 'upi://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn;
+
   const upiBtn = document.getElementById('upiPayBtn');
-  if(upiBtn) upiBtn.href = upiLink;
+  if(upiBtn) upiBtn.href = gpayIntent;
   const ppBtn = document.getElementById('phonepeBtn');
-  if(ppBtn) ppBtn.href = upiLink;
+  if(ppBtn) ppBtn.href = phonepeIntent;
   const ptBtn = document.getElementById('paytmBtn');
   if(ptBtn) ptBtn.href = upiLink;
   const bhBtn = document.getElementById('bhimBtn');
