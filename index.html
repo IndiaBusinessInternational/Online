@@ -1280,6 +1280,13 @@
   .all-cat-btn.active { background: #8B5CF6 !important; color: #fff !important; border-color: #8B5CF6 !important; }
   .all-cat-btn:hover:not(.active) { background: #f0e8ff !important; color: #7C3AED !important; border-color: #8B5CF6 !important; }
 </style>
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init({ publicKey: "WmR-Opd32YffGCgmJ" });
+    })();
+  </script>
 </head>
 <body>
 
@@ -2328,22 +2335,35 @@ function checkout() {
 }
 
 function openGpay() {
-  const total = cart.reduce((s, i) => {
+  window._gpayCart = cart.map(i => {
     const p = products.find(x => x.id === i.id);
-    return s + (p ? p.price * i.qty : 0);
-  }, 0);
-  const items = cart.map(i => {
-    const p = products.find(x => x.id === i.id);
-    return p ? p.title.substring(0,40) + (i.qty > 1 ? ' x' + i.qty : '') : '';
-  }).join(', ');
-  document.getElementById('gpayAmount').innerHTML = 
-    '🛒 Order Total: <span style="font-size:20px;">₹' + total.toLocaleString('en-IN') + '</span>';
+    return p ? { title: p.title, price: p.price, qty: i.qty, total: p.price * i.qty } : null;
+  }).filter(Boolean);
+  window._gpayTotal = window._gpayCart.reduce((s, i) => s + i.total, 0);
+  window._gpayOrderId = 'IBI' + Date.now().toString().slice(-8);
+
+  document.getElementById('gpayAmount').innerHTML =
+    '🛒 Order Total: <span style="font-size:20px;">₹' + window._gpayTotal.toLocaleString('en-IN') + '</span>';
+
+  // Reset form
+  ['cf_name','cf_door','cf_street','cf_landmark','cf_area','cf_district','cf_pin','cf_state','cf_email','cf_mobile']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('emailStatus').style.display = 'none';
+
+  updateWA();
+  document.getElementById('gpayOverlay').style.display = 'block';
+}
+
+function updateWA() {
+  const name = (document.getElementById('cf_name')||{value:''}).value || 'Customer';
+  const items = (window._gpayCart||[]).map(i => i.title.substring(0,35) + ' x' + i.qty + ' = ₹' + i.total).join('\n');
+  const total = window._gpayTotal || 0;
+  const orderId = window._gpayOrderId || '';
   const waMsg = encodeURIComponent(
-    'Hello IBI! I have completed GPay payment of ₹' + total + '.\n\nOrder details: ' + items + '\n\nUPI: indiabusinessinternational@okicici\nPlease confirm my order. Thank you!'
+    'Hello IBI! 🙏\n\nOrder ID: ' + orderId + '\nName: ' + name + '\n\nItems:\n' + items +
+    '\n\nTotal Paid: ₹' + total + ' via GPay\nUPI: indiabusinessinternational@okicici\n\nPlease confirm my order. Thank you!'
   );
   document.getElementById('gpayWhatsapp').href = 'https://wa.me/918939414799?text=' + waMsg;
-  const el = document.getElementById('gpayOverlay');
-  el.style.display = 'block';
 }
 
 function closeGpay() {
@@ -2358,13 +2378,170 @@ function copyUPI() {
   });
 }
 
+function getFormVal(id) { return (document.getElementById(id)||{value:''}).value.trim(); }
+
 function confirmGpayDone() {
-  closeGpay();
-  showToast('🎉 Thank you! Order confirmed. We will process it shortly.', 'success');
-  cart = [];
-  updateCartCount();
-  renderCart();
-  toggleCart();
+  // ── Validate form ──
+  const required = {
+    cf_name:'Full Name', cf_door:'Door/Flat No.', cf_street:'Street Name',
+    cf_area:'Area/Location', cf_district:'District', cf_pin:'PIN Code',
+    cf_state:'State', cf_email:'Email', cf_mobile:'Mobile No.'
+  };
+  for (const [id, label] of Object.entries(required)) {
+    if (!getFormVal(id)) { showToast('⚠️ Please enter ' + label, ''); return; }
+  }
+  if (!/^\d{6}$/.test(getFormVal('cf_pin'))) { showToast('⚠️ PIN Code must be 6 digits', ''); return; }
+  if (!/^\d{10}$/.test(getFormVal('cf_mobile'))) { showToast('⚠️ Mobile must be 10 digits', ''); return; }
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(getFormVal('cf_email'))) { showToast('⚠️ Enter a valid email', ''); return; }
+
+  const customer = {
+    name:     getFormVal('cf_name'),
+    door:     getFormVal('cf_door'),
+    street:   getFormVal('cf_street'),
+    landmark: getFormVal('cf_landmark'),
+    area:     getFormVal('cf_area'),
+    district: getFormVal('cf_district'),
+    pin:      getFormVal('cf_pin'),
+    state:    getFormVal('cf_state'),
+    email:    getFormVal('cf_email'),
+    mobile:   getFormVal('cf_mobile')
+  };
+
+  const orderItems = window._gpayCart || [];
+  const total = window._gpayTotal || 0;
+  const orderId = window._gpayOrderId || ('IBI' + Date.now().toString().slice(-8));
+  const orderDate = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
+
+  const fullAddress = customer.door + ', ' + customer.street +
+    (customer.landmark ? ', Near ' + customer.landmark : '') +
+    ', ' + customer.area + ', ' + customer.district + ' - ' + customer.pin + ', ' + customer.state;
+
+  // ── Build Invoice HTML ──
+  const invoiceHtml = `
+<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;color:#333;">
+<div style="border:2px solid #8B5CF6;border-radius:12px;overflow:hidden;">
+  <div style="background:#8B5CF6;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+    <div><h2 style="margin:0;font-size:22px;">INVOICE</h2><p style="margin:4px 0 0;font-size:13px;opacity:.85;">India Business International</p></div>
+    <div style="text-align:right;font-size:13px;opacity:.9;"><div>Order ID: <b>${orderId}</b></div><div>Date: ${orderDate}</div></div>
+  </div>
+  <div style="padding:20px 24px;background:#fdf8ff;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:14px;">
+        <p style="font-size:11px;font-weight:700;color:#8B5CF6;text-transform:uppercase;margin:0 0 8px;">Bill From</p>
+        <b>India Business International</b><br>Nāgercoil, Tamil Nadu<br>📧 indiabusinessinternational@gmail.com<br>📱 +91 89394 14799<br>UPI: indiabusinessinternational@okicici
+      </div>
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:14px;">
+        <p style="font-size:11px;font-weight:700;color:#8B5CF6;text-transform:uppercase;margin:0 0 8px;">Bill To</p>
+        <b>${customer.name}</b><br>${customer.door}, ${customer.street}${customer.landmark ? ', Near '+customer.landmark : ''}<br>${customer.area}, ${customer.district}<br>${customer.state} - ${customer.pin}<br>📧 ${customer.email}<br>📱 ${customer.mobile}
+      </div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+      <thead><tr style="background:#8B5CF6;color:#fff;">
+        <th style="padding:10px 12px;text-align:left;font-size:13px;">Item</th>
+        <th style="padding:10px 12px;text-align:center;font-size:13px;">Qty</th>
+        <th style="padding:10px 12px;text-align:right;font-size:13px;">Unit Price</th>
+        <th style="padding:10px 12px;text-align:right;font-size:13px;">Amount</th>
+      </tr></thead>
+      <tbody>
+        ${orderItems.map((item, i) => `<tr style="background:${i%2===0?'#fff':'#f9f5ff'};border-bottom:1px solid #e5e7eb;">
+          <td style="padding:10px 12px;font-size:13px;">${item.title}</td>
+          <td style="padding:10px 12px;text-align:center;font-size:13px;">${item.qty}</td>
+          <td style="padding:10px 12px;text-align:right;font-size:13px;">₹${item.price.toLocaleString('en-IN')}</td>
+          <td style="padding:10px 12px;text-align:right;font-size:13px;">₹${item.total.toLocaleString('en-IN')}</td>
+        </tr>`).join('')}
+      </tbody>
+      <tfoot>
+        <tr style="background:#5b21b6;color:#fff;font-weight:700;">
+          <td colspan="3" style="padding:12px;font-size:15px;">TOTAL PAID (via GPay / UPI)</td>
+          <td style="padding:12px;text-align:right;font-size:16px;">₹${total.toLocaleString('en-IN')}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="background:#f0fdf4;border:1px solid #34A853;border-radius:8px;padding:10px 14px;font-size:13px;color:#166534;">
+      ✅ Payment received via Google Pay / UPI (indiabusinessinternational@okicici)
+    </div>
+  </div>
+</div>
+</body></html>`;
+
+  // ── Build Shipping Label HTML ──
+  const shipLabelHtml = `
+<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:500px;margin:20px auto;">
+<div style="border:3px solid #1a1a1a;border-radius:8px;overflow:hidden;">
+  <div style="background:#1a1a1a;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;">
+    <span style="font-weight:700;font-size:16px;">SHIPPING LABEL</span>
+    <span style="font-size:13px;">Order: ${orderId}</span>
+  </div>
+  <div style="padding:16px;">
+    <div style="border:2px dashed #aaa;border-radius:6px;padding:14px;margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;margin:0 0 6px;">FROM:</p>
+      <b style="font-size:14px;">India Business International</b><br>
+      <span style="font-size:13px;">Nāgercoil, Tamil Nadu, India<br>📱 +91 89394 14799</span>
+    </div>
+    <div style="border:3px solid #1a1a1a;border-radius:6px;padding:14px;background:#f9f9f9;">
+      <p style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;margin:0 0 6px;">DELIVER TO:</p>
+      <b style="font-size:18px;">${customer.name}</b><br>
+      <span style="font-size:14px;">${customer.door}, ${customer.street}${customer.landmark ? '<br>Near ' + customer.landmark : ''}<br>${customer.area}<br>${customer.district}, ${customer.state}<br>
+      <b style="font-size:18px;letter-spacing:3px;">PIN: ${customer.pin}</b><br>
+      📱 ${customer.mobile}</span>
+    </div>
+    <div style="margin-top:10px;padding:8px;background:#e5e7eb;border-radius:6px;font-size:12px;text-align:center;">
+      Items: ${orderItems.map(i=>i.title.substring(0,30)+(i.qty>1?' x'+i.qty:'')).join(' | ')}
+    </div>
+  </div>
+</div>
+</body></html>`;
+
+  // ── Send Email via EmailJS ──
+  const btn = document.getElementById('confirmPayBtn');
+  const statusEl = document.getElementById('emailStatus');
+  btn.disabled = true;
+  btn.textContent = '📤 Sending order details...';
+  statusEl.style.display = 'block';
+  statusEl.textContent = 'Sending order confirmation email...';
+
+  const templateParams = {
+    to_email:       'indiabusinessinternational@gmail.com',
+    reply_to:       customer.email,
+    order_id:       orderId,
+    order_date:     orderDate,
+    customer_name:  customer.name,
+    customer_mobile: customer.mobile,
+    customer_email: customer.email,
+    shipping_address: fullAddress,
+    order_summary:  orderItems.map(i => i.title + ' x' + i.qty + ' = ₹' + i.total).join(' | '),
+    total_amount:   '₹' + total.toLocaleString('en-IN'),
+    invoice_html:   invoiceHtml,
+    shipping_label: shipLabelHtml,
+    message:        'New order received from ' + customer.name + ' (Order ID: ' + orderId + '). Total: ₹' + total
+  };
+
+  emailjs.send('service_xzoyjwl', 'template_7xyvagk', templateParams)
+    .then(() => {
+      btn.disabled = false;
+      btn.textContent = '✅ I Have Completed the Payment';
+      statusEl.style.color = '#166534';
+      statusEl.textContent = '✅ Order confirmation sent to IBI!';
+      closeGpay();
+      showToast('🎉 Order placed! Confirmation sent. We will ship your order soon.', 'success');
+      cart = [];
+      updateCartCount();
+      renderCart();
+      if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+    })
+    .catch((err) => {
+      // Even if email fails, confirm the order (customer has already paid)
+      console.warn('EmailJS error:', err);
+      btn.disabled = false;
+      btn.textContent = '✅ I Have Completed the Payment';
+      statusEl.style.color = '#b91c1c';
+      statusEl.textContent = '⚠️ Email not sent — please WhatsApp your details to +91 89394 14799';
+      showToast('✅ Order confirmed! Please also WhatsApp your address.', 'success');
+      cart = [];
+      updateCartCount();
+      renderCart();
+      if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+    });
 }
 
 // ========== TOAST ==========
@@ -2465,14 +2642,64 @@ init();
     </div>
 
     <!-- WhatsApp Button -->
-    <a id="gpayWhatsapp" href="#" target="_blank" style="display:block;background:#25D366;color:#fff;border-radius:10px;padding:12px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:10px;">
-      📱 Confirm Order on WhatsApp
+    <a id="gpayWhatsapp" href="#" target="_blank" style="display:block;background:#25D366;color:#fff;border-radius:10px;padding:12px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:14px;">
+      📱 Step 3: Confirm Order on WhatsApp
     </a>
 
+    <!-- ── Customer Details Form ── -->
+    <div style="border:2px solid #8B5CF6;border-radius:14px;padding:14px;margin-bottom:12px;text-align:left;background:#fdf8ff;">
+      <p style="font-size:13px;font-weight:700;color:#5b21b6;margin:0 0 10px;">📋 Step 4: Enter Delivery Details</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="grid-column:1/-1;">
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Full Name *</label>
+          <input id="cf_name" type="text" placeholder="Buyer Full Name" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" oninput="updateWA()" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Door / Flat No. *</label>
+          <input id="cf_door" type="text" placeholder="Door / Flat No." style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Street Name *</label>
+          <input id="cf_street" type="text" placeholder="Street Name" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Landmark</label>
+          <input id="cf_landmark" type="text" placeholder="Landmark (optional)" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Area / Location *</label>
+          <input id="cf_area" type="text" placeholder="Area / Location" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">District *</label>
+          <input id="cf_district" type="text" placeholder="District" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">PIN Code *</label>
+          <input id="cf_pin" type="text" placeholder="PIN Code" maxlength="6" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">State *</label>
+          <input id="cf_state" type="text" placeholder="State" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Email *</label>
+          <input id="cf_email" type="email" placeholder="your@email.com" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Mobile No. *</label>
+          <input id="cf_mobile" type="tel" placeholder="10-digit mobile" maxlength="10" style="width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        </div>
+      </div>
+    </div>
+
     <!-- Confirm Payment Done -->
-    <button onclick="confirmGpayDone()" style="width:100%;background:#8B5CF6;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">
+    <button onclick="confirmGpayDone()" id="confirmPayBtn" style="width:100%;background:#8B5CF6;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(139,92,246,0.4);">
       ✅ I Have Completed the Payment
     </button>
+
+    <div id="emailStatus" style="display:none;margin-top:8px;font-size:12px;color:#555;text-align:center;"></div>
 
     <p style="font-size:11px;color:#aaa;margin:10px 0 0;">ICICI Bank Current Account &bull; Secure UPI Payment</p>
   </div>
