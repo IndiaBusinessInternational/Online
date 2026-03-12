@@ -2381,7 +2381,7 @@ function copyUPI() {
 function getFormVal(id) { return (document.getElementById(id)||{value:''}).value.trim(); }
 
 function confirmGpayDone() {
-  // ── Validate form ──
+  // ── Validate ──
   const required = {
     cf_name:'Full Name', cf_door:'Door/Flat No.', cf_street:'Street Name',
     cf_area:'Area/Location', cf_district:'District', cf_pin:'PIN Code',
@@ -2391,10 +2391,10 @@ function confirmGpayDone() {
     if (!getFormVal(id)) { showToast('⚠️ Please enter ' + label, ''); return; }
   }
   if (!/^\d{6}$/.test(getFormVal('cf_pin'))) { showToast('⚠️ PIN Code must be 6 digits', ''); return; }
-  if (!/^\d{10}$/.test(getFormVal('cf_mobile'))) { showToast('⚠️ Mobile must be 10 digits', ''); return; }
+  if (!/^\d{10}$/.test(getFormVal('cf_mobile'))) { showToast('⚠️ Mobile No. must be 10 digits', ''); return; }
   if (!/^[^@]+@[^@]+\.[^@]+$/.test(getFormVal('cf_email'))) { showToast('⚠️ Enter a valid email', ''); return; }
 
-  const customer = {
+  const c = {
     name:     getFormVal('cf_name'),
     door:     getFormVal('cf_door'),
     street:   getFormVal('cf_street'),
@@ -2408,139 +2408,117 @@ function confirmGpayDone() {
   };
 
   const orderItems = window._gpayCart || [];
-  const total = window._gpayTotal || 0;
-  const orderId = window._gpayOrderId || ('IBI' + Date.now().toString().slice(-8));
-  const orderDate = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
+  const total      = window._gpayTotal || 0;
+  const orderId    = window._gpayOrderId || ('IBI' + Date.now().toString().slice(-8));
+  const orderDate  = new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'});
+  const address    = c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') +
+                     ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
 
-  const fullAddress = customer.door + ', ' + customer.street +
-    (customer.landmark ? ', Near ' + customer.landmark : '') +
-    ', ' + customer.area + ', ' + customer.district + ' - ' + customer.pin + ', ' + customer.state;
+  // ── Build compact item rows for email (plain text table) ──
+  const itemLines = orderItems.map((it,i) =>
+    (i+1) + '. ' + it.title + '  |  Qty: ' + it.qty + '  |  Rs.' + it.price + ' x ' + it.qty + ' = Rs.' + it.total
+  ).join('\n');
 
-  // ── Build Invoice HTML ──
-  const invoiceHtml = `
-<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;color:#333;">
-<div style="border:2px solid #8B5CF6;border-radius:12px;overflow:hidden;">
-  <div style="background:#8B5CF6;color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
-    <div><h2 style="margin:0;font-size:22px;">INVOICE</h2><p style="margin:4px 0 0;font-size:13px;opacity:.85;">India Business International</p></div>
-    <div style="text-align:right;font-size:13px;opacity:.9;"><div>Order ID: <b>${orderId}</b></div><div>Date: ${orderDate}</div></div>
-  </div>
-  <div style="padding:20px 24px;background:#fdf8ff;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:14px;">
-        <p style="font-size:11px;font-weight:700;color:#8B5CF6;text-transform:uppercase;margin:0 0 8px;">Bill From</p>
-        <b>India Business International</b><br>Nāgercoil, Tamil Nadu<br>📧 indiabusinessinternational@gmail.com<br>📱 +91 89394 14799<br>UPI: indiabusinessinternational@okicici
-      </div>
-      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:14px;">
-        <p style="font-size:11px;font-weight:700;color:#8B5CF6;text-transform:uppercase;margin:0 0 8px;">Bill To</p>
-        <b>${customer.name}</b><br>${customer.door}, ${customer.street}${customer.landmark ? ', Near '+customer.landmark : ''}<br>${customer.area}, ${customer.district}<br>${customer.state} - ${customer.pin}<br>📧 ${customer.email}<br>📱 ${customer.mobile}
-      </div>
-    </div>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-      <thead><tr style="background:#8B5CF6;color:#fff;">
-        <th style="padding:10px 12px;text-align:left;font-size:13px;">Item</th>
-        <th style="padding:10px 12px;text-align:center;font-size:13px;">Qty</th>
-        <th style="padding:10px 12px;text-align:right;font-size:13px;">Unit Price</th>
-        <th style="padding:10px 12px;text-align:right;font-size:13px;">Amount</th>
-      </tr></thead>
-      <tbody>
-        ${orderItems.map((item, i) => `<tr style="background:${i%2===0?'#fff':'#f9f5ff'};border-bottom:1px solid #e5e7eb;">
-          <td style="padding:10px 12px;font-size:13px;">${item.title}</td>
-          <td style="padding:10px 12px;text-align:center;font-size:13px;">${item.qty}</td>
-          <td style="padding:10px 12px;text-align:right;font-size:13px;">₹${item.price.toLocaleString('en-IN')}</td>
-          <td style="padding:10px 12px;text-align:right;font-size:13px;">₹${item.total.toLocaleString('en-IN')}</td>
-        </tr>`).join('')}
-      </tbody>
-      <tfoot>
-        <tr style="background:#5b21b6;color:#fff;font-weight:700;">
-          <td colspan="3" style="padding:12px;font-size:15px;">TOTAL PAID (via GPay / UPI)</td>
-          <td style="padding:12px;text-align:right;font-size:16px;">₹${total.toLocaleString('en-IN')}</td>
-        </tr>
-      </tfoot>
-    </table>
-    <div style="background:#f0fdf4;border:1px solid #34A853;border-radius:8px;padding:10px 14px;font-size:13px;color:#166534;">
-      ✅ Payment received via Google Pay / UPI (indiabusinessinternational@okicici)
-    </div>
-  </div>
-</div>
-</body></html>`;
+  // ── Shipping label block (plain text style inside email) ──
+  const shippingBlock =
+    '=== SHIPPING LABEL ===\n' +
+    'FROM : India Business International, Nagercoil, Tamil Nadu | Ph: +91 89394 14799\n' +
+    'TO   : ' + c.name + '\n' +
+    '       ' + c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') + '\n' +
+    '       ' + c.area + ', ' + c.district + '\n' +
+    '       ' + c.state + ' - PIN: ' + c.pin + '\n' +
+    '       Mobile: ' + c.mobile;
 
-  // ── Build Shipping Label HTML ──
-  const shipLabelHtml = `
-<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;max-width:500px;margin:20px auto;">
-<div style="border:3px solid #1a1a1a;border-radius:8px;overflow:hidden;">
-  <div style="background:#1a1a1a;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;">
-    <span style="font-weight:700;font-size:16px;">SHIPPING LABEL</span>
-    <span style="font-size:13px;">Order: ${orderId}</span>
-  </div>
-  <div style="padding:16px;">
-    <div style="border:2px dashed #aaa;border-radius:6px;padding:14px;margin-bottom:12px;">
-      <p style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;margin:0 0 6px;">FROM:</p>
-      <b style="font-size:14px;">India Business International</b><br>
-      <span style="font-size:13px;">Nāgercoil, Tamil Nadu, India<br>📱 +91 89394 14799</span>
-    </div>
-    <div style="border:3px solid #1a1a1a;border-radius:6px;padding:14px;background:#f9f9f9;">
-      <p style="font-size:10px;font-weight:700;color:#666;text-transform:uppercase;margin:0 0 6px;">DELIVER TO:</p>
-      <b style="font-size:18px;">${customer.name}</b><br>
-      <span style="font-size:14px;">${customer.door}, ${customer.street}${customer.landmark ? '<br>Near ' + customer.landmark : ''}<br>${customer.area}<br>${customer.district}, ${customer.state}<br>
-      <b style="font-size:18px;letter-spacing:3px;">PIN: ${customer.pin}</b><br>
-      📱 ${customer.mobile}</span>
-    </div>
-    <div style="margin-top:10px;padding:8px;background:#e5e7eb;border-radius:6px;font-size:12px;text-align:center;">
-      Items: ${orderItems.map(i=>i.title.substring(0,30)+(i.qty>1?' x'+i.qty:'')).join(' | ')}
-    </div>
-  </div>
-</div>
-</body></html>`;
-
-  // ── Send Email via EmailJS ──
-  const btn = document.getElementById('confirmPayBtn');
+  const btn      = document.getElementById('confirmPayBtn');
   const statusEl = document.getElementById('emailStatus');
-  btn.disabled = true;
-  btn.textContent = '📤 Sending order details...';
+  btn.disabled   = true;
+  btn.textContent = '📤 Sending...';
   statusEl.style.display = 'block';
-  statusEl.textContent = 'Sending order confirmation email...';
+  statusEl.style.color   = '#555';
+  statusEl.textContent   = 'Sending order confirmation email...';
 
-  const templateParams = {
-    to_email:       'indiabusinessinternational@gmail.com',
-    reply_to:       customer.email,
-    order_id:       orderId,
-    order_date:     orderDate,
-    customer_name:  customer.name,
-    customer_mobile: customer.mobile,
-    customer_email: customer.email,
-    shipping_address: fullAddress,
-    order_summary:  orderItems.map(i => i.title + ' x' + i.qty + ' = ₹' + i.total).join(' | '),
-    total_amount:   '₹' + total.toLocaleString('en-IN'),
-    invoice_html:   invoiceHtml,
-    shipping_label: shipLabelHtml,
-    message:        'New order received from ' + customer.name + ' (Order ID: ' + orderId + '). Total: ₹' + total
+  // ── Build HTML Invoice ──
+  const invoiceHtml =
+    '<div style="font-family:Arial,sans-serif;max-width:680px;">' +
+    '<div style="background:#8B5CF6;color:#fff;padding:16px 20px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;">' +
+    '<div><b style="font-size:20px;">INVOICE</b><br><span style="font-size:12px;opacity:.85;">India Business International</span></div>' +
+    '<div style="text-align:right;font-size:12px;">Order: <b>' + orderId + '</b><br>' + orderDate + '</div></div>' +
+    '<div style="border:1px solid #e5e7eb;padding:16px;background:#fdf8ff;">' +
+    '<table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px;">' +
+    '<tr style="background:#f3e8ff;"><td style="padding:6px 10px;font-weight:700;width:35%;">Bill From</td>' +
+    '<td style="padding:6px 10px;">India Business International, Nagercoil, Tamil Nadu<br>indiabusinessinternational@gmail.com | +91 89394 14799</td></tr>' +
+    '<tr style="background:#fff;"><td style="padding:6px 10px;font-weight:700;">Bill To</td>' +
+    '<td style="padding:6px 10px;"><b>' + c.name + '</b><br>' + address + '<br>' + c.email + ' | ' + c.mobile + '</td></tr>' +
+    '</table>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<tr style="background:#8B5CF6;color:#fff;"><th style="padding:8px;text-align:left;">Item</th><th style="padding:8px;text-align:center;">Qty</th><th style="padding:8px;text-align:right;">Price</th><th style="padding:8px;text-align:right;">Total</th></tr>' +
+    orderItems.map(function(it,i){ return '<tr style="background:' + (i%2===0?'#fff':'#f9f5ff') + ';border-bottom:1px solid #e5e7eb;"><td style="padding:8px;">' + it.title + '</td><td style="padding:8px;text-align:center;">' + it.qty + '</td><td style="padding:8px;text-align:right;">Rs.' + it.price + '</td><td style="padding:8px;text-align:right;">Rs.' + it.total + '</td></tr>'; }).join('') +
+    '<tr style="background:#5b21b6;color:#fff;font-weight:700;"><td colspan="3" style="padding:10px;">TOTAL PAID (GPay/UPI)</td><td style="padding:10px;text-align:right;font-size:16px;">Rs.' + total + '</td></tr>' +
+    '</table>' +
+    '<div style="margin-top:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #34A853;border-radius:6px;font-size:12px;color:#166534;">Payment received via Google Pay / UPI — indiabusinessinternational@okicici</div>' +
+    '</div></div>';
+
+  // ── Build HTML Shipping Label ──
+  const shipLabelHtml =
+    '<div style="font-family:Arial,sans-serif;max-width:500px;border:3px solid #1a1a1a;border-radius:8px;overflow:hidden;">' +
+    '<div style="background:#1a1a1a;color:#fff;padding:10px 14px;display:flex;justify-content:space-between;">' +
+    '<b style="font-size:15px;">SHIPPING LABEL</b><span style="font-size:12px;">Order: ' + orderId + '</span></div>' +
+    '<div style="padding:14px;">' +
+    '<div style="border:2px dashed #aaa;border-radius:6px;padding:12px;margin-bottom:10px;font-size:13px;">' +
+    '<b style="font-size:10px;color:#666;text-transform:uppercase;">FROM:</b><br>' +
+    '<b>India Business International</b><br>Nagercoil, Tamil Nadu, India | +91 89394 14799</div>' +
+    '<div style="border:3px solid #1a1a1a;border-radius:6px;padding:14px;background:#f9f9f9;font-size:14px;">' +
+    '<b style="font-size:10px;color:#666;text-transform:uppercase;">DELIVER TO:</b><br>' +
+    '<b style="font-size:18px;">' + c.name + '</b><br>' +
+    c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') + '<br>' +
+    c.area + '<br>' + c.district + ', ' + c.state + '<br>' +
+    '<b style="font-size:17px;letter-spacing:2px;">PIN: ' + c.pin + '</b><br>' +
+    'Mobile: ' + c.mobile + '</div>' +
+    '<div style="margin-top:8px;padding:6px;background:#e5e7eb;border-radius:5px;font-size:11px;text-align:center;">' +
+    'Items: ' + orderItems.map(function(i){ return i.title.substring(0,30)+(i.qty>1?' x'+i.qty:''); }).join(' | ') +
+    '</div></div></div>';
+
+  const params = {
+    to_email:         'indiabusinessinternational@gmail.com',
+    reply_to:         c.email,
+    order_id:         orderId,
+    order_date:       orderDate,
+    customer_name:    c.name,
+    customer_mobile:  c.mobile,
+    customer_email:   c.email,
+    shipping_address: address,
+    order_items:      itemLines,
+    total_amount:     'Rs.' + total.toLocaleString('en-IN'),
+    invoice_html:     invoiceHtml,
+    shipping_label:   shipLabelHtml,
+    message:          'New order ' + orderId + ' from ' + c.name + ' | Total: Rs.' + total + ' | Mobile: ' + c.mobile
   };
 
-  emailjs.send('service_xzoyjwl', 'template_7xyvagk', templateParams)
+  emailjs.send('service_xzoyjwl', 'template_7xyvagk', params)
     .then(() => {
       btn.disabled = false;
       btn.textContent = '✅ I Have Completed the Payment';
       statusEl.style.color = '#166534';
-      statusEl.textContent = '✅ Order confirmation sent to IBI!';
-      closeGpay();
-      showToast('🎉 Order placed! Confirmation sent. We will ship your order soon.', 'success');
-      cart = [];
-      updateCartCount();
-      renderCart();
-      if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+      statusEl.textContent = '✅ Order email sent to IBI!';
+      setTimeout(() => {
+        closeGpay();
+        showToast('🎉 Order placed! We will ship your order soon.', 'success');
+        cart = []; updateCartCount(); renderCart();
+        if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+      }, 1200);
     })
     .catch((err) => {
-      // Even if email fails, confirm the order (customer has already paid)
-      console.warn('EmailJS error:', err);
+      console.error('EmailJS error:', err);
       btn.disabled = false;
       btn.textContent = '✅ I Have Completed the Payment';
       statusEl.style.color = '#b91c1c';
-      statusEl.textContent = '⚠️ Email not sent — please WhatsApp your details to +91 89394 14799';
-      showToast('✅ Order confirmed! Please also WhatsApp your address.', 'success');
-      cart = [];
-      updateCartCount();
-      renderCart();
-      if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+      statusEl.textContent = '⚠️ Email failed — please WhatsApp order to +91 89394 14799';
+      setTimeout(() => {
+        closeGpay();
+        showToast('✅ Order noted! Please WhatsApp your address to +91 89394 14799', 'success');
+        cart = []; updateCartCount(); renderCart();
+        if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+      }, 2000);
     });
 }
 
