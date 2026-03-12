@@ -2350,32 +2350,37 @@ function openGpay() {
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('emailStatus').style.display = 'none';
 
-  // Build UPI deep links with properly formatted amount
-  const amt = window._gpayTotal.toFixed(2);
-  const upiId = 'indiabusinessinternational@okicici';
-  const upiName = 'India%20Business%20International';
-  const tn = encodeURIComponent(window._gpayOrderId);
-
-  // GPay-specific Android intent (most reliable for GPay)
-  const gpayIntent = 'intent://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn +
-    '#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end';
-  // PhonePe-specific intent
-  const phonepeIntent = 'intent://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn +
-    '#Intent;scheme=upi;package=com.phonepe.app;end';
-  // Generic UPI for Paytm and BHIM
-  const upiLink = 'upi://pay?pa=' + upiId + '&pn=' + upiName + '&am=' + amt + '&cu=INR&tn=' + tn;
-
-  const upiBtn = document.getElementById('upiPayBtn');
-  if(upiBtn) upiBtn.href = gpayIntent;
-  const ppBtn = document.getElementById('phonepeBtn');
-  if(ppBtn) ppBtn.href = phonepeIntent;
-  const ptBtn = document.getElementById('paytmBtn');
-  if(ptBtn) ptBtn.href = upiLink;
-  const bhBtn = document.getElementById('bhimBtn');
-  if(bhBtn) bhBtn.href = upiLink;
+  // Store UPI params for payment buttons
+  window._upiAmt = window._gpayTotal.toFixed(2);
+  window._upiTn  = encodeURIComponent(window._gpayOrderId);
 
   updateWA();  // kept for compatibility
   document.getElementById('gpayOverlay').style.display = 'block';
+}
+
+function payWithGpay() {
+  // tez:// is Google Pay's official scheme - works reliably on Android Chrome
+  const url = 'tez://upi/pay?pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+    window._upiAmt + '&cu=INR&tn=' + window._upiTn;
+  window.location.href = url;
+  // Fallback after 1.5s if GPay not installed
+  setTimeout(() => {
+    const fallback = 'upi://pay?pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+      window._upiAmt + '&cu=INR&tn=' + window._upiTn;
+    window.location.href = fallback;
+  }, 1500);
+}
+
+function payWithApp(app) {
+  const base = 'pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+    window._upiAmt + '&cu=INR&tn=' + window._upiTn;
+  const schemes = {
+    phonepe: 'phonepe://pay?' + base,
+    paytm:   'paytmmp://pay?' + base,
+    bhim:    'upi://pay?' + base
+  };
+  window.location.href = schemes[app] || ('upi://pay?' + base);
+  setTimeout(() => { window.location.href = 'upi://pay?' + base; }, 1500);
 }
 
 function updateWA() {
@@ -2640,17 +2645,17 @@ init();
       <div style="font-size:11px;font-weight:700;color:#4285F4;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Step 2 — Make UPI Payment</div>
 
       <!-- One-click GPay button -->
-      <a id="upiPayBtn" href="#" target="_blank" style="display:block;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;border-radius:12px;padding:14px;font-size:16px;font-weight:800;text-decoration:none;margin-bottom:8px;box-shadow:0 4px 12px rgba(66,133,244,0.35);">
+      <button onclick="payWithGpay()" style="display:block;width:100%;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:8px;box-shadow:0 4px 12px rgba(66,133,244,0.35);">
         <div style="font-size:24px;margin-bottom:2px;">G Pay</div>
         ▶ Tap to Pay with Google Pay
         <div style="font-size:11px;font-weight:500;opacity:0.9;margin-top:3px;">Opens Google Pay app automatically</div>
-      </a>
+      </button>
 
       <!-- Other UPI apps -->
       <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <a id="phonepeBtn" href="#" target="_blank" style="flex:1;background:#5f259f;color:#fff;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;">📲 PhonePe</a>
-        <a id="paytmBtn"   href="#" target="_blank" style="flex:1;background:#00baf2;color:#fff;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;">💙 Paytm</a>
-        <a id="bhimBtn"    href="#" target="_blank" style="flex:1;background:#ff6600;color:#fff;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;text-decoration:none;text-align:center;">🇮🇳 BHIM</a>
+        <button onclick="payWithApp('phonepe')" style="flex:1;background:#5f259f;color:#fff;border:none;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;">📲 PhonePe</button>
+        <button onclick="payWithApp('paytm')"   style="flex:1;background:#00baf2;color:#fff;border:none;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;">💙 Paytm</button>
+        <button onclick="payWithApp('bhim')"    style="flex:1;background:#ff6600;color:#fff;border:none;border-radius:8px;padding:9px 4px;font-size:12px;font-weight:700;cursor:pointer;">🇮🇳 BHIM</button>
       </div>
 
       <!-- QR Code for desktop -->
