@@ -2361,19 +2361,19 @@ function openGpay() {
 
 function payWithGpay() {
   // tez:// is Google Pay's official scheme - works reliably on Android Chrome
-  const url = 'tez://upi/pay?pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+  const url = 'tez://upi/pay?pa=indiabusinessinternational-1@okicici&pn=India%20Business%20International&am=' +
     window._upiAmt + '&cu=INR&tn=' + window._upiTn;
   window.location.href = url;
   // Fallback after 1.5s if GPay not installed
   setTimeout(() => {
-    const fallback = 'upi://pay?pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+    const fallback = 'upi://pay?pa=indiabusinessinternational-1@okicici&pn=India%20Business%20International&am=' +
       window._upiAmt + '&cu=INR&tn=' + window._upiTn;
     window.location.href = fallback;
   }, 1500);
 }
 
 function payWithApp(app) {
-  const base = 'pa=indiabusinessinternational@okicici&pn=India%20Business%20International&am=' +
+  const base = 'pa=indiabusinessinternational-1@okicici&pn=India%20Business%20International&am=' +
     window._upiAmt + '&cu=INR&tn=' + window._upiTn;
   const schemes = {
     phonepe: 'phonepe://pay?' + base,
@@ -2391,7 +2391,7 @@ function updateWA() {
   const orderId = window._gpayOrderId || '';
   const waMsg = encodeURIComponent(
     'Hello IBI! 🙏\n\nOrder ID: ' + orderId + '\nName: ' + name + '\n\nItems:\n' + items +
-    '\n\nTotal Paid: ₹' + total + ' via GPay\nUPI: indiabusinessinternational@okicici\n\nPlease confirm my order. Thank you!'
+    '\n\nTotal Paid: ₹' + total + ' via GPay\nUPI: indiabusinessinternational-1@okicici\n\nPlease confirm my order. Thank you!'
   );
   document.getElementById('gpayWhatsapp').href = 'https://wa.me/918939414799?text=' + waMsg;
 }
@@ -2401,10 +2401,10 @@ function closeGpay() {
 }
 
 function copyUPI() {
-  navigator.clipboard.writeText('indiabusinessinternational@okicici').then(() => {
+  navigator.clipboard.writeText('indiabusinessinternational-1@okicici').then(() => {
     showToast('✅ UPI ID copied!', 'success');
   }).catch(() => {
-    showToast('UPI ID: indiabusinessinternational@okicici', '');
+    showToast('UPI ID: indiabusinessinternational-1@okicici', '');
   });
 }
 
@@ -2485,7 +2485,7 @@ function confirmGpayDone() {
     orderItems.map(function(it,i){ return '<tr style="background:' + (i%2===0?'#fff':'#f9f5ff') + ';border-bottom:1px solid #e5e7eb;"><td style="padding:8px;">' + it.title + '</td><td style="padding:8px;text-align:center;">' + it.qty + '</td><td style="padding:8px;text-align:right;">Rs.' + it.price + '</td><td style="padding:8px;text-align:right;">Rs.' + it.total + '</td></tr>'; }).join('') +
     '<tr style="background:#5b21b6;color:#fff;font-weight:700;"><td colspan="3" style="padding:10px;">TOTAL PAID (GPay/UPI)</td><td style="padding:10px;text-align:right;font-size:16px;">Rs.' + total + '</td></tr>' +
     '</table>' +
-    '<div style="margin-top:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #34A853;border-radius:6px;font-size:12px;color:#166534;">Payment received via Google Pay / UPI — indiabusinessinternational@okicici</div>' +
+    '<div style="margin-top:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #34A853;border-radius:6px;font-size:12px;color:#166534;">Payment received via Google Pay / UPI — indiabusinessinternational-1@okicici</div>' +
     '</div></div>';
 
   // ── Build HTML Shipping Label ──
@@ -2691,7 +2691,7 @@ init();
     <div style="background:#f5f5f5;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
       <div>
         <div style="font-size:11px;color:#888;margin-bottom:2px;">UPI ID</div>
-        <div style="font-size:14px;font-weight:700;color:#1a1a1a;letter-spacing:.3px;">indiabusinessinternational@okicici</div>
+        <div style="font-size:14px;font-weight:700;color:#1a1a1a;letter-spacing:.3px;">indiabusinessinternational-1@okicici</div>
       </div>
       <button onclick="copyUPI()" style="background:#8B5CF6;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;">Copy UPI ID</button>
     </div>
