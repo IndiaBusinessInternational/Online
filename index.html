@@ -76,7 +76,7 @@
   }
   .logo:hover { border-color: var(--white); }
   .logo img {
-    height: 46px;
+    height: 72px;
     width: auto;
     display: block;
   }
@@ -1263,6 +1263,7 @@
   @media (max-width: 520px) {
     .header-top { gap: 8px; padding: 8px 12px; }
     .logo-name { font-size: 15px; }
+    .logo img { height: 54px; }
     .search-category { display: none; }
     .carousel-slide { height: 180px; }
     .slide-title { font-size: 22px; }
@@ -2645,10 +2646,32 @@ init();
       <div style="font-size:11px;font-weight:700;color:#4285F4;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Step 2 — Make UPI Payment</div>
 
       <!-- One-click GPay button -->
-      <button onclick="payWithGpay()" style="display:block;width:100%;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:8px;box-shadow:0 4px 12px rgba(66,133,244,0.35);">
-        <div style="font-size:24px;margin-bottom:2px;">G Pay</div>
-        ▶ Tap to Pay with Google Pay
-        <div style="font-size:11px;font-weight:500;opacity:0.9;margin-top:3px;">Opens Google Pay app automatically</div>
+      <button onclick="payWithGpay()" style="display:block;width:100%;background:linear-gradient(135deg,#1a73e8,#34A853);color:#fff;border:none;border-radius:14px;padding:18px 14px;cursor:pointer;margin-bottom:10px;box-shadow:0 6px 18px rgba(26,115,232,0.4);">
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+          <!-- Official Google Pay Logo SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="34" viewBox="0 0 56 34" fill="none">
+            <rect width="56" height="34" rx="6" fill="white"/>
+            <!-- G -->
+            <path d="M17.5 17.5c0-2.76 2.24-5 5-5 1.38 0 2.54.5 3.43 1.32l-1.39 1.39c-.56-.53-1.26-.84-2.04-.84-1.7 0-3.07 1.4-3.07 3.13s1.37 3.13 3.07 3.13c1.56 0 2.6-.88 2.85-2.12h-2.85v-1.87h4.76c.06.32.1.65.1.99 0 2.72-1.82 4.63-4.86 4.63-2.76 0-5-2.24-5-5z" fill="#4285F4"/>
+            <path d="M22.5 14.5v1.87h2.85c-.25 1.24-1.29 2.12-2.85 2.12v1.88c1.7 0 3.07-1.4 3.07-3.13s-1.37-3.13-3.07-3.13z" fill="#34A853"/>
+            <!-- o -->
+            <path d="M28.5 15.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 3.2c-.66 0-1.2-.54-1.2-1.2s.54-1.2 1.2-1.2 1.2.54 1.2 1.2-.54 1.2-1.2 1.2z" fill="#EA4335"/>
+            <!-- o -->
+            <path d="M32.5 15.5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 3.2c-.66 0-1.2-.54-1.2-1.2s.54-1.2 1.2-1.2 1.2.54 1.2 1.2-.54 1.2-1.2 1.2z" fill="#FBBC05"/>
+            <!-- g -->
+            <path d="M37.38 15.5c-1.05 0-1.88.9-1.88 2s.83 2 1.88 2c.5 0 .92-.18 1.22-.47v.22c0 .77-.41 1.18-1.08 1.18-.54 0-.89-.38-.99-.7l-.93.39c.29.69.97 1.16 1.92 1.16 1.17 0 2.02-.73 2.02-2.25v-3.4h-.9v.44c-.3-.3-.73-.47-1.26-.47zm.08 3.2c-.63 0-1.12-.54-1.12-1.2s.49-1.2 1.12-1.2 1.12.54 1.12 1.2-.49 1.2-1.12 1.2z" fill="#4285F4"/>
+            <!-- P -->
+            <path d="M42.5 14.6h-1.88V21h.95v-2.38h.93c.9 0 1.72-.61 1.72-2.01s-.82-2.01-1.72-2.01zm.03 3.15h-.96v-2.28h.96c.52 0 .82.42.82 1.14s-.3 1.14-.82 1.14z" fill="#34A853"/>
+            <!-- a -->
+            <path d="M46.9 16.3c-.54 0-1.09.24-1.32.76l.84.35c.14-.28.41-.37.67-.37.38 0 .77.23.77.63v.05a1.8 1.8 0 00-.77-.18c-.7 0-1.42.39-1.42 1.1 0 .66.58 1.08 1.22 1.08.5 0 .76-.22.93-.48v.38h.92v-1.93c0-.79-.6-1.39-1.84-1.39zm-.08 2.73c-.24 0-.58-.12-.58-.42 0-.38.42-.53.78-.53.28 0 .54.08.73.19-.04.44-.42.76-.93.76z" fill="#EA4335"/>
+            <!-- y -->
+            <path d="M51.5 16.4l-1.06 2.7-1.06-2.7h-1.01l1.58 3.6-.9 1.98h.98l2.49-5.58h-1.02z" fill="#FBBC05"/>
+          </svg>
+          <div style="text-align:left;">
+            <div style="font-size:18px;font-weight:800;line-height:1.1;">Pay with Google Pay</div>
+            <div style="font-size:12px;font-weight:500;opacity:0.9;margin-top:2px;">Opens Google Pay app automatically</div>
+          </div>
+        </div>
       </button>
 
       <!-- Other UPI apps -->
