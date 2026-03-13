@@ -2240,7 +2240,7 @@ function addToCartModal(id) {
 function buyNow(id) {
   addToCart(id, 1);
   closeProductModal();
-  setTimeout(() => openGpay(), 300);
+  setTimeout(() => openOrderModal(), 300);
 }
 
 // ========== CART ==========
@@ -2332,43 +2332,43 @@ function toggleWish(e, id) {
 
 function checkout() {
   if (!cart.length) return;
-  openGpay();
+  openOrderModal();
 }
 
-function openGpay() {
-  window._gpayCart = cart.map(i => {
+function openOrderModal() {
+  window._orderCart = cart.map(i => {
     const p = products.find(x => x.id === i.id);
     return p ? { title: p.title, price: p.price, qty: i.qty, total: p.price * i.qty } : null;
   }).filter(Boolean);
-  window._gpayTotal = window._gpayCart.reduce((s, i) => s + i.total, 0);
-  window._gpayOrderId = 'IBI' + Date.now().toString().slice(-8);
+  window._orderTotal = window._orderCart.reduce((s, i) => s + i.total, 0);
+  window._orderId = 'IBI' + Date.now().toString().slice(-8);
   window._orderDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
   // Show order summary
-  const summaryItems = window._gpayCart.map(i =>
+  const summaryItems = window._orderCart.map(i =>
     '<tr><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;">' + i.title + '</td>' +
     '<td style="padding:5px 8px;text-align:center;border-bottom:1px solid #e5e7eb;">x' + i.qty + '</td>' +
     '<td style="padding:5px 8px;text-align:right;border-bottom:1px solid #e5e7eb;">₹' + i.total.toLocaleString('en-IN') + '</td></tr>'
   ).join('');
-  document.getElementById('gpayAmount').innerHTML =
+  document.getElementById('orderAmount').innerHTML =
     '<table style="width:100%;border-collapse:collapse;font-size:12px;">' + summaryItems +
     '<tr style="background:#8B5CF6;color:#fff;font-weight:800;"><td colspan="2" style="padding:7px 8px;">ORDER TOTAL</td>' +
-    '<td style="padding:7px 8px;text-align:right;font-size:15px;">₹' + window._gpayTotal.toLocaleString('en-IN') + '</td></tr></table>';
+    '<td style="padding:7px 8px;text-align:right;font-size:15px;">₹' + window._orderTotal.toLocaleString('en-IN') + '</td></tr></table>';
 
   // Reset form
   ['cf_name','cf_door','cf_street','cf_landmark','cf_area','cf_district','cf_pin','cf_state','cf_email','cf_mobile']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
 
-  document.getElementById('gpayOverlay').style.display = 'block';
+  document.getElementById('orderOverlay').style.display = 'block';
 }
 
-function closeGpay() {
-  document.getElementById('gpayOverlay').style.display = 'none';
+function closeOrderModal() {
+  document.getElementById('orderOverlay').style.display = 'none';
 }
 
 function getFormVal(id) { return (document.getElementById(id)||{value:''}).value.trim(); }
 
-function confirmGpayDone() {
+function sendWhatsAppOrder() {
   // Validate
   const required = {
     cf_name:'Full Name', cf_door:'Door/Flat No.', cf_street:'Street Name',
@@ -2394,9 +2394,9 @@ function confirmGpayDone() {
     mobile:   getFormVal('cf_mobile')
   };
 
-  const orderItems = window._gpayCart || [];
-  const total      = window._gpayTotal || 0;
-  const orderId    = window._gpayOrderId || ('IBI' + Date.now().toString().slice(-8));
+  const orderItems = window._orderCart || [];
+  const total      = window._orderTotal || 0;
+  const orderId    = window._orderId || ('IBI' + Date.now().toString().slice(-8));
   const address    = c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') +
                      ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
 
@@ -2422,7 +2422,7 @@ function confirmGpayDone() {
   );
 
   window.open('https://wa.me/918939414799?text=' + waMsg, '_blank');
-  closeGpay();
+  closeOrderModal();
   showToast('✅ Order sent to WhatsApp! We will reply with a payment link shortly.', 'success');
   cart = []; updateCartCount(); renderCart();
   if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
@@ -2483,10 +2483,10 @@ function toggleMenu() {
 init();
 </script>
 
-<!-- ===== GPAY PAYMENT MODAL ===== -->
-<div id="gpayOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;">
+<!-- ===== ORDER MODAL ===== -->
+<div id="orderOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;">
   <div style="background:#fff;border-radius:20px;max-width:420px;width:100%;padding:20px 16px;text-align:center;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:0 auto 12px auto;">
-    <button onclick="closeGpay()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;">✕</button>
+    <button onclick="closeOrderModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;">✕</button>
 
     <!-- Header -->
     <div style="margin-bottom:14px;">
@@ -2498,7 +2498,7 @@ init();
     <!-- STEP 1: Order Summary -->
     <div style="background:#fdf8ff;border:1.5px solid #8B5CF6;border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:left;">
       <div style="font-size:11px;font-weight:700;color:#8B5CF6;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">📋 Step 1 — Your Order</div>
-      <div id="gpayAmount"></div>
+      <div id="orderAmount"></div>
     </div>
 
     <!-- STEP 2: Delivery Details Form -->
@@ -2553,7 +2553,7 @@ init();
     <div style="border:2px solid #25D366;border-radius:14px;padding:14px;margin-bottom:12px;background:#f0fff4;text-align:left;">
       <div style="font-size:11px;font-weight:700;color:#128C7E;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">💬 Step 3 — Send Order</div>
       <p style="font-size:12px;color:#555;margin:0 0 12px;">Your order details will be sent to our WhatsApp. We will personally reply with a secure payment link for you to complete the purchase.</p>
-      <button onclick="confirmGpayDone()" style="width:100%;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:10px;">
+      <button onclick="sendWhatsAppOrder()" style="width:100%;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:12px;padding:16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,0.4);display:flex;align-items:center;justify-content:center;gap:10px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Send Order on WhatsApp
       </button>
