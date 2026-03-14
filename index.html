@@ -3311,59 +3311,108 @@ function sendWhatsAppOrder() {
   const address    = c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') +
                      ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
 
-  const itemLines = orderItems.map((it, i) =>
-    (i+1) + '. ' + it.title.substring(0, 40) + '\n   Qty: ' + it.qty + ' × ₹' + it.price + ' = ₹' + it.total
-  ).join('\n');
+  // Full product details for each item
+  const itemLines = orderItems.map((it, i) => {
+    // Find full product details from products array
+    const prod = products.find(p => p.title === it.title) || {};
+    const sellerObj = sellers.find(s => s.id === (prod.seller || 'ibi'));
+    const sellerName = sellerObj ? sellerObj.name : 'India Business International';
+    const category = prod.category ? prod.category.charAt(0).toUpperCase() + prod.category.slice(1) : '-';
+    const brand = prod.brand || 'IBI';
+    const discount = prod.mrp ? Math.round((1 - it.price / prod.mrp) * 100) : 0;
+
+    return (
+      (i+1) + '. *' + it.title + '*\n' +
+      '   🏷️ Brand: ' + brand + '\n' +
+      '   📂 Category: ' + category + '\n' +
+      '   🏪 Seller: ' + sellerName + '\n' +
+      '   💰 Unit Price: ₹' + it.price.toLocaleString('en-IN') +
+        (discount > 0 ? ' (' + discount + '% off MRP ₹' + (prod.mrp||'').toLocaleString('en-IN') + ')' : '') + '\n' +
+      '   🔢 Qty: ' + it.qty + '\n' +
+      '   💵 Subtotal: ₹' + it.total.toLocaleString('en-IN') +
+      (prod.id ? '\n   🔑 Product ID: #' + prod.id : '')
+    );
+  }).join('\n' + '─────────────────\n');
+
+  const savings = orderItems.reduce((s, it) => {
+    const prod = products.find(p => p.title === it.title) || {};
+    return s + ((prod.mrp || it.price) - it.price) * it.qty;
+  }, 0);
 
   const waMsg = encodeURIComponent(
-    '🛒 *NEW ORDER — IBI*\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    '*Order ID:* ' + orderId + '\n' +
-    '*Date:* ' + (window._orderDate || new Date().toLocaleString('en-IN')) + '\n\n' +
-    '*📦 ITEMS ORDERED:*\n' + itemLines + '\n\n' +
-    '*ORDER TOTAL: ₹' + total.toLocaleString('en-IN') + '*\n\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    '*🚚 DELIVERY DETAILS:*\n' +
-    'Name: ' + c.name + '\n' +
-    'Address: ' + address + '\n' +
-    'Mobile: +91' + c.mobile + '\n' +
-    (c.email ? 'Email: ' + c.email + '\n' : '') +
-    '━━━━━━━━━━━━━━━━━\n' +
-    '⚠️ *Please send me the payment link. I will complete the payment once I receive it.* 🙏'
+    '🛒 *NEW ORDER — INDIA BUSINESS INTERNATIONAL*\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n' +
+    '🆔 *Order ID:* ' + orderId + '\n' +
+    '📅 *Date & Time:* ' + (window._orderDate || new Date().toLocaleString('en-IN')) + '\n' +
+    '📦 *Total Items:* ' + orderItems.length + ' item(s)\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '🛍️ *PRODUCT DETAILS:*\n' +
+    '─────────────────\n' +
+    itemLines + '\n' +
+    '─────────────────\n\n' +
+    '💰 *ORDER SUMMARY:*\n' +
+    '   Sub Total: ₹' + total.toLocaleString('en-IN') + '\n' +
+    (savings > 0 ? '   You Saved: ₹' + savings.toLocaleString('en-IN') + '\n' : '') +
+    '   Shipping: FREE 🚚\n' +
+    '   *GRAND TOTAL: ₹' + total.toLocaleString('en-IN') + '*\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n' +
+    '🚚 *DELIVERY DETAILS:*\n' +
+    '   👤 Name: ' + c.name + '\n' +
+    '   🏠 Address: ' + address + '\n' +
+    '   📌 PIN Code: ' + c.pin + '\n' +
+    '   📱 Mobile: +91' + c.mobile + '\n' +
+    (c.email ? '   📧 Email: ' + c.email + '\n' : '') +
+    '━━━━━━━━━━━━━━━━━━━━━\n' +
+    '💳 *PAYMENT:* Awaiting payment link from IBI\n\n' +
+    '⚠️ *Please send me the payment link. I will complete the payment once I receive it.* 🙏\n\n' +
+    '— Sent from IBI Marketplace Website'
   );
 
+  // Open WhatsApp
   window.open('https://wa.me/918939414799?text=' + waMsg, '_blank');
 
-  // Generate PDF invoice + shipping label
-  // Generate PDF — with retry if library not yet loaded
-  function attemptPDF(retries) {
-    const jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-    if (!jsPDFLib) {
-      if (retries > 0) { setTimeout(() => attemptPDF(retries - 1), 500); return; }
-      showToast('⚠️ PDF library not loaded. Please check your internet connection.'); return;
-    }
-    try { generateOrderPDF(orderId, c, orderItems, total); }
-    catch(e) { console.error('PDF error:', e); showToast('⚠️ PDF generation failed: ' + e.message); }
-  }
-  attemptPDF(4);
-
-  // Send email with order details
-  try { sendOrderEmail(orderId, c, orderItems, total); } catch(e) { console.warn('Email error', e); }
+  // Close modal + clear cart first
+  closeOrderModal();
+  cart = []; updateCartCount(); renderCart();
+  if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
 
   // Save order to user profile
   try { saveOrderToProfile(orderId, orderItems, total, window._orderDate || new Date().toLocaleDateString('en-IN')); } catch(e) {}
 
-  closeOrderModal();
-  showToast('✅ Order sent! PDF invoice downloaded. We will reply with a payment link shortly.', 'success');
-  cart = []; updateCartCount(); renderCart();
-  if (document.getElementById('cartOverlay').classList.contains('open')) toggleCart();
+  // Generate PDF + send emails after a short delay (avoids popup blocker conflict)
+  setTimeout(function() {
+    // 1. Generate PDF and get base64
+    let pdfBase64 = null;
+    try {
+      pdfBase64 = generateOrderPDFBase64(orderId, c, orderItems, total);
+      if (pdfBase64) {
+        // Trigger download
+        const link = document.createElement('a');
+        link.href = 'data:application/pdf;base64,' + pdfBase64;
+        link.download = 'IBI-Invoice-' + orderId + '.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('✅ PDF Invoice downloaded!', 'success');
+      }
+    } catch(e) {
+      console.error('PDF error:', e);
+      showToast('⚠️ PDF generation failed: ' + e.message);
+    }
+
+    // 2. Send emails (with PDF data URL if generated)
+    try { sendOrderEmail(orderId, c, orderItems, total, pdfBase64); }
+    catch(e) { console.warn('Email error', e); }
+
+    showToast('✅ Order placed! WhatsApp opened & PDF downloaded.', 'success');
+  }, 800);
 }
 
 // ========== PDF GENERATION ==========
 // ══════════════════════════════════════════════════════════
 // PDF GENERATION  (jsPDF — shipping label + tax invoice)
 // ══════════════════════════════════════════════════════════
-function generateOrderPDF(orderId, c, orderItems, total) {
+function generateOrderPDFBase64(orderId, c, orderItems, total) {
   const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
   if (!jsPDFCtor) throw new Error('jsPDF library not loaded');
 
@@ -3553,7 +3602,8 @@ function generateOrderPDF(orderId, c, orderItems, total) {
   doc.setFont('helvetica','italic'); doc.setFontSize(8);
   doc.text('Authorised Signatory', W-8, rY+18, {align:'right'});
 
-  doc.save('IBI-Invoice-' + orderId + '.pdf');
+  // Return as base64 string instead of direct save
+  return doc.output('datauristring').split(',')[1];
 }
 
 function numWords(n) {
@@ -3571,14 +3621,21 @@ function numWords(n) {
 // ══════════════════════════════════════════════════════════
 // EMAIL — send to BOTH IBI owner AND customer
 // ══════════════════════════════════════════════════════════
-function sendOrderEmail(orderId, c, orderItems, total) {
+function sendOrderEmail(orderId, c, orderItems, total, pdfBase64) {
   const address = c.door + ', ' + c.street +
     (c.landmark ? ', Near ' + c.landmark : '') +
     ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
+
   const itemsText = orderItems.map((it, i) =>
     (i+1) + '. ' + it.title + ' | Qty: ' + it.qty + ' x Rs.' + it.price + ' = Rs.' + it.total
   ).join('\n');
+
   const dateStr = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+
+  // Build PDF note for email body
+  const pdfNote = pdfBase64
+    ? '\n\n📄 PDF Invoice: The invoice PDF has been downloaded to the customer device automatically.'
+    : '\n\n📄 PDF Invoice: Could not be generated (jsPDF not loaded).';
 
   const params = {
     customer_name:    c.name,
@@ -3586,24 +3643,24 @@ function sendOrderEmail(orderId, c, orderItems, total) {
     customer_mobile:  '+91' + c.mobile,
     order_id:         orderId,
     order_date:       dateStr,
-    order_summary:    itemsText,
+    order_summary:    itemsText + pdfNote,
     total_amount:     'Rs.' + total.toLocaleString('en-IN'),
     shipping_address: address,
     reply_to:         c.email || 'indiabusinessinternational@gmail.com'
   };
 
-  // 1️⃣ Send to IBI owner (indiabusinessinternational@gmail.com)
+  // 1️⃣ Send to IBI owner
   emailjs.send('service_xzoyjwl', 'template_7xyvagk', {
     ...params,
     to_email: 'indiabusinessinternational@gmail.com'
   }).then(() => {
     console.log('✅ Owner email sent');
+    showToast('📧 Order email sent to IBI!', 'success');
   }).catch(err => {
     console.error('❌ Owner email failed:', err);
-    showToast('⚠️ Owner email failed: ' + (err.text || err), '');
   });
 
-  // 2️⃣ Send confirmation to customer (only if they provided email)
+  // 2️⃣ Send to customer if email provided
   if (c.email) {
     emailjs.send('service_xzoyjwl', 'template_7xyvagk', {
       ...params,
@@ -3612,6 +3669,7 @@ function sendOrderEmail(orderId, c, orderItems, total) {
       reply_to:      'indiabusinessinternational@gmail.com'
     }).then(() => {
       console.log('✅ Customer email sent to ' + c.email);
+      showToast('📧 Confirmation email sent to you!', 'success');
     }).catch(err => {
       console.error('❌ Customer email failed:', err);
     });
