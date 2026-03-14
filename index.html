@@ -1738,7 +1738,7 @@
       <span class="payment-icon">COD</span>
       <span class="payment-icon">EMI</span>
     </div>
-    <p style="margin-top:12px">© 2025 India Business International Pvt. Ltd. · All Rights Reserved · <a href="#" style="color:#aaa;">Conditions of Use</a> · <a href="#" style="color:#aaa;">Privacy Notice</a> · <a href="#" style="color:#aaa;">Interest-Based Ads</a></p>
+    <p style="margin-top:12px">© 2026 India Business International · All Rights Reserved · <a href="#" style="color:#aaa;">Conditions of Use</a> · <a href="#" style="color:#aaa;">Privacy Notice</a> · <a href="#" style="color:#aaa;">Interest-Based Ads</a></p>
   </div>
 </footer>
 
@@ -3192,248 +3192,265 @@ function sendWhatsAppOrder() {
 }
 
 // ========== PDF GENERATION ==========
+// ══════════════════════════════════════════════════════════
+// PDF GENERATION  (jsPDF — shipping label + tax invoice)
+// ══════════════════════════════════════════════════════════
 function generateOrderPDF(orderId, c, orderItems, total) {
-  // Support both UMD namespace variants
-  const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-  if (!jsPDF) throw new Error('jsPDF not available');
-  // A4 = 210 x 297mm, half A4 = 210 x 148.5mm each section
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const W = 210;
-  const date = new Date();
-  const dateStr = date.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFCtor) throw new Error('jsPDF library not loaded');
 
-  // ─── SHIPPING LABEL (top half: 0–148mm) ───────────────────────────────────
-  const SH = 148; // half A4 height
+  const doc   = new jsPDFCtor({ unit:'mm', format:'a4' });
+  const W     = 210;
+  const H     = 297;
+  const HALF  = 148;
+  const ds    = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 
-  // Outer border
-  doc.setDrawColor(0); doc.setLineWidth(0.8);
-  doc.rect(5, 5, W-10, SH-8);
+  /* ───────── helper shortcuts ───────── */
+  const band = (y, h, r, g, b) => { doc.setFillColor(r,g,b); doc.rect(5, y, W-10, h, 'F'); };
+  const hdr  = (txt, x, y, size=8, bold=false) => {
+    doc.setFont('helvetica', bold?'bold':'normal');
+    doc.setFontSize(size); doc.text(txt, x, y);
+  };
 
-  // Top band - dark
-  doc.setFillColor(20, 20, 20);
-  doc.rect(5, 5, W-10, 12, 'F');
+  /* ══════════════════════════════════════════════════════
+     TOP HALF — SHIPPING LABEL  (y: 5 → 140)
+  ══════════════════════════════════════════════════════ */
+  doc.setDrawColor(0); doc.setLineWidth(0.6);
+  doc.rect(5, 5, W-10, HALF-8);
 
-  // Logo / shop name in band
-  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
-  doc.text('INDIA BUSINESS INTERNATIONAL', 10, 13.5);
-  doc.setFontSize(8); doc.setFont('helvetica','normal');
-  doc.text('www.indiabusinessinternational.github.io', W-10, 13.5, {align:'right'});
+  // Dark header band
+  band(5, 11, 19, 25, 48);
+  doc.setTextColor(255,255,255);
+  hdr('INDIA BUSINESS INTERNATIONAL', 10, 12.5, 12, true);
+  hdr('iINTELLIGENCEi  |  eCommerce for the World', W-10, 12.5, 7.5);
+  doc.setTextColor(255,255,255);
+  doc.text('iINTELLIGENCEi  |  eCommerce for the World', W-10, 12.5, {align:'right'});
 
-  // Fake barcode lines
-  doc.setFillColor(0,0,0);
-  let bx = 10;
-  const bw = [1,2,1,3,1,1,2,1,3,2,1,1,2,1,1,3,2,1,1,2,3,1,1,2,1,3,1,2,1,1,3,2,1,1,2,1,1,3,2,1];
-  bw.forEach((w,i) => {
-    if (i%2===0) doc.rect(bx, 19, w*0.7, 14, 'F');
-    bx += w*0.7 + 0.5;
+  // Barcode simulation
+  doc.setFillColor(0,0,0); doc.setTextColor(0,0,0);
+  const bars = [1,2,1,3,1,1,2,1,3,2,1,1,2,3,1,1,2,1,3,1,2,1,1,3,2,1,1,2,1,3];
+  let bx = 8;
+  bars.forEach((w,i) => { if(i%2===0) doc.rect(bx, 18, w*0.9, 12, 'F'); bx += w*0.9+0.5; });
+  hdr('AWB  ' + orderId, 8, 33, 7);
+
+  // Tag boxes (right side)
+  const tags = ['SUR','1 kg','STD','COD'];
+  tags.forEach((t, i) => {
+    const tx = 110 + i*24;
+    doc.setDrawColor(0); doc.setLineWidth(0.4); doc.rect(tx, 18, 22, 14);
+    hdr(t, tx+11, 27, 8.5, true);
+    doc.setTextColor(0,0,0);
+    doc.text(t, tx+11, 27, {align:'center'});
   });
-  doc.setFontSize(7); doc.setTextColor(0,0,0); doc.setFont('helvetica','normal');
-  doc.text('AWB ' + orderId, 10, 36);
 
-  // Weight / Size tags
-  doc.setDrawColor(0); doc.setLineWidth(0.5);
-  const tags = [['SUR',''],['1.00 kg',''],['STANDARD',''],['PREPAID','']];
-  let tx = 80;
-  tags.forEach(([label]) => {
-    doc.rect(tx, 19, 28, 16);
-    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-    doc.text(label, tx+14, 29, {align:'center'});
-    tx += 30;
-  });
+  // SHIP TO
+  band(36, 6, 240, 240, 240);
+  doc.setTextColor(0,0,0); hdr('SHIP TO:', 8, 41, 8.5, true);
+  hdr(c.name, 8, 49, 11, true);
+  const a1 = c.door + ', ' + c.street + (c.landmark ? ', Nr. '+c.landmark : '');
+  const a2 = c.area + ', ' + c.district + ' – ' + c.pin;
+  const a3 = c.state + '   |   Mob: +91' + c.mobile;
+  hdr(a1, 8, 55, 8.5); hdr(a2, 8, 60, 8.5); hdr(a3, 8, 65, 8.5);
 
-  // Ship To section
-  doc.setFillColor(240,240,240); doc.rect(5, 38, W-10, 6, 'F');
-  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-  doc.text('SHIP TO:', 10, 43);
-
-  doc.setFontSize(11); doc.setFont('helvetica','bold');
-  doc.text(c.name, 10, 51);
-  doc.setFontSize(9); doc.setFont('helvetica','normal');
-  const addr1 = c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '');
-  const addr2 = c.area + ', ' + c.district + ' - ' + c.pin;
-  const addr3 = c.state + ' | Mob: +91' + c.mobile;
-  doc.text(addr1, 10, 57);
-  doc.text(addr2, 10, 62);
-  doc.text(addr3, 10, 67);
-
-  // Right side - Order info box
-  doc.setDrawColor(0); doc.setLineWidth(0.5);
-  doc.rect(135, 39, 65, 32);
-  doc.setFontSize(8); doc.setFont('helvetica','bold');
-  doc.text('ORDER DETAILS', 167, 44, {align:'center'});
+  // Order info box (right)
+  doc.setDrawColor(0); doc.setLineWidth(0.4); doc.rect(135, 37, 65, 32);
+  hdr('ORDER DETAILS', 167, 43, 8, true); doc.text('ORDER DETAILS', 167, 43, {align:'center'});
   doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  doc.text('Order ID: ' + orderId, 138, 50);
-  doc.text('Date: ' + dateStr, 138, 56);
-  doc.text('Items: ' + orderItems.length, 138, 62);
+  doc.text('Order ID : ' + orderId,           138, 49);
+  doc.text('Date     : ' + ds,                138, 54);
+  doc.text('Items    : ' + orderItems.length, 138, 59);
   doc.setFont('helvetica','bold'); doc.setFontSize(10);
-  doc.text('Total: Rs.' + total.toLocaleString('en-IN'), 138, 68);
+  doc.text('Total: Rs.' + total.toLocaleString('en-IN'), 138, 66);
 
-  // Divider
-  doc.setDrawColor(0); doc.setLineWidth(0.5); doc.line(5, 74, W-5, 74);
+  // Divider + Sold By
+  doc.setLineWidth(0.4); doc.line(5, 72, W-5, 72);
+  band(72, 6, 240, 240, 240);
+  doc.setTextColor(0,0,0);
+  hdr('SOLD BY: India Business International  |  Palapallam, Kanyakumari – 629159  |  indiabusinessinternational@gmail.com', 8, 77, 7.5);
 
-  // Sold By section
-  doc.setFillColor(240,240,240); doc.rect(5, 74, W-10, 6, 'F');
-  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-  doc.text('SOLD BY:', 10, 79);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  doc.text('India Business International  |  Nagercoil, Tamil Nadu - 629159  |  Email: indiabusinessinternational@gmail.com', 10, 85);
+  // Declaration
+  doc.setDrawColor(0); doc.setLineWidth(0.3); doc.rect(5, 80, W-10, 12);
+  hdr('Customer Declaration: Goods sold are for end-user consumption only. Not for resale. Check package before accepting.', 8, 86, 7.5);
+  hdr('Report any damage within 24 hours of delivery to: +91 89394 14799', 8, 90, 7.5);
 
-  // Customer declaration box
-  doc.setDrawColor(0); doc.setLineWidth(0.4);
-  doc.rect(5, 88, W-10, 14);
-  doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(80,80,80);
-  doc.text('Customer Self Declaration: The goods sold are intended for end user consumption. Not for resale.', 10, 94);
-  doc.text('Kindly check the package before accepting. Report any damage within 24 hours of delivery.', 10, 99);
-
-  // Bottom routing codes bar
-  doc.setFillColor(20,20,20); doc.rect(5, 104, W-10, 14, 'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(18);
-  const codes = ['IBI', 'TN29', orderId.slice(-4), 'COD'];
-  codes.forEach((code, i) => { doc.text(code, 15 + i*48, 114); });
+  // Routing bar
+  band(94, 13, 19, 25, 48);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  ['IBI', 'TN29', orderId.slice(-4), 'PREPAID'].forEach((t,i) => doc.text(t, 14+i*48, 103));
 
   // Dotted cut line
-  doc.setLineDashPattern([2,2], 0); doc.setDrawColor(150,150,150); doc.setLineWidth(0.5);
-  doc.line(0, SH, W, SH);
-  doc.setFontSize(7); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal');
-  doc.text('✂  Cut here — Invoice below', W/2, SH+3, {align:'center'});
+  doc.setLineDashPattern([3,3], 0); doc.setDrawColor(150,150,150); doc.setLineWidth(0.4);
+  doc.line(0, HALF, W, HALF);
+  doc.setFontSize(7); doc.setTextColor(130,130,130); doc.setFont('helvetica','normal');
+  doc.text('✂  Fold / cut here  —  Tax Invoice below', W/2, HALF+3, {align:'center'});
   doc.setLineDashPattern([], 0);
 
-  // ─── TAX INVOICE (bottom half: 148–297mm) ─────────────────────────────────
-  const IY = SH + 5; // invoice start Y
-  doc.setDrawColor(0); doc.setLineWidth(0.8);
-  doc.rect(5, IY, W-10, 297-IY-5);
+  /* ══════════════════════════════════════════════════════
+     BOTTOM HALF — TAX INVOICE  (y: HALF+5 → 292)
+  ══════════════════════════════════════════════════════ */
+  const IY = HALF + 6;
+  doc.setTextColor(0,0,0);
+  doc.setDrawColor(0); doc.setLineWidth(0.6);
+  doc.rect(5, IY, W-10, H-IY-5);
 
-  // Invoice header band
-  doc.setFillColor(20,20,20); doc.rect(5, IY, W-10, 12, 'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
-  doc.text('INDIA BUSINESS INTERNATIONAL', 10, IY+8.5);
+  // Invoice header
+  band(IY, 11, 19, 25, 48);
+  doc.setTextColor(255,255,255);
+  hdr('INDIA BUSINESS INTERNATIONAL', 10, IY+7.5, 11, true);
+  doc.text('Tax Invoice / Bill of Supply / Cash Memo', W-10, IY+7.5, {align:'right'});
   doc.setFontSize(8); doc.setFont('helvetica','normal');
-  doc.text('Tax Invoice / Bill of Supply / Cash Memo', W-10, IY+8.5, {align:'right'});
+  doc.text('Tax Invoice / Bill of Supply / Cash Memo', W-10, IY+7.5, {align:'right'});
 
-  // Sub-header: sold by / billing columns
-  const col1x = 10, col2x = 110;
-  doc.setTextColor(0,0,0); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
-  doc.text('Sold By:', col1x, IY+18);
-  doc.setFont('helvetica','normal');
-  doc.text('India Business International', col1x, IY+23);
-  doc.text('Nagercoil, Tamil Nadu - 629159', col1x, IY+27.5);
-  doc.text('PAN: AABCI1234X  |  GSTIN: 33AABCI1234X1Z5', col1x, IY+32);
-  doc.text('Email: indiabusinessinternational@gmail.com', col1x, IY+36.5);
+  // Sold By / Ship To columns
+  const c1=8, c2=112, iy2=IY+12;
+  doc.setTextColor(0,0,0);
+  hdr('Sold By:', c1, iy2+6, 8, true);
+  hdr('India Business International', c1, iy2+11, 8);
+  hdr('Plot No 8/9B, Overseer eCommerce WareHouse,', c1, iy2+15.5, 7.5);
+  hdr('Neeruvakuzhi-South, Kanyakumari Dist,', c1, iy2+19.5, 7.5);
+  hdr('Tamil Nadu – 629159  |  INDIA', c1, iy2+23.5, 7.5);
+  hdr('Email: indiabusinessinternational@gmail.com', c1, iy2+27.5, 7.5);
+  hdr('Ph: +91 89394 14799', c1, iy2+31.5, 7.5);
 
-  doc.setFont('helvetica','bold'); doc.text('Billing / Shipping Address:', col2x, IY+18);
-  doc.setFont('helvetica','normal');
+  hdr('Billing & Shipping Address:', c2, iy2+6, 8, true);
   const addrLines = [
     c.name,
     c.door + ', ' + c.street,
     c.landmark ? 'Near ' + c.landmark : null,
-    c.area + ', ' + c.district + ' - ' + c.pin,
-    c.state + '  |  +91' + c.mobile
+    c.area + ', ' + c.district + ' – ' + c.pin,
+    c.state + '   |   +91' + c.mobile,
+    c.email || ''
   ].filter(Boolean);
-  addrLines.forEach((line, i) => doc.text(line, col2x, IY+23 + i*4.5));
+  addrLines.forEach((line, i) => hdr(line, c2, iy2+11+i*4.5, 8));
 
-  // Order meta row
-  doc.setFillColor(230,230,230); doc.rect(5, IY+42, W-10, 6, 'F');
-  doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
-  doc.text('Order ID: ' + orderId, 10, IY+46.5);
-  doc.text('Invoice No: INV-' + orderId, 75, IY+46.5);
-  doc.text('Date: ' + dateStr, W-10, IY+46.5, {align:'right'});
+  // Order meta bar
+  const mY = IY+48;
+  band(mY, 6, 230, 230, 230);
+  doc.setTextColor(0,0,0);
+  hdr('Order ID: '+orderId, 8, mY+4.5, 8, true);
+  hdr('Invoice No: INV-'+orderId, 78, mY+4.5, 8, true);
+  hdr('Date: '+ds, W-8, mY+4.5, 8, true);
+  doc.text('Date: '+ds, W-8, mY+4.5, {align:'right'});
 
   // Table header
-  const tY = IY + 52;
-  doc.setFillColor(20,20,20); doc.rect(5, tY, W-10, 7, 'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont('helvetica','bold');
-  doc.text('#', 9, tY+5);
-  doc.text('Description', 18, tY+5);
-  doc.text('Qty', 128, tY+5);
-  doc.text('Unit Price', 142, tY+5);
-  doc.text('Tax', 163, tY+5);
-  doc.text('Total', W-10, tY+5, {align:'right'});
-
-  // Table rows
-  let rowY = tY + 7;
-  doc.setTextColor(0,0,0); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  orderItems.forEach((item, idx) => {
-    const bg = idx%2===0 ? [255,255,255] : [248,248,248];
-    doc.setFillColor(...bg); doc.rect(5, rowY, W-10, 7, 'F');
-    doc.setDrawColor(220,220,220); doc.setLineWidth(0.2);
-    doc.line(5, rowY+7, W-5, rowY+7);
-    doc.setTextColor(0,0,0);
-    doc.text(String(idx+1), 9, rowY+5);
-    const title = item.title.length > 48 ? item.title.substring(0,48)+'…' : item.title;
-    doc.text(title, 18, rowY+5);
-    doc.text(String(item.qty), 130, rowY+5);
-    doc.text('Rs.' + item.price.toLocaleString('en-IN'), 142, rowY+5);
-    doc.text('0%', 165, rowY+5);
-    doc.text('Rs.' + item.total.toLocaleString('en-IN'), W-10, rowY+5, {align:'right'});
-    rowY += 7;
+  const tY = IY+57;
+  band(tY, 7, 19, 25, 48);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  [['#',7],['Description',18],['Qty',126],['Unit Price',140],['Tax',163],['Amount',W-8]].forEach(([t,x]) => {
+    if(x===W-8) doc.text(t,x,tY+5,{align:'right'}); else doc.text(t,x,tY+5);
   });
 
-  // Totals section
-  const gst = 0;
-  rowY = Math.max(rowY, IY+100);
-  doc.setDrawColor(0); doc.setLineWidth(0.5); doc.line(5, rowY, W-5, rowY);
-  rowY += 5;
+  // Table rows
+  let rY = tY+7;
+  doc.setTextColor(0,0,0);
+  orderItems.forEach((item,idx) => {
+    const bg = idx%2===0 ? [255,255,255] : [248,248,252];
+    doc.setFillColor(...bg); doc.rect(5, rY, W-10, 7, 'F');
+    doc.setDrawColor(220,220,220); doc.setLineWidth(0.2); doc.line(5, rY+7, W-5, rY+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(0,0,0);
+    const ttl = item.title.length>52 ? item.title.substring(0,52)+'…' : item.title;
+    doc.text(String(idx+1), 9, rY+5);
+    doc.text(ttl, 18, rY+5);
+    doc.text(String(item.qty), 128, rY+5);
+    doc.text('Rs.'+item.price.toLocaleString('en-IN'), 140, rY+5);
+    doc.text('0%', 165, rY+5);
+    doc.text('Rs.'+item.total.toLocaleString('en-IN'), W-8, rY+5, {align:'right'});
+    rY += 7;
+  });
+
+  // Totals
+  rY = Math.max(rY+2, IY+115);
+  doc.setDrawColor(0); doc.setLineWidth(0.4); doc.line(5, rY, W-5, rY);
+  rY += 5;
   doc.setFont('helvetica','normal'); doc.setFontSize(8);
-  doc.text('Subtotal:', 130, rowY); doc.text('Rs.' + total.toLocaleString('en-IN'), W-10, rowY, {align:'right'});
-  rowY += 5;
-  doc.text('GST / Tax:', 130, rowY); doc.text('Rs.0', W-10, rowY, {align:'right'});
-  rowY += 5;
-  doc.setFillColor(20,20,20); doc.rect(5, rowY, W-10, 8, 'F');
+  doc.text('Subtotal:', 130, rY); doc.text('Rs.'+total.toLocaleString('en-IN'), W-8, rY, {align:'right'});
+  rY+=5; doc.text('GST / Tax (if applicable):', 130, rY); doc.text('Rs.0', W-8, rY, {align:'right'});
+  rY+=5;
+  band(rY, 8, 19, 25, 48);
   doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-  doc.text('GRAND TOTAL', 10, rowY+6);
-  doc.text('Rs.' + total.toLocaleString('en-IN'), W-10, rowY+6, {align:'right'});
-  rowY += 14;
+  doc.text('GRAND TOTAL', 10, rY+6);
+  doc.text('Rs.'+total.toLocaleString('en-IN'), W-8, rY+6, {align:'right'});
+  rY+=14;
 
   // Amount in words
   doc.setTextColor(0,0,0); doc.setFont('helvetica','italic'); doc.setFontSize(8);
-  doc.text('Amount in Words: ' + numberToWords(total) + ' Only', 10, rowY);
-  rowY += 8;
+  doc.text('Amount in Words: ' + numWords(total) + ' Rupees Only', 8, rY);
+  rY+=8;
 
-  // Footer note + signature
-  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(80,80,80);
-  doc.text('This is a computer-generated invoice. No signature required unless stated below.', 10, rowY);
+  // Signature
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(90,90,90);
+  doc.text('This is a computer-generated document. For queries: indiabusinessinternational@gmail.com | +91 89394 14799', 8, rY);
   doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(0,0,0);
-  doc.text('For INDIA BUSINESS INTERNATIONAL', W-10, rowY+10, {align:'right'});
-  doc.text('Authorized Signatory', W-10, rowY+20, {align:'right'});
+  doc.text('For INDIA BUSINESS INTERNATIONAL', W-8, rY+10, {align:'right'});
+  doc.setFont('helvetica','italic'); doc.setFontSize(8);
+  doc.text('Authorised Signatory', W-8, rY+18, {align:'right'});
 
-  // Save / download
   doc.save('IBI-Invoice-' + orderId + '.pdf');
 }
 
-function numberToWords(num) {
-  const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
-    'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-  const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-  if (num === 0) return 'Zero';
-  if (num < 20) return a[num];
-  if (num < 100) return b[Math.floor(num/10)] + (num%10 ? ' ' + a[num%10] : '');
-  if (num < 1000) return a[Math.floor(num/100)] + ' Hundred' + (num%100 ? ' ' + numberToWords(num%100) : '');
-  if (num < 100000) return numberToWords(Math.floor(num/1000)) + ' Thousand' + (num%1000 ? ' ' + numberToWords(num%1000) : '');
-  if (num < 10000000) return numberToWords(Math.floor(num/100000)) + ' Lakh' + (num%100000 ? ' ' + numberToWords(num%100000) : '');
-  return numberToWords(Math.floor(num/10000000)) + ' Crore' + (num%10000000 ? ' ' + numberToWords(num%10000000) : '');
+function numWords(n) {
+  if(n===0) return 'Zero';
+  const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  if(n<20) return a[n];
+  if(n<100) return b[Math.floor(n/10)]+(n%10?' '+a[n%10]:'');
+  if(n<1000) return a[Math.floor(n/100)]+' Hundred'+(n%100?' '+numWords(n%100):'');
+  if(n<100000) return numWords(Math.floor(n/1000))+' Thousand'+(n%1000?' '+numWords(n%1000):'');
+  if(n<10000000) return numWords(Math.floor(n/100000))+' Lakh'+(n%100000?' '+numWords(n%100000):'');
+  return numWords(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+numWords(n%10000000):'');
 }
 
+// ══════════════════════════════════════════════════════════
+// EMAIL — send to BOTH IBI owner AND customer
+// ══════════════════════════════════════════════════════════
 function sendOrderEmail(orderId, c, orderItems, total) {
-  if (!c.email) return; // skip if no email
-  const address = c.door + ', ' + c.street + (c.landmark ? ', Near ' + c.landmark : '') +
+  const address = c.door + ', ' + c.street +
+    (c.landmark ? ', Near ' + c.landmark : '') +
     ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
-  const itemsHtml = orderItems.map((it, i) =>
+  const itemsText = orderItems.map((it, i) =>
     (i+1) + '. ' + it.title + ' | Qty: ' + it.qty + ' x Rs.' + it.price + ' = Rs.' + it.total
   ).join('\n');
   const dateStr = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
-  emailjs.send('service_xzoyjwl', 'template_7xyvagk', {
-    // Match your EmailJS template variable names exactly
+
+  const params = {
     customer_name:    c.name,
-    customer_email:   c.email,
+    customer_email:   c.email || 'Not provided',
     customer_mobile:  '+91' + c.mobile,
     order_id:         orderId,
     order_date:       dateStr,
-    order_summary:    itemsHtml,
+    order_summary:    itemsText,
     total_amount:     'Rs.' + total.toLocaleString('en-IN'),
     shipping_address: address,
-    reply_to:         c.email
+    reply_to:         c.email || 'indiabusinessinternational@gmail.com'
+  };
+
+  // 1️⃣ Send to IBI owner (indiabusinessinternational@gmail.com)
+  emailjs.send('service_xzoyjwl', 'template_7xyvagk', {
+    ...params,
+    to_email: 'indiabusinessinternational@gmail.com'
+  }).then(() => {
+    console.log('✅ Owner email sent');
+  }).catch(err => {
+    console.error('❌ Owner email failed:', err);
+    showToast('⚠️ Owner email failed: ' + (err.text || err), '');
   });
+
+  // 2️⃣ Send confirmation to customer (only if they provided email)
+  if (c.email) {
+    emailjs.send('service_xzoyjwl', 'template_7xyvagk', {
+      ...params,
+      to_email:      c.email,
+      customer_name: c.name,
+      reply_to:      'indiabusinessinternational@gmail.com'
+    }).then(() => {
+      console.log('✅ Customer email sent to ' + c.email);
+    }).catch(err => {
+      console.error('❌ Customer email failed:', err);
+    });
+  }
 }
+
+
 
 // ========== TOAST ==========
 function showToast(msg, type = '') {
