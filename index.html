@@ -4131,7 +4131,13 @@ init();
         <div style="font-size:28px;flex-shrink:0;">✉️</div>
         <div>
           <div style="font-size:12px;font-weight:800;color:#16a34a;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Email Address</div>
-          <a href="/cdn-cgi/l/email-protection#442d2a202d252631372d2a2137372d2a3021362a25302d2b2a2528042329252d286a272b29" style="font-size:15px;color:#1a1a1a;font-weight:700;text-decoration:none;"><span class="__cf_email__" data-cfemail="1d747379747c7f686e7473786e6e747369786f737c697472737c715d7a707c7471337e7270">[email&#160;protected]</span></a>
+          <span id="contactEmail" style="font-size:15px;color:#1a1a1a;font-weight:700;cursor:pointer;" onclick="window.location='mailto:'+this.dataset.u+'@'+this.dataset.d" data-u="indiabusinessinternational" data-d="gmail.com"></span>
+          <script>
+            (function(){
+              var el = document.getElementById('contactEmail');
+              if(el){ var u=el.dataset.u, d=el.dataset.d; el.textContent=u+'@'+d; el.title='Click to email us'; }
+            })();
+          </script>
           <div style="font-size:11px;color:#666;margin-top:4px;">We reply within 24 hours on working days</div>
         </div>
       </div>
@@ -4163,9 +4169,8 @@ init();
       <div style="background:#fdf8ff;border-radius:14px;padding:18px;border-left:4px solid #8B5CF6;">
         <div style="font-size:12px;font-weight:800;color:#8B5CF6;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">🕐 Business Hours</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px;">
-          <div style="color:#555;">Monday – Friday</div><div style="font-weight:700;">9:00 AM – 6:00 PM</div>
-          <div style="color:#555;">Saturday</div><div style="font-weight:700;">9:00 AM – 2:00 PM</div>
-          <div style="color:#555;">Sunday</div><div style="font-weight:700;color:#c00;">Closed</div>
+          <div style="color:#555;">Monday – Sunday</div><div style="font-weight:700;color:#16a34a;">8:00 AM – 6:00 PM</div>
+          <div style="color:#555;grid-column:1/-1;font-size:11px;color:#888;margin-top:4px;">Open all days including weekends &amp; holidays</div>
         </div>
       </div>
 
