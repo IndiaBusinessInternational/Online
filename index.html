@@ -1779,6 +1779,12 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+// ══════════════════════════════════════════════════════════
+// GOOGLE SHEETS BACKEND URL
+// Paste your Google Apps Script Web App URL below after setup
+// ══════════════════════════════════════════════════════════
+window.IBI_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec';
+
 // ========== DATA ==========
 const categories = [
   { icon: '📱', name: 'Electronics', color: '#E3F2FD', id: 'electronics' },
@@ -2247,41 +2253,112 @@ function closeSellerRegistration() {
 
 function submitSellerRegistration() {
   const fields = {
-    sr_biz: 'Business Name', sr_owner: 'Owner Name', sr_mobile: 'Mobile Number',
-    sr_email: 'Email Address', sr_gstin: 'GSTIN / PAN', sr_cat: 'Product Category',
-    sr_city: 'City / Location', sr_about: 'About Your Business'
+    sr_biz:'Business Name', sr_owner:'Owner Name', sr_mobile:'Mobile Number',
+    sr_email:'Email Address', sr_gstin:'GSTIN / PAN', sr_cat:'Product Category',
+    sr_city:'City / Location', sr_about:'About Your Business'
   };
   for (const [id, label] of Object.entries(fields)) {
     const el = document.getElementById(id);
     if (el && !el.value.trim()) { showToast('⚠️ Please fill: ' + label); return; }
   }
-  const biz = document.getElementById('sr_biz').value.trim();
-  const owner = document.getElementById('sr_owner').value.trim();
-  const mobile = document.getElementById('sr_mobile').value.trim();
-  const email = document.getElementById('sr_email').value.trim();
-  const gstin = document.getElementById('sr_gstin').value.trim();
-  const cat = document.getElementById('sr_cat').value.trim();
-  const city = document.getElementById('sr_city').value.trim();
-  const about = document.getElementById('sr_about').value.trim();
+  if (!/^\d{10}$/.test(document.getElementById('sr_mobile').value.trim())) {
+    showToast('⚠️ Enter valid 10-digit mobile'); return;
+  }
 
-  const msg = encodeURIComponent(
-    '🏪 *NEW SELLER REGISTRATION — IBI Marketplace*\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    '*Business Name:* ' + biz + '\n' +
-    '*Owner Name:* ' + owner + '\n' +
-    '*Mobile:* ' + mobile + '\n' +
-    '*Email:* ' + email + '\n' +
-    '*GSTIN / PAN:* ' + gstin + '\n' +
-    '*Category:* ' + cat + '\n' +
-    '*Location:* ' + city + '\n' +
-    '*About:* ' + about + '\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    'Please review and approve this seller application. 🙏'
-  );
-  window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-  closeSellerRegistration();
-  showToast('✅ Registration sent! IBI team will contact you within 24 hours.', 'success');
+  const data = {
+    action:    'register',
+    bizName:   document.getElementById('sr_biz').value.trim(),
+    ownerName: document.getElementById('sr_owner').value.trim(),
+    mobile:    document.getElementById('sr_mobile').value.trim(),
+    email:     document.getElementById('sr_email').value.trim(),
+    gstin:     document.getElementById('sr_gstin').value.trim(),
+    category:  document.getElementById('sr_cat').value.trim(),
+    city:      document.getElementById('sr_city').value.trim(),
+    about:     document.getElementById('sr_about').value.trim()
+  };
+
+  // Show loading state
+  const btn = document.querySelector('#sellerRegOverlay button[onclick="submitSellerRegistration()"]');
+  const origText = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '⏳ Submitting...'; btn.disabled = true; }
+
+  fetch(window.IBI_SHEET_URL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
+    if (res.alreadyExists) {
+      showToast('⚠️ Email already registered. Status: ' + res.status);
+      return;
+    }
+    if (res.success) {
+      closeSellerRegistration();
+      // Show success modal
+      showSellerRegSuccess(res.sellerId, data.bizName);
+      // Also send WhatsApp notification to IBI
+      const msg = encodeURIComponent(
+        '🏪 *NEW SELLER REGISTRATION — IBI Marketplace*\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        '*Seller ID:* ' + res.sellerId + '\n' +
+        '*Business:* ' + data.bizName + '\n' +
+        '*Owner:* ' + data.ownerName + '\n' +
+        '*Mobile:* +91' + data.mobile + '\n' +
+        '*Email:* ' + data.email + '\n' +
+        '*Category:* ' + data.category + '\n' +
+        '*City:* ' + data.city + '\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        '📋 Please review in Google Sheet and Approve / Reject.'
+      );
+      setTimeout(() => window.open('https://wa.me/918939414799?text=' + msg, '_blank'), 500);
+    } else {
+      showToast('❌ ' + (res.message || 'Registration failed. Try again.'));
+    }
+  })
+  .catch(err => {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
+    console.error(err);
+    // Fallback: WhatsApp only
+    closeSellerRegistration();
+    showToast('✅ Sent via WhatsApp! IBI will contact you soon.', 'success');
+    const msg = encodeURIComponent('🏪 *NEW SELLER REG*\nBiz: '+data.bizName+'\nOwner: '+data.ownerName+'\nMobile: +91'+data.mobile+'\nEmail: '+data.email);
+    window.open('https://wa.me/918939414799?text=' + msg, '_blank');
+  });
 }
+
+function showSellerRegSuccess(sellerId, bizName) {
+  const d = document.createElement('div');
+  d.id = 'regSuccessOverlay';
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:10002;display:flex;align-items:center;justify-content:center;padding:16px;';
+  d.innerHTML = `
+    <div style="background:#fff;border-radius:20px;max-width:420px;width:100%;overflow:hidden;text-align:center;">
+      <div style="background:linear-gradient(135deg,#16a34a,#15803d);padding:32px 24px;color:#fff;">
+        <div style="font-size:56px;margin-bottom:12px;">🎉</div>
+        <div style="font-size:22px;font-weight:900;">Registration Successful!</div>
+        <div style="opacity:.85;margin-top:8px;font-size:14px;">Welcome to IBI Marketplace</div>
+      </div>
+      <div style="padding:24px;">
+        <p style="font-size:15px;color:#333;margin-bottom:16px;">Your application for <strong>${bizName}</strong> has been submitted.</p>
+        <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:12px;color:#666;margin-bottom:4px;">Your Seller ID</div>
+          <div style="font-size:22px;font-weight:900;color:#16a34a;letter-spacing:2px;">${sellerId}</div>
+          <div style="font-size:11px;color:#888;margin-top:6px;">Save this ID — you'll need it to login</div>
+        </div>
+        <div style="background:#fff8f0;border-radius:10px;padding:14px;margin-bottom:20px;text-align:left;font-size:13px;color:#555;">
+          <div style="font-weight:700;color:#f97316;margin-bottom:6px;">⏳ What happens next?</div>
+          <div>1. IBI team reviews your application</div>
+          <div>2. You'll receive an email with your login PIN</div>
+          <div>3. Use Seller ID + PIN to access your dashboard</div>
+          <div style="margin-top:6px;color:#888;">Approval time: 24–48 hours</div>
+        </div>
+        <button onclick="document.getElementById('regSuccessOverlay').remove()" style="width:100%;padding:12px;background:#131921;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Got it! ✓</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(d);
+}
+
 
 function openSellerDashboard() {
   // Close Sell On IBI page if open
@@ -2299,42 +2376,128 @@ function closeSellerDashboard() {
 }
 
 function sellerDashLogin() {
-  const id = document.getElementById('sd_seller_id').value.trim().toLowerCase();
-  const pin = document.getElementById('sd_pin').value.trim();
-  // Simple auth: seller id + pin (ibi:ibi2024, iintelligencei:intel2024)
-  const creds = { ibi: 'ibi2024', iintelligencei: 'intel2024' };
-  if (!creds[id] || creds[id] !== pin) {
-    showToast('⚠️ Invalid Seller ID or PIN'); return;
-  }
-  const s = sellers.find(x => x.id === id);
-  const prods = products.filter(p => p.seller === id);
+  const sellerId = document.getElementById('sd_seller_id').value.trim().toUpperCase();
+  const pin      = document.getElementById('sd_pin').value.trim();
+
+  if (!sellerId) { showToast('⚠️ Enter your Seller ID'); return; }
+  if (!pin)      { showToast('⚠️ Enter your PIN');       return; }
+
+  const btn = document.querySelector('#sellerDashOverlay button[onclick="sellerDashLogin()"]');
+  const origText = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '⏳ Verifying...'; btn.disabled = true; }
+
+  const url = window.IBI_SHEET_URL + '?action=checkStatus&sellerId=' + encodeURIComponent(sellerId) + '&pin=' + encodeURIComponent(pin);
+
+  fetch(url)
+  .then(r => r.json())
+  .then(res => {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
+
+    if (res.status === 'Pending') {
+      showDashMessage('⏳', 'Application Under Review',
+        'Your seller application is currently being reviewed by the IBI team. You will receive an email with your login PIN once approved (24–48 hours).',
+        '#f97316');
+      return;
+    }
+
+    if (res.status === 'Rejected') {
+      showDashMessage('❌', 'Application Not Approved',
+        'Your seller application was not approved.<br><br><strong>Reason:</strong> ' + (res.reason || 'Contact IBI for details.') +
+        '<br><br>For queries: <a href="tel:+918939414799">+91 89394 14799</a>',
+        '#dc2626');
+      return;
+    }
+
+    if (res.status === 'WrongPin') {
+      showToast('⚠️ Incorrect PIN. Check your approval email.');
+      return;
+    }
+
+    if (res.status === 'NotFound') {
+      showToast('⚠️ Seller ID not found. Please register first.');
+      return;
+    }
+
+    if (res.success && res.status === 'Approved') {
+      // Store session
+      sessionStorage.setItem('ibi_seller', JSON.stringify({
+        sellerId: res.sellerId, pin, bizName: res.bizName,
+        ownerName: res.ownerName, category: res.category,
+        city: res.city, approvedOn: res.approvedOn
+      }));
+      renderSellerDashboard(res);
+      return;
+    }
+
+    showToast('⚠️ ' + (res.message || 'Login failed.'));
+  })
+  .catch(err => {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
+    // Fallback: check built-in sellers (ibi, iintelligencei)
+    const creds = { 'IBI': 'ibi2024', 'IINTELLIGENCEI': 'intel2024' };
+    if (creds[sellerId] && creds[sellerId] === pin) {
+      const s = sellers.find(x => x.id === sellerId.toLowerCase());
+      if (s) { renderSellerDashboard({ sellerId, bizName: s.name, ownerName: s.name, category: s.categories[0], city: s.location, approvedOn: s.since }); return; }
+    }
+    showToast('⚠️ Could not connect. Please try again.');
+  });
+}
+
+function showDashMessage(icon, title, body, color) {
   document.getElementById('sellerDashLogin').style.display = 'none';
   const dash = document.getElementById('sellerDashContent');
   dash.style.display = 'block';
-  document.getElementById('sd_seller_name').textContent = s.name;
-  document.getElementById('sd_prod_count').textContent = prods.length;
-  document.getElementById('sd_rating').textContent = s.rating;
-  document.getElementById('sd_since').textContent = s.since;
+  dash.innerHTML = `
+    <div style="text-align:center;padding:32px 20px;">
+      <div style="font-size:56px;margin-bottom:16px;">${icon}</div>
+      <div style="font-size:20px;font-weight:800;color:${color};margin-bottom:12px;">${title}</div>
+      <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:24px;">${body}</div>
+      <button onclick="closeSellerDashboard()" style="padding:10px 28px;background:#131921;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Close</button>
+    </div>
+  `;
+}
+
+function renderSellerDashboard(res) {
+  const prods = products.filter(p => p.seller === (res.sellerId||'').toLowerCase());
+  document.getElementById('sellerDashLogin').style.display = 'none';
+  const dash = document.getElementById('sellerDashContent');
+  dash.style.display = 'block';
+  document.getElementById('sd_seller_name').textContent = res.bizName || res.sellerId;
+  document.getElementById('sd_prod_count').textContent  = prods.length;
+  document.getElementById('sd_rating').textContent      = '4.8';
+  document.getElementById('sd_since').textContent       = res.approvedOn || '2025';
+
+  // Status badge
+  const statusBadge = `<div style="background:#dcfce7;color:#16a34a;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;">✓ Approved Seller</div>`;
+  const nameEl = document.getElementById('sd_seller_name');
+  if (nameEl && !nameEl.nextElementSibling?.classList?.contains('status-badge')) {
+    const badge = document.createElement('div');
+    badge.innerHTML = statusBadge;
+    nameEl.parentNode.insertBefore(badge.firstElementChild, nameEl.nextSibling);
+  }
+
   const tbl = prods.slice(0, 20).map((p, i) =>
     `<tr style="background:${i%2?'#f9f9f9':'#fff'}">
       <td style="padding:8px;font-size:12px;">${p.id}</td>
-      <td style="padding:8px;font-size:12px;">${p.title.substring(0,45)}...</td>
+      <td style="padding:8px;font-size:12px;">${p.title.substring(0,45)}…</td>
       <td style="padding:8px;font-size:12px;">₹${p.price}</td>
       <td style="padding:8px;font-size:12px;text-align:center;">${p.inStock ? '<span style="color:green;">✓ In Stock</span>' : '<span style="color:red;">✗ OOS</span>'}</td>
     </tr>`
   ).join('');
-  document.getElementById('sd_products_table').innerHTML = tbl;
+  document.getElementById('sd_products_table').innerHTML = tbl || '<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">No products listed yet. Submit a listing request below.</td></tr>';
 }
 
+
 function submitNewListing() {
-  const id = document.getElementById('sd_seller_id').value.trim().toLowerCase() || 'unknown';
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  const id = session ? session.sellerId : (document.getElementById('sd_seller_id').value.trim().toUpperCase() || 'UNKNOWN');
   const t = document.getElementById('nl_title').value.trim();
   const p = document.getElementById('nl_price').value.trim();
   const c = document.getElementById('nl_cat').value.trim();
   const d = document.getElementById('nl_desc').value.trim();
   if (!t || !p || !c) { showToast('⚠️ Fill Title, Price and Category'); return; }
   const msg = encodeURIComponent(
-    '📦 *NEW PRODUCT LISTING REQUEST — IBI Marketplace*\n' +
+    '📦 *NEW PRODUCT LISTING — IBI Marketplace*\n' +
     '━━━━━━━━━━━━━━━━━\n' +
     '*Seller ID:* ' + id + '\n' +
     '*Product Title:* ' + t + '\n' +
@@ -2345,12 +2508,11 @@ function submitNewListing() {
     'Please add this product to my seller store. 🙏'
   );
   window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-  showToast('✅ Listing request sent to IBI team!', 'success');
-  document.getElementById('nl_title').value = '';
-  document.getElementById('nl_price').value = '';
-  document.getElementById('nl_cat').value = '';
-  document.getElementById('nl_desc').value = '';
+  showToast('✅ Listing request sent!', 'success');
+  ['nl_title','nl_price','nl_cat','nl_desc'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
 }
+
+
 
 
 
