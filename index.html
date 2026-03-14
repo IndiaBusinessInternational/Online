@@ -1532,8 +1532,8 @@
         <button class="all-cat-btn" data-cat="beauty" onclick="filterAllCat('beauty')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#333;cursor:pointer;font-size:13px;">💄 Beauty</button>
       </div>
       <div class="products-row" id="allProductsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
-      <div style="text-align:center;margin-top:28px;">
-        <button id="loadMoreBtn" onclick="loadMore()" style="padding:12px 40px;background:#8B5CF6;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px;">Load More</button>
+      <div style="text-align:center;margin-top:28px;padding-bottom:16px;" id="infiniteScrollSentinel">
+        <span id="infiniteScrollSpinner" style="display:none;color:#8B5CF6;font-size:14px;font-weight:600;">⏳ Loading more products...</span>
       </div>
     </div>
   </section>
@@ -2219,6 +2219,7 @@ function init() {
   renderCart();
   renderAllProducts();
   renderSellers();
+  initInfiniteScroll();
 }
 
 // ========== CATEGORIES ==========
@@ -2327,30 +2328,45 @@ function renderAllProducts() {
   const total = allFilteredProducts.length;
   const shown = Math.min((allPageCurrent + 1) * allPageSize, total);
   document.getElementById('allProductsCount').textContent = `Showing ${shown} of ${total} products`;
-  const btn = document.getElementById('loadMoreBtn');
-  if (shown >= total) {
-    btn.style.display = 'none';
-  } else {
-    btn.style.display = 'inline-block';
-    btn.textContent = `Load More (${total - shown} remaining)`;
-  }
+  const spinner = document.getElementById('infiniteScrollSpinner');
+  if (spinner) spinner.style.display = 'none';
+  window._allLoaded = shown >= total;
 }
 
 function loadMore() {
   allPageCurrent++;
   renderAllProducts();
-  renderSellers();
+}
+
+function initInfiniteScroll() {
+  const sentinel = document.getElementById('infiniteScrollSentinel');
+  if (!sentinel || !window.IntersectionObserver) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !window._allLoaded && !window._infiniteLoading) {
+        window._infiniteLoading = true;
+        const spinner = document.getElementById('infiniteScrollSpinner');
+        if (spinner) spinner.style.display = 'block';
+        setTimeout(() => {
+          allPageCurrent++;
+          renderAllProducts();
+          window._infiniteLoading = false;
+        }, 300);
+      }
+    });
+  }, { rootMargin: '300px' });
+  observer.observe(sentinel);
 }
 
 function applyAllFilters() {
   allPageCurrent = 0;
+  window._allLoaded = false;
   allFilteredProducts = products.filter(p => {
     const matchCat = allCategoryFilter === 'all' || p.category === allCategoryFilter;
     const matchQ = !allSearchQuery || p.title.toLowerCase().includes(allSearchQuery) || p.category.toLowerCase().includes(allSearchQuery);
     return matchCat && matchQ;
   });
   renderAllProducts();
-  renderSellers();
 }
 
 function filterAllCat(cat) {
