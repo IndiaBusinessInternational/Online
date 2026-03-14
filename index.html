@@ -1358,8 +1358,15 @@
   .verified-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; background: #dcfce7; color: #16a34a; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
 
 </style>
-  <!-- jsPDF for PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- jsPDF for PDF generation (primary CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="loadJsPDFFallback()"></script>
+  <script>
+    function loadJsPDFFallback() {
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
   <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
@@ -3160,7 +3167,17 @@ function sendWhatsAppOrder() {
   window.open('https://wa.me/918939414799?text=' + waMsg, '_blank');
 
   // Generate PDF invoice + shipping label
-  try { generateOrderPDF(orderId, c, orderItems, total); } catch(e) { console.warn('PDF gen error', e); }
+  // Generate PDF — with retry if library not yet loaded
+  function attemptPDF(retries) {
+    const jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+    if (!jsPDFLib) {
+      if (retries > 0) { setTimeout(() => attemptPDF(retries - 1), 500); return; }
+      showToast('⚠️ PDF library not loaded. Please check your internet connection.'); return;
+    }
+    try { generateOrderPDF(orderId, c, orderItems, total); }
+    catch(e) { console.error('PDF error:', e); showToast('⚠️ PDF generation failed: ' + e.message); }
+  }
+  attemptPDF(4);
 
   // Send email with order details
   try { sendOrderEmail(orderId, c, orderItems, total); } catch(e) { console.warn('Email error', e); }
@@ -3176,7 +3193,9 @@ function sendWhatsAppOrder() {
 
 // ========== PDF GENERATION ==========
 function generateOrderPDF(orderId, c, orderItems, total) {
-  const { jsPDF } = window.jspdf;
+  // Support both UMD namespace variants
+  const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDF) throw new Error('jsPDF not available');
   // A4 = 210 x 297mm, half A4 = 210 x 148.5mm each section
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210;
@@ -4095,7 +4114,7 @@ init();
         <div style="font-size:28px;flex-shrink:0;">✉️</div>
         <div>
           <div style="font-size:12px;font-weight:800;color:#16a34a;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Email Address</div>
-          <a href="mailto:indiabusinessinternational@gmail.com" style="font-size:15px;color:#1a1a1a;font-weight:700;text-decoration:none;">indiabusinessinternational@gmail.com</a>
+          <a href="/cdn-cgi/l/email-protection#442d2a202d252631372d2a2137372d2a3021362a25302d2b2a2528042329252d286a272b29" style="font-size:15px;color:#1a1a1a;font-weight:700;text-decoration:none;"><span class="__cf_email__" data-cfemail="1d747379747c7f686e7473786e6e747369786f737c697472737c715d7a707c7471337e7270">[email&#160;protected]</span></a>
           <div style="font-size:11px;color:#666;margin-top:4px;">We reply within 24 hours on working days</div>
         </div>
       </div>
@@ -4137,11 +4156,4 @@ init();
 
     <!-- Footer of modal -->
     <div style="padding:16px 28px 24px;text-align:center;">
-      <button onclick="closeContactUs()" style="padding:11px 40px;background:#131921;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">Close</button>
-    </div>
-
-  </div>
-</div>
-
-</body>
-</html>
+      <button onclick="closeContactUs()" style="padding:11px 40px;
