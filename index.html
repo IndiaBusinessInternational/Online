@@ -2282,9 +2282,22 @@ function submitSellerRegistration() {
   const origText = btn ? btn.textContent : '';
   if (btn) { btn.textContent = '⏳ Submitting...'; btn.disabled = true; }
 
-  fetch(window.IBI_SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify(data)
+  // Use GET with URL params — avoids CORS issues with Google Apps Script
+  const params = new URLSearchParams({
+    action:    'register',
+    bizName:   data.bizName,
+    ownerName: data.ownerName,
+    mobile:    data.mobile,
+    email:     data.email,
+    gstin:     data.gstin,
+    category:  data.category,
+    city:      data.city,
+    about:     data.about
+  });
+
+  fetch(window.IBI_SHEET_URL + '?' + params.toString(), {
+    method: 'GET',
+    mode:   'cors'
   })
   .then(r => r.json())
   .then(res => {
