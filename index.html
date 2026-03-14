@@ -1416,14 +1416,14 @@
         <div class="hdr-dropdown-menu" id="accountMenu">
           <div id="accountMenuGuest">
             <div style="padding:12px 16px;border-bottom:1px solid #eee;">
-              <button onclick="openCustomerAuth('login')" style="width:100%;padding:8px;background:#f97316;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;margin-bottom:6px;">Sign In</button>
-              <p style="font-size:12px;color:#555;text-align:center;">New customer? <a href="#" onclick="openCustomerAuth('register')" style="color:#007185;font-weight:600;">Start here</a></p>
+              <button onclick="openCustomerAuth(\'login\')" style="width:100%;padding:8px;background:#f97316;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;margin-bottom:6px;">Sign In</button>
+              <p style="font-size:12px;color:#555;text-align:center;">New customer? <a href="#" onclick="openCustomerAuth(\'register\')" style="color:#007185;font-weight:600;">Start here</a></p>
             </div>
             <div style="padding:8px 16px;">
               <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:6px;">Your Account</div>
-              <a href="#" onclick="openCustomerAuth('login')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Orders</a>
-              <a href="#" onclick="openCustomerAuth('login')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Wishlist</a>
-              <a href="#" onclick="openCustomerAuth('login')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Account</a>
+              <a href="#" onclick="openCustomerAuth(\'login\')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Orders</a>
+              <a href="#" onclick="openCustomerAuth(\'login\')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Wishlist</a>
+              <a href="#" onclick="openCustomerAuth(\'login\')" style="display:block;font-size:13px;padding:4px 0;color:#333;">Your Account</a>
             </div>
           </div>
           <div id="accountMenuLoggedIn" style="display:none;">
@@ -1474,7 +1474,7 @@
       <a class="nav-link" href="#" onclick="filterCat('sports')">Sports & Fitness</a>
       <a class="nav-link" href="#" style="color:var(--gold)">Today's Deals</a>
       <a class="nav-link" href="#" onclick="openSellOnIBI()" style="background:#f97316;color:#fff;border-radius:20px;padding:5px 14px;font-weight:700;margin-left:8px;">🏪 Sell on IBI</a>
-      <a class="nav-link" href="#" onclick="openCustomerAuth('login')" style="background:transparent;color:var(--gold);font-weight:700;">👤 Login</a>
+      <a class="nav-link" href="#" onclick="openCustomerAuth(\'login\')" style="background:transparent;color:var(--gold);font-weight:700;">👤 Login</a>
     </div>
   </nav>
 </header>
@@ -1691,7 +1691,7 @@
     <div class="footer-col">
       <h4>Let Us Help You</h4>
       <ul>
-        <li><a href="#" onclick="openCustomerAuth('login')">Your Account</a></li>
+        <li><a href="#" onclick="openCustomerAuth(\'login\')">Your Account</a></li>
         <li><a href="#" onclick="openMyOrders()">Your Orders</a></li>
         <li><a href="#">Return Centre</a></li>
         <li><a href="#">100% Purchase Protection</a></li>
@@ -2458,7 +2458,7 @@ function openMyOrders() {
   document.body.style.overflow = 'hidden';
   const list = document.getElementById('myOrdersList');
   if (!u) {
-    list.innerHTML = '<div style="text-align:center;padding:40px;"><div style="font-size:48px;margin-bottom:12px;">📦</div><p style="font-size:15px;color:#666;margin-bottom:16px;">Sign in to view your orders</p><button onclick="closeMyOrders();openCustomerAuth('login')" style="padding:10px 28px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Sign In</button></div>';
+    list.innerHTML = '<div style="text-align:center;padding:40px;"><div style="font-size:48px;margin-bottom:12px;">📦</div><p style="font-size:15px;color:#666;margin-bottom:16px;">Sign in to view your orders</p><button onclick="closeMyOrders();openCustomerAuth(\'login\')" style="padding:10px 28px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Sign In</button></div>';
     return;
   }
   const users = JSON.parse(localStorage.getItem('ibi_users') || '{}');
@@ -2509,7 +2509,7 @@ function openMyAccount() {
   const overlay = document.getElementById('myAccountOverlay');
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  if (!u) { document.getElementById('myAccountContent').innerHTML = '<div style="text-align:center;padding:30px;"><button onclick="closeMyAccount();openCustomerAuth('login')" style="padding:10px 28px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Sign In</button></div>'; return; }
+  if (!u) { document.getElementById('myAccountContent').innerHTML = '<div style="text-align:center;padding:30px;"><button onclick="closeMyAccount();openCustomerAuth(\'login\')" style="padding:10px 28px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Sign In</button></div>'; return; }
   const users = JSON.parse(localStorage.getItem('ibi_users') || '{}');
   const prof = users[u.email] || {};
   document.getElementById('myAccountContent').innerHTML = `
@@ -3766,7 +3766,7 @@ init();
       </div>
       <button onclick="customerLogin()" style="width:100%;padding:12px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">Sign In</button>
       <div style="text-align:center;margin-top:16px;font-size:13px;color:#555;">
-        New to IBI? <a href="#" onclick="openCustomerAuth('register')" style="color:#007185;font-weight:700;">Create account</a>
+        New to IBI? <a href="#" onclick="openCustomerAuth(\'register\')" style="color:#007185;font-weight:700;">Create account</a>
       </div>
     </div>
     <!-- Register Form -->
@@ -3795,7 +3795,7 @@ init();
       </div>
       <button onclick="customerRegister()" style="width:100%;padding:12px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">Create Account</button>
       <div style="text-align:center;margin-top:16px;font-size:13px;color:#555;">
-        Already have account? <a href="#" onclick="openCustomerAuth('login')" style="color:#007185;font-weight:700;">Sign in</a>
+        Already have account? <a href="#" onclick="openCustomerAuth(\'login\')" style="color:#007185;font-weight:700;">Sign in</a>
       </div>
     </div>
   </div>
