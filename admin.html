@@ -177,7 +177,7 @@
     <div class="login-error" id="loginError">❌ Invalid username or password</div>
     <div style="font-size:11px;color:#aaa;margin-top:16px;">Authorised access only · All actions are logged</div>
     <div style="margin-top:12px;">
-      <button type="button" onclick="localStorage.removeItem('ibi_admin_creds');document.getElementById('adminUser').value='ibi_admin';document.getElementById('adminPass').value='';document.getElementById('loginError').style.display='none';alert('Cleared! Now login with: ibi_admin / IBI@Admin2026');" style="background:none;border:1px solid #ddd;border-radius:6px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer;">🔄 Reset to Default Credentials</button>
+      <button type="button" onclick="localStorage.removeItem('ibi_admin_creds');document.getElementById('adminUser').value='ibi_admin';document.getElementById('adminPass').value='';document.getElementById('loginError').style.display='none';alert('Cleared! Now login with: ibi_admin / LordMurugha@13579');" style="background:none;border:1px solid #ddd;border-radius:6px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer;">🔄 Reset to Default Credentials</button>
     </div>
   </div>
 </div>
@@ -508,7 +508,7 @@
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec';
 
 // Default credentials (change in Settings after first login)
-const DEFAULT_CREDS = { user:'ibi_admin', pass:'IBI@Admin2026' };
+const DEFAULT_CREDS = { user:'ibi_admin', pass:'LordMurugha@13579' };
 
 // Data cache
 let _sellers = [], _products = [], _customers = [];
@@ -549,7 +549,7 @@ function doAdminLogin() {
     startClock();
     loadAll();
   } else {
-    document.getElementById('loginError').textContent = '❌ Invalid username or password. Default: ibi_admin / IBI@Admin2026';
+    document.getElementById('loginError').textContent = '❌ Invalid username or password. Default: ibi_admin / LordMurugha@13579';
     document.getElementById('loginError').style.display = 'block';
   }
 }
