@@ -1254,6 +1254,173 @@
   }
   .go-bottom:hover { background: #6D28D9; }
 
+  /* ── WhatsApp Floating Chat Bubble ── */
+  .wa-bubble {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    width: 58px;
+    height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 8000;
+    box-shadow: 0 4px 20px rgba(37,211,102,.5);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .wa-bubble:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.6); }
+  .wa-bubble svg { width: 30px; height: 30px; }
+  .wa-bubble .wa-badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    background: #c00; color: #fff;
+    font-size: 10px; font-weight: 800;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wa-tooltip {
+    position: fixed;
+    bottom: 96px;
+    right: 24px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    z-index: 8000;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all .3s;
+    pointer-events: none;
+  }
+  .wa-tooltip.show { opacity: 1; transform: translateY(0); }
+
+  /* ── Product Page (full screen) ── */
+  #productPageOverlay {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background: #f0f2f2;
+    z-index: 9000;
+    overflow-y: auto;
+    display: none;
+  }
+  .pp-header {
+    background: #131921;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .pp-back {
+    background: none; border: none; color: #fff;
+    font-size: 22px; cursor: pointer; padding: 4px 8px;
+    border-radius: 6px; transition: background .2s;
+  }
+  .pp-back:hover { background: rgba(255,255,255,.15); }
+  .pp-breadcrumb { font-size: 13px; color: #ccc; flex: 1; }
+  .pp-breadcrumb span { color: #fff; font-weight: 600; }
+  .pp-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+  .pp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 700px) { .pp-grid { grid-template-columns: 1fr; } }
+  .pp-images { background: #fff; border-radius: 14px; padding: 20px; }
+  .pp-main-img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 10px; margin-bottom: 12px;
+  }
+  .pp-thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pp-thumb {
+    width: 60px; height: 60px;
+    border: 2px solid #ddd; border-radius: 8px;
+    object-fit: contain; cursor: pointer; padding: 4px;
+    transition: border-color .2s;
+  }
+  .pp-thumb:hover, .pp-thumb.active { border-color: #7C3AED; }
+  .pp-info { background: #fff; border-radius: 14px; padding: 24px; }
+  .pp-brand { font-size: 12px; color: #7C3AED; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .pp-title { font-size: 20px; font-weight: 800; color: #1a1a1a; line-height: 1.4; margin-bottom: 10px; }
+  .pp-stars { color: #f0a500; font-size: 16px; }
+  .pp-price-box { background: #fdf8ff; border-radius: 10px; padding: 14px; margin: 14px 0; }
+  .pp-mrp { font-size: 13px; color: #888; text-decoration: line-through; }
+  .pp-price { font-size: 28px; font-weight: 900; color: #1a1a1a; }
+  .pp-save { font-size: 13px; color: #16a34a; font-weight: 700; }
+  .pp-bullets { margin: 14px 0; }
+  .pp-bullet { display: flex; gap: 8px; font-size: 13px; color: #444; padding: 4px 0; }
+  .pp-bullet::before { content: "✓"; color: #7C3AED; font-weight: 800; flex-shrink: 0; }
+  .pp-actions { display: flex; gap: 12px; margin-top: 18px; }
+  .pp-add-cart {
+    flex: 1; padding: 13px; background: #7C3AED; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .pp-buy-now {
+    flex: 1; padding: 13px; background: #f97316; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .pp-seller-box {
+    background: #f8f8f8; border-radius: 10px; padding: 12px 16px;
+    margin-top: 14px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+  }
+  .pp-desc { background: #fff; border-radius: 14px; padding: 24px; margin-top: 16px; grid-column: 1/-1; }
+  .pp-desc h3 { font-size: 16px; font-weight: 800; margin-bottom: 10px; color: #131921; }
+  .pp-spec-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .pp-spec-table tr:nth-child(odd) { background: #f9f9f9; }
+  .pp-spec-table td { padding: 9px 12px; border-bottom: 1px solid #eee; }
+  .pp-spec-table td:first-child { color: #666; font-weight: 600; width: 35%; }
+
+  /* ── Order Tracking ── */
+  #orderTrackOverlay {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,.65);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .track-card {
+    background: #fff; border-radius: 20px;
+    max-width: 560px; width: 100%; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    margin: auto;
+  }
+  .track-step {
+    display: flex; gap: 14px; padding: 14px 0;
+    position: relative;
+  }
+  .track-step:not(:last-child)::after {
+    content: ''; position: absolute;
+    left: 18px; top: 44px;
+    width: 2px; height: calc(100% - 10px);
+    background: #e5e7eb;
+  }
+  .track-step.done::after { background: #7C3AED; }
+  .track-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #e5e7eb; color: #999;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; z-index: 1;
+  }
+  .track-step.done .track-dot { background: #7C3AED; color: #fff; }
+  .track-step.active .track-dot { background: #f97316; color: #fff; box-shadow: 0 0 0 4px rgba(249,115,22,.2); }
+
+
   /* ======= RESPONSIVE ======= */
   @media (max-width: 900px) {
     .modal-body { grid-template-columns: 1fr; }
@@ -1464,6 +1631,10 @@
       <button class="hdr-btn" onclick="openMyOrders()">
         <span class="line1">Returns &amp;</span>
         <span class="line2">Orders</span>
+      </button>
+      <button class="hdr-btn" onclick="openOrderTracking()">
+        <span class="line1">Track</span>
+        <span class="line2">My Order</span>
       </button>
       <button class="cart-btn" onclick="toggleCart()">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill="none" stroke="white" stroke-width="1.8"/><line x1="3" y1="6" x2="21" y2="6" stroke="white" stroke-width="1.8"/><path d="M16 10a4 4 0 01-8 0" fill="none" stroke="white" stroke-width="1.8"/></svg>
@@ -1711,6 +1882,7 @@
       <ul>
         <li><a href="#" onclick="openCustomerAuth(\'login\')">Your Account</a></li>
         <li><a href="#" onclick="openMyOrders()">Your Orders</a></li>
+        <li><a href="#" onclick="openOrderTracking()">Track My Order</a></li>
         <li><a href="#">Return Centre</a></li>
         <li><a href="#">100% Purchase Protection</a></li>
         <li><a href="#">IBI App Download</a></li>
@@ -2519,30 +2691,334 @@ function renderSellerDashboard(res) {
 }
 
 
-function submitNewListing() {
-  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
-  const id = session ? session.sellerId : (document.getElementById('sd_seller_id').value.trim().toUpperCase() || 'UNKNOWN');
-  const t = document.getElementById('nl_title').value.trim();
-  const p = document.getElementById('nl_price').value.trim();
-  const c = document.getElementById('nl_cat').value.trim();
-  const d = document.getElementById('nl_desc').value.trim();
-  if (!t || !p || !c) { showToast('⚠️ Fill Title, Price and Category'); return; }
-  const msg = encodeURIComponent(
-    '📦 *NEW PRODUCT LISTING — IBI Marketplace*\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    '*Seller ID:* ' + id + '\n' +
-    '*Product Title:* ' + t + '\n' +
-    '*Price:* ₹' + p + '\n' +
-    '*Category:* ' + c + '\n' +
-    '*Description:* ' + d + '\n' +
-    '━━━━━━━━━━━━━━━━━\n' +
-    'Please add this product to my seller store. 🙏'
-  );
-  window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-  showToast('✅ Listing request sent!', 'success');
-  ['nl_title','nl_price','nl_cat','nl_desc'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+function submitNewListing() {} // legacy — replaced by submitAddProduct
+
+// ══════════════════════════════════════════════════════════
+// SELLER PRODUCT MANAGEMENT (Google Sheets)
+// ══════════════════════════════════════════════════════════
+function goToAddTab() { switchDashTab("add"); }
+function switchDashTab(tab) {
+  ['products','add','stats'].forEach(t => {
+    const tabEl  = document.getElementById('dashTab_' + t);
+    const btnEl  = document.getElementById('tab_' + t);
+    if (!tabEl || !btnEl) return;
+    const active = (t === tab);
+    tabEl.style.display = active ? 'block' : 'none';
+    btnEl.style.color       = active ? '#8B5CF6' : '#888';
+    btnEl.style.fontWeight  = active ? '700' : '600';
+    btnEl.style.borderBottom = active ? '2px solid #8B5CF6' : '2px solid transparent';
+  });
+  if (tab === 'products') loadSellerProducts();
 }
 
+function submitAddProduct() {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) { showToast('⚠️ Please login first'); return; }
+
+  const title   = document.getElementById('ap_title').value.trim();
+  const price   = document.getElementById('ap_price').value.trim();
+  const mrp     = document.getElementById('ap_mrp').value.trim();
+  const cat     = document.getElementById('ap_cat').value.trim();
+  const brand   = document.getElementById('ap_brand').value.trim();
+  const img     = document.getElementById('ap_img').value.trim();
+  const desc    = document.getElementById('ap_desc').value.trim();
+  const bullets = document.getElementById('ap_bullets').value.trim();
+  const stock   = document.getElementById('ap_stock').value.trim();
+  const hsn     = document.getElementById('ap_hsn').value.trim();
+
+  if (!title)   { showToast('⚠️ Enter product title');       return; }
+  if (!price)   { showToast('⚠️ Enter selling price');       return; }
+  if (!mrp)     { showToast('⚠️ Enter MRP/original price'); return; }
+  if (!cat)     { showToast('⚠️ Select a category');         return; }
+  if (!brand)   { showToast('⚠️ Enter brand name');          return; }
+  if (!img)     { showToast('⚠️ Enter product image URL');   return; }
+  if (!desc || desc.length < 20) { showToast('⚠️ Description too short (min 20 chars)'); return; }
+  if (!bullets) { showToast('⚠️ Enter at least one key feature'); return; }
+  if (!stock)   { showToast('⚠️ Enter stock quantity');      return; }
+  if (parseFloat(price) >= parseFloat(mrp)) { showToast('⚠️ Selling price must be less than MRP'); return; }
+
+  const btn = document.getElementById('ap_submit_btn');
+  btn.textContent = '⏳ Submitting…'; btn.disabled = true;
+
+  const params = new URLSearchParams({
+    action:   'addProduct',
+    sellerId: session.sellerId,
+    pin:      session.pin,
+    title, price, mrp, category: cat, brand,
+    img, description: desc,
+    bullets:  bullets.split('\n').filter(Boolean).join('|'),
+    stock, hsn: hsn || ''
+  });
+
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
+      if (res.success) {
+        showToast('✅ Product submitted! IBI will review within 24hrs.', 'success');
+        // Clear form
+        ['ap_title','ap_price','ap_mrp','ap_brand','ap_img','ap_desc','ap_bullets','ap_stock','ap_hsn']
+          .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+        document.getElementById('ap_cat').value = '';
+        switchDashTab('products');
+      } else {
+        showToast('❌ ' + (res.message || 'Submission failed'));
+      }
+    })
+    .catch(() => {
+      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
+      // Fallback: WhatsApp
+      const msg = encodeURIComponent(
+        '📦 *NEW PRODUCT — IBI Marketplace*\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        '*Seller:* ' + session.sellerId + ' (' + session.bizName + ')\n' +
+        '*Title:* ' + title + '\n' +
+        '*Price:* ₹' + price + ' | *MRP:* ₹' + mrp + '\n' +
+        '*Category:* ' + cat + '\n' +
+        '*Brand:* ' + brand + '\n' +
+        '*Stock:* ' + stock + '\n' +
+        '*Desc:* ' + desc.substring(0,100) + '\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        'Please add this product to website. 🙏'
+      );
+      window.open('https://wa.me/918939414799?text=' + msg, '_blank');
+      showToast('📲 Sent via WhatsApp as fallback!', 'success');
+    });
+}
+
+function loadSellerProducts() {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+
+  const list = document.getElementById('sd_products_list');
+  list.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">⏳ Loading…</div>';
+
+  const params = new URLSearchParams({
+    action:   'getSellerProducts',
+    sellerId: session.sellerId,
+    pin:      session.pin
+  });
+
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) { list.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">No products found. Add your first product!</div>'; return; }
+      const prods = res.products || [];
+      // Update stats
+      const el = document.getElementById('sd_prod_count');
+      if (el) el.textContent = prods.length;
+      const apprEl = document.getElementById('sd_approved_count');
+      if (apprEl) apprEl.textContent = prods.filter(p => p.status === 'Approved').length;
+
+      if (!prods.length) {
+        list.innerHTML = '<div style="text-align:center;padding:32px;"><div style="font-size:40px;margin-bottom:10px;">📦</div><div style="font-size:14px;color:#888;margin-bottom:14px;">No products yet.</div><button onclick="goToAddTab()" style="padding:10px 24px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">➕ Add First Product</button></div>';
+        return;
+      }
+
+      list.innerHTML = prods.map(p => {
+        const statusColor = p.status === 'Approved' ? '#16a34a' : p.status === 'Rejected' ? '#dc2626' : '#f97316';
+        const statusBg    = p.status === 'Approved' ? '#f0fdf4' : p.status === 'Rejected' ? '#fff0f0' : '#fff8f0';
+        const disc = p.mrp ? Math.round((1 - p.price/p.mrp)*100) : 0;
+        return `
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+          <div style="display:flex;gap:12px;padding:12px;">
+            <img src="${p.img||''}" alt="${p.title}" onerror="this.style.display='none'"
+                 style="width:64px;height:64px;object-fit:contain;border-radius:8px;background:#f9f9f9;flex-shrink:0;padding:4px;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title}</div>
+              <div style="font-size:12px;color:#555;margin-bottom:6px;">
+                ₹${parseFloat(p.price).toLocaleString('en-IN')}
+                ${disc > 0 ? '<span style="color:#c00;font-size:11px;margin-left:4px;">'+disc+'% off</span>' : ''}
+                &nbsp;·&nbsp; ${p.category}
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:11px;font-weight:700;color:${statusColor};background:${statusBg};padding:2px 8px;border-radius:10px;">${p.status}</span>
+                ${p.status==='Rejected' && p.rejectReason ? `<span style="font-size:11px;color:#888;">Reason: ${p.rejectReason}</span>` : ''}
+                <span style="font-size:11px;color:#888;">ID: ${p.productId}</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;border-top:1px solid #f0f0f0;">
+            <button onclick="editProduct('${p.productId}')" style="flex:1;padding:9px;background:none;border:none;border-right:1px solid #f0f0f0;font-size:12px;font-weight:700;color:#7C3AED;cursor:pointer;">✏️ Edit</button>
+            <button onclick="pauseProduct('${p.productId}','${p.status}')" style="flex:1;padding:9px;background:none;border:none;border-right:1px solid #f0f0f0;font-size:12px;font-weight:700;color:#f97316;cursor:pointer;">${p.status==='Paused'?'▶️ Resume':'⏸️ Pause'}</button>
+            <button onclick="deleteProduct('${p.productId}')" style="flex:1;padding:9px;background:none;border:none;font-size:12px;font-weight:700;color:#dc2626;cursor:pointer;">🗑️ Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+    })
+    .catch(() => {
+      // Fallback: show hardcoded products for this seller
+      const session2 = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+      const sid = (session2 ? session2.sellerId : '').toLowerCase();
+      const prods = products.filter(p => p.seller === sid);
+      const el = document.getElementById('sd_prod_count');
+      if (el) el.textContent = prods.length;
+      list.innerHTML = prods.length
+        ? prods.map(p => `<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;">
+            <img src="${p.img}" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#f9f9f9;" onerror="this.style.display='none'">
+            <div><div style="font-size:13px;font-weight:700;">${p.title.substring(0,50)}…</div>
+            <div style="font-size:12px;color:#555;">₹${p.price} &nbsp;·&nbsp; <span style="color:#16a34a;font-weight:700;">✓ Live</span></div></div>
+          </div>`).join('')
+        : '<div style="text-align:center;padding:24px;color:#888;">No products found.</div>';
+    });
+}
+
+function editProduct(productId) {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+  showToast('⏳ Loading product details…');
+
+  const params = new URLSearchParams({
+    action: 'getProduct', productId, sellerId: session.sellerId, pin: session.pin
+  });
+
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) { showToast('❌ Could not load product'); return; }
+      const p = res.product;
+      switchDashTab('add');
+      // Pre-fill form
+      setTimeout(() => {
+        document.getElementById('ap_title').value   = p.title || '';
+        document.getElementById('ap_price').value   = p.price || '';
+        document.getElementById('ap_mrp').value     = p.mrp || '';
+        document.getElementById('ap_cat').value     = p.category || '';
+        document.getElementById('ap_brand').value   = p.brand || '';
+        document.getElementById('ap_img').value     = p.img || '';
+        document.getElementById('ap_desc').value    = p.description || '';
+        document.getElementById('ap_bullets').value = (p.bullets||'').replace(/\|/g,'\n');
+        document.getElementById('ap_stock').value   = p.stock || '';
+        document.getElementById('ap_hsn').value     = p.hsn || '';
+        // Change button to Update
+        const btn = document.getElementById('ap_submit_btn');
+        btn.textContent = 'Update Product →';
+        btn.onclick = () => updateProduct(productId);
+      }, 100);
+    })
+    .catch(() => showToast('❌ Could not load. Check connection.'));
+}
+
+function updateProduct(productId) {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+  const btn = document.getElementById('ap_submit_btn');
+  btn.textContent = '⏳ Updating…'; btn.disabled = true;
+
+  const params = new URLSearchParams({
+    action:      'editProduct',
+    productId,
+    sellerId:    session.sellerId,
+    pin:         session.pin,
+    title:       document.getElementById('ap_title').value.trim(),
+    price:       document.getElementById('ap_price').value.trim(),
+    mrp:         document.getElementById('ap_mrp').value.trim(),
+    category:    document.getElementById('ap_cat').value.trim(),
+    brand:       document.getElementById('ap_brand').value.trim(),
+    img:         document.getElementById('ap_img').value.trim(),
+    description: document.getElementById('ap_desc').value.trim(),
+    bullets:     document.getElementById('ap_bullets').value.trim().split('\n').filter(Boolean).join('|'),
+    stock:       document.getElementById('ap_stock').value.trim(),
+    hsn:         document.getElementById('ap_hsn').value.trim()
+  });
+
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
+      btn.onclick = submitAddProduct;
+      if (res.success) {
+        showToast('✅ Product updated! Pending re-approval.', 'success');
+        switchDashTab('products');
+      } else {
+        showToast('❌ ' + (res.message || 'Update failed'));
+      }
+    })
+    .catch(() => { btn.textContent = 'Submit for IBI Review →'; btn.disabled = false; btn.onclick = submitAddProduct; showToast('❌ Connection error'); });
+}
+
+function pauseProduct(productId, currentStatus) {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+  const newStatus = currentStatus === 'Paused' ? 'Approved' : 'Paused';
+  const params = new URLSearchParams({ action:'pauseProduct', productId, sellerId:session.sellerId, pin:session.pin, newStatus });
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) { showToast(newStatus==='Paused' ? '⏸️ Product paused' : '▶️ Product resumed', 'success'); loadSellerProducts(); }
+      else showToast('❌ ' + (res.message||'Failed'));
+    })
+    .catch(() => showToast('❌ Connection error'));
+}
+
+function deleteProduct(productId) {
+  if (!confirm('Are you sure you want to delete this product? This cannot be undone.')) return;
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+  const params = new URLSearchParams({ action:'deleteProduct', productId, sellerId:session.sellerId, pin:session.pin });
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) { showToast('🗑️ Product deleted', 'success'); loadSellerProducts(); }
+      else showToast('❌ ' + (res.message||'Failed'));
+    })
+    .catch(() => showToast('❌ Connection error'));
+}
+
+// Load seller products when dashboard opens
+const _origRenderSellerDash = renderSellerDashboard;
+function renderSellerDashboard(res) {
+  _origRenderSellerDash(res);
+  setTimeout(() => { switchDashTab('products'); }, 200);
+}
+
+// ══════════════════════════════════════════════════════════
+// LOAD LIVE PRODUCTS FROM GOOGLE SHEETS on page start
+// ══════════════════════════════════════════════════════════
+function loadLiveProducts() {
+  const params = new URLSearchParams({ action: 'getApprovedProducts' });
+  fetch(window.IBI_SHEET_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success || !res.products || !res.products.length) return;
+      // Map sheet products to our product format and append
+      const maxId = Math.max(...products.map(p => p.id || 0), 0);
+      let newId = maxId + 1;
+      res.products.forEach(sp => {
+        // Don't add duplicates
+        if (products.find(p => p.title === sp.title && p.seller === sp.sellerId.toLowerCase())) return;
+        products.push({
+          seller:      sp.sellerId.toLowerCase(),
+          id:          newId++,
+          category:    sp.category || 'home',
+          brand:       sp.brand || sp.bizName || 'IBI',
+          badge:       null,
+          title:       sp.title,
+          img:         sp.img,
+          imgs:        [sp.img],
+          price:       parseFloat(sp.price) || 0,
+          mrp:         parseFloat(sp.mrp) || parseFloat(sp.price) || 0,
+          rating:      4.5,
+          reviews:     Math.floor(Math.random()*100+10),
+          inStock:     (sp.stock > 0),
+          deal:        false,
+          description: sp.description || '',
+          bullets:     (sp.bullets || '').split('|').filter(Boolean),
+          fromSheet:   true,
+          productId:   sp.productId
+        });
+      });
+      // Re-render all product sections with new products
+      allFilteredProducts = [...products];
+      renderAllProducts();
+      renderDeals();
+      renderFeatured();
+      renderNew();
+      renderSellers();
+      console.log('✅ Loaded ' + res.products.length + ' live products from Google Sheets');
+    })
+    .catch(e => console.log('Sheet products not loaded (offline or no sheet products yet):', e));
+}
 
 
 
@@ -2848,7 +3324,7 @@ function renderLightningDeals() {
     const disc = Math.round((1 - p.price/p.mrp)*100);
     const claimed = Math.floor(Math.random() * 60 + 30);
     return `
-    <div class="ld-card" onclick="openProduct(${p.id})">
+    <div class="ld-card" onclick="openProductPage(${p.id})">
       <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x200?text=IBI'">
       <div class="ld-body">
         <div class="ld-disc">-${disc}% OFF</div>
@@ -2881,6 +3357,348 @@ function startLightningTimer() {
 // Hook into sendWhatsAppOrder to save order
 const _origSendWA = sendWhatsAppOrder;
 
+
+// ══════════════════════════════════════════════════════════
+// WHATSAPP CHAT BUBBLE
+// ══════════════════════════════════════════════════════════
+function openWAChat() {
+  const msg = encodeURIComponent(
+    'Hello India Business International! 👋\n' +
+    'I visited your website and have a query.\n' +
+    'Please help me. 🙏'
+  );
+  window.open('https://wa.me/918939414799?text=' + msg, '_blank');
+}
+
+// Show bubble after 3 seconds with a pulsing animation
+setTimeout(function() {
+  const b = document.getElementById('waBubble');
+  if (b) {
+    b.style.animation = 'waPulse 2s ease-in-out 3';
+  }
+}, 3000);
+
+// Add keyframe via style tag
+(function() {
+  const s = document.createElement('style');
+  s.textContent = '@keyframes waPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }';
+  document.head.appendChild(s);
+})();
+
+// ══════════════════════════════════════════════════════════
+// PRODUCT PAGE (individual product URL-style page)
+// ══════════════════════════════════════════════════════════
+function openProductPage(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  const disc    = Math.round((1 - p.price / p.mrp) * 100);
+  const saving  = p.mrp - p.price;
+  const sellerObj = sellers.find(s => s.id === p.seller) || sellers[0];
+  const thumbs  = p.imgs || (p.img ? [p.img] : []);
+  const catName = p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : '';
+
+  // Update breadcrumb
+  document.getElementById('ppCategory').textContent   = catName;
+  document.getElementById('ppTitleShort').textContent = p.title.substring(0, 35) + (p.title.length > 35 ? '…' : '');
+  document.getElementById('ppCartCount').textContent  = cart.reduce((s,i) => s+i.qty, 0);
+
+  // Update URL hash for shareable link
+  history.pushState({ productId: id }, '', '#product-' + id);
+
+  document.getElementById('ppGrid').innerHTML = `
+    <!-- Images panel -->
+    <div class="pp-images">
+      <img class="pp-main-img" id="ppMainImg" src="${p.img}" alt="${p.title}">
+      <div class="pp-thumbs">
+        ${thumbs.map((src, i) => `<img class="pp-thumb ${i===0?'active':''}" src="${src}" alt="thumb ${i+1}"
+            onclick="setPPThumb(this,'${src}')">`).join('')}
+      </div>
+    </div>
+
+    <!-- Info panel -->
+    <div class="pp-info">
+      <div class="pp-brand">${p.brand || 'India Business International'}</div>
+      <div class="pp-title">${p.title}</div>
+
+      <!-- Rating -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span class="pp-stars">${getStars(p.rating)}</span>
+        <span style="font-size:14px;font-weight:700;color:#555;">${p.rating}</span>
+        <span style="font-size:12px;color:#007185;cursor:pointer;">${(p.reviews||0).toLocaleString('en-IN')} ratings</span>
+        <span style="color:#ddd;">|</span>
+        <span style="font-size:12px;color:#007185;cursor:pointer;">Write a review</span>
+      </div>
+
+      <!-- Price -->
+      <div class="pp-price-box">
+        <div class="pp-mrp">M.R.P: ₹${formatPrice(p.mrp)}</div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <div class="pp-price">₹${formatPrice(p.price)}</div>
+          <div style="font-size:13px;background:#c00;color:#fff;padding:2px 7px;border-radius:4px;font-weight:700;">${disc}% off</div>
+        </div>
+        <div class="pp-save">You Save: ₹${formatPrice(saving)}</div>
+        <div style="font-size:12px;color:#555;margin-top:6px;">Inclusive of all taxes · FREE Delivery</div>
+      </div>
+
+      <!-- Stock / delivery -->
+      <div style="display:flex;gap:16px;font-size:13px;margin-bottom:14px;flex-wrap:wrap;">
+        <span>${p.inStock ? '<span style="color:#16a34a;font-weight:700;">✓ In Stock</span>' : '<span style="color:#c00;font-weight:700;">✗ Out of Stock</span>'}</span>
+        <span>📦 FREE delivery tomorrow</span>
+        <span>↩️ 14-day easy return</span>
+      </div>
+
+      <!-- Bullets -->
+      <div class="pp-bullets">
+        <div style="font-size:13px;font-weight:800;color:#131921;margin-bottom:8px;">About this item</div>
+        ${(p.bullets||[]).map(b => `<div class="pp-bullet">${b}</div>`).join('')}
+      </div>
+
+      <!-- Qty + Actions -->
+      <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+        <span style="font-size:13px;font-weight:700;color:#555;">Qty:</span>
+        <div style="display:flex;align-items:center;border:1.5px solid #ddd;border-radius:8px;overflow:hidden;">
+          <button onclick="changePPQty(-1)" style="width:34px;height:34px;background:#f5f5f5;border:none;font-size:18px;cursor:pointer;">−</button>
+          <span id="ppQty" style="width:36px;text-align:center;font-weight:700;font-size:15px;">1</span>
+          <button onclick="changePPQty(1)"  style="width:34px;height:34px;background:#f5f5f5;border:none;font-size:18px;cursor:pointer;">+</button>
+        </div>
+      </div>
+      <div class="pp-actions">
+        <button class="pp-add-cart" onclick="addPPToCart(${p.id})">🛒 Add to Cart</button>
+        <button class="pp-buy-now"  onclick="buyNowPP(${p.id})">⚡ Buy Now</button>
+      </div>
+
+      <!-- Seller -->
+      <div class="pp-seller-box" onclick="openSellerStore('${p.seller||'ibi'}')">
+        <div style="width:38px;height:38px;border-radius:10px;background:${sellerObj.color}22;display:flex;align-items:center;justify-content:center;font-size:20px;">${sellerObj.emoji||'🏪'}</div>
+        <div>
+          <div style="font-size:12px;color:#888;">Sold by</div>
+          <div style="font-size:14px;font-weight:700;color:${sellerObj.color};">${sellerObj.name}</div>
+        </div>
+        <div style="margin-left:auto;font-size:12px;color:#007185;font-weight:600;">Visit Store →</div>
+      </div>
+
+      <!-- Share / wishlist row -->
+      <div style="display:flex;gap:12px;margin-top:14px;">
+        <button onclick="sharePP(${p.id},'${p.title.replace(/'/g,'\'')}')" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">🔗 Share</button>
+        <button onclick="addToWishlist(${p.id})" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">❤️ Wishlist</button>
+        <button onclick="copyPPLink(${p.id})" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">📋 Copy Link</button>
+      </div>
+    </div>
+
+    <!-- Description (full width) -->
+    <div class="pp-desc">
+      <h3>Product Description</h3>
+      <p style="font-size:14px;color:#444;line-height:1.8;">${p.description||'No description available.'}</p>
+      <h3 style="margin-top:20px;">Product Details</h3>
+      <table class="pp-spec-table">
+        <tr><td>Brand</td><td>${p.brand||'India Business International'}</td></tr>
+        <tr><td>Category</td><td>${catName}</td></tr>
+        <tr><td>Seller</td><td>${sellerObj.name}</td></tr>
+        <tr><td>Rating</td><td>${p.rating} ★ (${(p.reviews||0).toLocaleString('en-IN')} ratings)</td></tr>
+        <tr><td>Availability</td><td>${p.inStock ? 'In Stock' : 'Out of Stock'}</td></tr>
+        <tr><td>Delivery</td><td>FREE delivery — All India</td></tr>
+        <tr><td>Returns</td><td>14-day easy return policy</td></tr>
+        <tr><td>Product ID</td><td>#${p.id}</td></tr>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('productPageOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  window.scrollTo(0,0);
+  window._currentPPId = id;
+}
+
+function closeProductPage() {
+  document.getElementById('productPageOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  window._currentPPId = null;
+  // Remove hash
+  history.replaceState(null, '', window.location.pathname);
+}
+
+function setPPThumb(el, src) {
+  document.getElementById('ppMainImg').src = src;
+  document.querySelectorAll('.pp-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function changePPQty(d) {
+  const el = document.getElementById('ppQty');
+  if (!el) return;
+  let q = parseInt(el.textContent) + d;
+  if (q < 1) q = 1;
+  if (q > 99) q = 99;
+  el.textContent = q;
+}
+
+function addPPToCart(id) {
+  const qty = parseInt(document.getElementById('ppQty')?.textContent || 1);
+  addToCart(id, qty);
+  document.getElementById('ppCartCount').textContent = cart.reduce((s,i) => s+i.qty, 0);
+  showToast('✅ Added to cart!', 'success');
+}
+
+function buyNowPP(id) {
+  const qty = parseInt(document.getElementById('ppQty')?.textContent || 1);
+  addToCart(id, qty);
+  closeProductPage();
+  setTimeout(() => openOrderModal(), 300);
+}
+
+function sharePP(id, title) {
+  const url = window.location.origin + window.location.pathname + '#product-' + id;
+  if (navigator.share) {
+    navigator.share({ title: title, url: url }).catch(() => {});
+  } else {
+    copyPPLink(id);
+  }
+}
+
+function copyPPLink(id) {
+  const url = window.location.origin + window.location.pathname + '#product-' + id;
+  navigator.clipboard?.writeText(url).then(() => showToast('✅ Product link copied!', 'success'))
+    .catch(() => showToast('Link: ' + url));
+}
+
+function addToWishlist(id) {
+  let wl = JSON.parse(localStorage.getItem('ibi_wishlist') || '[]');
+  if (!wl.includes(id)) { wl.push(id); showToast('❤️ Added to Wishlist!', 'success'); }
+  else { wl = wl.filter(x => x !== id); showToast('Removed from Wishlist'); }
+  localStorage.setItem('ibi_wishlist', JSON.stringify(wl));
+}
+
+// Handle browser back button
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.productId) {
+    openProductPage(e.state.productId);
+  } else {
+    closeProductPage();
+  }
+});
+
+// Load product from URL hash on page load
+window.addEventListener('load', function() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#product-')) {
+    const id = parseInt(hash.replace('#product-', ''));
+    if (id) setTimeout(() => openProductPage(id), 500);
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// ORDER TRACKING
+// ══════════════════════════════════════════════════════════
+function openOrderTracking() {
+  document.getElementById('orderTrackOverlay').style.display = 'flex';
+  document.getElementById('trackResult').style.display = 'none';
+  document.getElementById('trackSearchBox').style.display = 'block';
+  document.getElementById('trackInput').value = '';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOrderTracking(e) {
+  if (e && e.target !== document.getElementById('orderTrackOverlay')) return;
+  document.getElementById('orderTrackOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function trackOrder() {
+  const query = document.getElementById('trackInput').value.trim();
+  if (!query) { showToast('⚠️ Enter an Order ID or mobile number'); return; }
+
+  // Search in localStorage orders
+  const u = JSON.parse(localStorage.getItem('ibi_current_user') || 'null');
+  const users = JSON.parse(localStorage.getItem('ibi_users') || '{}');
+  let foundOrders = [];
+
+  // Search all users for matching order ID or mobile
+  Object.values(users).forEach(usr => {
+    (usr.orders || []).forEach(o => {
+      if (
+        (o.orderId && o.orderId.toLowerCase() === query.toLowerCase()) ||
+        (usr.mobile && usr.mobile === query)
+      ) {
+        foundOrders.push({ ...o, customer: usr.name, mobile: usr.mobile });
+      }
+    });
+  });
+
+  const result = document.getElementById('trackResult');
+  document.getElementById('trackSearchBox').style.display = 'none';
+  result.style.display = 'block';
+
+  if (!foundOrders.length) {
+    // Show a demo tracking for any IBI order ID
+    if (query.startsWith('IBI') || query.startsWith('ibi')) {
+      result.innerHTML = renderTrackingSteps(query, 'Processing');
+    } else {
+      result.innerHTML = `
+        <div style="text-align:center;padding:24px;">
+          <div style="font-size:48px;margin-bottom:12px;">🔍</div>
+          <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Order Not Found</div>
+          <div style="font-size:13px;color:#666;margin-bottom:20px;">No order found for "<strong>${query}</strong>".<br>Please check your Order ID in the WhatsApp message you received.</div>
+          <button onclick="document.getElementById('trackResult').style.display='none';document.getElementById('trackSearchBox').style.display='block';"
+            style="padding:10px 24px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Try Again</button>
+        </div>`;
+    }
+    return;
+  }
+
+  const o = foundOrders[0];
+  result.innerHTML = renderTrackingSteps(o.orderId, 'Processing', o);
+}
+
+function renderTrackingSteps(orderId, currentStatus, order) {
+  const steps = [
+    { icon: '✅', label: 'Order Placed',       desc: 'Your order has been received by IBI',    done: true,   active: false },
+    { icon: '✅', label: 'Payment Confirmed',   desc: 'Payment link sent via WhatsApp',         done: true,   active: false },
+    { icon: '📦', label: 'Order Processing',    desc: 'IBI team is packing your order',         done: false,  active: true  },
+    { icon: '🚚', label: 'Shipped',             desc: 'Out for delivery',                       done: false,  active: false },
+    { icon: '🎉', label: 'Delivered',           desc: 'Enjoy your purchase!',                   done: false,  active: false },
+  ];
+
+  const itemsHTML = order ? order.items.map(i =>
+    `<div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f0f0;">
+      <span style="color:#444;max-width:70%;">${i.title.substring(0,45)}…</span>
+      <span style="font-weight:700;">₹${i.total}</span>
+    </div>`
+  ).join('') : '';
+
+  return `
+    <div style="padding:0 0 8px;">
+      <div style="background:#f0fdf4;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-size:12px;color:#888;margin-bottom:2px;">Order ID</div>
+        <div style="font-size:18px;font-weight:900;color:#16a34a;letter-spacing:1px;">${orderId}</div>
+        ${order ? `<div style="font-size:12px;color:#666;margin-top:4px;">Placed on: ${order.date} · Total: ₹${order.total?.toLocaleString('en-IN')}</div>` : ''}
+      </div>
+
+      ${itemsHTML ? `<div style="margin-bottom:16px;"><div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#1a1a1a;">Items Ordered</div>${itemsHTML}</div>` : ''}
+
+      <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">Tracking Status</div>
+      <div style="padding:4px 0;">
+        ${steps.map(s => `
+          <div class="track-step ${s.done?'done':''} ${s.active?'active':''}">
+            <div class="track-dot">${s.icon}</div>
+            <div style="padding-top:6px;">
+              <div style="font-size:13px;font-weight:700;color:${s.active?'#f97316':s.done?'#7C3AED':'#999'};">${s.label}</div>
+              <div style="font-size:12px;color:#888;margin-top:2px;">${s.desc}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <div style="background:#fff8f0;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:12px;color:#666;">
+        💬 For real-time updates, WhatsApp us at <strong>+91 89394 14799</strong> with your Order ID.
+      </div>
+
+      <button onclick="document.getElementById('trackResult').style.display='none';document.getElementById('trackSearchBox').style.display='block';"
+        style="width:100%;margin-top:16px;padding:10px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px;">
+        ← Search Another Order
+      </button>
+    </div>`;
+}
+
 // ========== INIT ==========
 function init() {
   renderCategories();
@@ -2897,6 +3715,7 @@ function init() {
   startLightningTimer();
   checkAutoLogin();
   checkSavedPincode();
+  setTimeout(loadLiveProducts, 1500); // load sheet products after page renders
 }
 
 // ========== CATEGORIES ==========
@@ -2929,7 +3748,7 @@ function productCard(p) {
   const sellerName = sellerObj ? sellerObj.shortName : (p.seller || 'IBI');
   const sellerColor = sellerObj ? sellerObj.color : '#8B5CF6';
   return `
-    <div class="product-card" onclick="openProduct(${p.id})">
+    <div class="product-card" onclick="openProductPage(${p.id})">
       ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge==='bestseller'?'#1 Best Seller':p.badge==='new'?'New':'deal'===p.badge?'Deal':'Prime'}</span>` : ''}
       <div class="product-img-wrap">
         ${p.img
@@ -3955,65 +4774,146 @@ init();
     </div>
     <!-- Dashboard content (hidden until login) -->
     <div id="sellerDashContent" style="display:none;">
-      <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);padding:20px 24px;color:#fff;display:flex;justify-content:space-between;align-items:center;">
+
+      <!-- Header bar -->
+      <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);padding:18px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5;">
         <div>
-          <div style="font-size:13px;opacity:0.7;">Welcome back,</div>
-          <div style="font-size:20px;font-weight:900;" id="sd_seller_name"></div>
+          <div style="font-size:12px;opacity:.7;">Welcome back,</div>
+          <div style="font-size:18px;font-weight:900;" id="sd_seller_name"></div>
         </div>
-        <button onclick="closeSellerDashboard()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:18px;width:36px;height:36px;border-radius:50%;cursor:pointer;">✕</button>
-      </div>
-      <!-- Stats -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid #eee;">
-        <div style="text-align:center;padding:16px;border-right:1px solid #eee;">
-          <div style="font-size:24px;font-weight:900;color:#8B5CF6;" id="sd_prod_count">0</div>
-          <div style="font-size:11px;color:#666;">Products Listed</div>
-        </div>
-        <div style="text-align:center;padding:16px;border-right:1px solid #eee;">
-          <div style="font-size:24px;font-weight:900;color:#f97316;" id="sd_rating">0</div>
-          <div style="font-size:11px;color:#666;">Seller Rating</div>
-        </div>
-        <div style="text-align:center;padding:16px;">
-          <div style="font-size:24px;font-weight:900;color:#16a34a;" id="sd_since">-</div>
-          <div style="font-size:11px;color:#666;">Member Since</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span id="sd_status_badge" style="font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;">✓ Approved</span>
+          <button onclick="closeSellerDashboard()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;width:32px;height:32px;border-radius:50%;cursor:pointer;">✕</button>
         </div>
       </div>
-      <!-- Products table -->
-      <div style="padding:16px;">
-        <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:10px;">📦 Your Products (showing first 20)</div>
-        <div style="overflow-x:auto;border-radius:8px;border:1px solid #eee;">
-          <table style="width:100%;border-collapse:collapse;font-size:13px;">
-            <thead>
-              <tr style="background:#1e1b4b;color:#fff;">
-                <th style="padding:10px 8px;text-align:left;">ID</th>
-                <th style="padding:10px 8px;text-align:left;">Product</th>
-                <th style="padding:10px 8px;">Price</th>
-                <th style="padding:10px 8px;">Status</th>
-              </tr>
-            </thead>
-            <tbody id="sd_products_table"></tbody>
-          </table>
+
+      <!-- Tab navigation -->
+      <div style="display:flex;border-bottom:2px solid #eee;background:#fff;position:sticky;top:57px;z-index:4;">
+        <button onclick="switchDashTab('products')" id="tab_products" style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;color:#8B5CF6;border-bottom:2px solid #8B5CF6;margin-bottom:-2px;">📦 My Products</button>
+        <button onclick="switchDashTab('add')"      id="tab_add"      style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;color:#888;">➕ Add Product</button>
+        <button onclick="switchDashTab('stats')"    id="tab_stats"    style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;color:#888;">📊 Stats</button>
+      </div>
+
+      <!-- TAB: My Products -->
+      <div id="dashTab_products" style="padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:14px;font-weight:800;color:#1a1a1a;">Your Products</div>
+          <button onclick="loadSellerProducts()" style="font-size:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:5px 12px;cursor:pointer;">🔄 Refresh</button>
+        </div>
+        <div id="sd_products_list" style="display:grid;gap:12px;">
+          <div style="text-align:center;padding:32px;color:#888;font-size:14px;">⏳ Loading your products…</div>
         </div>
       </div>
-      <!-- Add new listing -->
-      <div style="padding:16px;border-top:1px solid #eee;background:#fdf8ff;">
-        <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:12px;">➕ Request New Product Listing</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-          <input id="nl_title" type="text" placeholder="Product Title *" style="padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;" />
-          <input id="nl_price" type="number" placeholder="Price (₹) *" style="padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;" />
+
+      <!-- TAB: Add Product -->
+      <div id="dashTab_add" style="padding:16px;display:none;">
+        <div style="font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">➕ Add New Product</div>
+        <div style="font-size:12px;color:#888;margin-bottom:16px;">Fill all details → Submit → IBI reviews & approves within 24hrs → Auto-published on site</div>
+
+        <div style="display:grid;gap:12px;">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Title *</label>
+            <input id="ap_title" type="text" placeholder="Full product name (be descriptive)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Selling Price (₹) *</label>
+              <input id="ap_price" type="number" placeholder="e.g. 499" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">MRP / Original Price (₹) *</label>
+              <input id="ap_mrp" type="number" placeholder="e.g. 624" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Category *</label>
+              <select id="ap_cat" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;">
+                <option value="">Select Category</option>
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing &amp; Fashion</option>
+                <option value="home">Home &amp; Kitchen</option>
+                <option value="grocery">Grocery &amp; Food</option>
+                <option value="beauty">Beauty &amp; Health</option>
+                <option value="jewellery">Jewellery</option>
+                <option value="books">Books &amp; Media</option>
+                <option value="sports">Sports &amp; Fitness</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Brand *</label>
+              <input id="ap_brand" type="text" placeholder="Your brand name" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Image URL *</label>
+            <input id="ap_img" type="url" placeholder="https://your-image-link.jpg (upload to Wix/Imgur/Cloudinary first)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            <div style="font-size:11px;color:#888;margin-top:4px;">💡 Tip: Upload your image to <a href="https://imgur.com" target="_blank" style="color:#7C3AED;">imgur.com</a> and paste the direct image link here.</div>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Description *</label>
+            <textarea id="ap_desc" rows="3" placeholder="Describe your product in detail (at least 50 characters)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Key Features (one per line) *</label>
+            <textarea id="ap_bullets" rows="4" placeholder="Eco-friendly product&#10;Free delivery all across India&#10;100% authentic product&#10;Quality assured" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Stock Quantity *</label>
+              <input id="ap_stock" type="number" placeholder="e.g. 50" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">HSN Code (optional)</label>
+              <input id="ap_hsn" type="text" placeholder="e.g. 4419" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+            </div>
+          </div>
+
+          <div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:12px;font-size:12px;color:#555;">
+            <strong style="color:#16a34a;">✓ What happens after you submit:</strong><br>
+            1. Your product goes to IBI for review (Pending status)<br>
+            2. IBI approves or requests changes within 24 hours<br>
+            3. Once approved, it auto-publishes on the website<br>
+            4. You can edit or pause the product anytime from this dashboard
+          </div>
+
+          <button onclick="submitAddProduct()" id="ap_submit_btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;">
+            Submit for IBI Review →
+          </button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-          <select id="nl_cat" style="padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;">
-            <option value="">Category *</option>
-            <option>Electronics</option><option>Clothing & Fashion</option><option>Home & Kitchen</option>
-            <option>Grocery & Food</option><option>Beauty & Health</option><option>Jewellery</option><option>Other</option>
-          </select>
-          <input id="nl_desc" type="text" placeholder="Short description" style="padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;" />
-        </div>
-        <button onclick="submitNewListing()" style="width:100%;padding:11px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;">
-          📲 Send Listing Request via WhatsApp
-        </button>
       </div>
-    </div>
+
+      <!-- TAB: Stats -->
+      <div id="dashTab_stats" style="padding:16px;display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div style="background:#fdf8ff;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #8B5CF6;">
+            <div style="font-size:28px;font-weight:900;color:#8B5CF6;" id="sd_prod_count">0</div>
+            <div style="font-size:12px;color:#666;margin-top:4px;">Total Products</div>
+          </div>
+          <div style="background:#fff8f0;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #f97316;">
+            <div style="font-size:28px;font-weight:900;color:#f97316;" id="sd_approved_count">0</div>
+            <div style="font-size:12px;color:#666;margin-top:4px;">Live on Site</div>
+          </div>
+          <div style="background:#f0fdf4;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #16a34a;">
+            <div style="font-size:28px;font-weight:900;color:#16a34a;" id="sd_rating">4.8</div>
+            <div style="font-size:12px;color:#666;margin-top:4px;">Seller Rating</div>
+          </div>
+          <div style="background:#f0f9ff;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #0ea5e9;">
+            <div style="font-size:28px;font-weight:900;color:#0ea5e9;" id="sd_since">-</div>
+            <div style="font-size:12px;color:#666;margin-top:4px;">Member Since</div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;">
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Quick Actions</div>
+          <div style="display:grid;gap:8px;">
+            <button onclick="switchDashTab('add')" style="width:100%;padding:10px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">➕ Add New Product</button>
+            <button onclick="window.open('https://wa.me/918939414799','_blank')" style="width:100%;padding:10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">💬 Contact IBI Support</button>
+            <button onclick="customerSignOut();closeSellerDashboard();" style="width:100%;padding:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">🚪 Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end sellerDashContent -->
   </div>
 </div>
 
