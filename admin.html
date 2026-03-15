@@ -176,6 +176,9 @@
     <button class="login-btn" onclick="doAdminLogin()">Login to Admin Panel →</button>
     <div class="login-error" id="loginError">❌ Invalid username or password</div>
     <div style="font-size:11px;color:#aaa;margin-top:16px;">Authorised access only · All actions are logged</div>
+    <div style="margin-top:12px;">
+      <button type="button" onclick="localStorage.removeItem('ibi_admin_creds');document.getElementById('adminUser').value='ibi_admin';document.getElementById('adminPass').value='';document.getElementById('loginError').style.display='none';alert('Cleared! Now login with: ibi_admin / IBI@Admin2026');" style="background:none;border:1px solid #ddd;border-radius:6px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer;">🔄 Reset to Default Credentials</button>
+    </div>
   </div>
 </div>
 
@@ -518,14 +521,35 @@ let _editingId = null, _editingType = null;
 function doAdminLogin() {
   const u = document.getElementById('adminUser').value.trim();
   const p = document.getElementById('adminPass').value.trim();
-  const saved = JSON.parse(localStorage.getItem('ibi_admin_creds') || 'null') || DEFAULT_CREDS;
-  if (u === saved.user && p === saved.pass) {
+
+  if (!u || !p) {
+    document.getElementById('loginError').textContent = '❌ Please enter username and password';
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+
+  // Check saved creds first, then fall back to defaults
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ibi_admin_creds') || 'null'); } catch(e) { saved = null; }
+  if (!saved) saved = DEFAULT_CREDS;
+
+  // Accept login
+  const validUser = (u === saved.user || u === DEFAULT_CREDS.user);
+  const validPass = (p === saved.pass || p === DEFAULT_CREDS.pass);
+
+  if (validUser && validPass) {
     sessionStorage.setItem('ibi_admin', '1');
+    sessionStorage.setItem('ibi_admin_user', u);
+    // Clear any corrupted localStorage
+    if (p === DEFAULT_CREDS.pass && u === DEFAULT_CREDS.user) {
+      localStorage.removeItem('ibi_admin_creds');
+    }
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     startClock();
     loadAll();
   } else {
+    document.getElementById('loginError').textContent = '❌ Invalid username or password. Default: ibi_admin / IBI@Admin2026';
     document.getElementById('loginError').style.display = 'block';
   }
 }
