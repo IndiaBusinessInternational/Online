@@ -1254,6 +1254,35 @@
   }
   .go-bottom:hover { background: #6D28D9; }
 
+  /* ── Seller Central ── */
+  .sc-tab {
+    flex-shrink:0; padding:13px 18px; border:none; background:none;
+    font-size:13px; font-weight:600; cursor:pointer; color:#555;
+    border-bottom:3px solid transparent; transition:all .2s; white-space:nowrap;
+  }
+  .sc-tab-active { color:#f97316 !important; border-bottom:3px solid #f97316 !important; font-weight:800 !important; }
+  .sc-tab:hover { color:#f97316; background:#fff8f0; }
+  .sc-label { font-size:12px; font-weight:700; color:#333; display:block; margin-bottom:5px; }
+  .sc-input { width:100%; padding:10px 12px; border:1.5px solid #d1d5db; border-radius:8px; font-size:13px; box-sizing:border-box; font-family:inherit; transition:border-color .2s; }
+  .sc-input:focus { border-color:#f97316; outline:none; box-shadow:0 0 0 3px rgba(249,115,22,.1); }
+  .sc-prod-card {
+    background:#fff; border:1px solid #e5e7eb; border-radius:10px;
+    overflow:hidden; margin-bottom:12px; transition:box-shadow .2s;
+  }
+  .sc-prod-card:hover { box-shadow:0 2px 12px rgba(0,0,0,.1); }
+  .sc-prod-row { display:flex; gap:14px; padding:14px; align-items:flex-start; }
+  .sc-prod-img { width:80px; height:80px; object-fit:contain; border-radius:8px; background:#f9f9f9; padding:4px; flex-shrink:0; border:1px solid #eee; }
+  .sc-prod-actions { display:flex; border-top:1px solid #f0f0f0; }
+  .sc-prod-btn { flex:1; padding:10px 8px; background:none; border:none; border-right:1px solid #f0f0f0; font-size:12px; font-weight:700; cursor:pointer; transition:background .2s; }
+  .sc-prod-btn:last-child { border-right:none; }
+  .sc-prod-btn:hover { background:#f9f9f9; }
+  .sc-status-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; display:inline-block; }
+  .sc-status-Approved  { background:#dcfce7; color:#16a34a; }
+  .sc-status-Pending   { background:#fef9c3; color:#a16207; }
+  .sc-status-Rejected  { background:#fee2e2; color:#dc2626; }
+  .sc-status-Paused    { background:#f1f5f9; color:#64748b; }
+
+
   /* ── WhatsApp Floating Chat Bubble ── */
   .wa-bubble {
     position: fixed;
@@ -2746,18 +2775,377 @@ function submitNewListing() {} // legacy — replaced by submitAddProduct
 // SELLER PRODUCT MANAGEMENT (Google Sheets)
 // ══════════════════════════════════════════════════════════
 function goToAddTab() { switchDashTab("add"); }
+
+// ══════════════════════════════════════════════════════════
+// SELLER LOGIN — Works instantly, no network needed
+// ══════════════════════════════════════════════════════════
+function sellerDashLogin() {
+  const sellerId = (document.getElementById('sd_seller_id').value || '').trim().toUpperCase();
+  const pin      = (document.getElementById('sd_pin').value || '').trim();
+
+  if (!sellerId) { showToast('⚠️ Enter your Seller ID'); return; }
+  if (!pin)      { showToast('⚠️ Enter your PIN');       return; }
+
+  const btn = document.getElementById('scLoginBtn');
+  if (btn) { btn.textContent = '⏳ Verifying...'; btn.disabled = true; }
+
+  function restore() { if (btn) { btn.textContent = 'Login to Seller Central →'; btn.disabled = false; } }
+  function doLogin(data) {
+    restore();
+    sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId, pin, ...data }));
+    document.getElementById('scSellerName').textContent = data.bizName || sellerId;
+    renderSellerDashboard(data);
+  }
+
+  // ── Built-in sellers (instant) ──
+  const builtIn = { 'IBI':'ibi2024', 'IINTELLIGENCEI':'intel2024' };
+  if (builtIn[sellerId] !== undefined) {
+    if (builtIn[sellerId] !== pin) { restore(); showToast('⚠️ Wrong PIN for ' + sellerId); return; }
+    const s = sellers.find(x => x.id === sellerId.toLowerCase());
+    doLogin({ bizName: s ? s.name : sellerId, ownerName: '', category: s ? s.categories[0] : '', city: s ? s.location : '', approvedOn: s ? s.since : '' });
+    return;
+  }
+
+  // ── Auto-PIN (instant, no network) ──
+  const digits  = sellerId.replace(/\D/g,'');
+  const autoPin = digits.slice(-6) + '@IBI';
+
+  if (pin === autoPin) {
+    // Valid auto-PIN — log in immediately, fetch extra info in background
+    doLogin({ bizName: sellerId, ownerName: '', category: '', city: '', approvedOn: '' });
+    // Try to get real name from sheet in background
+    ibi_fetch_simple({ action:'checkStatus', sellerId, pin }, function(res) {
+      if (res && res.success) {
+        const stored = JSON.parse(sessionStorage.getItem('ibi_seller') || '{}');
+        stored.bizName = res.bizName || sellerId;
+        stored.ownerName = res.ownerName || '';
+        stored.approvedOn = res.approvedOn || '';
+        sessionStorage.setItem('ibi_seller', JSON.stringify(stored));
+        const el = document.getElementById('sd_seller_name');
+        if (el) el.textContent = res.bizName || sellerId;
+        document.getElementById('scSellerName').textContent = res.bizName || sellerId;
+      }
+    });
+    return;
+  }
+
+  // ── Try Google Sheets (with 8s timeout) ──
+  ibi_fetch_simple({ action:'checkStatus', sellerId, pin },
+    function(res) {
+      restore();
+      if (!res) {
+        showToast('⚠️ Wrong PIN. Try: ' + autoPin); return;
+      }
+      handleSellerLoginResponse(res, sellerId, pin);
+    },
+    8000
+  );
+}
+
+function ibi_fetch_simple(params, callback, timeoutMs) {
+  timeoutMs = timeoutMs || 8000;
+  const cbName = '_ibi_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+  const url = window.IBI_SHEET_URL + '?' + new URLSearchParams(params).toString();
+  let done = false;
+
+  const timer = setTimeout(function() {
+    if (done) return; done = true;
+    window[cbName] = null;
+    const s = document.getElementById(cbName);
+    if (s) s.remove();
+    callback(null);
+  }, timeoutMs);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true;
+    clearTimeout(timer);
+    window[cbName] = null;
+    const s = document.getElementById(cbName);
+    if (s) s.remove();
+    callback(res);
+  };
+
+  const script = document.createElement('script');
+  script.id = cbName;
+  script.src = url + '&callback=' + cbName;
+  script.onerror = function() {
+    if (done) return; done = true;
+    clearTimeout(timer);
+    window[cbName] = null;
+    script.remove();
+    callback(null);
+  };
+  document.head.appendChild(script);
+}
+
+function handleSellerLoginResponse(res, sellerId, pin) {
+  const btn = document.getElementById('scLoginBtn');
+  function restore() { if (btn) { btn.textContent = 'Login to Seller Central →'; btn.disabled = false; } }
+
+  if (!res || res.status === 'NotFound') {
+    restore();
+    showToast('⚠️ Seller ID not found. Please register first.');
+    return;
+  }
+  if (res.status === 'Pending') {
+    restore();
+    showDashMessage('⏳','Application Under Review',
+      'IBI is reviewing your application. You will receive your PIN by email once approved (24–48 hrs).<br><br>' +
+      '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">💬 WhatsApp IBI for update</a>', '#f97316');
+    return;
+  }
+  if (res.status === 'Rejected') {
+    restore();
+    showDashMessage('❌','Application Not Approved',
+      'Reason: ' + (res.reason || 'Contact IBI') + '<br><br>' +
+      '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;">💬 WhatsApp IBI</a>', '#dc2626');
+    return;
+  }
+  if (res.status === 'WrongPin') {
+    restore();
+    const digits = sellerId.replace(/\D/g,'');
+    showToast('⚠️ Wrong PIN. Default PIN is: ' + digits.slice(-6) + '@IBI');
+    return;
+  }
+  if (res.success && res.status === 'Approved') {
+    sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId: res.sellerId||sellerId, pin, bizName: res.bizName, ownerName: res.ownerName, category: res.category, city: res.city, approvedOn: res.approvedOn }));
+    document.getElementById('scSellerName').textContent = res.bizName || sellerId;
+    renderSellerDashboard(res);
+    return;
+  }
+  restore();
+  showToast('⚠️ ' + (res.message || 'Login failed.'));
+}
+
+function showDashMessage(icon, title, body, color) {
+  document.getElementById('sellerDashLogin').style.display = 'none';
+  const dash = document.getElementById('sellerDashContent');
+  dash.style.display = 'block';
+  dash.innerHTML = `
+    <div style="background:#fff;border-radius:12px;padding:40px 24px;text-align:center;max-width:480px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+      <div style="font-size:56px;margin-bottom:16px;">${icon}</div>
+      <div style="font-size:20px;font-weight:800;color:${color};margin-bottom:12px;">${title}</div>
+      <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:24px;">${body}</div>
+      <button onclick="closeSellerDashboard()" style="padding:11px 32px;background:#131921;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Close</button>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// SELLER DASHBOARD RENDER
+// ══════════════════════════════════════════════════════════
+function renderSellerDashboard(res) {
+  document.getElementById('sellerDashLogin').style.display = 'none';
+  document.getElementById('sellerDashContent').style.display = 'block';
+
+  const sellerId = res.sellerId || (JSON.parse(sessionStorage.getItem('ibi_seller')||'{}').sellerId) || '';
+  const bizName  = res.bizName || sellerId;
+
+  document.getElementById('sd_seller_name').textContent  = bizName;
+  document.getElementById('scSellerName').textContent    = bizName;
+  document.getElementById('sd_rating').textContent       = '4.8';
+  document.getElementById('sd_since').textContent        = res.approvedOn || '2025';
+
+  // Profile tab
+  const prof = document.getElementById('scProfileContent');
+  if (prof) {
+    prof.innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #eee;">
+        <div style="width:64px;height:64px;border-radius:50%;background:#f97316;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;flex-shrink:0;">${bizName[0]||'S'}</div>
+        <div><div style="font-size:18px;font-weight:800;">${bizName}</div><div style="font-size:13px;color:#888;margin-top:2px;">Seller ID: <strong>${sellerId}</strong></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+        <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;">Category</div><div style="font-weight:700;">${res.category||'—'}</div></div>
+        <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;">City</div><div style="font-weight:700;">${res.city||'—'}</div></div>
+        <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;">Member Since</div><div style="font-weight:700;">${res.approvedOn||'2025'}</div></div>
+        <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;">Status</div><div style="color:#16a34a;font-weight:700;">✓ Approved Seller</div></div>
+      </div>
+      <div style="margin-top:16px;"><button onclick="customerSignOut();closeSellerDashboard();" style="width:100%;padding:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-weight:700;cursor:pointer;">🚪 Sign Out</button></div>`;
+  }
+
+  switchDashTab('products');
+}
+
+// ══════════════════════════════════════════════════════════
+// TAB SWITCHER
+// ══════════════════════════════════════════════════════════
 function switchDashTab(tab) {
-  ['products','add','stats'].forEach(t => {
-    const tabEl  = document.getElementById('dashTab_' + t);
-    const btnEl  = document.getElementById('tab_' + t);
-    if (!tabEl || !btnEl) return;
-    const active = (t === tab);
-    tabEl.style.display = active ? 'block' : 'none';
-    btnEl.style.color       = active ? '#8B5CF6' : '#888';
-    btnEl.style.fontWeight  = active ? '700' : '600';
-    btnEl.style.borderBottom = active ? '2px solid #8B5CF6' : '2px solid transparent';
+  ['products','add','orders','profile'].forEach(t => {
+    const el  = document.getElementById('dashTab_' + t);
+    const btn = document.getElementById('tab_' + t);
+    if (el)  el.style.display  = (t === tab) ? 'block' : 'none';
+    if (btn) {
+      btn.classList.toggle('sc-tab-active', t === tab);
+    }
   });
   if (tab === 'products') loadSellerProducts();
+  if (tab === 'add')      setupAddForm();
+}
+
+// ══════════════════════════════════════════════════════════
+// LOAD SELLER PRODUCTS
+// ══════════════════════════════════════════════════════════
+function loadSellerProducts() {
+  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  if (!session) return;
+  const list = document.getElementById('sd_products_list');
+  list.innerHTML = '<div style="text-align:center;padding:32px;color:#888;"><div style="font-size:32px;margin-bottom:8px;">⏳</div>Loading your products…</div>';
+
+  ibi_fetch_simple({ action:'getSellerProducts', sellerId:session.sellerId, pin:session.pin },
+    function(res) {
+      let prods = [];
+      if (res && res.success && res.products) {
+        prods = res.products;
+      }
+      // Also merge hardcoded products for this seller
+      const sid = session.sellerId.toLowerCase();
+      const hardcoded = products.filter(p => p.seller === sid && !p.fromSheet);
+      hardcoded.forEach(p => {
+        if (!prods.find(x => x.title === p.title)) {
+          prods.unshift({ productId:'#'+p.id, title:p.title, category:p.category, brand:p.brand||'IBI', price:p.price, mrp:p.mrp, img:p.img, stock:p.inStock?'In Stock':'OOS', status:'Approved', hardcoded:true });
+        }
+      });
+
+      // Update stats
+      const tot  = document.getElementById('sd_prod_count');
+      const appr = document.getElementById('sd_approved_count');
+      const pend = document.getElementById('sd_pending_count');
+      if (tot)  tot.textContent  = prods.length;
+      if (appr) appr.textContent = prods.filter(p => p.status==='Approved').length;
+      if (pend) pend.textContent = prods.filter(p => p.status==='Pending').length;
+
+      window._scAllProds = prods;
+      renderProductList(prods);
+    },
+    6000
+  );
+}
+
+function renderProductList(prods) {
+  const list = document.getElementById('sd_products_list');
+  if (!prods.length) {
+    list.innerHTML = `<div style="text-align:center;padding:48px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);">
+      <div style="font-size:48px;margin-bottom:12px;">📦</div>
+      <div style="font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">No products yet</div>
+      <p style="font-size:14px;color:#888;margin-bottom:18px;">Add your first product to start selling on IBI Marketplace</p>
+      <button onclick="switchDashTab('add')" style="padding:11px 28px;background:#f97316;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;">➕ Add First Product</button>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = prods.map(p => {
+    const disc = p.mrp && p.price ? Math.round((1 - p.price/p.mrp)*100) : 0;
+    const statusClass = 'sc-status-' + (p.status||'Pending');
+    const editBtn  = p.hardcoded ? '' : `<button class="sc-prod-btn" onclick="editProduct('${p.productId}')" style="color:#7C3AED;">✏️ Edit</button>`;
+    const pauseBtn = p.hardcoded ? '' : `<button class="sc-prod-btn" onclick="pauseProduct('${p.productId}','${p.status}')" style="color:#f97316;">${p.status==='Paused'?'▶️ Resume':'⏸️ Pause'}</button>`;
+    const delBtn   = p.hardcoded ? '' : `<button class="sc-prod-btn" onclick="deleteProduct('${p.productId}')" style="color:#dc2626;">🗑️ Delete</button>`;
+
+    return `<div class="sc-prod-card">
+      <div class="sc-prod-row">
+        <img class="sc-prod-img" src="${p.img||''}" alt="${p.title}" onerror="this.src='';this.style.background='#eee';">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:4px;line-height:1.4;">${p.title}</div>
+          <div style="font-size:12px;color:#888;margin-bottom:6px;">${p.brand||''} &nbsp;·&nbsp; ${p.category||''}</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:15px;font-weight:800;color:#1a1a1a;">₹${parseFloat(p.price||0).toLocaleString('en-IN')}</span>
+            ${disc>0?`<span style="font-size:11px;text-decoration:line-through;color:#888;">₹${parseFloat(p.mrp||0).toLocaleString('en-IN')}</span><span style="font-size:11px;background:#c00;color:#fff;padding:1px 5px;border-radius:3px;">${disc}% off</span>`:''}
+            <span class="sc-status-badge ${statusClass}">${p.status||'Pending'}</span>
+            ${p.hardcoded?'<span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:10px;">Existing</span>':''}
+          </div>
+          ${p.rejectReason?`<div style="font-size:11px;color:#dc2626;margin-top:4px;">❌ Rejected: ${p.rejectReason}</div>`:''}
+        </div>
+      </div>
+      ${(!p.hardcoded)?`<div class="sc-prod-actions">${editBtn}${pauseBtn}${delBtn}<button class="sc-prod-btn" onclick="openProductPage(${p.productId&&p.productId.startsWith('#')?p.productId.slice(1):0})" style="color:#007185;">👁️ Preview</button></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function filterScProducts(q) {
+  if (!window._scAllProds) return;
+  const filtered = q ? window._scAllProds.filter(p => p.title.toLowerCase().includes(q.toLowerCase())) : window._scAllProds;
+  renderProductList(filtered);
+}
+
+// ══════════════════════════════════════════════════════════
+// ADD / EDIT PRODUCT FORM
+// ══════════════════════════════════════════════════════════
+function setupAddForm() {
+  document.getElementById('apFormTitle').textContent = '➕ Add New Product';
+  document.getElementById('ap_submit_btn').textContent = 'Submit Product for IBI Review →';
+  document.getElementById('ap_submit_btn').onclick = submitAddProduct;
+  document.getElementById('ap_editing_id').value = '';
+  // Live preview update
+  ['ap_title','ap_price','ap_mrp','ap_img','ap_brand'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateProductPreview);
+  });
+  // Title char count
+  const titleEl = document.getElementById('ap_title');
+  if (titleEl) titleEl.addEventListener('input', function() {
+    document.getElementById('ap_title_count').textContent = this.value.length + '/200 characters';
+  });
+}
+
+function updateDiscount() {
+  const price = parseFloat(document.getElementById('ap_price').value) || 0;
+  const mrp   = parseFloat(document.getElementById('ap_mrp').value)   || 0;
+  const box   = document.getElementById('discountPreview');
+  if (price > 0 && mrp > 0) {
+    if (price >= mrp) {
+      box.style.display='block'; box.style.background='#fff0f0'; box.style.borderColor='#fca5a5'; box.style.color='#dc2626';
+      box.textContent = '⚠️ Selling price must be less than MRP';
+    } else {
+      const disc = Math.round((1 - price/mrp)*100);
+      const save = mrp - price;
+      box.style.display='block'; box.style.background='#f0fdf4'; box.style.borderColor='#86efac'; box.style.color='#16a34a';
+      box.textContent = '✅ Discount: ' + disc + '% off — Customer saves ₹' + save.toLocaleString('en-IN');
+    }
+  } else {
+    box.style.display = 'none';
+  }
+  updateProductPreview();
+}
+
+function previewImage(url) {
+  const box = document.getElementById('imgPreviewBox');
+  if (!url || !url.startsWith('http')) { box.innerHTML='🖼️'; box.style.backgroundImage='none'; return; }
+  box.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:contain;" onerror="this.parentNode.innerHTML='❌'">`;
+  updateProductPreview();
+}
+
+function updateProductPreview() {
+  const title = document.getElementById('ap_title').value.trim();
+  const brand = document.getElementById('ap_brand').value.trim();
+  const price = parseFloat(document.getElementById('ap_price').value) || 0;
+  const mrp   = parseFloat(document.getElementById('ap_mrp').value)   || 0;
+  const img   = document.getElementById('ap_img').value.trim();
+  const card  = document.getElementById('productPreviewCard');
+  if (!title && !price) { card.style.display='none'; return; }
+  card.style.display = 'block';
+  document.getElementById('previewTitle').textContent = title || 'Product Title';
+  document.getElementById('previewBrand').textContent = brand || 'Brand';
+  document.getElementById('previewPrice').textContent = price ? '₹'+price.toLocaleString('en-IN') : '₹0';
+  document.getElementById('previewMrp').textContent   = mrp ? '₹'+mrp.toLocaleString('en-IN') : '';
+  if (img) { document.getElementById('previewImg').src = img; document.getElementById('previewImg').style.display='block'; }
+  const disc = (price>0&&mrp>price) ? Math.round((1-price/mrp)*100)+'% off' : '';
+  document.getElementById('previewDisc').textContent = disc;
+  document.getElementById('previewDisc').style.display = disc ? 'inline' : 'none';
+}
+
+function resetAddForm() {
+  ['ap_title','ap_price','ap_mrp','ap_brand','ap_img','ap_desc','ap_bullets','ap_stock','ap_hsn','ap_tags'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const cat = document.getElementById('ap_cat'); if(cat) cat.value='';
+  const imgs = document.getElementById('ap_imgs'); if(imgs) imgs.value='';
+  document.getElementById('ap_editing_id').value = '';
+  document.getElementById('discountPreview').style.display='none';
+  document.getElementById('productPreviewCard').style.display='none';
+  document.getElementById('imgPreviewBox').innerHTML='🖼️';
+  document.getElementById('ap_title_count').textContent='0/200 characters';
+  document.getElementById('apFormTitle').textContent='➕ Add New Product';
+  document.getElementById('ap_submit_btn').textContent='Submit Product for IBI Review →';
+  document.getElementById('ap_submit_btn').onclick = submitAddProduct;
 }
 
 function submitAddProduct() {
@@ -2774,302 +3162,150 @@ function submitAddProduct() {
   const bullets = document.getElementById('ap_bullets').value.trim();
   const stock   = document.getElementById('ap_stock').value.trim();
   const hsn     = document.getElementById('ap_hsn').value.trim();
+  const tags    = document.getElementById('ap_tags').value.trim();
+  const imgs    = document.getElementById('ap_imgs').value.trim();
 
-  if (!title)   { showToast('⚠️ Enter product title');       return; }
-  if (!price)   { showToast('⚠️ Enter selling price');       return; }
-  if (!mrp)     { showToast('⚠️ Enter MRP/original price'); return; }
-  if (!cat)     { showToast('⚠️ Select a category');         return; }
-  if (!brand)   { showToast('⚠️ Enter brand name');          return; }
-  if (!img)     { showToast('⚠️ Enter product image URL');   return; }
-  if (!desc || desc.length < 20) { showToast('⚠️ Description too short (min 20 chars)'); return; }
-  if (!bullets) { showToast('⚠️ Enter at least one key feature'); return; }
-  if (!stock)   { showToast('⚠️ Enter stock quantity');      return; }
-  if (parseFloat(price) >= parseFloat(mrp)) { showToast('⚠️ Selling price must be less than MRP'); return; }
+  if (!title)              { showToast('⚠️ Enter product title');       scrollToField('ap_title');   return; }
+  if (!price)              { showToast('⚠️ Enter selling price');        scrollToField('ap_price');   return; }
+  if (!mrp)                { showToast('⚠️ Enter MRP');                 scrollToField('ap_mrp');     return; }
+  if (parseFloat(price)>=parseFloat(mrp)) { showToast('⚠️ Selling price must be less than MRP'); return; }
+  if (!cat)                { showToast('⚠️ Select a category');          scrollToField('ap_cat');     return; }
+  if (!brand)              { showToast('⚠️ Enter brand name');           scrollToField('ap_brand');   return; }
+  if (!img || !img.startsWith('http')) { showToast('⚠️ Enter a valid image URL (must start with http)'); scrollToField('ap_img'); return; }
+  if (desc.length < 20)    { showToast('⚠️ Description too short (min 20 chars)'); scrollToField('ap_desc'); return; }
+  if (!bullets)            { showToast('⚠️ Enter at least 1 key feature'); scrollToField('ap_bullets'); return; }
+  if (!stock)              { showToast('⚠️ Enter stock quantity');        scrollToField('ap_stock');   return; }
 
   const btn = document.getElementById('ap_submit_btn');
   btn.textContent = '⏳ Submitting…'; btn.disabled = true;
 
-  const params = new URLSearchParams({
-    action:   'addProduct',
-    sellerId: session.sellerId,
-    pin:      session.pin,
-    title, price, mrp, category: cat, brand,
-    img, description: desc,
-    bullets:  bullets.split('\n').filter(Boolean).join('|'),
-    stock, hsn: hsn || ''
-  });
+  const editId = document.getElementById('ap_editing_id').value;
+  const action = editId ? 'editProduct' : 'addProduct';
+  const params = {
+    action, sellerId:session.sellerId, pin:session.pin,
+    title, price, mrp, category:cat, brand, img,
+    description:desc, bullets:bullets.split('\n').filter(Boolean).join('|'),
+    stock, hsn, tags,
+    additionalImgs: imgs.split('\n').filter(Boolean).join('|')
+  };
+  if (editId) params.productId = editId;
 
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
-      if (res.success) {
-        showToast('✅ Product submitted! IBI will review within 24hrs.', 'success');
-        // Clear form
-        ['ap_title','ap_price','ap_mrp','ap_brand','ap_img','ap_desc','ap_bullets','ap_stock','ap_hsn']
-          .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-        document.getElementById('ap_cat').value = '';
+  ibi_fetch_simple(params,
+    function(res) {
+      btn.textContent = editId ? 'Update Product →' : 'Submit Product for IBI Review →';
+      btn.disabled = false;
+      if (res && res.success) {
+        showToast('✅ ' + (editId ? 'Product updated!' : 'Product submitted!') + ' IBI will review within 24hrs.', 'success');
+        resetAddForm();
         switchDashTab('products');
       } else {
-        showToast('❌ ' + (res.message || 'Submission failed'));
+        showToast('❌ ' + ((res && res.message) || 'Submission failed'));
+        // Fallback WhatsApp
+        fallbackWhatsAppProduct(session, params);
       }
-    })
-    .catch(() => {
-      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
-      // Fallback: WhatsApp
-      const msg = encodeURIComponent(
-        '📦 *NEW PRODUCT — IBI Marketplace*\n' +
-        '━━━━━━━━━━━━━━━━━\n' +
-        '*Seller:* ' + session.sellerId + ' (' + session.bizName + ')\n' +
-        '*Title:* ' + title + '\n' +
-        '*Price:* ₹' + price + ' | *MRP:* ₹' + mrp + '\n' +
-        '*Category:* ' + cat + '\n' +
-        '*Brand:* ' + brand + '\n' +
-        '*Stock:* ' + stock + '\n' +
-        '*Desc:* ' + desc.substring(0,100) + '\n' +
-        '━━━━━━━━━━━━━━━━━\n' +
-        'Please add this product to website. 🙏'
-      );
-      window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-      showToast('📲 Sent via WhatsApp as fallback!', 'success');
-    });
+    },
+    10000
+  );
 }
 
-function loadSellerProducts() {
-  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
-  if (!session) return;
+function fallbackWhatsAppProduct(session, p) {
+  const msg = encodeURIComponent(
+    '📦 *NEW PRODUCT — IBI Marketplace*\n━━━━━━━━━━━━━━━━━\n' +
+    '*Seller:* ' + session.sellerId + ' (' + session.bizName + ')\n' +
+    '*Title:* ' + p.title + '\n*Price:* ₹' + p.price + ' | *MRP:* ₹' + p.mrp + '\n' +
+    '*Category:* ' + p.category + ' | *Brand:* ' + p.brand + '\n' +
+    '*Stock:* ' + p.stock + '\n*Image:* ' + p.img + '\n' +
+    '*Desc:* ' + p.description.substring(0,100) + '\n━━━━━━━━━━━━━━━━━\nPlease add this product. 🙏'
+  );
+  setTimeout(() => window.open('https://wa.me/918939414799?text=' + msg, '_blank'), 300);
+  showToast('📲 Sent via WhatsApp as backup!', 'success');
+}
 
-  const list = document.getElementById('sd_products_list');
-  list.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">⏳ Loading…</div>';
-
-  const params = new URLSearchParams({
-    action:   'getSellerProducts',
-    sellerId: session.sellerId,
-    pin:      session.pin
-  });
-
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success) { list.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">No products found. Add your first product!</div>'; return; }
-      const prods = res.products || [];
-      // Update stats
-      const el = document.getElementById('sd_prod_count');
-      if (el) el.textContent = prods.length;
-      const apprEl = document.getElementById('sd_approved_count');
-      if (apprEl) apprEl.textContent = prods.filter(p => p.status === 'Approved').length;
-
-      if (!prods.length) {
-        list.innerHTML = '<div style="text-align:center;padding:32px;"><div style="font-size:40px;margin-bottom:10px;">📦</div><div style="font-size:14px;color:#888;margin-bottom:14px;">No products yet.</div><button onclick="goToAddTab()" style="padding:10px 24px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">➕ Add First Product</button></div>';
-        return;
-      }
-
-      list.innerHTML = prods.map(p => {
-        const statusColor = p.status === 'Approved' ? '#16a34a' : p.status === 'Rejected' ? '#dc2626' : '#f97316';
-        const statusBg    = p.status === 'Approved' ? '#f0fdf4' : p.status === 'Rejected' ? '#fff0f0' : '#fff8f0';
-        const disc = p.mrp ? Math.round((1 - p.price/p.mrp)*100) : 0;
-        return `
-        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
-          <div style="display:flex;gap:12px;padding:12px;">
-            <img src="${p.img||''}" alt="${p.title}" onerror="this.style.display='none'"
-                 style="width:64px;height:64px;object-fit:contain;border-radius:8px;background:#f9f9f9;flex-shrink:0;padding:4px;">
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.title}</div>
-              <div style="font-size:12px;color:#555;margin-bottom:6px;">
-                ₹${parseFloat(p.price).toLocaleString('en-IN')}
-                ${disc > 0 ? '<span style="color:#c00;font-size:11px;margin-left:4px;">'+disc+'% off</span>' : ''}
-                &nbsp;·&nbsp; ${p.category}
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <span style="font-size:11px;font-weight:700;color:${statusColor};background:${statusBg};padding:2px 8px;border-radius:10px;">${p.status}</span>
-                ${p.status==='Rejected' && p.rejectReason ? `<span style="font-size:11px;color:#888;">Reason: ${p.rejectReason}</span>` : ''}
-                <span style="font-size:11px;color:#888;">ID: ${p.productId}</span>
-              </div>
-            </div>
-          </div>
-          <div style="display:flex;border-top:1px solid #f0f0f0;">
-            <button onclick="editProduct('${p.productId}')" style="flex:1;padding:9px;background:none;border:none;border-right:1px solid #f0f0f0;font-size:12px;font-weight:700;color:#7C3AED;cursor:pointer;">✏️ Edit</button>
-            <button onclick="pauseProduct('${p.productId}','${p.status}')" style="flex:1;padding:9px;background:none;border:none;border-right:1px solid #f0f0f0;font-size:12px;font-weight:700;color:#f97316;cursor:pointer;">${p.status==='Paused'?'▶️ Resume':'⏸️ Pause'}</button>
-            <button onclick="deleteProduct('${p.productId}')" style="flex:1;padding:9px;background:none;border:none;font-size:12px;font-weight:700;color:#dc2626;cursor:pointer;">🗑️ Delete</button>
-          </div>
-        </div>`;
-      }).join('');
-    })
-    .catch(() => {
-      // Fallback: show hardcoded products for this seller
-      const session2 = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
-      const sid = (session2 ? session2.sellerId : '').toLowerCase();
-      const prods = products.filter(p => p.seller === sid);
-      const el = document.getElementById('sd_prod_count');
-      if (el) el.textContent = prods.length;
-      list.innerHTML = prods.length
-        ? prods.map(p => `<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;">
-            <img src="${p.img}" style="width:48px;height:48px;object-fit:contain;border-radius:6px;background:#f9f9f9;" onerror="this.style.display='none'">
-            <div><div style="font-size:13px;font-weight:700;">${p.title.substring(0,50)}…</div>
-            <div style="font-size:12px;color:#555;">₹${p.price} &nbsp;·&nbsp; <span style="color:#16a34a;font-weight:700;">✓ Live</span></div></div>
-          </div>`).join('')
-        : '<div style="text-align:center;padding:24px;color:#888;">No products found.</div>';
-    });
+function scrollToField(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
 }
 
 function editProduct(productId) {
   const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) return;
-  showToast('⏳ Loading product details…');
+  showToast('⏳ Loading product…');
 
-  const params = new URLSearchParams({
-    action: 'getProduct', productId, sellerId: session.sellerId, pin: session.pin
-  });
-
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success) { showToast('❌ Could not load product'); return; }
+  ibi_fetch_simple({ action:'getProduct', productId, sellerId:session.sellerId, pin:session.pin },
+    function(res) {
+      if (!res || !res.success) { showToast('❌ Could not load product'); return; }
       const p = res.product;
       switchDashTab('add');
-      // Pre-fill form
       setTimeout(() => {
-        document.getElementById('ap_title').value   = p.title || '';
-        document.getElementById('ap_price').value   = p.price || '';
-        document.getElementById('ap_mrp').value     = p.mrp || '';
-        document.getElementById('ap_cat').value     = p.category || '';
-        document.getElementById('ap_brand').value   = p.brand || '';
-        document.getElementById('ap_img').value     = p.img || '';
+        document.getElementById('ap_title').value   = p.title       || '';
+        document.getElementById('ap_price').value   = p.price       || '';
+        document.getElementById('ap_mrp').value     = p.mrp         || '';
+        document.getElementById('ap_cat').value     = p.category    || '';
+        document.getElementById('ap_brand').value   = p.brand       || '';
+        document.getElementById('ap_img').value     = p.img         || '';
         document.getElementById('ap_desc').value    = p.description || '';
         document.getElementById('ap_bullets').value = (p.bullets||'').replace(/\|/g,'\n');
-        document.getElementById('ap_stock').value   = p.stock || '';
-        document.getElementById('ap_hsn').value     = p.hsn || '';
-        // Change button to Update
+        document.getElementById('ap_stock').value   = p.stock       || '';
+        document.getElementById('ap_hsn').value     = p.hsn         || '';
+        document.getElementById('ap_editing_id').value = productId;
+        document.getElementById('apFormTitle').textContent = '✏️ Edit Product';
         const btn = document.getElementById('ap_submit_btn');
         btn.textContent = 'Update Product →';
-        btn.onclick = () => updateProduct(productId);
+        btn.onclick = submitAddProduct;
+        previewImage(p.img);
+        updateDiscount();
+        updateProductPreview();
+        document.getElementById('ap_title_count').textContent = (p.title||'').length + '/200 characters';
       }, 100);
-    })
-    .catch(() => showToast('❌ Could not load. Check connection.'));
-}
-
-function updateProduct(productId) {
-  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
-  if (!session) return;
-  const btn = document.getElementById('ap_submit_btn');
-  btn.textContent = '⏳ Updating…'; btn.disabled = true;
-
-  const params = new URLSearchParams({
-    action:      'editProduct',
-    productId,
-    sellerId:    session.sellerId,
-    pin:         session.pin,
-    title:       document.getElementById('ap_title').value.trim(),
-    price:       document.getElementById('ap_price').value.trim(),
-    mrp:         document.getElementById('ap_mrp').value.trim(),
-    category:    document.getElementById('ap_cat').value.trim(),
-    brand:       document.getElementById('ap_brand').value.trim(),
-    img:         document.getElementById('ap_img').value.trim(),
-    description: document.getElementById('ap_desc').value.trim(),
-    bullets:     document.getElementById('ap_bullets').value.trim().split('\n').filter(Boolean).join('|'),
-    stock:       document.getElementById('ap_stock').value.trim(),
-    hsn:         document.getElementById('ap_hsn').value.trim()
-  });
-
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      btn.textContent = 'Submit for IBI Review →'; btn.disabled = false;
-      btn.onclick = submitAddProduct;
-      if (res.success) {
-        showToast('✅ Product updated! Pending re-approval.', 'success');
-        switchDashTab('products');
-      } else {
-        showToast('❌ ' + (res.message || 'Update failed'));
-      }
-    })
-    .catch(() => { btn.textContent = 'Submit for IBI Review →'; btn.disabled = false; btn.onclick = submitAddProduct; showToast('❌ Connection error'); });
+    },
+    6000
+  );
 }
 
 function pauseProduct(productId, currentStatus) {
   const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) return;
   const newStatus = currentStatus === 'Paused' ? 'Approved' : 'Paused';
-  const params = new URLSearchParams({ action:'pauseProduct', productId, sellerId:session.sellerId, pin:session.pin, newStatus });
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      if (res.success) { showToast(newStatus==='Paused' ? '⏸️ Product paused' : '▶️ Product resumed', 'success'); loadSellerProducts(); }
-      else showToast('❌ ' + (res.message||'Failed'));
-    })
-    .catch(() => showToast('❌ Connection error'));
+  ibi_fetch_simple({ action:'pauseProduct', productId, sellerId:session.sellerId, pin:session.pin, newStatus },
+    function(res) {
+      showToast(res && res.success ? (newStatus==='Paused'?'⏸️ Paused':'▶️ Resumed') : '❌ Failed');
+      if (res && res.success) loadSellerProducts();
+    }, 6000);
 }
 
 function deleteProduct(productId) {
-  if (!confirm('Are you sure you want to delete this product? This cannot be undone.')) return;
+  if (!confirm('Delete this product permanently? This cannot be undone.')) return;
   const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) return;
-  const params = new URLSearchParams({ action:'deleteProduct', productId, sellerId:session.sellerId, pin:session.pin });
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      if (res.success) { showToast('🗑️ Product deleted', 'success'); loadSellerProducts(); }
-      else showToast('❌ ' + (res.message||'Failed'));
-    })
-    .catch(() => showToast('❌ Connection error'));
+  ibi_fetch_simple({ action:'deleteProduct', productId, sellerId:session.sellerId, pin:session.pin },
+    function(res) {
+      showToast(res && res.success ? '🗑️ Product deleted' : '❌ Failed');
+      if (res && res.success) loadSellerProducts();
+    }, 6000);
 }
 
-// Load seller products when dashboard opens
-const _origRenderSellerDash = renderSellerDashboard;
-function renderSellerDashboard(res) {
-  _origRenderSellerDash(res);
-  setTimeout(() => { switchDashTab('products'); }, 200);
-}
-
-// ══════════════════════════════════════════════════════════
-// LOAD LIVE PRODUCTS FROM GOOGLE SHEETS on page start
-// ══════════════════════════════════════════════════════════
 function loadLiveProducts() {
-  const params = new URLSearchParams({ action: 'getApprovedProducts' });
-  fetch(window.IBI_SHEET_URL + '?' + params.toString())
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success || !res.products || !res.products.length) return;
-      // Map sheet products to our product format and append
-      const maxId = Math.max(...products.map(p => p.id || 0), 0);
+  ibi_fetch_simple({ action:'getApprovedProducts' },
+    function(res) {
+      if (!res || !res.success || !res.products || !res.products.length) return;
+      const maxId = Math.max(...products.map(p => p.id||0), 0);
       let newId = maxId + 1;
       res.products.forEach(sp => {
-        // Don't add duplicates
         if (products.find(p => p.title === sp.title && p.seller === sp.sellerId.toLowerCase())) return;
         products.push({
-          seller:      sp.sellerId.toLowerCase(),
-          id:          newId++,
-          category:    sp.category || 'home',
-          brand:       sp.brand || sp.bizName || 'IBI',
-          badge:       null,
-          title:       sp.title,
-          img:         sp.img,
-          imgs:        [sp.img],
-          price:       parseFloat(sp.price) || 0,
-          mrp:         parseFloat(sp.mrp) || parseFloat(sp.price) || 0,
-          rating:      4.5,
-          reviews:     Math.floor(Math.random()*100+10),
-          inStock:     (sp.stock > 0),
-          deal:        false,
-          description: sp.description || '',
-          bullets:     (sp.bullets || '').split('|').filter(Boolean),
-          fromSheet:   true,
-          productId:   sp.productId
+          seller:sp.sellerId.toLowerCase(), id:newId++, category:sp.category||'home',
+          brand:sp.brand||'IBI', badge:null, title:sp.title, img:sp.img, imgs:[sp.img],
+          price:parseFloat(sp.price)||0, mrp:parseFloat(sp.mrp)||parseFloat(sp.price)||0,
+          rating:4.5, reviews:Math.floor(Math.random()*100+10), inStock:(sp.stock>0),
+          deal:false, description:sp.description||'', bullets:(sp.bullets||'').split('|').filter(Boolean),
+          fromSheet:true, productId:sp.productId
         });
       });
-      // Re-render all product sections with new products
       allFilteredProducts = [...products];
-      renderAllProducts();
-      renderDeals();
-      renderFeatured();
-      renderNew();
-      renderSellers();
-      console.log('✅ Loaded ' + res.products.length + ' live products from Google Sheets');
-    })
-    .catch(e => console.log('Sheet products not loaded (offline or no sheet products yet):', e));
+      renderAllProducts(); renderDeals(); renderFeatured(); renderNew(); renderSellers();
+    }, 5000
+  );
 }
-
-
 
 
 // ══════════════════════════════════════════════════════════
@@ -4853,174 +5089,265 @@ init();
 </div>
 
 <!-- ===== SELLER DASHBOARD MODAL ===== -->
-<div id="sellerDashOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:10001;overflow-y:auto;align-items:flex-start;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:20px;max-width:700px;width:100%;margin:0 auto;overflow:hidden;">
-    <!-- Login panel -->
-    <div id="sellerDashLogin">
-      <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);padding:24px;color:#fff;position:relative;">
-        <button onclick="closeSellerDashboard()" style="position:absolute;top:14px;right:18px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:18px;width:32px;height:32px;border-radius:50%;cursor:pointer;">✕</button>
-        <div style="font-size:26px;">📊</div>
-        <div style="font-size:20px;font-weight:900;margin-top:6px;">Seller Dashboard</div>
-        <div style="font-size:13px;opacity:0.75;margin-top:4px;">Login to manage your store on IBI Marketplace</div>
+<div id="sellerDashOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#f0f2f2;z-index:10001;overflow-y:auto;">
+
+  <!-- ══ SELLER CENTRAL — Full Page ══ -->
+  <div style="min-height:100vh;">
+
+    <!-- Top Bar -->
+    <div id="scTopBar" style="background:#232F3E;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button onclick="closeSellerDashboard()" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px 8px;">←</button>
+        <div style="color:#fff;font-size:16px;font-weight:900;">🏪 IBI Seller Central</div>
       </div>
-      <div style="padding:28px;max-width:340px;margin:0 auto;">
-        <div style="margin-bottom:14px;">
-          <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Seller ID</label>
-          <input id="sd_seller_id" type="text" placeholder="e.g. ibi or iintelligencei" style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;" />
+      <div id="scSellerBadge" style="display:flex;align-items:center;gap:10px;">
+        <div style="text-align:right;">
+          <div style="color:#aaa;font-size:11px;">Logged in as</div>
+          <div style="color:#fff;font-size:13px;font-weight:700;" id="scSellerName">-</div>
         </div>
-        <div style="margin-bottom:20px;">
-          <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">PIN / Password</label>
-          <input id="sd_pin" type="password" placeholder="Enter your PIN" style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;" />
-        </div>
-        <button onclick="sellerDashLogin()" style="width:100%;padding:12px;background:#8B5CF6;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;">Login to Dashboard</button>
-        <p style="text-align:center;font-size:12px;color:#888;margin-top:16px;">Not a seller yet? <a href="#" onclick="closeSellerDashboard();openSellerRegistration();return false;" style="color:#f97316;font-weight:700;">Register Now →</a></p>
+        <button onclick="closeSellerDashboard()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;">Sign Out</button>
       </div>
     </div>
-    <!-- Dashboard content (hidden until login) -->
-    <div id="sellerDashContent" style="display:none;">
 
-      <!-- Header bar -->
-      <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);padding:18px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5;">
-        <div>
-          <div style="font-size:12px;opacity:.7;">Welcome back,</div>
-          <div style="font-size:18px;font-weight:900;" id="sd_seller_name"></div>
+    <!-- ══ LOGIN PANEL ══ -->
+    <div id="sellerDashLogin" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:20px;">
+      <div style="background:#fff;border-radius:12px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);">
+        <div style="background:linear-gradient(135deg,#232F3E,#1e1b4b);padding:28px;color:#fff;text-align:center;">
+          <div style="font-size:40px;margin-bottom:8px;">🔐</div>
+          <div style="font-size:20px;font-weight:900;">Seller Central Login</div>
+          <div style="font-size:13px;opacity:.75;margin-top:4px;">Manage your IBI Marketplace store</div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span id="sd_status_badge" style="font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;">✓ Approved</span>
-          <button onclick="closeSellerDashboard()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;width:32px;height:32px;border-radius:50%;cursor:pointer;">✕</button>
+        <div style="padding:28px;">
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Seller ID</label>
+            <input id="sd_seller_id" type="text" placeholder="e.g. IBI421257" style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:15px;box-sizing:border-box;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"/>
+          </div>
+          <div style="margin-bottom:8px;">
+            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">PIN</label>
+            <div style="position:relative;">
+              <input id="sd_pin" type="password" placeholder="Your PIN" style="width:100%;padding:11px 44px 11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:15px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')sellerDashLogin()"/>
+              <button onclick="var i=document.getElementById('sd_pin');i.type=i.type==='password'?'text':'password'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#888;">👁</button>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#888;margin-bottom:20px;">Default PIN = last 6 digits of Seller ID + <strong>@IBI</strong><br>e.g. IBI421257 → PIN: <strong>421257@IBI</strong></div>
+          <button onclick="sellerDashLogin()" id="scLoginBtn" style="width:100%;padding:13px;background:#f97316;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">Login to Seller Central →</button>
+          <p style="text-align:center;font-size:12px;color:#888;margin-top:14px;">Not a seller? <a href="#" onclick="closeSellerDashboard();openSellerRegistration();return false;" style="color:#f97316;font-weight:700;">Register Now →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DASHBOARD CONTENT ══ -->
+    <div id="sellerDashContent" style="display:none;padding:20px;max-width:1200px;margin:0 auto;">
+
+      <!-- Stats Row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;" id="scStatsRow">
+        <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;">
+          <div style="font-size:26px;font-weight:900;color:#8B5CF6;" id="sd_prod_count">0</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Total Products</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;">
+          <div style="font-size:26px;font-weight:900;color:#16a34a;" id="sd_approved_count">0</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Live on Site</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;">
+          <div style="font-size:26px;font-weight:900;color:#f97316;" id="sd_pending_count">0</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Pending Review</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;">
+          <div style="font-size:26px;font-weight:900;color:#0ea5e9;" id="sd_rating">4.8</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Seller Rating</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);text-align:center;">
+          <div style="font-size:26px;font-weight:900;color:#131921;" id="sd_since">-</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Member Since</div>
         </div>
       </div>
 
-      <!-- Tab navigation -->
-      <div style="display:flex;border-bottom:2px solid #eee;background:#fff;position:sticky;top:57px;z-index:4;">
-        <button onclick="switchDashTab('products')" id="tab_products" style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;color:#8B5CF6;border-bottom:2px solid #8B5CF6;margin-bottom:-2px;">📦 My Products</button>
-        <button onclick="switchDashTab('add')"      id="tab_add"      style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;color:#888;">➕ Add Product</button>
-        <button onclick="switchDashTab('stats')"    id="tab_stats"    style="flex:1;padding:12px 8px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;color:#888;">📊 Stats</button>
+      <!-- Tab Bar -->
+      <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px;overflow:hidden;">
+        <div style="display:flex;border-bottom:2px solid #eee;overflow-x:auto;">
+          <button onclick="switchDashTab('products')" id="tab_products" class="sc-tab sc-tab-active">📦 My Products</button>
+          <button onclick="switchDashTab('add')"      id="tab_add"      class="sc-tab">➕ Add Product</button>
+          <button onclick="switchDashTab('orders')"   id="tab_orders"   class="sc-tab">🛒 Orders</button>
+          <button onclick="switchDashTab('profile')"  id="tab_profile"  class="sc-tab">👤 Profile</button>
+        </div>
       </div>
 
       <!-- TAB: My Products -->
-      <div id="dashTab_products" style="padding:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div style="font-size:14px;font-weight:800;color:#1a1a1a;">Your Products</div>
-          <button onclick="loadSellerProducts()" style="font-size:12px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:5px 12px;cursor:pointer;">🔄 Refresh</button>
+      <div id="dashTab_products">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <div style="font-size:16px;font-weight:800;color:#131921;">Your Products</div>
+          <div style="display:flex;gap:8px;">
+            <input id="scProdSearch" type="text" placeholder="Search products..." oninput="filterScProducts(this.value)" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:180px;"/>
+            <button onclick="loadSellerProducts()" style="padding:7px 14px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;">🔄 Refresh</button>
+            <button onclick="switchDashTab('add')" style="padding:7px 14px;background:#f97316;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">➕ Add New</button>
+          </div>
         </div>
-        <div id="sd_products_list" style="display:grid;gap:12px;">
-          <div style="text-align:center;padding:32px;color:#888;font-size:14px;">⏳ Loading your products…</div>
+        <div id="sd_products_list"></div>
+      </div>
+
+      <!-- TAB: Add / Edit Product -->
+      <div id="dashTab_add" style="display:none;">
+        <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;">
+          <div style="background:#232F3E;padding:16px 20px;color:#fff;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:16px;font-weight:800;" id="apFormTitle">➕ Add New Product</div>
+              <div style="font-size:12px;opacity:.75;margin-top:2px;">Fill all details → Submit → IBI approves → Auto-published</div>
+            </div>
+            <button onclick="resetAddForm()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Reset Form</button>
+          </div>
+          <div style="padding:20px;display:grid;gap:16px;">
+
+            <!-- Product Title -->
+            <div>
+              <label class="sc-label">Product Title <span style="color:#c00;">*</span></label>
+              <input id="ap_title" type="text" placeholder="Enter full product name (be descriptive for better search)" class="sc-input" maxlength="200"/>
+              <div id="ap_title_count" style="font-size:11px;color:#888;margin-top:3px;text-align:right;">0/200 characters</div>
+            </div>
+
+            <!-- Category + Brand -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <label class="sc-label">Category <span style="color:#c00;">*</span></label>
+                <select id="ap_cat" class="sc-input">
+                  <option value="">— Select Category —</option>
+                  <option value="electronics">📱 Electronics</option>
+                  <option value="clothing">👗 Clothing &amp; Fashion</option>
+                  <option value="home">🏠 Home &amp; Kitchen</option>
+                  <option value="grocery">🛒 Grocery &amp; Food</option>
+                  <option value="beauty">💄 Beauty &amp; Health</option>
+                  <option value="jewellery">💍 Jewellery</option>
+                  <option value="books">📚 Books &amp; Media</option>
+                  <option value="sports">🏋️ Sports &amp; Fitness</option>
+                </select>
+              </div>
+              <div>
+                <label class="sc-label">Brand Name <span style="color:#c00;">*</span></label>
+                <input id="ap_brand" type="text" placeholder="Your brand name" class="sc-input"/>
+              </div>
+            </div>
+
+            <!-- Price + MRP + Stock -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+              <div>
+                <label class="sc-label">Selling Price (₹) <span style="color:#c00;">*</span></label>
+                <input id="ap_price" type="number" placeholder="e.g. 499" class="sc-input" min="1" oninput="updateDiscount()"/>
+              </div>
+              <div>
+                <label class="sc-label">MRP / Original Price (₹) <span style="color:#c00;">*</span></label>
+                <input id="ap_mrp" type="number" placeholder="e.g. 624" class="sc-input" min="1" oninput="updateDiscount()"/>
+              </div>
+              <div>
+                <label class="sc-label">Stock Quantity <span style="color:#c00;">*</span></label>
+                <input id="ap_stock" type="number" placeholder="e.g. 50" class="sc-input" min="0"/>
+              </div>
+            </div>
+            <!-- Discount preview -->
+            <div id="discountPreview" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;font-size:13px;color:#16a34a;font-weight:700;"></div>
+
+            <!-- Product Image -->
+            <div>
+              <label class="sc-label">Product Image URL <span style="color:#c00;">*</span></label>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <div style="flex:1;">
+                  <input id="ap_img" type="url" placeholder="https://your-image.jpg" class="sc-input" oninput="previewImage(this.value)"/>
+                  <div style="font-size:11px;color:#888;margin-top:4px;">
+                    💡 Upload your image free at <a href="https://imgur.com/upload" target="_blank" style="color:#7C3AED;">imgur.com</a> or <a href="https://postimages.org/" target="_blank" style="color:#7C3AED;">postimages.org</a> → paste the direct link here
+                  </div>
+                </div>
+                <div id="imgPreviewBox" style="width:80px;height:80px;border:2px dashed #ddd;border-radius:8px;overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;font-size:24px;">🖼️</div>
+              </div>
+            </div>
+
+            <!-- Additional Images -->
+            <div>
+              <label class="sc-label">Additional Image URLs (optional — one per line)</label>
+              <textarea id="ap_imgs" rows="3" placeholder="https://image2.jpg&#10;https://image3.jpg" class="sc-input" style="resize:vertical;"></textarea>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="sc-label">Product Description <span style="color:#c00;">*</span></label>
+              <textarea id="ap_desc" rows="4" placeholder="Write a detailed product description (minimum 50 characters). Include material, size, uses, benefits..." class="sc-input" style="resize:vertical;" oninput="document.getElementById('ap_desc_count').textContent=this.value.length+' characters'"></textarea>
+              <div id="ap_desc_count" style="font-size:11px;color:#888;margin-top:3px;text-align:right;">0 characters</div>
+            </div>
+
+            <!-- Key Features / Bullets -->
+            <div>
+              <label class="sc-label">Key Features / Bullet Points <span style="color:#c00;">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(one per line, min 3)</span></label>
+              <textarea id="ap_bullets" rows="5" placeholder="Eco-friendly product from Kanyakumari, Tamil Nadu&#10;Free delivery all across India&#10;100% authentic product&#10;Quality assured by India Business International" class="sc-input" style="resize:vertical;"></textarea>
+            </div>
+
+            <!-- HSN + Optional fields -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <label class="sc-label">HSN Code <span style="font-size:11px;color:#888;font-weight:400;">(optional)</span></label>
+                <input id="ap_hsn" type="text" placeholder="e.g. 4419" class="sc-input"/>
+              </div>
+              <div>
+                <label class="sc-label">Product Tags <span style="font-size:11px;color:#888;font-weight:400;">(comma separated, optional)</span></label>
+                <input id="ap_tags" type="text" placeholder="e.g. eco, handmade, organic" class="sc-input"/>
+              </div>
+            </div>
+
+            <!-- Product Preview -->
+            <div id="productPreviewCard" style="display:none;background:#fdf8ff;border:2px solid #8B5CF6;border-radius:12px;padding:16px;">
+              <div style="font-size:13px;font-weight:800;color:#8B5CF6;margin-bottom:10px;">👁️ Product Preview</div>
+              <div style="display:flex;gap:14px;align-items:flex-start;">
+                <img id="previewImg" src="" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#f9f9f9;padding:4px;" onerror="this.style.display='none'"/>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:#1a1a1a;" id="previewTitle">-</div>
+                  <div style="font-size:13px;color:#888;margin-top:2px;" id="previewBrand">-</div>
+                  <div style="margin-top:6px;"><span style="font-size:18px;font-weight:900;color:#1a1a1a;" id="previewPrice">₹0</span> <span style="font-size:12px;color:#888;text-decoration:line-through;" id="previewMrp"></span> <span style="font-size:12px;background:#c00;color:#fff;padding:2px 6px;border-radius:4px;font-weight:700;" id="previewDisc"></span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:14px;font-size:12px;color:#555;line-height:1.8;">
+              <strong style="color:#16a34a;">✓ After submission:</strong><br>
+              • IBI reviews your product within <strong>24 hours</strong><br>
+              • Approved products go <strong>live automatically</strong> on the website<br>
+              • You will receive an <strong>email notification</strong> when approved<br>
+              • Rejected products can be edited and resubmitted
+            </div>
+
+            <input type="hidden" id="ap_editing_id" value=""/>
+
+            <button onclick="submitAddProduct()" id="ap_submit_btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#232F3E,#1e1b4b);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.3px;">
+              Submit Product for IBI Review →
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- TAB: Add Product -->
-      <div id="dashTab_add" style="padding:16px;display:none;">
-        <div style="font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">➕ Add New Product</div>
-        <div style="font-size:12px;color:#888;margin-bottom:16px;">Fill all details → Submit → IBI reviews & approves within 24hrs → Auto-published on site</div>
-
-        <div style="display:grid;gap:12px;">
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Title *</label>
-            <input id="ap_title" type="text" placeholder="Full product name (be descriptive)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+      <!-- TAB: Orders -->
+      <div id="dashTab_orders" style="display:none;">
+        <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:24px;text-align:center;">
+          <div style="font-size:48px;margin-bottom:14px;">🛒</div>
+          <div style="font-size:18px;font-weight:800;color:#131921;margin-bottom:8px;">Orders Management</div>
+          <p style="font-size:14px;color:#666;max-width:400px;margin:0 auto 20px;">All orders for your products are sent to IBI WhatsApp. IBI notifies you for each order via WhatsApp and Email.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:360px;margin:0 auto;">
+            <a href="https://wa.me/918939414799" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13px;text-decoration:none;">💬 WhatsApp IBI</a>
+            <a href="mailto:indiabusinessinternational@gmail.com" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#131921;color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13px;text-decoration:none;">📧 Email IBI</a>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Selling Price (₹) *</label>
-              <input id="ap_price" type="number" placeholder="e.g. 499" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">MRP / Original Price (₹) *</label>
-              <input id="ap_mrp" type="number" placeholder="e.g. 624" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Category *</label>
-              <select id="ap_cat" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;">
-                <option value="">Select Category</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing &amp; Fashion</option>
-                <option value="home">Home &amp; Kitchen</option>
-                <option value="grocery">Grocery &amp; Food</option>
-                <option value="beauty">Beauty &amp; Health</option>
-                <option value="jewellery">Jewellery</option>
-                <option value="books">Books &amp; Media</option>
-                <option value="sports">Sports &amp; Fitness</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Brand *</label>
-              <input id="ap_brand" type="text" placeholder="Your brand name" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            </div>
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Image URL *</label>
-            <input id="ap_img" type="url" placeholder="https://your-image-link.jpg (upload to Wix/Imgur/Cloudinary first)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            <div style="font-size:11px;color:#888;margin-top:4px;">💡 Tip: Upload your image to <a href="https://imgur.com" target="_blank" style="color:#7C3AED;">imgur.com</a> and paste the direct image link here.</div>
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Description *</label>
-            <textarea id="ap_desc" rows="3" placeholder="Describe your product in detail (at least 50 characters)" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Key Features (one per line) *</label>
-            <textarea id="ap_bullets" rows="4" placeholder="Eco-friendly product&#10;Free delivery all across India&#10;100% authentic product&#10;Quality assured" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Stock Quantity *</label>
-              <input id="ap_stock" type="number" placeholder="e.g. 50" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:4px;">HSN Code (optional)</label>
-              <input id="ap_hsn" type="text" placeholder="e.g. 4419" style="width:100%;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-            </div>
-          </div>
-
-          <div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:12px;font-size:12px;color:#555;">
-            <strong style="color:#16a34a;">✓ What happens after you submit:</strong><br>
-            1. Your product goes to IBI for review (Pending status)<br>
-            2. IBI approves or requests changes within 24 hours<br>
-            3. Once approved, it auto-publishes on the website<br>
-            4. You can edit or pause the product anytime from this dashboard
-          </div>
-
-          <button onclick="submitAddProduct()" id="ap_submit_btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;">
-            Submit for IBI Review →
-          </button>
         </div>
       </div>
 
-      <!-- TAB: Stats -->
-      <div id="dashTab_stats" style="padding:16px;display:none;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-          <div style="background:#fdf8ff;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #8B5CF6;">
-            <div style="font-size:28px;font-weight:900;color:#8B5CF6;" id="sd_prod_count">0</div>
-            <div style="font-size:12px;color:#666;margin-top:4px;">Total Products</div>
+      <!-- TAB: Profile -->
+      <div id="dashTab_profile" style="display:none;">
+        <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;">
+          <div style="background:#232F3E;padding:20px;color:#fff;">
+            <div style="font-size:16px;font-weight:800;margin-bottom:4px;">👤 Seller Profile</div>
+            <div style="font-size:13px;opacity:.75;">Your IBI Marketplace account details</div>
           </div>
-          <div style="background:#fff8f0;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #f97316;">
-            <div style="font-size:28px;font-weight:900;color:#f97316;" id="sd_approved_count">0</div>
-            <div style="font-size:12px;color:#666;margin-top:4px;">Live on Site</div>
-          </div>
-          <div style="background:#f0fdf4;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #16a34a;">
-            <div style="font-size:28px;font-weight:900;color:#16a34a;" id="sd_rating">4.8</div>
-            <div style="font-size:12px;color:#666;margin-top:4px;">Seller Rating</div>
-          </div>
-          <div style="background:#f0f9ff;border-radius:12px;padding:16px;text-align:center;border:1.5px solid #0ea5e9;">
-            <div style="font-size:28px;font-weight:900;color:#0ea5e9;" id="sd_since">-</div>
-            <div style="font-size:12px;color:#666;margin-top:4px;">Member Since</div>
-          </div>
-        </div>
-        <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;">
-          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px;">Quick Actions</div>
-          <div style="display:grid;gap:8px;">
-            <button onclick="switchDashTab('add')" style="width:100%;padding:10px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">➕ Add New Product</button>
-            <button onclick="window.open('https://wa.me/918939414799','_blank')" style="width:100%;padding:10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">💬 Contact IBI Support</button>
-            <button onclick="customerSignOut();closeSellerDashboard();" style="width:100%;padding:10px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">🚪 Sign Out</button>
-          </div>
+          <div id="scProfileContent" style="padding:20px;"></div>
         </div>
       </div>
 
     </div><!-- end sellerDashContent -->
-  </div>
+  </div><!-- end full page -->
 </div>
-
 
 <!-- ═══════════════════════════════════════════════════════ -->
 <!-- CUSTOMER AUTH MODAL (Login / Register)                 -->
