@@ -2485,13 +2485,9 @@ function submitSellerRegistration() {
     about:     data.about
   });
 
-  fetch(window.IBI_SHEET_URL + '?' + params.toString(), {
-    method: 'GET',
-    redirect: 'follow'
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (btn) { btn.textContent = origText; btn.disabled = false; }
+  ibi_fetch(Object.fromEntries(params),
+    function(res) {
+      if (btn) { btn.textContent = origText; btn.disabled = false; }
     if (res.alreadyExists) {
       showToast('⚠️ Email already registered. Status: ' + res.status);
       return;
@@ -2527,7 +2523,8 @@ function submitSellerRegistration() {
     showToast('✅ Sent via WhatsApp! IBI will contact you soon.', 'success');
     const msg = encodeURIComponent('🏪 *NEW SELLER REG*\nBiz: '+data.bizName+'\nOwner: '+data.ownerName+'\nMobile: +91'+data.mobile+'\nEmail: '+data.email);
     window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-  });
+  }
+  );
 }
 
 function showSellerRegSuccess(sellerId, bizName) {
@@ -2599,49 +2596,23 @@ function sellerDashLogin() {
 
   const url = window.IBI_SHEET_URL + '?action=checkStatus&sellerId=' + encodeURIComponent(sellerId) + '&pin=' + encodeURIComponent(pin);
 
-  // Use script-tag JSONP approach — works on all mobile browsers, no CORS issues
-  window._sellerLoginCallback = function(res) {
-    if (btn) { btn.textContent = origText; btn.disabled = false; }
-    window._sellerLoginCallback = null;
-    const old = document.getElementById('_gsScript');
-    if (old) old.remove();
-    handleSellerLoginResponse(res, sellerId, pin);
-  };
-
-  // Try fetch first (faster), fallback to script tag
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-
-  fetch(url, { signal: controller.signal, redirect: 'follow' })
-    .then(r => {
-      clearTimeout(timeout);
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(res => {
+  // Use universal ibi_fetch (XHR + JSONP fallback — works on all devices)
+  ibi_fetch(
+    { action: 'checkStatus', sellerId, pin },
+    function(res) {
       if (btn) { btn.textContent = origText; btn.disabled = false; }
-      window._sellerLoginCallback = null;
       handleSellerLoginResponse(res, sellerId, pin);
-    })
-    .catch(() => {
-      clearTimeout(timeout);
-      // Fallback: inject script tag (bypasses CORS completely)
-      const s = document.createElement('script');
-      s.id = '_gsScript';
-      s.src = url + '&callback=_sellerLoginCallback';
-      s.onerror = function() {
-        if (btn) { btn.textContent = origText; btn.disabled = false; }
-        window._sellerLoginCallback = null;
-        s.remove();
-        showDashMessage('⚠️', 'Connection Failed',
-          'Could not reach IBI server. Please check your internet and try again.<br><br>' +
-          'If the problem persists, contact IBI:<br>' +
-          '<a href="tel:+918939414799" style="color:#7C3AED;font-weight:700;">+91 89394 14799</a> &nbsp;|&nbsp; ' +
-          '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">WhatsApp</a>',
-          '#f97316');
-      };
-      document.head.appendChild(s);
-    });
+    },
+    function(err) {
+      if (btn) { btn.textContent = origText; btn.disabled = false; }
+      showDashMessage('⚠️', 'Connection Failed',
+        'Could not reach IBI server.<br><br>' +
+        'Please ensure:<br>1. Your internet is working<br>2. The Apps Script is deployed<br><br>' +
+        'Contact IBI: <a href="tel:+918939414799" style="color:#7C3AED;font-weight:700;">+91 89394 14799</a> &nbsp;|&nbsp; ' +
+        '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">WhatsApp</a>',
+        '#f97316');
+    }
+  );
 }
 
 function handleSellerLoginResponse(res, sellerId, pin) {
@@ -3731,6 +3702,61 @@ function renderTrackingSteps(orderId, currentStatus, order) {
         ← Search Another Order
       </button>
     </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// UNIVERSAL GOOGLE SHEETS FETCH (works on all browsers/mobile)
+// ══════════════════════════════════════════════════════════
+function ibi_fetch(params, onSuccess, onError) {
+  const url = window.IBI_SHEET_URL + '?' + new URLSearchParams(params).toString();
+
+  // Method 1: XMLHttpRequest (handles Google redirects better than fetch on mobile)
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 10000;
+  xhr.onload = function() {
+    try {
+      const res = JSON.parse(xhr.responseText);
+      onSuccess(res);
+    } catch(e) {
+      // Method 2: JSONP fallback
+      ibi_fetch_jsonp(url, onSuccess, onError);
+    }
+  };
+  xhr.onerror = function() {
+    ibi_fetch_jsonp(url, onSuccess, onError);
+  };
+  xhr.ontimeout = function() {
+    ibi_fetch_jsonp(url, onSuccess, onError);
+  };
+  try { xhr.send(); }
+  catch(e) { ibi_fetch_jsonp(url, onSuccess, onError); }
+}
+
+function ibi_fetch_jsonp(url, onSuccess, onError) {
+  const cbName = '_ibi_cb_' + Date.now();
+  const script = document.createElement('script');
+  const timer = setTimeout(function() {
+    window[cbName] = null;
+    if (script.parentNode) script.remove();
+    if (onError) onError(new Error('Timeout'));
+  }, 12000);
+
+  window[cbName] = function(res) {
+    clearTimeout(timer);
+    window[cbName] = null;
+    script.remove();
+    onSuccess(res);
+  };
+
+  script.src = url + '&callback=' + cbName;
+  script.onerror = function() {
+    clearTimeout(timer);
+    window[cbName] = null;
+    script.remove();
+    if (onError) onError(new Error('Script load failed'));
+  };
+  document.head.appendChild(script);
 }
 
 // ========== INIT ==========
