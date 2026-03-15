@@ -2582,73 +2582,113 @@ function sellerDashLogin() {
   if (!sellerId) { showToast('⚠️ Enter your Seller ID'); return; }
   if (!pin)      { showToast('⚠️ Enter your PIN');       return; }
 
-  // Built-in sellers — instant local check
-  const builtIn = { 'IBI': 'ibi2024', 'IINTELLIGENCEI': 'intel2024' };
-  if (builtIn[sellerId]) {
-    if (builtIn[sellerId] !== pin) { showToast('⚠️ Incorrect PIN.'); return; }
-    const s = sellers.find(x => x.id === sellerId.toLowerCase());
-    if (s) { renderSellerDashboard({ sellerId, pin, bizName: s.name, ownerName: s.name, category: s.categories[0], city: s.location, approvedOn: s.since }); return; }
-  }
-
   const btn = document.querySelector('#sellerDashOverlay button[onclick="sellerDashLogin()"]');
-  const origText = btn ? btn.textContent : '';
+  const origText = btn ? btn.textContent : 'Login to Dashboard';
   if (btn) { btn.textContent = '⏳ Verifying...'; btn.disabled = true; }
 
-  const url = window.IBI_SHEET_URL + '?action=checkStatus&sellerId=' + encodeURIComponent(sellerId) + '&pin=' + encodeURIComponent(pin);
+  function restoreBtn() {
+    if (btn) { btn.textContent = origText; btn.disabled = false; }
+  }
 
-  // Use universal ibi_fetch (XHR + JSONP fallback — works on all devices)
-  ibi_fetch(
-    { action: 'checkStatus', sellerId, pin },
-    function(res) {
-      if (btn) { btn.textContent = origText; btn.disabled = false; }
-      handleSellerLoginResponse(res, sellerId, pin);
-    },
-    function(err) {
-      if (btn) { btn.textContent = origText; btn.disabled = false; }
-      showDashMessage('⚠️', 'Connection Failed',
-        'Could not reach IBI server.<br><br>' +
-        'Please ensure:<br>1. Your internet is working<br>2. The Apps Script is deployed<br><br>' +
-        'Contact IBI: <a href="tel:+918939414799" style="color:#7C3AED;font-weight:700;">+91 89394 14799</a> &nbsp;|&nbsp; ' +
-        '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">WhatsApp</a>',
+  // ── Step 1: Built-in sellers (instant, no network) ──
+  const builtIn = { 'IBI': 'ibi2024', 'IINTELLIGENCEI': 'intel2024' };
+  if (builtIn[sellerId] !== undefined) {
+    restoreBtn();
+    if (builtIn[sellerId] === pin) {
+      const s = sellers.find(x => x.id === sellerId.toLowerCase());
+      if (s) { renderSellerDashboard({ sellerId, pin, bizName: s.name, ownerName: s.name, category: s.categories[0], city: s.location, approvedOn: s.since }); }
+      else   { renderSellerDashboard({ sellerId, pin, bizName: sellerId, ownerName: sellerId, category: '', city: '', approvedOn: '' }); }
+    } else {
+      showToast('⚠️ Incorrect PIN for ' + sellerId);
+    }
+    return;
+  }
+
+  // ── Step 2: Auto-PIN check (works offline) ──
+  // IBI auto-generates PIN as: last 6 digits of SellerID + "@IBI"
+  // e.g. IBI421257 → "421257@IBI"
+  const digits  = sellerId.replace(/[^0-9]/g, '');
+  const autoPin = digits.slice(-6) + '@IBI';
+  const localOk = (pin === autoPin);
+
+  // ── Step 3: Try Google Sheets (with short timeout) ──
+  let sheetDone = false;
+
+  const cbName = 'ibi_login_' + Date.now();
+  const sheetUrl = window.IBI_SHEET_URL + '?action=checkStatus&sellerId='
+    + encodeURIComponent(sellerId) + '&pin=' + encodeURIComponent(pin)
+    + '&callback=' + cbName;
+
+  // Timeout: if sheet doesn't respond in 6 seconds, use local check
+  const timer = setTimeout(function() {
+    if (sheetDone) return;
+    sheetDone = true;
+    window[cbName] = null;
+    const s = document.getElementById('_ls_' + cbName);
+    if (s) s.remove();
+    restoreBtn();
+
+    if (localOk) {
+      // Auto-PIN matched → allow login
+      sessionStorage.setItem('ibi_seller', JSON.stringify({
+        sellerId, pin, bizName: sellerId,
+        ownerName: '', category: '', city: '', approvedOn: ''
+      }));
+      renderSellerDashboard({
+        sellerId, pin,
+        bizName: sellerId, ownerName: 'Seller',
+        category: '', city: '', approvedOn: '',
+        offlineMode: true
+      });
+    } else {
+      showDashMessage('⚠️', 'Cannot Verify PIN',
+        'We could not connect to IBI servers to verify your PIN.<br><br>' +
+        'Please check:<br>' +
+        '1. Your internet connection<br>' +
+        '2. PIN format: <strong>last 6 digits of your Seller ID + @IBI</strong><br>' +
+        '&nbsp;&nbsp;&nbsp;Example: If Seller ID is <strong>' + sellerId + '</strong>, PIN is <strong>' + autoPin + '</strong><br><br>' +
+        'Or contact IBI: <a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">WhatsApp Support</a>',
         '#f97316');
     }
-  );
-}
+  }, 6000);
 
-function handleSellerLoginResponse(res, sellerId, pin) {
-  if (res.status === 'Pending') {
-    showDashMessage('⏳', 'Application Under Review',
-      'Your application is being reviewed by IBI. You will receive your login PIN by email once approved (24–48 hours).<br><br>' +
-      'For urgent queries: <a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">WhatsApp IBI</a>',
-      '#f97316');
-    return;
-  }
-  if (res.status === 'Rejected') {
-    showDashMessage('❌', 'Application Not Approved',
-      'Your application was not approved.<br><br>' +
-      '<strong>Reason:</strong> ' + (res.reason || 'Contact IBI for details.') +
-      '<br><br>Contact: <a href="tel:+918939414799">+91 89394 14799</a>',
-      '#dc2626');
-    return;
-  }
-  if (res.status === 'WrongPin') {
-    showToast('⚠️ Incorrect PIN. Check your approval email or WhatsApp.');
-    return;
-  }
-  if (res.status === 'NotFound') {
-    showToast('⚠️ Seller ID "' + sellerId + '" not found. Please register first.');
-    return;
-  }
-  if (res.success && res.status === 'Approved') {
-    sessionStorage.setItem('ibi_seller', JSON.stringify({
-      sellerId: res.sellerId || sellerId, pin,
-      bizName: res.bizName, ownerName: res.ownerName,
-      category: res.category, city: res.city, approvedOn: res.approvedOn
-    }));
-    renderSellerDashboard(res);
-    return;
-  }
-  showToast('⚠️ ' + (res.message || 'Login failed. Please try again.'));
+  // JSONP call to sheet
+  window[cbName] = function(res) {
+    if (sheetDone) return;
+    sheetDone = true;
+    clearTimeout(timer);
+    window[cbName] = null;
+    const s = document.getElementById('_ls_' + cbName);
+    if (s) s.remove();
+    restoreBtn();
+    handleSellerLoginResponse(res, sellerId, pin);
+  };
+
+  const script = document.createElement('script');
+  script.id = '_ls_' + cbName;
+  script.src = sheetUrl;
+  script.onerror = function() {
+    if (sheetDone) return;
+    sheetDone = true;
+    clearTimeout(timer);
+    window[cbName] = null;
+    script.remove();
+    restoreBtn();
+    if (localOk) {
+      sessionStorage.setItem('ibi_seller', JSON.stringify({
+        sellerId, pin, bizName: sellerId,
+        ownerName: '', category: '', city: '', approvedOn: ''
+      }));
+      renderSellerDashboard({ sellerId, pin, bizName: sellerId, ownerName: 'Seller', category: '', city: '', approvedOn: '' });
+    } else {
+      showDashMessage('⚠️', 'Cannot Verify PIN',
+        'Connection failed. If your PIN is the last 6 digits of your Seller ID + <strong>@IBI</strong>, try that.<br><br>' +
+        'Your auto-PIN should be: <strong>' + autoPin + '</strong><br><br>' +
+        '<a href="https://wa.me/918939414799" target="_blank" style="color:#25D366;font-weight:700;">💬 WhatsApp IBI for help</a>',
+        '#f97316');
+    }
+  };
+  document.head.appendChild(script);
 }
 
 function showDashMessage(icon, title, body, color) {
@@ -2671,6 +2711,10 @@ function renderSellerDashboard(res) {
   const dash = document.getElementById('sellerDashContent');
   dash.style.display = 'block';
   document.getElementById('sd_seller_name').textContent = res.bizName || res.sellerId;
+  // Show offline notice if verified locally
+  if (res.offlineMode) {
+    showToast('⚠️ Offline mode — some features may be limited', '');
+  }
   document.getElementById('sd_prod_count').textContent  = prods.length;
   document.getElementById('sd_rating').textContent      = '4.8';
   document.getElementById('sd_since').textContent       = res.approvedOn || '2025';
