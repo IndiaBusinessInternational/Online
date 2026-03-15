@@ -498,7 +498,7 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ══════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════
@@ -529,20 +529,14 @@ function doAdminLogin() {
     document.getElementById('loginError').style.display = 'block';
   }
 }
-document.getElementById('adminPass').addEventListener('keydown', e => { if(e.key==='Enter') doAdminLogin(); });
+// keydown wired in DOMContentLoaded below
 
 function adminLogout() {
   sessionStorage.removeItem('ibi_admin');
   location.reload();
 }
 
-// Auto-check session
-if (sessionStorage.getItem('ibi_admin')) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  startClock();
-  setTimeout(loadAll, 100);
-}
+// auto-login handled in DOMContentLoaded below
 
 // ══════════════════════════════════════════════════════════
 // CLOCK
@@ -1142,4 +1136,26 @@ function saveSettings() {
 // ══════════════════════════════════════════════════════════
 function toast(msg) {
   const el = document.getElementById('adminToast');
-  el.textContent = ms
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => { el.style.display='none'; }, 3000);
+}
+
+// ── Init on load ──
+window.addEventListener('DOMContentLoaded', function() {
+  loadAnnHistory();
+  // Wire up Enter key on password field safely
+  const passEl = document.getElementById('adminPass');
+  if (passEl) passEl.addEventListener('keydown', function(e) { if(e.key==='Enter') doAdminLogin(); });
+  // Auto-login if session exists
+  if (sessionStorage.getItem('ibi_admin')) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    startClock();
+    setTimeout(loadAll, 100);
+  }
+});
+</script>
+</body>
+</html>
