@@ -172,7 +172,7 @@
     <div class="login-title">IBI Admin Dashboard</div>
     <div class="login-sub">India Business International · Restricted Access</div>
     <input class="login-input" type="text" id="adminUser" placeholder="Admin Username" autocomplete="off"/>
-    <input class="login-input" type="password" id="adminPass" placeholder="Admin Password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <div style="position:relative;margin-bottom:12px;"><input class="login-input" type="password" id="adminPass" placeholder="Admin Password" onkeydown="if(event.key==='Enter')doAdminLogin()" style="margin-bottom:0;padding-right:48px;"/><button type="button" onclick="var i=document.getElementById('adminPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁️':'🙈'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:0;line-height:1;">👁️</button></div>
     <button class="login-btn" onclick="doAdminLogin()">Login to Admin Panel →</button>
     <div class="login-error" id="loginError">❌ Invalid username or password</div>
     <div style="font-size:11px;color:#aaa;margin-top:16px;">Authorised access only · All actions are logged</div>
@@ -343,7 +343,7 @@
             <p style="color:var(--muted);font-size:13px;max-width:500px;margin:0 auto 20px;">Orders placed on the website are sent to IBI WhatsApp. To track all orders, check your WhatsApp Business messages or connect WhatsApp Business API.</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:400px;margin:0 auto;">
               <a href="https://wa.me/918939414799" target="_blank" class="btn btn-primary" style="display:block;text-align:center;padding:12px;">💬 Open WhatsApp</a>
-              <a href="mailto:indiabusinessinternational@gmail.com" class="btn btn-secondary" style="display:block;text-align:center;padding:12px;">📧 Check Email</a>
+              <a href="/cdn-cgi/l/email-protection#1c757278757d7e696f7572796f6f757268796e727d687573727d705c7b717d7570327f7371" class="btn btn-secondary" style="display:block;text-align:center;padding:12px;">📧 Check Email</a>
             </div>
           </div>
           <div id="ordersTable" style="display:none;overflow-x:auto;">
@@ -498,7 +498,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════
@@ -1142,12 +1142,4 @@ function saveSettings() {
 // ══════════════════════════════════════════════════════════
 function toast(msg) {
   const el = document.getElementById('adminToast');
-  el.textContent = msg; el.style.display = 'block';
-  setTimeout(() => el.style.display='none', 3000);
-}
-
-// Init announcements history on load
-loadAnnHistory();
-</script>
-</body>
-</html>
+  el.textContent = ms
