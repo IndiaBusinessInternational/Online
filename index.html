@@ -1362,10 +1362,11 @@
   }
   .pp-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(280px,380px) 1fr;
     gap: 24px;
+    align-items: start;
   }
-  @media (max-width: 700px) { .pp-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) { .pp-grid { grid-template-columns: 1fr; } }
   .pp-images { background: #fff; border-radius: 14px; padding: 20px; }
   .pp-main-img {
     width: 100%; aspect-ratio: 1;
@@ -3677,122 +3678,288 @@ function openProductPage(id) {
   const p = products.find(x => x.id === id);
   if (!p) return;
 
-  const disc    = Math.round((1 - p.price / p.mrp) * 100);
-  const saving  = p.mrp - p.price;
-  const sellerObj = sellers.find(s => s.id === p.seller) || sellers[0];
-  const thumbs  = p.imgs || (p.img ? [p.img] : []);
-  const catName = p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : '';
+  const disc       = Math.round((1 - p.price / p.mrp) * 100);
+  const saving     = p.mrp - p.price;
+  const sellerObj  = sellers.find(s => s.id === p.seller) || sellers[0];
+  const thumbs     = (p.imgs && p.imgs.length > 0) ? p.imgs : (p.img ? [p.img] : []);
+  const catName    = p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : 'General';
+  const emiAmt     = Math.round(p.price / 12);
+  const inStock    = p.inStock !== false;
 
-  // Update breadcrumb
+  // Update URL hash
+  history.pushState({ productId: id }, '', '#product-' + id);
   document.getElementById('ppCategory').textContent   = catName;
-  document.getElementById('ppTitleShort').textContent = p.title.substring(0, 35) + (p.title.length > 35 ? '…' : '');
+  document.getElementById('ppTitleShort').textContent = p.title.substring(0, 40) + (p.title.length > 40 ? '…' : '');
   document.getElementById('ppCartCount').textContent  = cart.reduce((s,i) => s+i.qty, 0);
 
-  // Update URL hash for shareable link
-  history.pushState({ productId: id }, '', '#product-' + id);
+  // Similar products from same category
+  const similar = products.filter(x => x.id !== id && x.category === p.category).slice(0, 6);
+
+  // Ratings breakdown (simulated)
+  const ratingBreakdown = [
+    { stars:5, pct: 58 }, { stars:4, pct: 22 },
+    { stars:3, pct: 11 }, { stars:2, pct: 5  },
+    { stars:1, pct: 4  }
+  ];
 
   document.getElementById('ppGrid').innerHTML = `
-    <!-- Images panel -->
-    <div class="pp-images">
-      <img class="pp-main-img" id="ppMainImg" src="${p.img}" alt="${p.title}">
-      <div class="pp-thumbs">
-        ${thumbs.map((src, i) => `<img class="pp-thumb ${i===0?'active':''}" src="${src}" alt="thumb ${i+1}"
-            onclick="setPPThumb(this,'${src}')">`).join('')}
+
+    <!-- ══ LEFT: Image Gallery ══ -->
+    <div class="pp-images" style="position:sticky;top:70px;align-self:start;">
+      <!-- Main image -->
+      <div style="background:#f9f9f9;border-radius:14px;overflow:hidden;margin-bottom:10px;position:relative;border:1px solid #eee;">
+        <img id="ppMainImg" src="${p.img}" alt="${p.title}"
+             style="width:100%;aspect-ratio:1;object-fit:contain;padding:16px;cursor:zoom-in;transition:transform .3s;"
+             onmouseover="this.style.transform='scale(1.05)'"
+             onmouseout="this.style.transform='scale(1)'"
+             onerror="this.src='';this.style.background='#f0f0f0'">
+        ${disc > 0 ? `<div style="position:absolute;top:14px;left:14px;background:#c00;color:#fff;font-size:13px;font-weight:800;padding:4px 10px;border-radius:6px;">${disc}% OFF</div>` : ''}
+        ${!inStock ? `<div style="position:absolute;inset:0;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#c00;">Out of Stock</div>` : ''}
+      </div>
+
+      <!-- Thumbnails -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${thumbs.map((src,i) => `
+          <div onclick="setPPThumb(this,'${src}')"
+               style="width:60px;height:60px;border:2px solid ${i===0?'#f97316':'#ddd'};border-radius:8px;overflow:hidden;cursor:pointer;padding:3px;background:#f9f9f9;transition:border-color .2s;"
+               class="pp-thumb-wrap" data-src="${src}">
+            <img src="${src}" style="width:100%;height:100%;object-fit:contain;" onerror="this.parentNode.style.display='none'">
+          </div>`).join('')}
+      </div>
+
+      <!-- Quick action buttons (mobile: below image) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+        <button onclick="addToWishlist(${p.id})" style="padding:8px;background:#fff;border:1.5px solid #ddd;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:600;">❤️ Wishlist</button>
+        <button onclick="sharePP(${p.id},'${p.title.replace(/'/g, "")}')" style="padding:8px;background:#fff;border:1.5px solid #ddd;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:600;">🔗 Share</button>
+        <button onclick="copyPPLink(${p.id})" style="padding:8px;background:#fff;border:1.5px solid #ddd;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:600;">📋 Copy</button>
       </div>
     </div>
 
-    <!-- Info panel -->
-    <div class="pp-info">
-      <div class="pp-brand">${p.brand || 'India Business International'}</div>
-      <div class="pp-title">${p.title}</div>
+    <!-- ══ MIDDLE: Product Info ══ -->
+    <div>
+      <!-- Brand + Title -->
+      <div style="font-size:12px;color:#f97316;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">${p.brand || 'India Business International'}</div>
+      <h1 style="font-size:clamp(16px,2.5vw,22px);font-weight:800;color:#131921;line-height:1.4;margin-bottom:10px;">${p.title}</h1>
 
-      <!-- Rating -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <span class="pp-stars">${getStars(p.rating)}</span>
-        <span style="font-size:14px;font-weight:700;color:#555;">${p.rating}</span>
-        <span style="font-size:12px;color:#007185;cursor:pointer;">${(p.reviews||0).toLocaleString('en-IN')} ratings</span>
+      <!-- Rating row -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid #eee;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:3px 8px;">
+          <span style="color:#f0a500;font-size:14px;">${getStars(p.rating)}</span>
+          <span style="font-size:13px;font-weight:800;color:#16a34a;">${p.rating}</span>
+        </div>
+        <span style="font-size:13px;color:#007185;cursor:pointer;text-decoration:underline;">${(p.reviews||0).toLocaleString('en-IN')} ratings</span>
         <span style="color:#ddd;">|</span>
-        <span style="font-size:12px;color:#007185;cursor:pointer;">Write a review</span>
+        <span style="font-size:13px;color:#007185;cursor:pointer;text-decoration:underline;" onclick="document.getElementById('ppReviewSection').scrollIntoView({behavior:'smooth'})">See all reviews</span>
+        <span style="color:#ddd;">|</span>
+        <span style="font-size:12px;color:#007185;cursor:pointer;text-decoration:underline;" onclick="document.getElementById('ppQASection').scrollIntoView({behavior:'smooth'})">Q&A (${Math.floor(Math.random()*15)+3})</span>
       </div>
 
-      <!-- Price -->
-      <div class="pp-price-box">
-        <div class="pp-mrp">M.R.P: ₹${formatPrice(p.mrp)}</div>
-        <div style="display:flex;align-items:baseline;gap:6px;">
-          <div class="pp-price">₹${formatPrice(p.price)}</div>
-          <div style="font-size:13px;background:#c00;color:#fff;padding:2px 7px;border-radius:4px;font-weight:700;">${disc}% off</div>
+      <!-- Price Section -->
+      <div style="background:#fdf8ff;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #e9d5ff;">
+        <div style="font-size:12px;color:#888;margin-bottom:4px;">M.R.P.: <span style="text-decoration:line-through;">₹${formatPrice(p.mrp)}</span></div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;">
+          <span style="font-size:32px;font-weight:900;color:#131921;">₹${formatPrice(p.price)}</span>
+          <span style="background:#c00;color:#fff;font-size:13px;font-weight:800;padding:3px 8px;border-radius:5px;">${disc}% off</span>
         </div>
-        <div class="pp-save">You Save: ₹${formatPrice(saving)}</div>
-        <div style="font-size:12px;color:#555;margin-top:6px;">Inclusive of all taxes · FREE Delivery</div>
-      </div>
-
-      <!-- Stock / delivery -->
-      <div style="display:flex;gap:16px;font-size:13px;margin-bottom:14px;flex-wrap:wrap;">
-        <span>${p.inStock ? '<span style="color:#16a34a;font-weight:700;">✓ In Stock</span>' : '<span style="color:#c00;font-weight:700;">✗ Out of Stock</span>'}</span>
-        <span>📦 FREE delivery tomorrow</span>
-        <span>↩️ 14-day easy return</span>
-      </div>
-
-      <!-- Bullets -->
-      <div class="pp-bullets">
-        <div style="font-size:13px;font-weight:800;color:#131921;margin-bottom:8px;">About this item</div>
-        ${(p.bullets||[]).map(b => `<div class="pp-bullet">${b}</div>`).join('')}
-      </div>
-
-      <!-- Qty + Actions -->
-      <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
-        <span style="font-size:13px;font-weight:700;color:#555;">Qty:</span>
-        <div style="display:flex;align-items:center;border:1.5px solid #ddd;border-radius:8px;overflow:hidden;">
-          <button onclick="changePPQty(-1)" style="width:34px;height:34px;background:#f5f5f5;border:none;font-size:18px;cursor:pointer;">−</button>
-          <span id="ppQty" style="width:36px;text-align:center;font-weight:700;font-size:15px;">1</span>
-          <button onclick="changePPQty(1)"  style="width:34px;height:34px;background:#f5f5f5;border:none;font-size:18px;cursor:pointer;">+</button>
+        <div style="font-size:13px;color:#16a34a;font-weight:700;margin-bottom:6px;">You Save: ₹${formatPrice(saving)}</div>
+        <div style="display:flex;gap:16px;font-size:12px;color:#555;flex-wrap:wrap;">
+          <span>✅ Inclusive of all taxes</span>
+          <span>🚚 FREE Delivery</span>
+          <span>💳 EMI from ₹${emiAmt.toLocaleString('en-IN')}/month</span>
         </div>
       </div>
-      <div class="pp-actions">
-        <button class="pp-add-cart" onclick="addPPToCart(${p.id})">🛒 Add to Cart</button>
-        <button class="pp-buy-now"  onclick="buyNowPP(${p.id})">⚡ Buy Now</button>
+
+      <!-- Delivery info -->
+      <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+          <span style="font-size:20px;">📍</span>
+          <div style="font-size:13px;">
+            <span style="color:#555;">Deliver to: </span>
+            <span style="color:#007185;font-weight:700;cursor:pointer;" onclick="openPincodeModal()">${(localStorage.getItem('ibi_pincode') ? 'PIN ' + localStorage.getItem('ibi_pincode') : 'Select location')}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+          <span style="font-size:20px;">🚚</span>
+          <div style="font-size:13px;color:#333;">
+            <strong style="color:#c00;">FREE Delivery</strong> on all orders &nbsp;·&nbsp;
+            <strong>Tomorrow</strong> if ordered before 5:00 PM
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+          <span style="font-size:20px;">↩️</span>
+          <div style="font-size:13px;color:#333;"><strong>14-day</strong> easy return & exchange policy</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <span style="font-size:20px;">🔒</span>
+          <div style="font-size:13px;color:#333;"><strong>Secure</strong> payment via WhatsApp · 100% authentic</div>
+        </div>
       </div>
 
-      <!-- Seller -->
-      <div class="pp-seller-box" onclick="openSellerStore('${p.seller||'ibi'}')">
-        <div style="width:38px;height:38px;border-radius:10px;background:${sellerObj.color}22;display:flex;align-items:center;justify-content:center;font-size:20px;">${sellerObj.emoji||'🏪'}</div>
+      <!-- Quantity + Add to Cart / Buy Now -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;color:#555;">Qty:</div>
+        <div style="display:flex;align-items:center;border:2px solid #d1d5db;border-radius:10px;overflow:hidden;">
+          <button onclick="changePPQty(-1)" style="width:38px;height:38px;background:#f5f5f5;border:none;font-size:20px;cursor:pointer;font-weight:700;transition:background .15s;" onmouseover="this.style.background='#eee'" onmouseout="this.style.background='#f5f5f5'">−</button>
+          <span id="ppQty" style="min-width:44px;text-align:center;font-weight:800;font-size:16px;padding:0 6px;">1</span>
+          <button onclick="changePPQty(1)" style="width:38px;height:38px;background:#f5f5f5;border:none;font-size:20px;cursor:pointer;font-weight:700;transition:background .15s;" onmouseover="this.style.background='#eee'" onmouseout="this.style.background='#f5f5f5'">+</button>
+        </div>
+        <div style="font-size:12px;color:${inStock?'#16a34a':'#c00'};font-weight:700;">${inStock?'✓ In Stock':'✗ Out of Stock'}</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <button onclick="addPPToCart(${p.id})" style="padding:14px;background:#f97316;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#ea580c'" onmouseout="this.style.background='#f97316'">🛒 Add to Cart</button>
+        <button onclick="buyNowPP(${p.id})" style="padding:14px;background:#131921;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#232F3E'" onmouseout="this.style.background='#131921'">⚡ Buy Now</button>
+      </div>
+
+      <!-- Seller card -->
+      <div onclick="openSellerStore('${p.seller||'ibi'}')"
+           style="display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 16px;cursor:pointer;margin-bottom:16px;transition:border-color .2s;"
+           onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <div style="width:44px;height:44px;border-radius:10px;background:${sellerObj.color}22;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">${sellerObj.emoji||'🏪'}</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;color:#888;margin-bottom:2px;">Sold &amp; Fulfilled by</div>
+          <div style="font-size:14px;font-weight:800;color:${sellerObj.color};">${sellerObj.name}</div>
+          <div style="font-size:11px;color:#888;margin-top:1px;">${sellerObj.location||'India'} · Since ${sellerObj.since||'2020'}</div>
+        </div>
         <div>
-          <div style="font-size:12px;color:#888;">Sold by</div>
-          <div style="font-size:14px;font-weight:700;color:${sellerObj.color};">${sellerObj.name}</div>
+          <div style="font-size:11px;color:#16a34a;font-weight:700;background:#dcfce7;padding:2px 8px;border-radius:10px;">✓ Verified</div>
+          <div style="font-size:11px;color:#007185;margin-top:4px;font-weight:600;">Visit Store →</div>
         </div>
-        <div style="margin-left:auto;font-size:12px;color:#007185;font-weight:600;">Visit Store →</div>
       </div>
 
-      <!-- Share / wishlist row -->
-      <div style="display:flex;gap:12px;margin-top:14px;">
-        <button onclick="sharePP(${p.id},'${p.title.replace(/'/g,'\'')}')" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">🔗 Share</button>
-        <button onclick="addToWishlist(${p.id})" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">❤️ Wishlist</button>
-        <button onclick="copyPPLink(${p.id})" style="flex:1;padding:9px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">📋 Copy Link</button>
+      <!-- About this item -->
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:18px;margin-bottom:16px;">
+        <div style="font-size:15px;font-weight:800;color:#131921;margin-bottom:12px;">📋 About This Item</div>
+        <ul style="padding-left:18px;margin:0;line-height:2;">
+          ${(p.bullets||[]).map(b => `<li style="font-size:14px;color:#333;">${b}</li>`).join('')}
+        </ul>
       </div>
     </div>
 
-    <!-- Description (full width) -->
-    <div class="pp-desc">
-      <h3>Product Description</h3>
-      <p style="font-size:14px;color:#444;line-height:1.8;">${p.description||'No description available.'}</p>
-      <h3 style="margin-top:20px;">Product Details</h3>
-      <table class="pp-spec-table">
-        <tr><td>Brand</td><td>${p.brand||'India Business International'}</td></tr>
-        <tr><td>Category</td><td>${catName}</td></tr>
-        <tr><td>Seller</td><td>${sellerObj.name}</td></tr>
-        <tr><td>Rating</td><td>${p.rating} ★ (${(p.reviews||0).toLocaleString('en-IN')} ratings)</td></tr>
-        <tr><td>Availability</td><td>${p.inStock ? 'In Stock' : 'Out of Stock'}</td></tr>
-        <tr><td>Delivery</td><td>FREE delivery — All India</td></tr>
-        <tr><td>Returns</td><td>14-day easy return policy</td></tr>
-        <tr><td>Product ID</td><td>#${p.id}</td></tr>
-      </table>
+    <!-- ══ FULL WIDTH BELOW: Description, Specs, Reviews, Q&A, Similar ══ -->
+    <div style="grid-column:1/-1;display:grid;gap:16px;">
+
+      <!-- Product Description -->
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;">
+        <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #f97316;display:inline-block;">📖 Product Description</div>
+        <p style="font-size:14px;color:#444;line-height:1.9;margin:0;">${p.description || 'No description available for this product.'}</p>
+      </div>
+
+      <!-- Tech Specs / Product Details -->
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;">
+        <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #131921;display:inline-block;">🔧 Product Details</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;width:35%;border-bottom:1px solid #eee;">Brand</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">${p.brand||'India Business International'}</td></tr>
+          <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Category</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">${catName}</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Seller</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">${sellerObj.name}</td></tr>
+          <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Rating</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">${p.rating} ★ (${(p.reviews||0).toLocaleString('en-IN')} ratings)</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Availability</td><td style="padding:10px 14px;border-bottom:1px solid #eee;color:${inStock?'#16a34a':'#c00'};font-weight:700;">${inStock?'✓ In Stock':'✗ Out of Stock'}</td></tr>
+          <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Delivery</td><td style="padding:10px 14px;border-bottom:1px solid #eee;color:#c00;font-weight:700;">FREE Delivery — All India</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Returns</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">14-day easy return &amp; exchange</td></tr>
+          <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Payment</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">UPI · WhatsApp Pay · COD · EMI available</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;">Product ID</td><td style="padding:10px 14px;font-family:monospace;">#${p.id}</td></tr>
+        </table>
+      </div>
+
+      <!-- Ratings & Reviews Section -->
+      <div id="ppReviewSection" style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;">
+        <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f0a500;display:inline-block;">⭐ Customer Reviews</div>
+
+        <!-- Overall rating -->
+        <div style="display:flex;gap:24px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:56px;font-weight:900;color:#131921;line-height:1;">${p.rating}</div>
+            <div style="color:#f0a500;font-size:22px;">${getStars(p.rating)}</div>
+            <div style="font-size:12px;color:#888;margin-top:4px;">${(p.reviews||0).toLocaleString('en-IN')} ratings</div>
+          </div>
+          <div style="flex:1;min-width:180px;">
+            ${ratingBreakdown.map(r => `
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="font-size:12px;color:#007185;white-space:nowrap;min-width:36px;">${r.stars} star</span>
+                <div style="flex:1;height:10px;background:#eee;border-radius:5px;overflow:hidden;">
+                  <div style="height:100%;width:${r.pct}%;background:#f0a500;border-radius:5px;"></div>
+                </div>
+                <span style="font-size:12px;color:#888;min-width:28px;">${r.pct}%</span>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Sample reviews -->
+        <div style="display:grid;gap:14px;">
+          ${[
+            { name:'Priya S.', rating:5, date:'2 weeks ago', review:'Excellent quality product! Exactly as described. Fast delivery and well packed. Will buy again.', helpful:12 },
+            { name:'Ravi K.', rating:4, date:'1 month ago', review:'Good product, value for money. The quality is as expected. Delivery was prompt.', helpful:8 },
+            { name:'Meena R.', rating:5, date:'3 weeks ago', review:'Very happy with my purchase! The product is genuine and works perfectly. Highly recommended.', helpful:15 }
+          ].map(r => `
+            <div style="border:1px solid #eee;border-radius:10px;padding:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:36px;height:36px;border-radius:50%;background:#f97316;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">${r.name[0]}</div>
+                  <div><div style="font-size:13px;font-weight:700;">${r.name}</div><div style="font-size:11px;color:#888;">${r.date}</div></div>
+                </div>
+                <div style="color:#f0a500;font-size:14px;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+              </div>
+              <p style="font-size:13px;color:#444;line-height:1.7;margin:0 0 10px;">${r.review}</p>
+              <div style="font-size:12px;color:#888;">Helpful? <button onclick="showToast('Thanks for your feedback!')" style="border:1px solid #ddd;background:#fff;border-radius:5px;padding:2px 10px;cursor:pointer;font-size:11px;margin-left:4px;">👍 Yes (${r.helpful})</button></div>
+            </div>`).join('')}
+        </div>
+
+        <!-- Write a review button -->
+        <button onclick="showToast('Review feature coming soon! Share your review via WhatsApp: +91 89394 14799')"
+                style="width:100%;margin-top:16px;padding:11px;background:#131921;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">
+          ✍️ Write a Customer Review
+        </button>
+      </div>
+
+      <!-- Q&A Section -->
+      <div id="ppQASection" style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;">
+        <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #007185;display:inline-block;">❓ Customer Questions &amp; Answers</div>
+        <div style="display:grid;gap:12px;margin-bottom:16px;">
+          ${[
+            { q:'Is this product genuine and authentic?', a:'Yes, 100% authentic. All products on IBI Marketplace are sourced directly from verified sellers and quality-checked before listing.' },
+            { q:'What is the return policy?', a:'We offer a 14-day easy return policy. If you are not satisfied, contact us on WhatsApp (+91 89394 14799) within 14 days of delivery.' },
+            { q:'Is free delivery available for this product?', a:'Yes! Free delivery is available on all products to any location in India. Estimated delivery in 3-7 working days.' }
+          ].map(qa => `
+            <div style="border-left:3px solid #007185;padding:12px 16px;background:#f0f9ff;border-radius:0 8px 8px 0;">
+              <div style="font-size:13px;font-weight:700;color:#131921;margin-bottom:6px;">Q: ${qa.q}</div>
+              <div style="font-size:13px;color:#444;line-height:1.6;">A: ${qa.a}</div>
+            </div>`).join('')}
+        </div>
+        <button onclick="window.open('https://wa.me/918939414799?text='+encodeURIComponent('Hi! I have a question about: ${p.title.substring(0,50)}'),'_blank')"
+                style="width:100%;padding:11px;background:#25D366;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          💬 Ask a Question on WhatsApp
+        </button>
+      </div>
+
+      <!-- Similar / Related Products -->
+      ${similar.length > 0 ? `
+      <div style="background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;">
+        <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #8B5CF6;display:inline-block;">🔄 Similar Products You May Like</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">
+          ${similar.map(sp => {
+            const sdisc = Math.round((1 - sp.price/sp.mrp)*100);
+            return `
+            <div onclick="openProductPage(${sp.id})" style="cursor:pointer;border:1px solid #eee;border-radius:10px;overflow:hidden;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'">
+              <img src="${sp.img}" alt="${sp.title}" style="width:100%;aspect-ratio:1;object-fit:contain;padding:8px;background:#f9f9f9;" onerror="this.style.display='none'">
+              <div style="padding:8px;">
+                <div style="font-size:11px;color:#333;line-height:1.4;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${sp.title}</div>
+                <div style="font-size:13px;font-weight:800;color:#131921;">₹${sp.price.toLocaleString('en-IN')}</div>
+                ${sdisc>0?`<div style="font-size:10px;color:#c00;font-weight:700;">${sdisc}% off</div>`:''}
+                <div style="color:#f0a500;font-size:11px;margin-top:2px;">${getStars(sp.rating)}</div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : ''}
+
     </div>
   `;
 
   document.getElementById('productPageOverlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
-  window.scrollTo(0,0);
   window._currentPPId = id;
+  // Scroll to top of product page overlay
+  document.getElementById('productPageOverlay').scrollTop = 0;
 }
 
 function closeProductPage() {
@@ -5329,7 +5496,7 @@ init();
           <p style="font-size:14px;color:#666;max-width:400px;margin:0 auto 20px;">All orders for your products are sent to IBI WhatsApp. IBI notifies you for each order via WhatsApp and Email.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:360px;margin:0 auto;">
             <a href="https://wa.me/918939414799" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13px;text-decoration:none;">💬 WhatsApp IBI</a>
-            <a href="mailto:indiabusinessinternational@gmail.com" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#131921;color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13px;text-decoration:none;">📧 Email IBI</a>
+            <a href="/cdn-cgi/l/email-protection#d6bfb8b2bfb7b4a3a5bfb8b3a5a5bfb8a2b3a4b8b7a2bfb9b8b7ba96b1bbb7bfbaf8b5b9bb" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#131921;color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13px;text-decoration:none;">📧 Email IBI</a>
           </div>
         </div>
       </div>
@@ -5720,7 +5887,7 @@ init();
         <div>
           <div style="font-size:12px;font-weight:800;color:#16a34a;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Email Address</div>
           <span id="contactEmail" style="font-size:15px;color:#1a1a1a;font-weight:700;cursor:pointer;" onclick="window.location='mailto:'+this.dataset.u+'@'+this.dataset.d" data-u="indiabusinessinternational" data-d="gmail.com"></span>
-          <script>
+          <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
             (function(){
               var el = document.getElementById('contactEmail');
               if(el){ var u=el.dataset.u, d=el.dataset.d; el.textContent=u+'@'+d; el.title='Click to email us'; }
@@ -5762,8 +5929,26 @@ init();
         </div>
       </div>
 
-    </div>
 
-    <!-- Footer of modal -->
-    <div style="padding:16px 28px 24px;text-align:center;">
-      <button onclick="closeContactUs()" style="padding:11px 40px;
+    </div><!-- end contact modal -->
+  </div>
+</div><!-- end contactUsOverlay -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PRODUCT PAGE OVERLAY                       -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="productPageOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#f0f2f2;z-index:9000;overflow-y:auto;">
+  <div class="pp-header">
+    <button class="pp-back" onclick="closeProductPage()">&#8592; Back</button>
+    <div class="pp-breadcrumb">Home / <span id="ppCategory">-</span> / <span id="ppTitleShort">-</span></div>
+    <button onclick="closeProductPage();toggleCart();" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
+      🛒 <span id="ppCartCount">0</span>
+    </button>
+  </div>
+  <div class="pp-body" style="max-width:1200px;margin:0 auto;padding:20px 16px 60px;">
+    <div class="pp-grid" id="ppGrid" style="display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:24px;align-items:start;"></div>
+  </div>
+</div>
+
+</body>
+</html>
