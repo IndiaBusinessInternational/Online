@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="#131921"/>
+  <!-- IBI Text -->
+  <text x="256" y="200" font-family="Arial Black,Arial" font-weight="900" font-size="140" fill="#f97316" text-anchor="middle">IBI</text>
+  <!-- Tagline -->
+  <text x="256" y="270" font-family="Arial" font-size="36" fill="#ffffff" text-anchor="middle" opacity="0.8">Marketplace</text>
+  <!-- Decorative line -->
+  <rect x="80" y="295" width="352" height="3" fill="#f97316" rx="2"/>
+  <!-- Sub tagline -->
+  <text x="256" y="360" font-family="Arial" font-size="28" fill="#aaaaaa" text-anchor="middle">eCommerce for the World</text>
+  <!-- Cart icon -->
+  <g transform="translate(210,390)">
+    <path d="M0 0 L10 0 L25 45 L80 45 L90 15 L15 15" stroke="#f97316" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="30" cy="55" r="7" fill="#f97316"/>
+    <circle cx="70" cy="55" r="7" fill="#f97316"/>
+  </g>
+</svg>
