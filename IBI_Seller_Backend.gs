@@ -991,9 +991,13 @@ function uploadImageToDrive(p) {
     // Make publicly viewable
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-    // Return direct-view URL (works in <img> tags)
+    // Return a URL that actually renders inside <img>.
+    // NOTE: Google's old  uc?export=view  endpoint no longer serves image bytes for
+    // hotlinking (it returns an HTML/redirect page), which silently broke product
+    // images. The  thumbnail?id=…  endpoint serves the image for publicly-shared
+    // files. sz=w1600 is ample for product photos (uploads are compressed to ~900px).
     var fileId  = file.getId();
-    var viewUrl = 'https://drive.google.com/uc?export=view&id=' + fileId;
+    var viewUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1600';
 
     Logger.log('Image uploaded: ' + viewUrl);
     return jsonResponse({success:true, url:viewUrl, fileId:fileId});
@@ -1015,7 +1019,7 @@ function testDriveImageUpload() {
     var folder  = folders.hasNext() ? folders.next() : DriveApp.createFolder('IBI Product Images');
     var file    = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    var url = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+    var url = 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w1600';
     Logger.log('✅ Drive upload works! Test URL: ' + url);
     Logger.log('Folder: ' + folder.getName() + ' (' + folder.getId() + ')');
     return url;

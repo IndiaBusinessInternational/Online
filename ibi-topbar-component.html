@@ -1,0 +1,210 @@
+<!--
+  ============================================================
+  IBI MARKETPLACE — TOP BAR COMPONENT
+  Version badge (top-left) + Live date-time + Theme toggle
+  Brand: #00c5ff text on #000 background, Roboto
+  ------------------------------------------------------------
+  HOW TO ADD TO YOUR index.html:
+   1. Copy the <style id="ibi-topbar-style"> block into your <head>
+      (or keep it inline — it is namespaced with .ibi-tb- prefixes
+       so it will NOT collide with your existing CSS).
+   2. Copy the <div class="ibi-tb-bar"> markup as the FIRST element
+      right after <body> (above your <header>).
+   3. Copy the <script> block in just before </body>.
+   4. To bump the version, change ONE line:  const IBI_APP_VERSION = 'v2.1';
+      (use v2.1 for small patches, v3 for big features — per your rule)
+  Note: theme preference uses localStorage, which works on your live
+  site. (In this in-chat preview it is wrapped in try/catch so it
+  degrades gracefully if storage is blocked.)
+  ============================================================
+-->
+
+<style id="ibi-topbar-style">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@700;900&display=swap');
+
+:root{
+  --ibi-cyan:#00c5ff;
+  --ibi-cyan-dim:rgba(0,197,255,.45);
+  --ibi-bar-bg:#000000;
+  --ibi-bar-line:rgba(0,197,255,.18);
+}
+/* Light theme overrides (toggle flips this on <html>) */
+html[data-ibi-theme="light"]{
+  --ibi-bar-bg:#ffffff;
+  --ibi-bar-line:rgba(0,150,200,.25);
+}
+
+.ibi-tb-bar{
+  font-family:'Roboto',sans-serif;
+  background:var(--ibi-bar-bg);
+  border-bottom:1px solid var(--ibi-bar-line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:7px 16px;
+  flex-wrap:wrap;
+  background-image:radial-gradient(circle,rgba(0,197,255,.06) 1px,transparent 1px);
+  background-size:22px 22px;
+  position:relative;z-index:1200;
+}
+
+/* ── Version badge (top-left) ── */
+.ibi-tb-ver{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#000;
+  border:1px solid var(--ibi-bar-line);
+  border-left:3px solid var(--ibi-cyan);
+  border-radius:7px;
+  padding:5px 12px;
+  white-space:nowrap;
+}
+html[data-ibi-theme="light"] .ibi-tb-ver{background:#0a0a0a;}
+.ibi-tb-ver .mark{
+  font-family:'Roboto Condensed',sans-serif;
+  font-weight:900;font-size:13px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--ibi-cyan);line-height:1;
+}
+.ibi-tb-ver .num{
+  font-family:'Roboto',sans-serif;
+  font-weight:700;font-size:12px;letter-spacing:.5px;
+  color:#000;background:var(--ibi-cyan);
+  border-radius:4px;padding:2px 7px;line-height:1.2;
+}
+.ibi-tb-ver .tag{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--ibi-cyan-dim);font-weight:700;
+}
+
+/* ── Live date-time (center/right) ── */
+.ibi-tb-clock{
+  font-family:'Roboto',sans-serif;
+  font-size:13px;font-weight:500;letter-spacing:.4px;
+  color:var(--ibi-cyan);
+  display:inline-flex;align-items:center;gap:8px;
+  font-variant-numeric:tabular-nums;
+}
+.ibi-tb-clock svg{stroke:var(--ibi-cyan);flex-shrink:0;}
+.ibi-tb-clock .dt{white-space:nowrap;}
+
+/* ── Theme toggle switch ── */
+.ibi-tb-toggle{display:inline-flex;align-items:center;gap:9px;}
+.ibi-tb-toggle .lbl{
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  color:var(--ibi-cyan-dim);
+}
+.ibi-tb-switch{
+  --w:46px;--h:24px;
+  position:relative;width:var(--w);height:var(--h);
+  background:rgba(0,197,255,.12);
+  border:1px solid var(--ibi-bar-line);
+  border-radius:999px;cursor:pointer;
+  transition:background .2s,border-color .2s;
+  flex-shrink:0;
+}
+.ibi-tb-switch::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--ibi-cyan);
+  box-shadow:0 1px 5px rgba(0,197,255,.5);
+  transition:transform .22s cubic-bezier(.4,0,.2,1);
+}
+.ibi-tb-switch[aria-checked="true"]{background:rgba(0,197,255,.28);}
+.ibi-tb-switch[aria-checked="true"]::after{transform:translateX(22px);}
+.ibi-tb-switch:focus-visible{outline:2px solid var(--ibi-cyan);outline-offset:2px;}
+
+/* ── Responsive (mobile-friendly) ── */
+@media (max-width:640px){
+  .ibi-tb-bar{padding:7px 12px;gap:8px;}
+  .ibi-tb-clock{order:3;flex-basis:100%;justify-content:center;
+                border-top:1px dashed var(--ibi-bar-line);padding-top:6px;font-size:12px;}
+  .ibi-tb-ver .tag{display:none;}
+  .ibi-tb-toggle .lbl{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .ibi-tb-switch::after{transition:none;}
+}
+</style>
+
+
+<!-- ===== MARKUP: place as first child of <body> ===== -->
+<div class="ibi-tb-bar" role="region" aria-label="IBI marketplace status bar">
+
+  <!-- Version badge — TOP LEFT -->
+  <div class="ibi-tb-ver" title="IBI eCommerce Marketplace version">
+    <span class="mark">IBI</span>
+    <span class="num" id="ibiVerNum">v2.1</span>
+    <span class="tag">Marketplace</span>
+  </div>
+
+  <!-- Live date & time -->
+  <div class="ibi-tb-clock" aria-live="off">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    </svg>
+    <span class="dt" id="ibiClock">—</span>
+  </div>
+
+  <!-- Theme toggle switch -->
+  <div class="ibi-tb-toggle">
+    <span class="lbl" id="ibiThemeLbl">Dark</span>
+    <div class="ibi-tb-switch" id="ibiThemeSwitch" role="switch"
+         aria-checked="false" tabindex="0" aria-label="Toggle light and dark theme"></div>
+  </div>
+
+</div>
+
+
+<!-- ===== SCRIPT: place just before </body> ===== -->
+<script>
+(function () {
+  /* ---- 1. VERSION (change this one line on each release) ---- */
+  const IBI_APP_VERSION = 'v2.1';   // v2.1 = small patch · v3 = big feature
+  var verEl = document.getElementById('ibiVerNum');
+  if (verEl) verEl.textContent = IBI_APP_VERSION;
+
+  /* ---- 2. LIVE CLOCK  →  "28 May 2026, Thursday, 01:38:00 PM" ---- */
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+  var DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  function tick() {
+    var d = new Date();
+    var h = d.getHours();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    var out = d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear()
+            + ', ' + DAYS[d.getDay()]
+            + ', ' + pad(h12) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds())
+            + ' ' + ampm;
+    var el = document.getElementById('ibiClock');
+    if (el) el.textContent = out;
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---- 3. THEME TOGGLE (persists on your live site) ---- */
+  var sw  = document.getElementById('ibiThemeSwitch');
+  var lbl = document.getElementById('ibiThemeLbl');
+  function safeGet(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k,v){ try { localStorage.setItem(k,v); } catch (e) {} }
+
+  function applyTheme(mode) {
+    document.documentElement.setAttribute('data-ibi-theme', mode);
+    var isLight = (mode === 'light');
+    if (sw)  sw.setAttribute('aria-checked', isLight ? 'true' : 'false');
+    if (lbl) lbl.textContent = isLight ? 'Light' : 'Dark';
+  }
+  // default = dark (your brand). Restore saved choice if present.
+  applyTheme(safeGet('ibiTheme') === 'light' ? 'light' : 'dark');
+
+  function toggle() {
+    var next = document.documentElement.getAttribute('data-ibi-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    safeSet('ibiTheme', next);
+  }
+  if (sw) {
+    sw.addEventListener('click', toggle);
+    sw.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  }
+})();
+</script>

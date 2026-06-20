@@ -3294,7 +3294,8 @@ function loadSellerProducts(forceRefresh) {
 
       let prods = [];
       if (res && res.success && res.products) {
-        prods = res.products;
+        // Repair legacy broken Google-Drive image links so the seller sees their own uploads.
+        prods = res.products.map(function(p){ if (p && p.img) p.img = ibiNormalizeImgUrl(p.img); return p; });
       }
       // Merge hardcoded products for this seller
       const sid = session.sellerId.toLowerCase();
@@ -3751,9 +3752,10 @@ function loadLiveProducts() {
       res.products.forEach(sp => {
         if (products.find(p => p.title === sp.title && p.seller === sp.sellerId.toLowerCase())) return;
         const sid = (sp.sellerId||'').toLowerCase();
-        // Build a clean image list: main image + any additional images (pipe/comma separated)
+        // Build a clean image list: main image + any additional images (pipe/comma separated).
+        // ibiNormalizeImgUrl() repairs legacy broken Google-Drive links on the way in.
         const imgList = [sp.img].concat(((sp.additionalImgs||'')).split(/[|,]/))
-          .map(s => (s||'').trim())
+          .map(s => ibiNormalizeImgUrl((s||'').trim()))
           .filter(s => /^https?:\/\//i.test(s));
         // Parse variations JSON sent by the backend
         let spVars = [];
@@ -3761,8 +3763,8 @@ function loadLiveProducts() {
         products.push({
           seller:sid, id:newId++, category:(sp.category||'home').split('-')[0],
           brand:sp.brand||sp.bizName||'IBI', badge:null, title:sp.title,
-          img: imgList[0] || sp.img || '',
-          imgs: imgList.length ? imgList : (sp.img ? [sp.img] : []),
+          img: imgList[0] || ibiNormalizeImgUrl(sp.img) || '',
+          imgs: imgList.length ? imgList : (sp.img ? [ibiNormalizeImgUrl(sp.img)] : []),
           variations: spVars,
           price:parseFloat(sp.price)||0, mrp:parseFloat(sp.mrp)||parseFloat(sp.price)||0,
           rating:4.5, reviews:Math.floor(Math.random()*100+10), inStock:(parseInt(sp.stock||1)>0),
@@ -5971,13 +5973,35 @@ function formatPrice(p) {
   return p.toLocaleString('en-IN');
 }
 
-// Image self-heal: if a Wix avif image fails, retry the non-avif variant
+// Google Drive share links → a URL that actually renders inside <img>.
+// Google's old  uc?export=view  endpoint stopped serving image bytes for
+// hotlinking (it returns an HTML/redirect page now), so every such <img> breaks.
+// The  thumbnail?id=…  endpoint still works for publicly-shared files. This
+// rewrites every known Drive URL shape to it and leaves non-Drive URLs
+// (Wix, ImgBB, direct links, base64, etc.) untouched.
+function ibiNormalizeImgUrl(url){
+  if (!url || typeof url !== 'string') return url || '';
+  var u = url.trim();
+  if (u.indexOf('drive.google.com') === -1) return u;          // not a Drive link
+  // Extract the file id from any of: /file/d/<id>/…, ?id=<id>, &id=<id>
+  var m = u.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/) || u.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (!m) return u;                                              // unrecognised Drive URL — leave as-is
+  return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1600';
+}
+
+// Image self-heal: retry a broken Wix avif variant, then a broken Drive link,
 // before falling back to the branded placeholder.
 function ibiImgFallback(el){
   if (el.src.indexOf('enc_avif') > -1 && !el.dataset.retry) {
     el.dataset.retry = '1';
     el.src = el.src.replace('enc_avif', 'enc_auto');
     return;
+  }
+  // A raw Drive link that slipped through un-normalised — try the thumbnail endpoint once.
+  if (el.src.indexOf('drive.google.com') > -1 && el.src.indexOf('/thumbnail?') === -1 && !el.dataset.driveRetry) {
+    el.dataset.driveRetry = '1';
+    var fixed = ibiNormalizeImgUrl(el.src);
+    if (fixed && fixed !== el.src) { el.src = fixed; return; }
   }
   el.style.display = 'none';
   if (el.nextElementSibling) el.nextElementSibling.style.display = 'flex';

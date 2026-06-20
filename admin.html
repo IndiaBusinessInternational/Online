@@ -669,9 +669,24 @@ function loadSellersData() {
   });
 }
 
+// Google Drive's old  uc?export=view  links no longer render inside <img>; rewrite any
+// Drive URL shape to the working  thumbnail?id=…  endpoint. Non-Drive URLs pass through.
+function ibiNormalizeImgUrl(url){
+  if (!url || typeof url !== 'string') return url || '';
+  var u = url.trim();
+  if (u.indexOf('drive.google.com') === -1) return u;
+  var m = u.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/) || u.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (!m) return u;
+  return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1600';
+}
+
 function loadProductsData() {
   sheetFetch({ action:'adminGetProducts', adminKey:'IBI_ADMIN_2026' }, (res) => {
-    if (res && res.success) { _products = res.products || []; updateDashStats(); renderProducts(); }
+    if (res && res.success) {
+      // Repair legacy broken Google-Drive image links so the admin sees product photos.
+      _products = (res.products || []).map(function(p){ if (p && p.img) p.img = ibiNormalizeImgUrl(p.img); return p; });
+      updateDashStats(); renderProducts();
+    }
   });
 }
 
