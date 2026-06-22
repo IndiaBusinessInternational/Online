@@ -1398,6 +1398,20 @@
   min-width: 0;
 }
 .var-type-name-input:focus { outline: none; border-color: #4f46e5; background: #fff; }
+.var-type-select {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4f46e5;
+  background: #f0f4ff;
+  min-width: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.var-type-select:focus { outline: none; border-color: #4f46e5; background: #fff; }
 .var-quick-tags {
   display: flex;
   gap: 5px;
@@ -2262,12 +2276,13 @@ window.IBI_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8U
 
 // ══════════════════════════════════════════════════════════
 // IMAGE HOSTING CONFIG
-// Primary host = ImgBB (reliable hotlinking). Fallback = Google
-// Drive (via the Apps Script `uploadImage` action). To scale,
-// replace this with your OWN free ImgBB key (https://api.imgbb.com)
-// or a real CDN — this is the single place to change it.
+// Primary host = ImgBB; fallback = Google Drive (Apps Script `uploadImage`).
+// ⚠️ The old shared ImgBB key is DEAD (API returns "Invalid API key"), so it is
+// blanked below and uploads currently use the Google Drive fallback only.
+// TO RE-ENABLE the fast primary host: create a FREE key at https://api.imgbb.com
+// (login → "Get API Key") and paste it between the quotes below.
 // ══════════════════════════════════════════════════════════
-window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';
+window.IBI_IMGBB_KEY = '';   // ← paste your own free ImgBB API key here to re-enable ImgBB
 
 // ══════════════════════════════════════════════════════════
 // ★ APP VERSION — SINGLE SOURCE OF TRUTH (shown top-left in the storefront)
@@ -5688,12 +5703,16 @@ var _varRowCounters  = {};  // { typeId: rowCount }
 var _varSuggestions = {
   'size':     ['XS','S','M','L','XL','XXL','Free Size','6','8','10','12','14','16'],
   'color':    ['Red','Blue','Green','Black','White','Yellow','Pink','Brown','Grey','Orange','Purple','Natural'],
+  'quantity': ['1','2','3','4','5','6','10','12','24','Set of 2','Set of 3','Combo'],
   'pack':     ['1 Qty','2 Qty','3 Qty','5 Qty','6 Qty','10 Qty','Trial Pack','Combo Pack'],
   'weight':   ['50g','100g','200g','250g','500g','1kg','2kg','5kg'],
+  'volume':   ['50ml','100ml','200ml','250ml','500ml','750ml','1L','2L'],
   'size ml':  ['50ml','100ml','200ml','250ml','500ml','1L','2L'],
   'material': ['Coconut Shell','Coir','Bamboo','Wood','Steel','Copper','Cotton','Silk','Jute'],
   'flavour':  ['Natural','Masala','Mint','Lemon','Rose','Mango','Coconut'],
   'length':   ['15cm','20cm','25cm','30cm','35cm','40cm','45cm','50cm'],
+  'shape':    ['Round','Square','Rectangle','Oval','Heart','Star','Hexagon','Triangle'],
+  'style':    ['Classic','Modern','Premium','Basic','Deluxe','Standard'],
   'default':  ['Option 1','Option 2','Option 3']
 };
 
@@ -5715,6 +5734,44 @@ function toggleVariations(enabled) {
   syncVariationsField();
 }
 
+// Preset variation types for the Type-Name dropdown (manual entry stays available via "Custom").
+var VAR_TYPE_PRESETS = ['Size','Color','Quantity','Weight','Pack','Volume','Material','Flavour','Length','Shape','Style'];
+
+function _isPresetType(name) {
+  var n = (name || '').toLowerCase();
+  return VAR_TYPE_PRESETS.some(function(p){ return p.toLowerCase() === n; });
+}
+
+// Build the Type-Name <select> (presets + "Custom / Other"). The companion text
+// input (#<tid>_name) stays the source of truth that syncVariationsField reads.
+function _buildTypeSelect(tid, name) {
+  var n = (name || '').toLowerCase();
+  var isPreset = _isPresetType(name);
+  var html = '<select class="var-type-select" id="' + tid + '_select" onchange="onVarTypeSelect(\'' + tid + '\')">';
+  html += '<option value="">— Select type —</option>';
+  VAR_TYPE_PRESETS.forEach(function(p){
+    html += '<option value="' + p + '"' + ((isPreset && p.toLowerCase() === n) ? ' selected' : '') + '>' + p + '</option>';
+  });
+  html += '<option value="__custom__"' + ((!isPreset && name) ? ' selected' : '') + '>✏️ Custom / Other…</option>';
+  html += '</select>';
+  return html;
+}
+
+function onVarTypeSelect(tid) {
+  var sel = document.getElementById(tid + '_select');
+  var input = document.getElementById(tid + '_name');
+  if (!sel || !input) return;
+  if (sel.value === '__custom__') {
+    input.style.display = 'block';
+    input.value = '';
+    input.focus();
+  } else {
+    input.style.display = 'none';
+    input.value = sel.value;   // '' (placeholder) or the chosen preset name
+  }
+  onVarTypeNameChange(tid);     // refresh quick-fill tags + sync hidden field
+}
+
 function addVariationType(presetName) {
   _varTypeCounter++;
   var tid = 'vtype_' + _varTypeCounter;
@@ -5729,8 +5786,10 @@ function addVariationType(presetName) {
   card.innerHTML =
     '<div class="var-type-header">' +
       '<span style="font-size:12px;font-weight:700;color:#4f46e5;white-space:nowrap;">Type Name:</span>' +
+      _buildTypeSelect(tid, name) +
       '<input type="text" class="var-type-name-input" id="' + tid + '_name" ' +
-             'placeholder="e.g. Size, Color, Pack, Weight…" value="' + name + '" ' +
+             'placeholder="Enter custom type name…" value="' + name + '" ' +
+             'style="display:' + ((name && !_isPresetType(name)) ? 'block' : 'none') + ';" ' +
              'oninput="onVarTypeNameChange(\'' + tid + '\')">' +
       '<button type="button" class="var-type-del-btn" onclick="removeVariationType(\'' + tid + '\')" title="Remove this variation type">🗑 Remove Type</button>' +
     '</div>' +
@@ -7560,7 +7619,11 @@ function ibiUploadToImgbbOnce(dataUrl) {
     .then(function(res) {
       var url = res && res.data && (res.data.display_url || res.data.url);
       if (res && res.success && url) return url;
-      throw new Error('imgbb rejected');
+      // API rejection (e.g. invalid key) — don't retry, fail over to Drive immediately.
+      var fatal = new Error('imgbb rejected: ' + (res && res.error && res.error.message || 'unknown'));
+      fatal.fatal = true;
+      if (res && res.error && res.error.code === 100) window._ibiImgbbDisabled = true; // bad key → stop trying this session
+      throw fatal;
     });
 }
 
@@ -7593,7 +7656,7 @@ function ibiTryHost(fn, dataUrl, attempts) {
   function go() {
     n++;
     return fn(dataUrl).catch(function(err) {
-      if (n >= attempts) throw err;
+      if ((err && err.fatal) || n >= attempts) throw err;  // don't retry config errors (e.g. bad key)
       return ibiDelay(500 * n).then(go);
     });
   }
@@ -7605,8 +7668,12 @@ function ibiTryHost(fn, dataUrl, attempts) {
 function ibiHostOneImage(dataUrl) {
   if (!dataUrl) return Promise.reject(new Error('no image'));
   if (dataUrl.indexOf('data:') !== 0) return Promise.resolve(dataUrl); // already a hosted URL
-  return ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2).catch(function(imgbbErr) {
-    console.warn('ImgBB failed, trying Google Drive fallback:', imgbbErr);
+  // Skip ImgBB entirely once it's known-bad this session (or if no key set) → straight to Drive.
+  var imgbbStep = (window._ibiImgbbDisabled || !window.IBI_IMGBB_KEY)
+    ? Promise.reject(new Error('imgbb unavailable'))
+    : ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2);
+  return imgbbStep.catch(function(imgbbErr) {
+    console.warn('ImgBB unavailable, using Google Drive:', imgbbErr && imgbbErr.message);
     return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2).catch(function(driveErr) {
       console.error('Both image hosts failed:', imgbbErr, driveErr);
       throw new Error('all image hosts failed');
