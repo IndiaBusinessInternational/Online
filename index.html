@@ -3414,7 +3414,7 @@ function renderProductList(prods) {
     return `<div class="sc-prod-card">
       <div class="sc-prod-row">
         ${(p.img && p.img.startsWith('http'))
-  ? `<img class="sc-prod-img" src="${p.img}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+  ? `<img class="sc-prod-img" src="${p.img}" alt="${p.title}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
      <div class="sc-prod-img" style="display:none;align-items:center;justify-content:center;font-size:24px;background:#f0f0f0;">🖼️</div>`
   : `<div class="sc-prod-img" style="display:flex;align-items:center;justify-content:center;font-size:22px;background:#f0f4ff;color:#7C3AED;flex-direction:column;gap:2px;">
        <span>🖼️</span><span style="font-size:7px;font-weight:700;color:#7C3AED;">IMG</span>
@@ -3554,23 +3554,30 @@ function previewImage(url) {
   if (typeof updateProductPreview === 'function') updateProductPreview();
 }
 
+// NOTE: must be fully null-safe — this runs inside the image-add chain
+// (ibiPushImg → ibiSyncHiddenInputs → previewImage → here). A single missing
+// preview element must NEVER throw, or it aborts the add before the image hosts.
 function updateProductPreview() {
-  const title = document.getElementById('ap_title').value.trim();
-  const brand = document.getElementById('ap_brand').value.trim();
-  const price = parseFloat(document.getElementById('ap_price').value) || 0;
-  const mrp   = parseFloat(document.getElementById('ap_mrp').value)   || 0;
-  const img   = document.getElementById('ap_img').value.trim();
-  const card  = document.getElementById('productPreviewCard');
-  if (!title && !price) { card.style.display='none'; return; }
+  var $ = function(id){ return document.getElementById(id); };
+  var titleEl = $('ap_title'), priceEl = $('ap_price'), card = $('productPreviewCard');
+  if (!titleEl || !priceEl || !card) return;   // add form not in DOM → nothing to preview
+  var title = (titleEl.value || '').trim();
+  var price = parseFloat(priceEl.value) || 0;
+  var brand = $('ap_brand') ? $('ap_brand').value.trim() : '';
+  var mrp   = $('ap_mrp')   ? (parseFloat($('ap_mrp').value) || 0) : 0;
+  var img   = $('ap_img')   ? $('ap_img').value.trim() : '';
+  if (!title && !price) { card.style.display = 'none'; return; }
   card.style.display = 'block';
-  document.getElementById('previewTitle').textContent = title || 'Product Title';
-  document.getElementById('previewBrand').textContent = brand || 'Brand';
-  document.getElementById('previewPrice').textContent = price ? '₹'+price.toLocaleString('en-IN') : '₹0';
-  document.getElementById('previewMrp').textContent   = mrp ? '₹'+mrp.toLocaleString('en-IN') : '';
-  if (img) { document.getElementById('previewImg').src = img; document.getElementById('previewImg').style.display='block'; }
-  const disc = (price>0&&mrp>price) ? Math.round((1-price/mrp)*100)+'% off' : '';
-  document.getElementById('previewDisc').textContent = disc;
-  document.getElementById('previewDisc').style.display = disc ? 'inline' : 'none';
+  var setText = function(id, val){ var el = $(id); if (el) el.textContent = val; };
+  setText('previewTitle', title || 'Product Title');
+  setText('previewBrand', brand || 'Brand');
+  setText('previewPrice', price ? '₹'+price.toLocaleString('en-IN') : '₹0');
+  setText('previewMrp', mrp ? '₹'+mrp.toLocaleString('en-IN') : '');
+  var pi = $('previewImg');
+  if (pi && img) { pi.src = img; pi.style.display = 'block'; }
+  var disc = (price>0 && mrp>price) ? Math.round((1-price/mrp)*100)+'% off' : '';
+  setText('previewDisc', disc);
+  var pd = $('previewDisc'); if (pd) pd.style.display = disc ? 'inline' : 'none';
 }
 
 function resetAddForm() {
