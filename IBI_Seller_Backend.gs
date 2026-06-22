@@ -352,7 +352,7 @@ function getOrCreateProductSheet() {
   if(!s){
     s=ss.insertSheet(PROD_SHEET);
     s.appendRow(['Timestamp','Product ID','Seller ID','Business Name','Title','Category','Brand','Price','MRP','Image URL','Additional Images','Description','Bullets','Stock','HSN Code','Tags','Product Dimensions','Package Dimensions','Variations','Status','Reject Reason','Approved On','Updated On']);
-    s.getRange(1,1,1,18).setBackground('#131921').setFontColor('#fff').setFontWeight('bold');
+    s.getRange(1,1,1,23).setBackground('#131921').setFontColor('#fff').setFontWeight('bold');  // 23-column header
     s.setFrozenRows(1);
     s.setColumnWidth(PCOL.TITLE,250);
     s.getRange(2,PCOL.STATUS,1000,1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['Pending','Approved','Rejected','Paused']).build());
