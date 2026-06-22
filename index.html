@@ -2276,11 +2276,12 @@ window.IBI_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8U
 
 // ══════════════════════════════════════════════════════════
 // IMAGE HOSTING CONFIG
-// Primary host = ImgBB (fast, CDN-backed). Fallback = Google Drive (Apps Script
-// `uploadImage`) — if ImgBB ever fails or rate-limits, uploads fail over to Drive
-// automatically. To rotate the key, replace the value below (free: https://api.imgbb.com).
+// Primary host = Google Drive (Apps Script `uploadImage`) — drive.google.com resolves
+// reliably on Indian ISP networks. ImgBB is the FALLBACK only: uploads to api.imgbb.com
+// work, but its image CDN (i.ibb.co) is DNS-blocked on some networks (incl. this seller's),
+// so ImgBB-hosted images can fail to DISPLAY. Key kept for the fallback path / future use.
 // ══════════════════════════════════════════════════════════
-window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // verified working ImgBB key
+window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback key (verified)
 
 // ══════════════════════════════════════════════════════════
 // ★ APP VERSION — SINGLE SOURCE OF TRUTH (shown top-left in the storefront)
@@ -7740,14 +7741,14 @@ function ibiTryHost(fn, dataUrl, attempts) {
 function ibiHostOneImage(dataUrl) {
   if (!dataUrl) return Promise.reject(new Error('no image'));
   if (dataUrl.indexOf('data:') !== 0) return Promise.resolve(dataUrl); // already a hosted URL
-  // Skip ImgBB entirely once it's known-bad this session (or if no key set) → straight to Drive.
-  var imgbbStep = (window._ibiImgbbDisabled || !window.IBI_IMGBB_KEY)
-    ? Promise.reject(new Error('imgbb unavailable'))
-    : ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2);
-  return imgbbStep.catch(function(imgbbErr) {
-    console.warn('ImgBB unavailable, using Google Drive:', imgbbErr && imgbbErr.message);
-    return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2).catch(function(driveErr) {
-      console.error('Both image hosts failed:', imgbbErr, driveErr);
+  // Google Drive is the PRIMARY host: drive.google.com resolves reliably (incl. on Indian
+  // ISP networks where ImgBB's CDN i.ibb.co is DNS-blocked — images upload but won't display).
+  // ImgBB is the fallback only, used if Drive fails AND a key is configured.
+  return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2).catch(function(driveErr) {
+    if (window._ibiImgbbDisabled || !window.IBI_IMGBB_KEY) throw driveErr;
+    console.warn('Drive failed, trying ImgBB fallback:', driveErr && driveErr.message);
+    return ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2).catch(function(imgbbErr) {
+      console.error('Both image hosts failed:', driveErr, imgbbErr);
       throw new Error('all image hosts failed');
     });
   });
