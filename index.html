@@ -2238,6 +2238,15 @@
 // ══════════════════════════════════════════════════════════
 window.IBI_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec';
 
+// ══════════════════════════════════════════════════════════
+// IMAGE HOSTING CONFIG
+// Primary host = ImgBB (reliable hotlinking). Fallback = Google
+// Drive (via the Apps Script `uploadImage` action). To scale,
+// replace this with your OWN free ImgBB key (https://api.imgbb.com)
+// or a real CDN — this is the single place to change it.
+// ══════════════════════════════════════════════════════════
+window.IBI_IMGBB_KEY = '2e2e79e76b1cf60c2e87f64d0e5da9a1';
+
 // ========== DATA ==========
 const categories = [
   { icon: '📱', name: 'Electronics', color: '#E3F2FD', id: 'electronics' },
@@ -3068,8 +3077,11 @@ function ibi_fetch_post(params, callback, timeoutMs) {
   }, timeoutMs);
 
   fetch(window.IBI_SHEET_URL, {
+    // text/plain is a CORS "simple request" → no preflight OPTIONS (which Apps
+    // Script can't answer). The backend reads e.postData.contents and JSON.parses
+    // it regardless of declared type, so this is the reliable cross-origin path.
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(params),
     redirect: 'follow'
   })
@@ -3536,15 +3548,11 @@ function submitAddProduct() {
   // Use uploaded images array (works on PWA/mobile)
   const uploadedImgsList = window._uploadedImgs || [];
   const imgFromField     = document.getElementById('ap_img').value.trim();
-  const img              = uploadedImgsList[0] || imgFromField;
   const desc    = document.getElementById('ap_desc').value.trim();
   const bullets = document.getElementById('ap_bullets').value.trim();
   const stock   = document.getElementById('ap_stock').value.trim();
   const hsn     = document.getElementById('ap_hsn').value.trim();
   const tags    = document.getElementById('ap_tags').value.trim();
-  const imgs    = document.getElementById('ap_imgs').value.trim();
-  // NOTE: _uploadedImgs contains all images (base64 or http://)
-  // We keep base64 separate for Drive upload; http:// go directly
 
   // ── Amazon format validation ──
   if (!title)              { showToast('⚠️ Enter product title');        scrollToField('ap_title');   return; }
@@ -3590,18 +3598,15 @@ function submitAddProduct() {
 
   const variations = document.getElementById('ap_variations').value || '[]';
 
-  // ── Upload images to GAS → Google Drive → get real https:// URLs ──
-  var allImgs    = window._uploadedImgs || [];
-  // Also check ap_img_url field for any pasted http:// URL
-  var urlField   = document.getElementById('ap_img_url');
+  // ── Build the ordered image list (base64 + http URLs, in the seller's chosen
+  //    order). _uploadedImgs is the single source of truth for the grid, so we
+  //    host it as-is — no re-sorting that could silently change the main image. ──
+  var orderedImgs = (window._uploadedImgs || []).slice();
+  var urlField    = document.getElementById('ap_img_url');
   var urlFieldVal = urlField ? urlField.value.trim() : '';
-  // Separate: base64 (need uploading) vs already-http URLs (use directly)
-  var base64Imgs = allImgs.filter(function(u){ return u && u.startsWith('data:'); });
-  var urlImgs    = allImgs.filter(function(u){ return u && u.startsWith('http'); });
-  var extraUrls  = imgs.split('\n').filter(function(u){ return u && u.startsWith('http'); });
-  if (urlFieldVal && urlFieldVal.startsWith('http')) extraUrls.push(urlFieldVal);
-  var allUrlImgs = urlImgs.concat(extraUrls);
-  // If seller only pasted a URL (no upload), base64Imgs is empty — submit directly
+  if (urlFieldVal && urlFieldVal.indexOf('http') === 0 && orderedImgs.indexOf(urlFieldVal) === -1) {
+    orderedImgs.push(urlFieldVal);  // seller typed a URL but didn't click "+ Add URL"
+  }
 
   function doSubmitWithImages(finalImgUrls) {
     var mainImg = finalImgUrls[0] || '';
@@ -3653,18 +3658,31 @@ function submitAddProduct() {
   );
   } // ── end doSubmitWithImages ──
 
-  // ── Choose path: upload base64 first OR submit directly ──
-  if (base64Imgs.length > 0) {
-    btn.textContent = '📤 Uploading image 1/' + base64Imgs.length + '…';
-    uploadBase64ImagesToGAS(
-      base64Imgs,
-      allUrlImgs,
-      function(finalUrls) { doSubmitWithImages(finalUrls); },
-      function(i)         { btn.textContent = '📤 Uploading image ' + (i+1) + '/' + base64Imgs.length + '…'; }
-    );
-  } else {
-    doSubmitWithImages(allUrlImgs);
+  // ── Host every image (ImgBB → Drive fallback), preserving order, then submit ──
+  if (!orderedImgs.length) {          // guard — validation above should prevent this
+    btn.textContent = editId ? 'Update Product →' : 'Submit Product for IBI Review →';
+    btn.disabled = false;
+    showToast('⚠️ Add at least one product image'); scrollToField('ap_img');
+    return;
   }
+  btn.textContent = '📤 Uploading images…';
+  ibiHostImages(orderedImgs, function(done, total) {
+    btn.textContent = '📤 Uploading image ' + done + '/' + total + '…';
+  }).then(function(out) {
+    // out.results keeps positions (null = failed on BOTH hosts);
+    // out.urls = successfully-hosted https URLs, in the seller's original order.
+    if (!out.results[0]) {
+      // Main image failed everywhere — never save an imageless product, never fake success.
+      btn.textContent = editId ? 'Update Product →' : 'Submit Product for IBI Review →';
+      btn.disabled = false;
+      showToast('⚠️ Main image could not be uploaded. Check your connection and try again.');
+      return;
+    }
+    if (out.failedCount > 0) {
+      showToast('⚠️ ' + out.failedCount + ' image(s) could not be uploaded and were skipped. You can edit the product later to re-add them.');
+    }
+    doSubmitWithImages(out.urls);
+  });
 }
 
 function fallbackWhatsAppProduct(session, p) {
@@ -3706,6 +3724,21 @@ function editProduct(productId) {
         document.getElementById('ap_bullets').value = (p.bullets||'').replace(/\|/g,'\n');
         document.getElementById('ap_stock').value   = p.stock       || '';
         document.getElementById('ap_hsn').value     = p.hsn         || '';
+        // ── Restore the FULL image gallery (main + additional) into the upload
+        //    grid. Without this, _uploadedImgs stays empty and saving the edit
+        //    would wipe every product photo. ──
+        var _gallery = [];
+        if (p.img) _gallery.push(ibiNormalizeImgUrl(p.img));
+        (p.additionalImgs || '').split('|').forEach(function(u){
+          u = (u || '').trim();
+          if (u) _gallery.push(ibiNormalizeImgUrl(u));
+        });
+        window._uploadedImgs = _gallery;
+        ibiSyncHiddenInputs();
+        ibiRenderGrid();
+        // Preserve existing variations so the edit re-saves them instead of clearing.
+        var _varEl = document.getElementById('ap_variations');
+        if (_varEl && p.variations) _varEl.value = p.variations;
         document.getElementById('ap_editing_id').value = productId;
         document.getElementById('apFormTitle').textContent = '✏️ Edit Product';
         const btn = document.getElementById('ap_submit_btn');
@@ -4775,45 +4808,69 @@ function ibiOnFileChange(inp) {
   inp.value = '';
 }
 
-// Process file list
+// Process a file list \u2014 validate, compress (order-preserved), add to the grid.
+// Accepts anything the browser calls an image (incl. HEIC/HEIF from iPhones, which
+// some browsers report with an empty MIME type). Order is preserved so the FIRST
+// file the seller picked stays the main image.
 function ibiProcessFiles(files) {
-  var allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+  var accepted = [];
+  var room = 9 - ((window._uploadedImgs || []).length);
   Array.from(files).forEach(function(f) {
-    if (window._uploadedImgs.length >= 9) { showToast('\u26a0\ufe0f Maximum 9 images reached'); return; }
-    if (!allowed.includes(f.type))        { showToast('\u26a0\ufe0f Only JPG, PNG, WEBP allowed'); return; }
-    if (f.size > 10*1024*1024)            { showToast('\u26a0\ufe0f ' + f.name + ' exceeds 10MB'); return; }
-    ibiCompressAndAdd(f);
+    if (accepted.length >= room) { showToast('\u26a0\ufe0f Maximum 9 images reached'); return; }
+    var t = (f.type || '').toLowerCase();
+    if (!(t.indexOf('image/') === 0 || t === '')) { showToast('\u26a0\ufe0f ' + (f.name||'File') + ' is not an image'); return; }
+    if (f.size > 25 * 1024 * 1024)                { showToast('\u26a0\ufe0f ' + (f.name||'File') + ' exceeds 25MB'); return; }
+    accepted.push(f);
+  });
+  if (!accepted.length) return;
+  // Compress all in parallel but ADD in original order (Promise.all preserves it).
+  Promise.all(accepted.map(ibiCompressFileToDataUrl)).then(function(dataUrls) {
+    var added = 0;
+    dataUrls.forEach(function(d) { if (d) { ibiPushImg(d); added++; } });
+    if (added) showToast('\u2705 ' + added + ' image' + (added > 1 ? 's' : '') + ' added!', 'success');
+    else       showToast('\u26a0\ufe0f Could not read the selected image(s)');
   });
 }
 
-// Compress via canvas then add
-function ibiCompressAndAdd(file) {
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    var img = new Image();
-    img.onload = function() {
-      try {
-        var MAX = 900, w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
-          else        { w = Math.round(w * MAX / h); h = MAX; }
+// Compress a single file to a JPEG data: URL (max 900px, q0.82) via canvas.
+// Returns a Promise<dataUrl|null>. If the browser can't decode the file (e.g.
+// HEIC without support), it resolves with the ORIGINAL bytes rather than dropping
+// the image \u2014 the image host may still accept it, and nothing is silently lost.
+function ibiCompressFileToDataUrl(file) {
+  return new Promise(function(resolve) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var original = ev.target.result;
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var MAX = 900, w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+            else        { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        } catch (err) {
+          resolve(original);  // drew fine but export blocked \u2192 send original bytes
         }
-        var canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-        ibiPushImg(dataUrl);
-        showToast('\u2705 Image ' + window._uploadedImgs.length + ' added!', 'success');
-      } catch(err) {
-        ibiPushImg(ev.target.result);
-        showToast('\u2705 Image added!', 'success');
-      }
+      };
+      img.onerror = function() { resolve(original); };  // undecodable \u2192 keep original, never drop
+      img.src = original;
     };
-    img.onerror = function() { showToast('\u26a0\ufe0f Could not read image'); };
-    img.src = ev.target.result;
-  };
-  reader.onerror = function() { showToast('\u26a0\ufe0f Failed to read file'); };
-  reader.readAsDataURL(file);
+    reader.onerror = function() { resolve(null); };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Back-compat single-file helper (used by legacy aliases below).
+function ibiCompressAndAdd(file) {
+  ibiCompressFileToDataUrl(file).then(function(d) {
+    if (d) { ibiPushImg(d); showToast('\u2705 Image ' + window._uploadedImgs.length + ' added!', 'success'); }
+    else   { showToast('\u26a0\ufe0f Could not read image'); }
+  });
 }
 
 // Add URL image
@@ -7439,55 +7496,135 @@ function ppSelectVariation(idx, encodedVars) {
 
 
 // ══════════════════════════════════════════════════════════════════
-// IMAGE UPLOADER — sends base64 to GAS, saves to Google Drive,
-// returns public https:// URL
+// ROBUST IMAGE HOSTING PIPELINE
+// One path for every entry point (Choose Images, drag-drop, Add URL,
+// Host Image). Compressed JPEG → ImgBB (primary) → Google Drive
+// (fallback via the Apps Script `uploadImage` action). Order-preserving,
+// retried with backoff, hard-timeouts, and NEVER silently drops an image.
 // ══════════════════════════════════════════════════════════════════
-function uploadBase64ImagesToGAS(base64List, existingUrls, onDone, onProgress) {
-  var results = existingUrls.slice(); // start with already-http URLs
-  var total   = base64List.length;
-  var idx     = 0;
 
-  function uploadNext() {
-    if (idx >= total) { onDone(results); return; }
-    if (onProgress) onProgress(idx);
+// fetch() with a hard timeout (AbortController) so a hung host can't freeze submit.
+function ibiFetchTimeout(url, opts, ms) {
+  var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  if (ctrl) opts = Object.assign({}, opts, { signal: ctrl.signal });
+  var timer = setTimeout(function() { if (ctrl) ctrl.abort(); }, ms);
+  return fetch(url, opts).then(
+    function(r) { clearTimeout(timer); return r; },
+    function(e) { clearTimeout(timer); throw e; }
+  );
+}
 
-    var b64data = base64List[idx];
-    // Extract mime type and pure base64
-    var match   = b64data.match(/^data:(image\/[a-z]+);base64,(.+)$/);
-    if (!match)  { idx++; uploadNext(); return; }
-    var mimeType = match[1];
-    var b64pure  = match[2];
+function ibiDelay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
 
-    fetch(window.IBI_SHEET_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        action:   'uploadImage',
-        mimeType: mimeType,
-        data:     b64pure,
-        filename: 'ibi_product_' + Date.now() + '_' + idx + '.jpg'
-      }),
-      redirect: 'follow'
-    })
+// Upload one compressed data: URL to ImgBB → resolves to a https URL, or rejects.
+function ibiUploadToImgbbOnce(dataUrl) {
+  var b64 = (dataUrl.split(',')[1]) || '';
+  if (!b64) return Promise.reject(new Error('empty image data'));
+  var fd = new FormData();
+  fd.append('key', window.IBI_IMGBB_KEY);
+  fd.append('image', b64);
+  return ibiFetchTimeout('https://api.imgbb.com/1/upload', { method: 'POST', body: fd }, 20000)
     .then(function(r) { return r.json(); })
     .then(function(res) {
-      if (res && res.success && res.url) {
-        results.push(res.url);
-      } else {
-        console.warn('Image upload failed:', res);
-        // Still continue — just skip this image
-      }
-      idx++;
-      uploadNext();
-    })
-    .catch(function(err) {
-      console.warn('Image upload error:', err);
-      idx++;
-      uploadNext();
+      var url = res && res.data && (res.data.display_url || res.data.url);
+      if (res && res.success && url) return url;
+      throw new Error('imgbb rejected');
+    });
+}
+
+// Upload one compressed data: URL to Google Drive via Apps Script (CORS-safe POST).
+function ibiUploadToDriveOnce(dataUrl) {
+  var m = dataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+  if (!m) return Promise.reject(new Error('not a base64 image'));
+  var body = JSON.stringify({
+    action:   'uploadImage',
+    mimeType: m[1],
+    data:     m[2],
+    filename: 'ibi_product_' + Date.now() + '.jpg'
+  });
+  return ibiFetchTimeout(window.IBI_SHEET_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // simple request → no CORS preflight
+    body:    body,
+    redirect: 'follow'
+  }, 30000)
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res && res.success && res.url) return res.url;
+      throw new Error('drive upload failed');
+    });
+}
+
+// Run a host fn up to `attempts` times with linear backoff.
+function ibiTryHost(fn, dataUrl, attempts) {
+  var n = 0;
+  function go() {
+    n++;
+    return fn(dataUrl).catch(function(err) {
+      if (n >= attempts) throw err;
+      return ibiDelay(500 * n).then(go);
     });
   }
+  return go();
+}
 
-  uploadNext();
+// Host ONE image: ImgBB (primary) → Drive (fallback). http(s) URLs pass through.
+// Resolves to a https URL, or rejects only if BOTH hosts fail.
+function ibiHostOneImage(dataUrl) {
+  if (!dataUrl) return Promise.reject(new Error('no image'));
+  if (dataUrl.indexOf('data:') !== 0) return Promise.resolve(dataUrl); // already a hosted URL
+  return ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2).catch(function(imgbbErr) {
+    console.warn('ImgBB failed, trying Google Drive fallback:', imgbbErr);
+    return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2).catch(function(driveErr) {
+      console.error('Both image hosts failed:', imgbbErr, driveErr);
+      throw new Error('all image hosts failed');
+    });
+  });
+}
+
+// Host a LIST of images in original order, with bounded concurrency.
+// data: entries are uploaded; http(s) entries pass through unchanged.
+// Resolves to { urls, failedCount, results } where:
+//   results = same length/order as input, null for any image that failed BOTH hosts
+//   urls    = successfully-hosted URLs in original order (failures removed)
+function ibiHostImages(list, onProgress) {
+  list = (list || []).filter(Boolean);
+  var total = list.length;
+  var results = new Array(total);
+  var nextIdx = 0, completed = 0;
+  var CONCURRENCY = 3;
+
+  return new Promise(function(resolve) {
+    if (!total) { resolve({ urls: [], failedCount: 0, results: [] }); return; }
+
+    function finish() {
+      var urls = results.filter(Boolean);
+      resolve({ urls: urls, failedCount: total - urls.length, results: results });
+    }
+
+    function startOne() {
+      var i = nextIdx++;
+      if (i >= total) return;
+      ibiHostOneImage(list[i])
+        .then(function(url) { results[i] = url; })
+        .catch(function()   { results[i] = null; })   // record failure, keep the slot
+        .then(function() {
+          completed++;
+          if (onProgress) onProgress(completed, total);
+          if (nextIdx < total) startOne();
+          else if (completed >= total) finish();
+        });
+    }
+
+    for (var k = 0; k < Math.min(CONCURRENCY, total); k++) startOne();
+  });
+}
+
+// Back-compat shim for any older callers (current submit uses ibiHostImages directly).
+function uploadBase64ImagesToGAS(base64List, existingUrls, onDone, onProgress) {
+  ibiHostImages((existingUrls || []).concat(base64List || []),
+    function(done) { if (onProgress) onProgress(done - 1); }
+  ).then(function(out) { onDone(out.urls); });
 }
 
 
@@ -7519,54 +7656,36 @@ document.addEventListener('error', function(e) {
 
 
 // ══════════════════════════════════════════════════════════════════
-// IMGBB FREE IMAGE HOSTING — uploads file → returns permanent URL
+// "HOST IMAGE" BUTTON — pick file(s), compress, and upload NOW through
+// the same robust pipeline (ImgBB → Drive fallback), then add the
+// resulting permanent URL(s) to the grid. Identical reliability to
+// Choose Images; the only difference is it hosts immediately.
 // ══════════════════════════════════════════════════════════════════
 function uploadToImgbb() {
-  // Open a hidden file picker
   var input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
+  input.multiple = true;
   input.style.display = 'none';
   document.body.appendChild(input);
 
   input.onchange = function() {
-    var file = input.files[0];
-    if (!file) return;
+    var files = Array.from(input.files || []);
     input.remove();
+    if (!files.length) return;
+
+    var room = 9 - ((window._uploadedImgs || []).length);
+    files = files.slice(0, Math.max(0, room));
+    if (!files.length) { showToast('⚠️ Maximum 9 images reached'); return; }
 
     showToast('☁️ Uploading to image host…', '');
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var b64 = e.target.result.split(',')[1]; // strip data:image/...;base64,
-
-      // Use imgbb free API (no account needed, 32MB limit)
-      var formData = new FormData();
-      formData.append('key', '2e2e79e76b1cf60c2e87f64d0e5da9a1'); // free public key
-      formData.append('image', b64);
-
-      fetch('https://api.imgbb.com/1/upload', {
-        method: 'POST',
-        body: formData
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res.success && res.data && res.data.url) {
-          var url = res.data.url;
-          // Add to uploaded images
-          ibiAddUrlImg(url);
-          showToast('✅ Image hosted! URL added.', 'success');
-        } else {
-          showToast('⚠️ Upload failed — try pasting an image URL directly', '');
-          console.error('imgbb error:', res);
-        }
-      })
-      .catch(function(err) {
-        showToast('⚠️ Upload failed — check your internet connection', '');
-        console.error('imgbb error:', err);
+    Promise.all(files.map(ibiCompressFileToDataUrl))
+      .then(function(dataUrls) { return ibiHostImages(dataUrls.filter(Boolean)); })
+      .then(function(out) {
+        out.urls.forEach(function(u) { ibiPushImg(u); });
+        if (out.urls.length)  showToast('✅ ' + out.urls.length + ' image' + (out.urls.length > 1 ? 's' : '') + ' hosted!', 'success');
+        if (out.failedCount)  showToast('⚠️ ' + out.failedCount + ' image(s) could not be hosted — try again or paste a URL.', '');
       });
-    };
-    reader.readAsDataURL(file);
   };
 
   input.click();
@@ -8078,7 +8197,7 @@ init();
                        background:#fafafa;transition:all .2s;cursor:pointer;user-select:none;">
                 <div style="font-size:28px;margin-bottom:6px;">📸</div>
                 <div style="font-size:13px;font-weight:700;color:#7C3AED;margin-bottom:4px;">Click or Drag & Drop images here</div>
-                <div style="font-size:11px;color:#888;margin-bottom:12px;">JPG, PNG, WEBP · Up to 9 · Max 10MB each · Auto-compressed</div>
+                <div style="font-size:11px;color:#888;margin-bottom:12px;">JPG, PNG, WEBP, HEIC · Up to 9 · Max 25MB each · Auto-compressed</div>
                 <span style="background:#7C3AED;color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;pointer-events:none;">📁 Choose Images</span>
               </div>
 

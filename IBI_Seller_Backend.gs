@@ -194,11 +194,18 @@ function editProduct(p) {
   sheet.getRange(r,PCOL.BRAND,1,1).setValue(p.brand||'');
   sheet.getRange(r,PCOL.PRICE,1,1).setValue(parseFloat(p.price)||0);
   sheet.getRange(r,PCOL.MRP,1,1).setValue(parseFloat(p.mrp)||0);
-  sheet.getRange(r,PCOL.IMG,1,1).setValue(p.img||'');
+  if (p.img) sheet.getRange(r,PCOL.IMG,1,1).setValue(p.img);   // never blank out the main image
   sheet.getRange(r,PCOL.DESCRIPTION,1,1).setValue(p.description||'');
   sheet.getRange(r,PCOL.BULLETS,1,1).setValue(p.bullets||'');
   sheet.getRange(r,PCOL.STOCK,1,1).setValue(parseInt(p.stock)||0);
   sheet.getRange(r,PCOL.HSN,1,1).setValue(p.hsn||'');
+  // Persist gallery + tags + dimensions + variations on edit too (mirrors addProduct).
+  // Guarded so a field the client omits never silently wipes existing data.
+  if (p.additionalImgs    !== undefined) sheet.getRange(r,PCOL.ADDITIONAL_IMGS,1,1).setValue(p.additionalImgs||'');
+  if (p.tags              !== undefined) sheet.getRange(r,PCOL.TAGS,1,1).setValue(p.tags||'');
+  if (p.productDimensions !== undefined) sheet.getRange(r,PCOL.PRODUCT_DIMENSIONS,1,1).setValue(p.productDimensions||'');
+  if (p.packageDimensions !== undefined) sheet.getRange(r,PCOL.PACKAGE_DIMENSIONS,1,1).setValue(p.packageDimensions||'');
+  if (p.variations        !== undefined) sheet.getRange(r,PCOL.VARIATIONS,1,1).setValue(p.variations||'[]');
   sheet.getRange(r,PCOL.STATUS,1,1).setValue('Pending').setBackground('#FFF9C4');
   sheet.getRange(r,PCOL.UPDATED_ON,1,1).setValue(new Date().toLocaleString('en-IN'));
   return jsonResponse({success:true,message:'Updated — pending re-approval'});
@@ -223,7 +230,7 @@ function getProduct(p) {
   const f=findProductRow(sheet,p.productId,p.sellerId);
   if(!f.data) return jsonResponse({success:false,message:'Not found'});
   const d=f.data;
-  return jsonResponse({success:true,product:{productId:d[PCOL.PRODUCT_ID-1],title:d[PCOL.TITLE-1],category:d[PCOL.CATEGORY-1],brand:d[PCOL.BRAND-1],price:d[PCOL.PRICE-1],mrp:d[PCOL.MRP-1],img:d[PCOL.IMG-1],description:d[PCOL.DESCRIPTION-1],bullets:d[PCOL.BULLETS-1],stock:d[PCOL.STOCK-1],hsn:d[PCOL.HSN-1],status:d[PCOL.STATUS-1]}});
+  return jsonResponse({success:true,product:{productId:d[PCOL.PRODUCT_ID-1],title:d[PCOL.TITLE-1],category:d[PCOL.CATEGORY-1],brand:d[PCOL.BRAND-1],price:d[PCOL.PRICE-1],mrp:d[PCOL.MRP-1],img:d[PCOL.IMG-1],additionalImgs:d[PCOL.ADDITIONAL_IMGS-1]||'',description:d[PCOL.DESCRIPTION-1],bullets:d[PCOL.BULLETS-1],stock:d[PCOL.STOCK-1],hsn:d[PCOL.HSN-1],tags:d[PCOL.TAGS-1]||'',productDimensions:d[PCOL.PRODUCT_DIMENSIONS-1]||'',packageDimensions:d[PCOL.PACKAGE_DIMENSIONS-1]||'',variations:d[PCOL.VARIATIONS-1]||'[]',status:d[PCOL.STATUS-1]}});
 }
 
 function pauseProduct_fn(p) {
