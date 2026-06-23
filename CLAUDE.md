@@ -61,7 +61,7 @@ When the `.gs` changes, the human follows this order — reflect it in any instr
 
 ## Conventions
 
-- **Versioning (bump on EVERY release — never skip):** In `index.html`, bump `window.IBI_VERSION` — minor for small patches (`v4` → `v4.1`), major for big features (`v4.x` → `v5`) — and update `IBI_VERSION_DATE` + `IBI_VERSION_NOTE`. On a **major** release also bump `CACHE_NAME` in `sw.js`. The top-left storefront badge renders version + date from these (changelog in its tooltip). **Current: v4 (23 Jun 2026).**
+- **Versioning (bump on EVERY release — never skip):** In `index.html`, bump `window.IBI_VERSION` — minor for small patches (`v4` → `v4.1`), major for big features (`v4.x` → `v5`) — and update `IBI_VERSION_DATE` + `IBI_VERSION_NOTE`. On a **major** release also bump `CACHE_NAME` in `sw.js`. The top-left storefront badge renders version + date from these (changelog in its tooltip). **Current: v4.1 (23 Jun 2026).**
 - **Date/time format (exact):** `28 May 2026, Thursday, 01:38:00 PM`.
 - **Brand — two identities (intentional, for now):**
   - *Internal tools* (`ibi-auth-worker.js`, `ibi-password-generator.html`): cyan `#00c5ff` text on black `#000`, fonts Roboto / Roboto Condensed.
