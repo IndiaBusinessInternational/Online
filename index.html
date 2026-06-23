@@ -3828,9 +3828,16 @@ function editProduct(productId) {
         window._uploadedImgs = _gallery;
         ibiSyncHiddenInputs();
         ibiRenderGrid();
-        // Preserve existing variations so the edit re-saves them instead of clearing.
-        var _varEl = document.getElementById('ap_variations');
-        if (_varEl && p.variations) _varEl.value = p.variations;
+        // Restore variations INTO the editor UI — rebuild the type/option cards, tick the
+        // "Enable Variations" checkbox, and keep the hidden #ap_variations field in sync.
+        // (Previously only the hidden field was set, so the seller saw an empty variations
+        // section; toggling it then made syncVariationsField() overwrite the data with [],
+        // silently wiping variations on re-save.) loadVariationsForEdit() resyncs the hidden
+        // field from the rebuilt cards, so a straight "Update" re-saves them unchanged.
+        resetVariationForm();
+        if (p.variations && p.variations !== '[]') {
+          loadVariationsForEdit(p.variations);
+        }
         document.getElementById('ap_editing_id').value = productId;
         document.getElementById('apFormTitle').textContent = '✏️ Edit Product';
         const btn = document.getElementById('ap_submit_btn');
