@@ -174,6 +174,11 @@ function getSellerStats(p) {
 function addProduct(p) {
   if(!verifySellerPin(p.sellerId,p.pin)) return jsonResponse({success:false,message:'Unauthorized'});
   const sheet=getOrCreateProductSheet();
+  // ── Duplicate-listing guard: reject a repeat of an existing listing (same seller + same
+  //    title). The seller's front-end turns this into a Cancel / Overwrite choice; Overwrite
+  //    routes through editProduct, which updates the existing row in place. ──
+  const dupRow=findDuplicateProductRow(sheet,p.sellerId,p.title);
+  if(dupRow) return jsonResponse({success:false,duplicate:true,productId:dupRow.productId,status:dupRow.status,message:'You have already listed this product.'});
   const seller=findSellerById(getOrCreateSellerSheet(),p.sellerId.toUpperCase());
   const biz=seller?(seller[COL.BIZ_NAME-1]||''):p.sellerId;
   const pid='PROD-'+p.sellerId.toUpperCase()+'-'+Date.now().toString().slice(-6);
@@ -181,6 +186,23 @@ function addProduct(p) {
   sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground('#FFF9C4');
   try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product: '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
   return jsonResponse({success:true,productId:pid,message:'Submitted for review!'});
+}
+
+// Find an existing product row for this seller whose title matches (normalised), else null.
+// Used by addProduct to block repeat listings (same seller + same title). Normalisation
+// (lowercase, collapse whitespace, trim) MUST match the front-end _findDuplicateProduct().
+function findDuplicateProductRow(sheet,sellerId,title){
+  const norm=function(s){return String(s==null?'':s).toLowerCase().replace(/\s+/g,' ').trim();};
+  const t=norm(title);
+  if(!t) return null;
+  const sid=String(sellerId||'').toUpperCase();
+  const data=sheet.getDataRange().getValues();
+  for(let i=1;i<data.length;i++){
+    const row=data[i];
+    if(String(row[PCOL.SELLER_ID-1]||'').toUpperCase()!==sid) continue;
+    if(norm(row[PCOL.TITLE-1])===t) return {productId:row[PCOL.PRODUCT_ID-1],status:row[PCOL.STATUS-1]||'Pending',rowNum:i+1};
+  }
+  return null;
 }
 
 function editProduct(p) {
