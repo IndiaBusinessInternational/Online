@@ -1438,7 +1438,7 @@
 }
 .var-row {
   display: grid;
-  grid-template-columns: 1fr 88px 88px 64px 26px;
+  grid-template-columns: 1fr 80px 80px 56px 40px 26px;
   gap: 6px;
   align-items: center;
 }
@@ -1493,7 +1493,7 @@
 }
 .var-col-header {
   display: grid;
-  grid-template-columns: 1fr 88px 88px 64px 26px;
+  grid-template-columns: 1fr 80px 80px 56px 40px 26px;
   gap: 6px;
   font-size: 10px;
   font-weight: 700;
@@ -1501,6 +1501,16 @@
   text-transform: uppercase;
   margin-bottom: 4px;
 }
+/* Per-option variation image (issue 2) */
+.var-img-cell { display: flex; align-items: center; justify-content: center; }
+.var-img-btn {
+  width: 38px; height: 30px; padding: 0;
+  border: 1px solid #d1d5db; border-radius: 6px;
+  background-color: #f9fafb; background-size: cover; background-position: center; background-repeat: no-repeat;
+  cursor: pointer; font-size: 14px; line-height: 1; color: #9ca3af;
+  display: flex; align-items: center; justify-content: center;
+}
+.var-img-btn:hover { border-color: #4f46e5; }
 
 .sc-input:focus { border-color:#f97316; outline:none; box-shadow:0 0 0 3px rgba(249,115,22,.1); }
   .sc-prod-card {
@@ -3494,7 +3504,13 @@ function previewSellerProduct(idOrTitle) {
 
 function filterScProducts(q) {
   if (!window._scAllProds) return;
-  const filtered = q ? window._scAllProds.filter(p => p.title.toLowerCase().includes(q.toLowerCase())) : window._scAllProds;
+  q = (q||'').trim().toLowerCase();
+  const filtered = q ? window._scAllProds.filter(function(p){
+    return ((p.title||'')    .toLowerCase().includes(q)) ||
+           ((p.brand||'')    .toLowerCase().includes(q)) ||
+           ((p.category||'') .toLowerCase().includes(q)) ||
+           ((p.productId||'').toLowerCase().includes(q));
+  }) : window._scAllProds;
   renderProductList(filtered);
 }
 
@@ -3678,6 +3694,8 @@ function submitAddProduct() {
   if (desc.length < 20)    { showToast('⚠️ Description too short (min 20 chars)'); scrollToField('ap_desc'); return; }
   if (!bullets)            { showToast('⚠️ Enter at least 1 key feature'); scrollToField('ap_bullets'); return; }
   if (!stock)              { showToast('⚠️ Enter stock quantity');        scrollToField('ap_stock');   return; }
+  if (!hsn)                { showToast('⚠️ Enter HSN Code — required for GST invoicing'); scrollToField('ap_hsn'); return; }
+  if (!tags)               { showToast('⚠️ Enter backend search keywords — helps buyers find this product'); scrollToField('ap_tags'); return; }
 
   const btn = document.getElementById('ap_submit_btn');
   btn.textContent = '⏳ Submitting…'; btn.disabled = true;
@@ -3813,7 +3831,41 @@ function editProduct(productId) {
         document.getElementById('ap_brand').value   = p.brand       || '';
         document.getElementById('ap_img').value     = p.img         || '';
         document.getElementById('ap_desc').value    = p.description || '';
-        document.getElementById('ap_bullets').value = (p.bullets||'').replace(/\|/g,'\n');
+        // ── Restore Key Features into the 5 VISIBLE bullet fields. #ap_bullets is only a
+        //    hidden submit-time mirror, so setting it alone left the visible fields blank and
+        //    forced sellers to re-type every feature on each edit (issue 1). ──
+        (function(){
+          var _bp = (p.bullets||'').split('|').map(function(s){return s.trim();}).filter(Boolean);
+          [1,2,3,4,5].forEach(function(n){
+            var el = document.getElementById('ap_bullet'+n);
+            if (!el) return;
+            el.value = _bp[n-1] || '';
+            if (typeof updateBulletCount==='function') updateBulletCount(n, el.value);
+          });
+          if (typeof syncBulletsToTextarea==='function') syncBulletsToTextarea();
+        })();
+        // Restore backend search keywords (tags).
+        (function(){
+          var t = document.getElementById('ap_tags');
+          if (!t) return;
+          t.value = p.tags || '';
+          if (typeof updateKeywordCount==='function') updateKeywordCount(t.value);
+        })();
+        // ── Restore Product & Package dimensions: parse the stored "LxWxH cm, WT g" string
+        //    back into the individual L / W / H / Weight inputs (issue 1). ──
+        (function(){
+          function fillDims(str, pfx){
+            var m = String(str||'').match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*[x×]\s*([\d.]+)\s*cm\s*,?\s*([\d.]+)?/i);
+            if (!m) return;
+            var vals = { l:m[1], w:m[2], h:m[3], wt:(m[4]||'') };
+            Object.keys(vals).forEach(function(k){
+              var el = document.getElementById(pfx+k);
+              if (el) el.value = vals[k];
+            });
+          }
+          fillDims(p.productDimensions, 'ap_prod_');
+          fillDims(p.packageDimensions, 'ap_pkg_');
+        })();
         document.getElementById('ap_stock').value   = p.stock       || '';
         document.getElementById('ap_hsn').value     = p.hsn         || '';
         // ── Restore the FULL image gallery (main + additional) into the upload
@@ -4427,7 +4479,7 @@ function openProductPage(idOrProd) {
             <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px;">${type}:</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               ${groups[type].map((v,i) => `
-                <button class="ibi-var-btn" data-pid="${p.id}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}"
+                <button class="ibi-var-btn" data-pid="${p.id}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}" data-img="${v.img||''}"
                   onclick="selectVariation(this)"
                   style="padding:9px 14px;border:1.5px solid ${i===0?'#f97316':'#d1d5db'};border-radius:9px;
                          background:${i===0?'#fff7ed':'#fff'};cursor:pointer;font-size:13px;font-weight:600;color:#131921;">
@@ -4634,6 +4686,16 @@ function selectVariation(btn) {
     const el = document.getElementById('ppPriceMain');
     if (el) el.textContent = '₹' + formatPrice(price);
     ppSelectedVariations[btn.dataset.pid] = price;
+  }
+
+  // Swap the main product image to this variation's photo, if it has one (issue 2).
+  const vimg = btn.dataset.img;
+  if (vimg) {
+    const main = document.getElementById('ppMainImg');
+    if (main) {
+      main.dataset.retry = '';
+      main.src = (typeof ibiNormalizeImgUrl === 'function') ? ibiNormalizeImgUrl(vimg) : vimg;
+    }
   }
 }
 
@@ -5880,7 +5942,7 @@ function addVariationType(presetName) {
 
     // Column headers
     '<div class="var-col-header">' +
-      '<span>Option Value</span><span>Price (₹)</span><span>MRP (₹)</span><span>Stock</span><span></span>' +
+      '<span>Option Value</span><span>Price (₹)</span><span>MRP (₹)</span><span>Stock</span><span>Image</span><span></span>' +
     '</div>' +
 
     // Options list
@@ -5929,7 +5991,7 @@ function quickFillOption(tid, value) {
   syncVariationsField();
 }
 
-function addVariationOption(tid, name, price, mrp, stock) {
+function addVariationOption(tid, name, price, mrp, stock, img) {
   if (!_varRowCounters[tid]) _varRowCounters[tid] = 0;
   _varRowCounters[tid]++;
   var rid = tid + '_opt_' + _varRowCounters[tid];
@@ -5937,6 +5999,10 @@ function addVariationOption(tid, name, price, mrp, stock) {
   var mainPrice = document.getElementById('ap_price') ? (document.getElementById('ap_price').value || '') : '';
   var mainMrp   = document.getElementById('ap_mrp')   ? (document.getElementById('ap_mrp').value   || '') : '';
   var mainStock = document.getElementById('ap_stock') ? (document.getElementById('ap_stock').value || '') : '';
+
+  var imgUrl   = (img == null) ? '' : String(img).trim();
+  var imgAttr  = imgUrl.replace(/"/g, '&quot;');
+  var imgStyle = imgUrl ? (" style=\"background-image:url('" + imgUrl.replace(/'/g, '') + "')\"") : '';
 
   var row = document.createElement('div');
   row.className = 'var-row';
@@ -5950,10 +6016,45 @@ function addVariationOption(tid, name, price, mrp, stock) {
           'value="' + (mrp   !== undefined ? mrp   : '') + '" min="0" oninput="syncVariationsField()">' +
     '<input type="number" class="var-stock-input" placeholder="' + mainStock + '" ' +
           'value="' + (stock !== undefined ? stock : '') + '" min="0" oninput="syncVariationsField()">' +
+    '<div class="var-img-cell" title="Add a photo for this option">' +
+      '<input type="hidden" class="var-img-input" value="' + imgAttr + '">' +
+      '<input type="file" accept="image/*" class="var-img-file" style="display:none" onchange="onVarOptionImage(this)">' +
+      '<button type="button" class="var-img-btn" onclick="this.parentNode.querySelector(\'.var-img-file\').click()"' + imgStyle + '>' +
+        (imgUrl ? '' : '📷') +
+      '</button>' +
+    '</div>' +
     '<button type="button" class="var-del-btn" onclick="removeVariationOption(\'' + rid + '\')" title="Remove">×</button>';
 
   document.getElementById(tid + '_options').appendChild(row);
   syncVariationsField();
+}
+
+// Upload a photo for ONE variation option: compress → host (Drive primary / ImgBB
+// fallback) → store the permanent URL on the row's hidden input. Reuses the exact
+// pipeline the main product gallery uses, so it works on PWA/mobile (issue 2).
+function onVarOptionImage(fileInput) {
+  var file = fileInput.files && fileInput.files[0];
+  fileInput.value = '';
+  if (!file) return;
+  var cell   = fileInput.parentNode;
+  var btn    = cell.querySelector('.var-img-btn');
+  var hidden = cell.querySelector('.var-img-input');
+  var prev   = btn.innerHTML;
+  btn.innerHTML = '⏳';
+  ibiCompressFileToDataUrl(file)
+    .then(function(dataUrl){ if (!dataUrl) throw new Error('read failed'); return ibiHostOneImage(dataUrl); })
+    .then(function(url){
+      hidden.value = url;
+      btn.innerHTML = '';
+      btn.style.backgroundImage = "url('" + String(url).replace(/'/g, '') + "')";
+      syncVariationsField();
+      showToast('✅ Variation image added!', 'success');
+    })
+    .catch(function(err){
+      btn.innerHTML = prev || '📷';
+      showToast('⚠️ Could not upload that image — please try again');
+      console.warn('variation image upload failed:', err);
+    });
 }
 
 function removeVariationOption(rid) {
@@ -5987,7 +6088,9 @@ function syncVariationsField() {
       var price = row.querySelector('.var-price-input').value.trim();
       var mrp   = row.querySelector('.var-mrp-input').value.trim();
       var stock = row.querySelector('.var-stock-input').value.trim();
-      allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock });
+      var imgEl = row.querySelector('.var-img-input');
+      var img   = imgEl ? imgEl.value.trim() : '';
+      allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock, img: img });
     });
   });
 
@@ -6033,7 +6136,7 @@ function loadVariationsForEdit(variationsJson) {
     _varRowCounters[tid] = 0;
     // Add loaded options
     grouped[typeName].forEach(function(v) {
-      addVariationOption(tid, v.name, v.price, v.mrp, v.stock);
+      addVariationOption(tid, v.name, v.price, v.mrp, v.stock, v.img);
     });
   });
 }
@@ -8219,14 +8322,16 @@ init();
 
       <!-- TAB: My Products -->
       <div id="dashTab_products">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px;">
           <div style="font-size:16px;font-weight:800;color:#131921;">Your Products</div>
           <div style="display:flex;gap:8px;">
-            <input id="scProdSearch" type="text" placeholder="Search products..." oninput="filterScProducts(this.value)" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:180px;"/>
             <button onclick="loadSellerProducts(true)" style="padding:7px 14px;background:#f5f5f5;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;">🔄 Refresh</button>
             <button onclick="switchDashTab('add')" style="padding:7px 14px;background:#f97316;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">➕ Add New</button>
           </div>
         </div>
+        <!-- Full-width search row — gives a comfortable click target (issue 5) and matches name / brand / category -->
+        <input id="scProdSearch" type="text" placeholder="🔍 Search your products by name, brand or category…" oninput="filterScProducts(this.value)" autocomplete="off"
+               style="width:100%;box-sizing:border-box;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:14px;"/>
         <div id="sd_products_list"></div>
       </div>
 
@@ -8330,7 +8435,7 @@ init();
                 </label>
               </div>
               <div style="font-size:11px;color:#888;margin-bottom:10px;">
-                Add unlimited variation types (Size, Color, Pack, Weight…) — each with unlimited options and individual pricing.
+                Add unlimited variation types (Size, Color, Pack, Weight…) — each with unlimited options, individual pricing, and an optional photo per option (📷 column) that buyers see when they pick it.
               </div>
 
               <div id="variationsSection" style="display:none;">
@@ -9219,7 +9324,7 @@ window.addEventListener('appinstalled', function() {
     onchange="ibiOnFileChange(this);">
   <!-- ══ Floating Save Draft ══ -->
   <div id="floatSaveDraft" style="display:none;position:fixed;bottom:24px;right:24px;z-index:10100;">
-    <button onclick="saveDraft();showToast('💾 Draft saved!','success');"
+    <button onclick="saveDraft(); var b=this; b.innerHTML='✅ Draft Saved!'; b.style.background='#16a34a'; setTimeout(function(){ b.innerHTML='💾 Save Draft'; b.style.background='#232F3E'; }, 1800); showToast('💾 Draft saved!','success');"
       style="background:#232F3E;color:#fff;border:none;padding:12px 20px;border-radius:50px;
              font-size:13px;font-weight:800;cursor:pointer;
              box-shadow:0 4px 20px rgba(0,0,0,.35);
