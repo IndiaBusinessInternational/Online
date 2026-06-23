@@ -1,9 +1,9 @@
 // ============================================================
 // IBI Marketplace — Service Worker (PWA)
-// Version: 2.0 — Updated for indiabusinessinternational.online
+// Version: 4.0 — Updated for indiabusinessinternational.online
 // ============================================================
 
-const CACHE_NAME  = 'ibi-marketplace-v2';   // bumped — forces old cache clear
+const CACHE_NAME  = 'ibi-marketplace-v4';   // bump on every MAJOR release — purges old caches
 const OFFLINE_URL = '/';
 
 const CACHE_FILES = [
@@ -19,7 +19,7 @@ const CACHE_FILES = [
 
 // ── Install ────────────────────────────────────────────────
 self.addEventListener('install', function(event) {
-  console.log('[SW] Install v2');
+  console.log('[SW] Install v4');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return Promise.allSettled(
@@ -33,7 +33,7 @@ self.addEventListener('install', function(event) {
 
 // ── Activate: delete ALL old caches ───────────────────────
 self.addEventListener('activate', function(event) {
-  console.log('[SW] Activate v2');
+  console.log('[SW] Activate v4');
   event.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
@@ -102,4 +102,4 @@ self.addEventListener('notificationclick', function(event) {
   event.waitUntil(clients.openWindow(event.notification.data || '/'));
 });
 
-console.log('[SW] IBI Marketplace v2 loaded ✅');
+console.log('[SW] IBI Marketplace v4 loaded ✅');
