@@ -1743,10 +1743,15 @@
   }
 
   @media (max-width: 520px) {
-    .header-top { gap: 8px; padding: 8px 12px; }
+    .header-top { gap: 8px; padding: 8px 12px; flex-wrap: wrap; }
     .logo-name { font-size: 15px; }
     .logo img { height: 68px; }
     .search-category { display: none; }
+    /* Phones: give the search bar its OWN full-width row. Previously it sat on the same
+       nowrap row as the logo + header actions and got crushed to ~82px (input only ~36px),
+       so you couldn't type a query and the search button looked broken. order:10 + 100%
+       basis drops it onto a second row spanning the full width (Amazon-style mobile search). */
+    .search-bar { order: 10; flex-basis: 100%; width: 100%; height: 42px; margin-top: 2px; }
     .carousel-slide { height: 180px; }
     .slide-title { font-size: 22px; }
     .slide-subtitle { display: none; }
@@ -2309,9 +2314,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v4.15';
-window.IBI_VERSION_DATE = '23 Jun 2026';
-window.IBI_VERSION_NOTE = 'v4.15 — Mobile now FULLY edge-to-edge (zero side padding): cards span the entire screen width; text stays readable via per-card internal padding. v4.14 — Data Backup & Restore. v4.13 — mobile edge-to-edge (tiny inset). v4.12 — unified cyan accents.';
+window.IBI_VERSION      = 'v4.17';
+window.IBI_VERSION_DATE = '24 Jun 2026';
+window.IBI_VERSION_NOTE = 'v4.17 — Fixed mobile search: the search bar was crushed to ~82px (input ~36px) between the logo and header icons, so you could not type a query and the search button looked dead. It now gets its own full-width row on phones (Amazon-style). v4.16 — Variations shown directly under price + slower-load headroom. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore. v4.13 — mobile edge-to-edge.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -4230,7 +4235,9 @@ function loadLiveProducts() {
       });
       allFilteredProducts = [...products];
       renderAllProducts(); renderDeals(); renderFeatured(); renderNew(); renderSellers();
-    }, 5000
+    }, 10000   // was 5000 — Apps Script JSONP is ~2.5s + redirect; 5s could time out on slow
+               // mobile, dropping every real (sheet) product → storefront showed only demos
+               // with no variations. 10s gives headroom so variant-bearing products always load.
   );
 }
 
@@ -4698,6 +4705,28 @@ function openProductPage(idOrProd) {
         </div>
       </div>
 
+      <!-- Product variations (Size / Colour / etc.) — placed directly under price so buyers see options
+           immediately (was previously below the delivery/return block, ~1200px down on mobile = easy to miss). -->
+      ${(p.variations && p.variations.length) ? (function(){
+        const groups = {};
+        p.variations.forEach(v => { (groups[v.type||'Variation'] = groups[v.type||'Variation'] || []).push(v); });
+        return `<div style="background:#fff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:800;color:#8B5CF6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">⚙️ Select Option</div>` +
+          Object.keys(groups).map(type => `
+          <div style="margin:0 0 6px;">
+            <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px;">${type}:</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              ${groups[type].map((v,i) => `
+                <button class="ibi-var-btn" data-pid="${p.id}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}" data-img="${v.img||''}"
+                  onclick="selectVariation(this)"
+                  style="padding:9px 14px;border:1.5px solid ${i===0?'#0098c9':'#d1d5db'};border-radius:9px;
+                         background:${i===0?'#fff7ed':'#fff'};cursor:pointer;font-size:13px;font-weight:600;color:#131921;">
+                  ${v.name}${(v.price && parseFloat(v.price)>0) ? ` · ₹${formatPrice(parseFloat(v.price))}` : ''}
+                </button>`).join('')}
+            </div>
+          </div>`).join('') + `</div>`;
+      })() : ''}
+
       <!-- Delivery info -->
       <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:14px;margin-bottom:16px;">
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
@@ -4723,25 +4752,6 @@ function openProductPage(idOrProd) {
           <div style="font-size:13px;color:#333;"><strong>Secure</strong> payment via WhatsApp · 100% authentic</div>
         </div>
       </div>
-
-      <!-- Product variations (Size / Colour / etc.) -->
-      ${(p.variations && p.variations.length) ? (function(){
-        const groups = {};
-        p.variations.forEach(v => { (groups[v.type||'Variation'] = groups[v.type||'Variation'] || []).push(v); });
-        return Object.keys(groups).map(type => `
-          <div style="margin:4px 0 14px;">
-            <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px;">${type}:</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              ${groups[type].map((v,i) => `
-                <button class="ibi-var-btn" data-pid="${p.id}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}" data-img="${v.img||''}"
-                  onclick="selectVariation(this)"
-                  style="padding:9px 14px;border:1.5px solid ${i===0?'#0098c9':'#d1d5db'};border-radius:9px;
-                         background:${i===0?'#fff7ed':'#fff'};cursor:pointer;font-size:13px;font-weight:600;color:#131921;">
-                  ${v.name}${(v.price && parseFloat(v.price)>0) ? ` · ₹${formatPrice(parseFloat(v.price))}` : ''}
-                </button>`).join('')}
-            </div>
-          </div>`).join('');
-      })() : ''}
 
       <!-- Quantity + Add to Cart / Buy Now -->
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
