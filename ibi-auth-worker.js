@@ -1,11 +1,15 @@
 // =============================================================
 //  IBI AUTH WORKER  —  Cloudflare Worker (ES Module)
-//  Version : 1.0  |  India Business International
+//  Version : 1.1  |  India Business International
 // -------------------------------------------------------------
-//  Protects: finance / gstr / erp / orders subdomains
+//  Protects: finance / gstr / erp / settlement subdomains
+//            (actual routes are set in the Cloudflare dashboard)
 //  Auth    : One master password  (SHA-256 hash in env var)
 //  Session : Session cookie  (clears when browser closes)
 //  Scope   : Shared across all .indiabusinessinternational.online
+//  v1.1    : og-banner.png served WITHOUT auth (social-link
+//            scrapers need it) + OG/Twitter meta tags on the
+//            login page so shared links show a rich preview.
 // =============================================================
 //
 //  Required Environment Variables (set in Cloudflare dashboard):
@@ -17,6 +21,20 @@
 const AUTH_PATH     = '/__ibi_auth__';
 const COOKIE_NAME   = 'ibi_session';
 const COOKIE_DOMAIN = '.indiabusinessinternational.online';
+
+// Paths served straight from origin WITHOUT a session — keep this
+// list tight: only non-sensitive static brand assets. The social
+// preview banner must be public or WhatsApp/FB/X can't render it.
+const PUBLIC_PATHS  = ['/og-banner.png'];
+
+// Per-subdomain names/descriptions for the login page's social
+// preview tags (fallback below covers any other routed host).
+const TOOL_META = {
+  erp:        { title: 'IBI ERP',                desc: 'All-in-one business ERP for India Business International — internal staff access.' },
+  finance:    { title: 'IBI Finance Tracker',    desc: 'Business finance tracker for India Business International — internal staff access.' },
+  settlement: { title: 'IBI Settlement Tracker', desc: 'Marketplace settlement & payout reconciliation — internal staff access.' },
+  gstr:       { title: 'IBI GST Reports',        desc: 'GST reporting for India Business International — internal staff access.' }
+};
 
 // ── Main fetch handler ────────────────────────────────────────
 export default {
@@ -35,6 +53,13 @@ export default {
     // ── Handle login form submission ──
     if (url.pathname === AUTH_PATH && request.method === 'POST') {
       return handleLogin(request, env);
+    }
+
+    // ── Public brand assets (no session needed) ──
+    //    Exact-match allowlist only; GET/HEAD only.
+    if ((request.method === 'GET' || request.method === 'HEAD') &&
+        PUBLIC_PATHS.includes(url.pathname)) {
+      return fetch(request);
     }
 
     // ── Check for a valid session cookie ──
@@ -176,6 +201,15 @@ function parseCookie(cookieHeader, name) {
 // ── IBI Branded Login Page ────────────────────────────────────
 function serveLoginPage(origin, redirectTo, wrongPassword) {
 
+  // Social-preview identity for this subdomain (og-banner.png is
+  // publicly reachable via PUBLIC_PATHS, so scrapers can fetch it)
+  const sub  = new URL(origin).hostname.split('.')[0];
+  const meta = TOOL_META[sub] || {
+    title: 'IBI Secure Access',
+    desc : 'Internal business tools by India Business International — authorized access only.'
+  };
+  const banner = origin + '/og-banner.png';
+
   const errorBlock = wrongPassword
     ? `<div class="error-msg">
          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -188,7 +222,23 @@ function serveLoginPage(origin, redirectTo, wrongPassword) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>IBI Secure Access</title>
+<title>${meta.title} — IBI Secure Access</title>
+<meta name="description" content="${meta.desc}">
+<!-- Open Graph / social sharing (shown when a gated link is shared) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="India Business International">
+<meta property="og:title" content="${meta.title}">
+<meta property="og:description" content="${meta.desc}">
+<meta property="og:url" content="${origin}/">
+<meta property="og:image" content="${banner}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${meta.title} — India Business International">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${meta.title}">
+<meta name="twitter:description" content="${meta.desc}">
+<meta name="twitter:image" content="${banner}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@700;900&display=swap" rel="stylesheet">
