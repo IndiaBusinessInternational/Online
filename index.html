@@ -10,8 +10,12 @@
 <meta property="og:description" content="Shop eco-friendly products from Kanyakumari. Free delivery across India.">
 <meta property="og:url" content="https://www.indiabusinessinternational.online">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://www.indiabusinessinternational.online/icon.svg">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://www.indiabusinessinternational.online/og-banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="IBI Marketplace — eCommerce for the World">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.indiabusinessinternational.online/og-banner.png">
 <meta name="twitter:title" content="IBI Marketplace — India Business International">
 <meta name="twitter:description" content="Shop eco-friendly products from Kanyakumari. Free delivery across India.">
 <link rel="canonical" href="https://www.indiabusinessinternational.online">
@@ -81,17 +85,6 @@
 <!-- Android PWA -->
 <meta name="mobile-web-app-capable" content="yes">
 
-<!-- Open Graph (for sharing on WhatsApp, Facebook) -->
-<meta property="og:title" content="IBI Marketplace — India Business International">
-<meta property="og:description" content="Shop eco-friendly products. eCommerce for the World.">
-<meta property="og:url" content="https://www.indiabusinessinternational.online/">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://www.indiabusinessinternational.online/icon.svg">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IBI Marketplace">
-<meta name="twitter:description" content="Shop eco-friendly products from Tamil Nadu, India.">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ======= CSS Variables ======= */
@@ -1508,8 +1501,22 @@
   text-transform: uppercase;
   margin-bottom: 4px;
 }
-/* Per-option variation image (issue 2) */
-.var-img-cell { display: flex; align-items: center; justify-content: center; }
+/* Per-option variation image (issue 2) — now supports MULTIPLE photos per option */
+.var-img-cell { display: flex; align-items: center; justify-content: center; position: relative; }
+.var-img-count {
+  position: absolute; bottom: -5px; right: -5px;
+  min-width: 15px; height: 15px; padding: 0 3px; box-sizing: border-box;
+  background: #4f46e5; color: #fff; border-radius: 8px;
+  font-size: 9px; font-weight: 800; line-height: 15px; text-align: center;
+  pointer-events: none;
+}
+.var-img-clear {
+  position: absolute; top: -6px; right: -6px;
+  width: 15px; height: 15px; padding: 0;
+  background: #fee2e2; color: #dc2626; border: 1px solid #fff; border-radius: 50%;
+  font-size: 11px; font-weight: 900; line-height: 1; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+}
 .var-img-btn {
   width: 38px; height: 30px; padding: 0;
   border: 1px solid #d1d5db; border-radius: 6px;
@@ -2314,9 +2321,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v4.17';
-window.IBI_VERSION_DATE = '24 Jun 2026';
-window.IBI_VERSION_NOTE = 'v4.17 — Fixed mobile search: the search bar was crushed to ~82px (input ~36px) between the logo and header icons, so you could not type a query and the search button looked dead. It now gets its own full-width row on phones (Amazon-style). v4.16 — Variations shown directly under price + slower-load headroom. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore. v4.13 — mobile edge-to-edge.';
+window.IBI_VERSION      = 'v4.19';
+window.IBI_VERSION_DATE = '8 Jul 2026';
+window.IBI_VERSION_NOTE = 'v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -4653,8 +4660,8 @@ function openProductPage(idOrProd) {
         ${!inStock ? `<div style="position:absolute;inset:0;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#c00;">Out of Stock</div>` : ''}
       </div>
 
-      <!-- Thumbnails -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <!-- Thumbnails (rebuilt by setPPGallery when a variation with photos is selected) -->
+      <div id="ppThumbs" style="display:flex;gap:8px;flex-wrap:wrap;">
         ${thumbs.map((src,i) => `
           <div onclick="setPPThumb(this,'${src}')"
                style="width:60px;height:60px;border:2px solid ${i===0?'#0098c9':'#ddd'};border-radius:8px;overflow:hidden;cursor:pointer;padding:3px;background:#f9f9f9;transition:border-color .2s;"
@@ -4717,7 +4724,7 @@ function openProductPage(idOrProd) {
             <div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px;">${type}:</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               ${groups[type].map((v,i) => `
-                <button class="ibi-var-btn" data-pid="${p.id}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}" data-img="${v.img||''}"
+                <button class="ibi-var-btn" data-pid="${p.id}" data-vtype="${type}" data-price="${v.price||p.price}" data-mrp="${v.mrp||p.mrp}" data-img="${v.img||''}" data-imgs="${ibiVariationImgs(v).join('|')}"
                   onclick="selectVariation(this)"
                   style="padding:9px 14px;border:1.5px solid ${i===0?'#0098c9':'#d1d5db'};border-radius:9px;
                          background:${i===0?'#fff7ed':'#fff'};cursor:pointer;font-size:13px;font-weight:600;color:#131921;">
@@ -4921,6 +4928,10 @@ function openProductPage(idOrProd) {
   if (_ssOv && _ssOv.style.display !== 'none') _ssOv.style.display = 'none';
   document.body.style.overflow = 'hidden';
   window._currentPPId = id;
+  // Seed the variation-aware gallery: remember the product's full image set as the
+  // fallback, then reflect each variation type's pre-selected (first) option.
+  _ppDefaultImgs = (thumbs && thumbs.length) ? thumbs.slice() : (p.img ? [p.img] : []);
+  ppInitVarGallery();
   // Scroll to top of product page overlay
   document.getElementById('productPageOverlay').scrollTop = 0;
 }
@@ -4933,13 +4944,77 @@ function closeProductPage() {
   history.replaceState(null, '', window.location.pathname);
 }
 
-function setPPThumb(el, src) {
-  document.getElementById('ppMainImg').src = src;
-  document.querySelectorAll('.pp-thumb').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+// ── Variation-aware image gallery ───────────────────────────────────────────
+// A variation can carry its own photo(s). When the buyer picks an option that has
+// images, the WHOLE gallery (main image + thumbnail strip) is rebuilt to show ONLY
+// that option's photos; picking an option with no photos restores the product's
+// full default gallery. _ppDefaultImgs holds that fallback set; _ppVarSel maps each
+// variation type → the images of its currently-selected option.
+let _ppDefaultImgs = [];
+let _ppVarSel = {};
+
+// Collect a variation's images into a clean, deduped, http(s)-only array. Supports
+// the new `imgs` field (array or pipe/comma string) and the legacy single `img`.
+function ibiVariationImgs(v) {
+  if (!v) return [];
+  let raw = [];
+  if (Array.isArray(v.imgs)) raw = v.imgs.slice();
+  else if (typeof v.imgs === 'string' && v.imgs) raw = v.imgs.split(/[|,]/);
+  if (v.img) raw.unshift(v.img);
+  const seen = {}, out = [];
+  raw.forEach(s => {
+    s = (typeof ibiNormalizeImgUrl === 'function') ? ibiNormalizeImgUrl((s||'').trim()) : (s||'').trim();
+    if (/^https?:\/\//i.test(s) && !seen[s]) { seen[s] = 1; out.push(s); }
+  });
+  return out;
 }
 
-// Highlight the chosen variation within its own group and update the displayed price.
+// Rebuild the main image + thumbnail strip from a list of image URLs.
+function setPPGallery(imgs) {
+  if (!imgs || !imgs.length) imgs = _ppDefaultImgs || [];
+  const main = document.getElementById('ppMainImg');
+  if (main) { main.dataset.retry = ''; main.src = imgs[0] || ''; }
+  const wrap = document.getElementById('ppThumbs');
+  if (wrap) {
+    wrap.innerHTML = imgs.map((src,i) =>
+      `<div onclick="setPPThumb(this,'${src}')" class="pp-thumb-wrap" data-src="${src}"
+            style="width:60px;height:60px;border:2px solid ${i===0?'#0098c9':'#ddd'};border-radius:8px;overflow:hidden;cursor:pointer;padding:3px;background:#f9f9f9;transition:border-color .2s;">
+         <img src="${src}" style="width:100%;height:100%;object-fit:contain;" onerror="this.parentNode.style.display='none'"></div>`
+    ).join('');
+  }
+}
+
+// Effective gallery = images of the first variation type (in display order) whose
+// selected option carries photos; otherwise the product's default images.
+function ppApplyVarGallery() {
+  let chosen = null;
+  Object.keys(_ppVarSel).forEach(t => {
+    if (!chosen && _ppVarSel[t] && _ppVarSel[t].length) chosen = _ppVarSel[t];
+  });
+  setPPGallery(chosen || _ppDefaultImgs);
+}
+
+// On product open, seed _ppVarSel from each type's pre-selected (first) option.
+function ppInitVarGallery() {
+  _ppVarSel = {};
+  document.querySelectorAll('#ppGrid .ibi-var-btn').forEach(b => {
+    const t = b.dataset.vtype || 'Variation';
+    if (_ppVarSel[t] === undefined) {                 // first option of this type
+      _ppVarSel[t] = (b.dataset.imgs ? b.dataset.imgs.split('|').filter(Boolean) : []);
+    }
+  });
+  ppApplyVarGallery();
+}
+
+function setPPThumb(el, src) {
+  const main = document.getElementById('ppMainImg');
+  if (main) { main.dataset.retry = ''; main.src = src; }
+  document.querySelectorAll('#ppThumbs .pp-thumb-wrap').forEach(t => { t.style.borderColor = '#ddd'; });
+  if (el) el.style.borderColor = '#0098c9';
+}
+
+// Highlight the chosen variation within its own group, update the displayed price,
+// and refresh the gallery to that option's photos (or the product's full set).
 let ppSelectedVariations = {};
 function selectVariation(btn) {
   const group = btn.parentElement;
@@ -4957,15 +5032,11 @@ function selectVariation(btn) {
     ppSelectedVariations[btn.dataset.pid] = price;
   }
 
-  // Swap the main product image to this variation's photo, if it has one (issue 2).
-  const vimg = btn.dataset.img;
-  if (vimg) {
-    const main = document.getElementById('ppMainImg');
-    if (main) {
-      main.dataset.retry = '';
-      main.src = (typeof ibiNormalizeImgUrl === 'function') ? ibiNormalizeImgUrl(vimg) : vimg;
-    }
-  }
+  // Record this type's selected images and rebuild the gallery — buyers see ONLY
+  // this option's photos when it has them, else the product's full default set.
+  const t = btn.dataset.vtype || 'Variation';
+  _ppVarSel[t] = btn.dataset.imgs ? btn.dataset.imgs.split('|').filter(Boolean) : [];
+  ppApplyVarGallery();
 }
 
 function changePPQty(d) {
@@ -6269,9 +6340,11 @@ function addVariationOption(tid, name, price, mrp, stock, img) {
   var mainMrp   = document.getElementById('ap_mrp')   ? (document.getElementById('ap_mrp').value   || '') : '';
   var mainStock = document.getElementById('ap_stock') ? (document.getElementById('ap_stock').value || '') : '';
 
-  var imgUrl   = (img == null) ? '' : String(img).trim();
-  var imgAttr  = imgUrl.replace(/"/g, '&quot;');
-  var imgStyle = imgUrl ? (" style=\"background-image:url('" + imgUrl.replace(/'/g, '') + "')\"") : '';
+  // `img` may be a single URL (legacy) or a pipe/comma list / array (multi-image).
+  var imgList = (img == null) ? []
+              : (Array.isArray(img) ? img.slice() : String(img).split(/[|,]/));
+  imgList = imgList.map(function(s){ return (s||'').trim(); }).filter(Boolean);
+  var imgAttr = imgList.join('|').replace(/"/g, '&quot;');
 
   var row = document.createElement('div');
   row.className = 'var-row';
@@ -6285,45 +6358,77 @@ function addVariationOption(tid, name, price, mrp, stock, img) {
           'value="' + (mrp   !== undefined ? mrp   : '') + '" min="0" oninput="syncVariationsField()">' +
     '<input type="number" class="var-stock-input" placeholder="' + mainStock + '" ' +
           'value="' + (stock !== undefined ? stock : '') + '" min="0" oninput="syncVariationsField()">' +
-    '<div class="var-img-cell" title="Add a photo for this option">' +
+    '<div class="var-img-cell" title="Add photo(s) for this option — buyers see ONLY these when they pick it">' +
       '<input type="hidden" class="var-img-input" value="' + imgAttr + '">' +
-      '<input type="file" accept="image/*" class="var-img-file" style="display:none" onchange="onVarOptionImage(this)">' +
-      '<button type="button" class="var-img-btn" onclick="this.parentNode.querySelector(\'.var-img-file\').click()"' + imgStyle + '>' +
-        (imgUrl ? '' : '📷') +
-      '</button>' +
+      '<input type="file" accept="image/*" multiple class="var-img-file" style="display:none" onchange="onVarOptionImage(this)">' +
+      '<button type="button" class="var-img-btn" onclick="this.parentNode.querySelector(\'.var-img-file\').click()">📷</button>' +
+      '<span class="var-img-count"></span>' +
+      '<button type="button" class="var-img-clear" title="Remove all photos" onclick="clearVarOptionImages(this)">×</button>' +
     '</div>' +
     '<button type="button" class="var-del-btn" onclick="removeVariationOption(\'' + rid + '\')" title="Remove">×</button>';
 
   document.getElementById(tid + '_options').appendChild(row);
+  refreshVarImgCell(row.querySelector('.var-img-cell'));
   syncVariationsField();
 }
 
-// Upload a photo for ONE variation option: compress → host (Drive primary / ImgBB
-// fallback) → store the permanent URL on the row's hidden input. Reuses the exact
-// pipeline the main product gallery uses, so it works on PWA/mobile (issue 2).
+// Render a variation option's image cell from its hidden pipe-joined list: first
+// photo as the button thumbnail, a "+N" badge when there's more than one, and the
+// clear (×) control whenever at least one photo exists.
+function refreshVarImgCell(cell) {
+  if (!cell) return;
+  var hidden = cell.querySelector('.var-img-input');
+  var btn    = cell.querySelector('.var-img-btn');
+  var badge  = cell.querySelector('.var-img-count');
+  var clr    = cell.querySelector('.var-img-clear');
+  var list   = (hidden && hidden.value ? hidden.value.split('|') : []).filter(Boolean);
+  if (btn) {
+    if (list.length) { btn.style.backgroundImage = "url('" + String(list[0]).replace(/'/g, '') + "')"; btn.innerHTML = ''; }
+    else             { btn.style.backgroundImage = ''; btn.innerHTML = '📷'; }
+  }
+  if (badge) badge.textContent = list.length > 1 ? ('+' + (list.length - 1)) : '';
+  if (clr)   clr.style.display = list.length ? 'flex' : 'none';
+}
+
+// Upload one or more photos for ONE variation option: compress → host (Drive primary
+// / ImgBB fallback) → APPEND each permanent URL to the row's hidden pipe-joined list.
+// Reuses the exact pipeline the main gallery uses, so it works on PWA/mobile (issue 2).
 function onVarOptionImage(fileInput) {
-  var file = fileInput.files && fileInput.files[0];
+  var files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : [];
   fileInput.value = '';
-  if (!file) return;
+  if (!files.length) return;
   var cell   = fileInput.parentNode;
   var btn    = cell.querySelector('.var-img-btn');
   var hidden = cell.querySelector('.var-img-input');
-  var prev   = btn.innerHTML;
-  btn.innerHTML = '⏳';
-  ibiCompressFileToDataUrl(file)
-    .then(function(dataUrl){ if (!dataUrl) throw new Error('read failed'); return ibiHostOneImage(dataUrl); })
-    .then(function(url){
-      hidden.value = url;
-      btn.innerHTML = '';
-      btn.style.backgroundImage = "url('" + String(url).replace(/'/g, '') + "')";
-      syncVariationsField();
-      showToast('✅ Variation image added!', 'success');
-    })
-    .catch(function(err){
-      btn.innerHTML = prev || '📷';
-      showToast('⚠️ Could not upload that image — please try again');
-      console.warn('variation image upload failed:', err);
-    });
+  btn.innerHTML = '⏳'; btn.style.backgroundImage = '';
+  var done = 0, ok = 0;
+  files.forEach(function(file) {
+    ibiCompressFileToDataUrl(file)
+      .then(function(dataUrl){ if (!dataUrl) throw new Error('read failed'); return ibiHostOneImage(dataUrl); })
+      .then(function(url){
+        var list = (hidden.value ? hidden.value.split('|') : []).filter(Boolean);
+        list.push(url); hidden.value = list.join('|'); ok++;
+      })
+      .catch(function(err){ console.warn('variation image upload failed:', err); })
+      .then(function(){
+        done++;
+        if (done === files.length) {
+          refreshVarImgCell(cell);
+          syncVariationsField();
+          if (ok) showToast('✅ ' + ok + ' variation image' + (ok>1?'s':'') + ' added!', 'success');
+          else    showToast('⚠️ Could not upload — please try again');
+        }
+      });
+  });
+}
+
+// Clear ALL photos for one variation option.
+function clearVarOptionImages(btn) {
+  var cell   = btn.parentNode;
+  var hidden = cell.querySelector('.var-img-input');
+  if (hidden) hidden.value = '';
+  refreshVarImgCell(cell);
+  syncVariationsField();
 }
 
 function removeVariationOption(rid) {
@@ -6357,9 +6462,11 @@ function syncVariationsField() {
       var price = row.querySelector('.var-price-input').value.trim();
       var mrp   = row.querySelector('.var-mrp-input').value.trim();
       var stock = row.querySelector('.var-stock-input').value.trim();
-      var imgEl = row.querySelector('.var-img-input');
-      var img   = imgEl ? imgEl.value.trim() : '';
-      allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock, img: img });
+      var imgEl   = row.querySelector('.var-img-input');
+      var imgList = (imgEl && imgEl.value ? imgEl.value.split('|') : []).map(function(s){ return (s||'').trim(); }).filter(Boolean);
+      // Keep `img` (first photo) for any legacy reader; `imgs` carries the full list.
+      allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock,
+                     img: imgList[0] || '', imgs: imgList.join('|') });
     });
   });
 
@@ -6405,7 +6512,7 @@ function loadVariationsForEdit(variationsJson) {
     _varRowCounters[tid] = 0;
     // Add loaded options
     grouped[typeName].forEach(function(v) {
-      addVariationOption(tid, v.name, v.price, v.mrp, v.stock, v.img);
+      addVariationOption(tid, v.name, v.price, v.mrp, v.stock, (v.imgs || v.img || ''));
     });
   });
 }
