@@ -2321,9 +2321,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v4.19';
-window.IBI_VERSION_DATE = '8 Jul 2026';
-window.IBI_VERSION_NOTE = 'v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION      = 'v5';
+window.IBI_VERSION_DATE = '17 Jul 2026';
+window.IBI_VERSION_NOTE = 'v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3711,6 +3711,11 @@ function resetAddForm() {
   });
   const cat = document.getElementById('ap_cat'); if(cat) cat.value='';
   const imgs = document.getElementById('ap_imgs'); if(imgs) imgs.value='';
+  // Reset the ✨ AI generator panel too
+  ['ap_gen_name','ap_gen_kw'].forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+  window._aiGenFiles = [];
+  if (typeof ibiAIRenderFileNote === 'function') ibiAIRenderFileNote();
+  const aiSt = document.getElementById('aiGenStatus'); if (aiSt) aiSt.style.display='none';
   document.getElementById('ap_editing_id').value = '';
   document.getElementById('discountPreview').style.display='none';
   document.getElementById('productPreviewCard').style.display='none';
@@ -6054,6 +6059,186 @@ function updateImgCount() {
     el.textContent = count + ' / 9 images added';
     el.style.color = count >= 9 ? '#dc2626' : count > 0 ? '#16a34a' : '#888';
   }
+}
+
+
+// ══════════════════════════════════════════════════════════
+//  ✨ AI LISTING GENERATOR — embedded IBI Listing Generator
+//  A single POST to the Listing Generator's Apps Script does BOTH:
+//    (a) generates the SEO content via IBI's central AI, and
+//    (b) records it into the SAME Google Doc as the standalone tool.
+//  We then pre-fill the Add/Edit Product fields with the response.
+//  No API keys travel from the browser — the provider + keys live in
+//  the Apps Script's Script Properties (same as the standalone app).
+// ══════════════════════════════════════════════════════════
+window.IBI_LISTING_GEN_URL = 'https://script.google.com/macros/s/AKfycbzYkbfNqKUS1wBn0EvpEGbnNe_tpY68uq3ah2Z4i6VoZqV4Ra1fnVzEanSCO9iWuWsY/exec';
+window._aiGenFiles = window._aiGenFiles || [];   // photos picked inside the AI panel itself
+
+// Panel's own image picker (fallback / supplement to the ④ upload grid)
+function ibiAIOnFiles(inp) {
+  var files = inp.files ? Array.from(inp.files) : [];
+  inp.value = '';
+  files.forEach(function(f) { if (window._aiGenFiles.length < 3) window._aiGenFiles.push(f); });
+  ibiAIRenderFileNote();
+}
+function ibiAIClearFiles() { window._aiGenFiles = []; ibiAIRenderFileNote(); }
+function ibiAIRenderFileNote() {
+  var el = document.getElementById('aiGenImgNote'); if (!el) return;
+  var n = window._aiGenFiles.length;
+  el.innerHTML = n
+    ? ('📎 ' + n + ' photo' + (n > 1 ? 's' : '') + ' added · <a href="#" onclick="ibiAIClearFiles();return false;" style="color:#dc2626;">clear</a>')
+    : '';
+}
+
+// http(s) image URL → base64 (no data: prefix). Best-effort; resolves null on CORS/error.
+function ibiUrlToB64(url) {
+  return new Promise(function(resolve) {
+    try {
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function() {
+        try {
+          var MAX = 1024, w = img.width, h = img.height;
+          if (w > MAX || h > MAX) { if (w >= h) { h = Math.round(h * MAX / w); w = MAX; } else { w = Math.round(w * MAX / h); h = MAX; } }
+          var c = document.createElement('canvas'); c.width = w; c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+        } catch (e) { resolve(null); }   // tainted canvas (no CORS header) → give up on this URL
+      };
+      img.onerror = function() { resolve(null); };
+      img.src = url;
+    } catch (e) { resolve(null); }
+  });
+}
+
+// Gather up to 3 base64 images for the AI: the seller's uploaded product photos
+// (data: used directly, http fetched best-effort) plus any picked in the panel.
+function ibiAIGetImages() {
+  return new Promise(function(resolve) {
+    var jobs = [];
+    (window._uploadedImgs || []).slice(0, 3).forEach(function(entry) {
+      if (typeof entry !== 'string') return;
+      if (entry.indexOf('data:') === 0)      jobs.push(Promise.resolve(entry.split(',')[1]));
+      else if (entry.indexOf('http') === 0)  jobs.push(ibiUrlToB64(entry));
+    });
+    Promise.all(jobs).then(function(fromUploaded) {
+      var b64 = fromUploaded.filter(Boolean);
+      Promise.all((window._aiGenFiles || []).map(ibiCompressFileToDataUrl)).then(function(dataUrls) {
+        dataUrls.forEach(function(d) { if (d && b64.length < 3) b64.push(d.split(',')[1]); });
+        resolve(b64.slice(0, 3));
+      });
+    });
+  });
+}
+
+// Main action — validate, POST, fill.
+function ibiAIGenerate() {
+  var btn    = document.getElementById('aiGenBtn');
+  var status = document.getElementById('aiGenStatus');
+  var gv = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
+  var productName = gv('ap_gen_name') || gv('ap_title');
+  if (!productName) { showToast('⚠️ Enter a product name for the AI'); scrollToField('ap_gen_name'); return; }
+
+  var L = gv('ap_prod_l'), W = gv('ap_prod_w'), H = gv('ap_prod_h'), Wt = gv('ap_prod_wt');
+  var dimensions = (L && W && H) ? (L + ' × ' + W + ' × ' + H + ' cm') : (L ? (L + ' cm') : '');
+  var weight = Wt ? (Wt + ' g') : '';
+  if (!dimensions) { showToast('⚠️ Fill Product Dimensions (⑧) first — the AI needs the size'); scrollToField('ap_prod_l'); return; }
+  if (!weight)     { showToast('⚠️ Fill Product Weight (⑧) first'); scrollToField('ap_prod_wt'); return; }
+
+  btn.disabled = true; var oldTxt = btn.textContent; btn.textContent = '⏳ Analysing…';
+  status.style.display = 'block'; status.style.color = '#4f46e5';
+  status.textContent = '🖼️ Reading your product photo(s)…';
+
+  ibiAIGetImages().then(function(imgs) {
+    if (!imgs.length) {
+      btn.disabled = false; btn.textContent = oldTxt; status.style.display = 'none';
+      showToast('⚠️ Add at least one product photo — upload in ④ above, or use “＋ Add photo for AI”.');
+      return;
+    }
+    status.textContent = '✍️ Writing SEO title, bullets, description & keywords…';
+
+    // Same bullet + keyword directives the standalone Listing Generator uses,
+    // so the output format matches this form's fields exactly.
+    var bulletDirective = ' || BULLET POINT FORMAT RULE (apply to features field only, do NOT echo as a keyword or in title/description): Output EXACTLY 5 bullet points. Each bullet MUST start with a lead phrase of EXACTLY 2-4 words in ALL CAPITAL LETTERS (NEVER 5 or more words; do NOT put a whole sentence before the colon), followed by ": " (colon and one space), then ONE or TWO COMPLETE sentences. EVERY bullet MUST END with a complete sentence and a full stop — NEVER cut a sentence off half-way; it is better to be 150 characters and complete than 200 and unfinished. Keep each bullet under 200 characters (aim ~180) and the COMBINED length of all 5 bullets UNDER 1000 characters total (Amazon indexes only the first ~1000 bytes across all five bullets combined). Example: "VERSATILE STITCHING TOOL: Ideal for shoe repair, leathercraft, canvas and upholstery, the hardened tip pierces thick hides cleanly for professional results." No emojis, no bullet symbols, no numbering — plain text, one bullet per line.';
+    var kwDirective = '[FEATURES FORMAT: 5 bullets, each "ALL_CAPS_LEAD: 2-3 sentences." — do not include this note in keywords]';
+    var userKw = gv('ap_gen_kw');
+
+    var payload = new URLSearchParams();
+    payload.append('productName',  productName);
+    payload.append('dimensions',   dimensions);
+    payload.append('weight',       weight);
+    payload.append('platform',     'Amazon');   // Amazon limits mirror this form's field caps
+    payload.append('tone',         (gv('ap_gen_tone') || 'Professional and Engaging') + bulletDirective);
+    payload.append('extraKeywords', userKw ? (userKw + ' ' + kwDirective) : kwDirective);
+    payload.append('imageCount',   String(imgs.length));
+    imgs.forEach(function(b, i) { payload.append('image' + i, b); });
+    payload.append('imageBase64',  imgs[0]);     // backward-compat: first image
+    payload.append('mimeType',     'image/jpeg');
+
+    fetch(window.IBI_LISTING_GEN_URL, { method: 'POST', body: payload })
+      .then(function(r) { return r.json(); })
+      .then(function(result) {
+        if (result && result.status === 'success') {
+          var filled = ibiAIFill(result.data);
+          if (filled) {
+            status.style.color = '#16a34a';
+            status.innerHTML = '✅ Content generated, filled in below, and saved to IBI Google Docs.';
+          } else {
+            status.style.display = 'none';   // user cancelled the overwrite
+          }
+        } else {
+          status.style.display = 'none';
+          showToast('⚠️ ' + ((result && result.message) || 'Could not generate right now. Please try again.'));
+        }
+      })
+      .catch(function(e) { console.error(e); status.style.display = 'none'; showToast('⚠️ Network error — please try again.'); })
+      .then(function() { btn.disabled = false; btn.textContent = oldTxt; });
+  });
+}
+
+// Pre-fill the form fields from the AI result. Asks before replacing existing content.
+// Returns true if fields were filled, false if the user cancelled.
+function ibiAIFill(data) {
+  data = data || {};
+  var title = (data.titleLong || data.title || '').trim();
+  var desc  = (data.description || '').trim();
+  var keywords = (data.keywords || '').trim();
+
+  // Split the features blob into up to 5 clean bullets (strip any leading bullet/number marks).
+  var bullets = (data.features || '').split(/\r?\n+/).map(function(s) {
+    return s.replace(/^\s*[•\-\*•‣◦]?\s*\d*[\.\)]?\s*/, '').trim();
+  }).filter(Boolean).slice(0, 5);
+
+  if (title.length > 200) title = title.slice(0, 200).trim();
+  if (desc.length  > 2000) desc = desc.slice(0, 2000).trim();
+
+  // Ask before overwriting any field the seller already filled (e.g. while editing).
+  var targetIds = ['ap_title', 'ap_desc', 'ap_tags', 'ap_bullet1', 'ap_bullet2', 'ap_bullet3', 'ap_bullet4', 'ap_bullet5'];
+  var occupied = targetIds.some(function(id) { var el = document.getElementById(id); return el && el.value.trim(); });
+  if (occupied && !confirm('This will REPLACE what you already have in Title, the 5 bullet points, Description and Keywords with the AI-generated version.\n\nContinue?')) {
+    return false;
+  }
+
+  if (title) { var t = document.getElementById('ap_title'); if (t) { t.value = title; updateTitleCount(title); } }
+  for (var i = 0; i < 5; i++) {
+    var el = document.getElementById('ap_bullet' + (i + 1));
+    if (!el) continue;
+    var b = bullets[i] || '';
+    if (b.length > 255) b = b.slice(0, 255);
+    el.value = b;
+    updateBulletCount(i + 1, b);
+  }
+  if (desc)     { var d = document.getElementById('ap_desc'); if (d) { d.value = desc; updateDescCount(desc); } }
+  if (keywords) { var k = document.getElementById('ap_tags'); if (k) { k.value = keywords; updateKeywordCount(keywords); } }
+  syncBulletsToTextarea();
+  try { if (typeof updatePreviewCard === 'function') updatePreviewCard(); } catch (e) {}
+  try { if (typeof saveDraft === 'function') saveDraft(); } catch (e) {}
+
+  var tt = document.getElementById('ap_title');
+  if (tt) tt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  showToast('✨ Listing content filled from AI!', 'success');
+  return true;
 }
 
 
@@ -8739,6 +8924,49 @@ init();
             </div>
           </div>
           <div style="padding:20px;display:grid;gap:18px;">
+
+            <!-- ✨ AI LISTING GENERATOR (embedded IBI Listing Generator) -->
+            <!-- One click sends the product name + dimensions + photo(s) to the IBI Listing
+                 Generator's Apps Script, which writes the SEO content into the SAME Google Doc
+                 as the standalone tool AND returns it — we then pre-fill the fields below. -->
+            <div style="background:linear-gradient(135deg,#f5f3ff,#eef2ff);border-radius:12px;padding:16px;border:1.5px solid #c7d2fe;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+                <div style="min-width:0;">
+                  <div style="font-size:14px;font-weight:800;color:#4f46e5;">✨ Auto-Generate Listing with AI</div>
+                  <div style="font-size:11px;color:#6b7280;margin-top:2px;">Writes your Title, 5 bullet points, Description &amp; backend keywords below — and saves a copy to IBI's Google Docs automatically.</div>
+                </div>
+                <button type="button" id="aiGenBtn" onclick="ibiAIGenerate()"
+                  style="background:#4f46e5;color:#fff;border:none;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;">✨ Generate &amp; Fill</button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+                <div style="grid-column:1 / -1;">
+                  <label style="font-size:11px;color:#4f46e5;font-weight:700;display:block;margin-bottom:3px;">Product name for the AI <span style="color:#c00;">*</span></label>
+                  <input id="ap_gen_name" type="text" placeholder="e.g. Coconut Shell Spatula (a short plain name — not the full SEO title)" class="sc-input" style="font-size:13px;"/>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#4f46e5;font-weight:700;display:block;margin-bottom:3px;">Writing tone</label>
+                  <select id="ap_gen_tone" class="sc-input" style="font-size:13px;">
+                    <option value="Professional and Engaging">Professional &amp; Engaging</option>
+                    <option value="Friendly and Conversational">Friendly &amp; Conversational</option>
+                    <option value="Luxurious and Premium">Luxurious &amp; Premium</option>
+                    <option value="Simple and Clear">Simple &amp; Clear</option>
+                    <option value="Fun and Playful">Fun &amp; Playful</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#4f46e5;font-weight:700;display:block;margin-bottom:3px;">Extra keywords (optional)</label>
+                  <input id="ap_gen_kw" type="text" placeholder="e.g. handmade, eco friendly, gift" class="sc-input" style="font-size:13px;"/>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;">
+                <button type="button" onclick="document.getElementById('ap_gen_img_input').click()"
+                  style="background:#fff;border:1.5px solid #c7d2fe;color:#4f46e5;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">＋ Add photo for AI</button>
+                <input type="file" id="ap_gen_img_input" accept="image/*" multiple style="display:none;" onchange="ibiAIOnFiles(this)"/>
+                <span style="font-size:11px;color:#6b7280;">Uses the photo(s) you upload in ④ below — or add one here. The AI reads the photo to describe the product.</span>
+                <span id="aiGenImgNote" style="font-size:11px;color:#4f46e5;font-weight:700;"></span>
+              </div>
+              <div id="aiGenStatus" style="display:none;font-size:12px;font-weight:700;margin-top:10px;line-height:1.5;"></div>
+            </div>
 
             <!-- ① PRODUCT TITLE -->
             <div style="background:#f9fafb;border-radius:10px;padding:14px;border-left:4px solid #0098c9;">
