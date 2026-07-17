@@ -1525,6 +1525,25 @@
   display: flex; align-items: center; justify-content: center;
 }
 .var-img-btn:hover { border-color: #4f46e5; }
+/* Per-option PACKAGE dimensions — optional, collapsible sub-row (spans the full option width) */
+.var-pkg-wrap { grid-column: 1 / -1; margin-top: 1px; }
+.var-pkg-toggle {
+  background: none; border: none; color: #6b7280;
+  font-size: 10px; font-weight: 700; cursor: pointer; padding: 2px 0;
+  display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: .3px;
+}
+.var-pkg-toggle:hover, .var-pkg-toggle.on { color: #4f46e5; }
+.var-pkg-panel {
+  display: none; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin-top: 4px; padding: 8px; background: #f9fafb;
+  border: 1px dashed #d1d5db; border-radius: 8px;
+}
+.var-pkg-panel .var-pkg-lbl { font-size: 10px; font-weight: 700; color: #888; }
+.var-pkg-panel input {
+  width: 50px; padding: 5px 6px; border: 1px solid #d1d5db;
+  border-radius: 6px; font-size: 12px; box-sizing: border-box;
+}
+.var-pkg-panel input:focus { outline: none; border-color: #4f46e5; }
 
 .sc-input:focus { border-color:#0098c9; outline:none; box-shadow:0 0 0 3px rgba(0,152,201,.1); }
   .sc-prod-card {
@@ -2321,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5';
+window.IBI_VERSION      = 'v5.1';
 window.IBI_VERSION_DATE = '17 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -6516,7 +6535,8 @@ function quickFillOption(tid, value) {
   syncVariationsField();
 }
 
-function addVariationOption(tid, name, price, mrp, stock, img) {
+function addVariationOption(tid, name, price, mrp, stock, img, pkg) {
+  pkg = pkg || {};
   if (!_varRowCounters[tid]) _varRowCounters[tid] = 0;
   _varRowCounters[tid]++;
   var rid = tid + '_opt_' + _varRowCounters[tid];
@@ -6550,11 +6570,38 @@ function addVariationOption(tid, name, price, mrp, stock, img) {
       '<span class="var-img-count"></span>' +
       '<button type="button" class="var-img-clear" title="Remove all photos" onclick="clearVarOptionImages(this)">×</button>' +
     '</div>' +
-    '<button type="button" class="var-del-btn" onclick="removeVariationOption(\'' + rid + '\')" title="Remove">×</button>';
+    '<button type="button" class="var-del-btn" onclick="removeVariationOption(\'' + rid + '\')" title="Remove">×</button>' +
+    // Optional per-option PACKAGE dimensions (collapsed by default) — for options that
+    // ship in a different-sized box (e.g. 1 Qty vs 2 Qty). Blank = use the product's ⑨ pkg dims.
+    '<div class="var-pkg-wrap">' +
+      '<button type="button" class="var-pkg-toggle" onclick="toggleVarPkg(this)">📦 Package size (optional) ▾</button>' +
+      '<div class="var-pkg-panel">' +
+        '<span class="var-pkg-lbl">Pkg L·W·H (cm):</span>' +
+        '<input type="number" class="var-pkg-l"  min="0" step="0.1" placeholder="L"  value="' + (pkg.l  || '') + '" oninput="syncVariationsField()">' +
+        '<input type="number" class="var-pkg-w"  min="0" step="0.1" placeholder="W"  value="' + (pkg.w  || '') + '" oninput="syncVariationsField()">' +
+        '<input type="number" class="var-pkg-h"  min="0" step="0.1" placeholder="H"  value="' + (pkg.h  || '') + '" oninput="syncVariationsField()">' +
+        '<span class="var-pkg-lbl">Wt (g):</span>' +
+        '<input type="number" class="var-pkg-wt" min="0"            placeholder="Wt" value="' + (pkg.wt || '') + '" oninput="syncVariationsField()">' +
+      '</div>' +
+    '</div>';
 
   document.getElementById(tid + '_options').appendChild(row);
   refreshVarImgCell(row.querySelector('.var-img-cell'));
+  // Auto-expand the package panel when the option already carries pkg dims (e.g. on edit).
+  if (pkg.l || pkg.w || pkg.h || pkg.wt) {
+    var _tg = row.querySelector('.var-pkg-toggle'); if (_tg) toggleVarPkg(_tg, true);
+  }
   syncVariationsField();
+}
+
+// Show/hide one option's package-dimension inputs. Pass forceOpen=true to always open.
+function toggleVarPkg(btn, forceOpen) {
+  var panel = btn.parentNode.querySelector('.var-pkg-panel');
+  if (!panel) return;
+  var open = forceOpen === true ? true : !(panel.style.display && panel.style.display !== 'none');
+  panel.style.display = open ? 'flex' : 'none';
+  btn.classList.toggle('on', open);
+  btn.innerHTML = '📦 Package size (optional) ' + (open ? '▴' : '▾');
 }
 
 // Render a variation option's image cell from its hidden pipe-joined list: first
@@ -6649,9 +6696,12 @@ function syncVariationsField() {
       var stock = row.querySelector('.var-stock-input').value.trim();
       var imgEl   = row.querySelector('.var-img-input');
       var imgList = (imgEl && imgEl.value ? imgEl.value.split('|') : []).map(function(s){ return (s||'').trim(); }).filter(Boolean);
+      // Optional per-option package dimensions (blank ⇒ use the product's ⑨ pkg dims).
+      var gp = function(sel){ var el = row.querySelector(sel); return el ? el.value.trim() : ''; };
       // Keep `img` (first photo) for any legacy reader; `imgs` carries the full list.
       allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock,
-                     img: imgList[0] || '', imgs: imgList.join('|') });
+                     img: imgList[0] || '', imgs: imgList.join('|'),
+                     pkgL: gp('.var-pkg-l'), pkgW: gp('.var-pkg-w'), pkgH: gp('.var-pkg-h'), pkgWt: gp('.var-pkg-wt') });
     });
   });
 
@@ -6697,7 +6747,8 @@ function loadVariationsForEdit(variationsJson) {
     _varRowCounters[tid] = 0;
     // Add loaded options
     grouped[typeName].forEach(function(v) {
-      addVariationOption(tid, v.name, v.price, v.mrp, v.stock, (v.imgs || v.img || ''));
+      addVariationOption(tid, v.name, v.price, v.mrp, v.stock, (v.imgs || v.img || ''),
+                         { l: v.pkgL || '', w: v.pkgW || '', h: v.pkgH || '', wt: v.pkgWt || '' });
     });
   });
 }
@@ -9039,7 +9090,7 @@ init();
                 </label>
               </div>
               <div style="font-size:11px;color:#888;margin-bottom:10px;">
-                Add unlimited variation types (Size, Color, Pack, Weight…) — each with unlimited options, individual pricing, and an optional photo per option (📷 column) that buyers see when they pick it.
+                Add unlimited variation types (Size, Color, Pack, Weight…) — each with unlimited options, individual pricing, an optional photo per option (📷 column) that buyers see when they pick it, and an optional package size per option (📦) for options that ship in a different-sized box.
               </div>
 
               <div id="variationsSection" style="display:none;">
