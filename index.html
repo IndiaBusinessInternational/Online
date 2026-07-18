@@ -2340,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.4';
+window.IBI_VERSION      = 'v5.5';
 window.IBI_VERSION_DATE = '18 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -6209,15 +6209,22 @@ function ibiAIGenerate() {
   var btn    = document.getElementById('aiGenBtn');
   var status = document.getElementById('aiGenStatus');
   var gv = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  // Show a "what's missing" warning RIGHT UNDER the ✨ button (the status line), not just as a
+  // transient toast the seller can miss when scrolled down. Also toasts + jumps to the field.
+  var guard = function(msg, focusId) {
+    if (status) { status.style.display = 'block'; status.style.color = '#dc2626'; status.textContent = msg; }
+    showToast(msg);
+    if (focusId) scrollToField(focusId);
+  };
 
   var productName = gv('ap_gen_name') || gv('ap_title');
-  if (!productName) { showToast('⚠️ Enter a product name for the AI'); scrollToField('ap_gen_name'); return; }
+  if (!productName) { guard('⚠️ Enter a product name for the AI (the “Product name for the AI” box above).', 'ap_gen_name'); return; }
 
   var L = gv('ap_prod_l'), W = gv('ap_prod_w'), H = gv('ap_prod_h'), Wt = gv('ap_prod_wt');
   var dimensions = (L && W && H) ? (L + ' × ' + W + ' × ' + H + ' cm') : (L ? (L + ' cm') : '');
   var weight = Wt ? (Wt + ' g') : '';
-  if (!dimensions) { showToast('⚠️ Fill Product Dimensions (⑧) first — the AI needs the size'); scrollToField('ap_prod_l'); return; }
-  if (!weight)     { showToast('⚠️ Fill Product Weight (⑧) first'); scrollToField('ap_prod_wt'); return; }
+  if (!dimensions) { guard('⚠️ Fill the 📐 Product Dimensions (Length × Width × Height) box above first — the AI needs the size.', 'ap_prod_l'); return; }
+  if (!weight)     { guard('⚠️ Fill the Weight in the 📐 Product Dimensions box above first — the AI needs the weight.', 'ap_prod_wt'); return; }
 
   btn.disabled = true; var oldTxt = btn.textContent; btn.textContent = '⏳ Analysing…';
   status.style.display = 'block'; status.style.color = '#4f46e5';
@@ -6629,7 +6636,7 @@ function addVariationOption(tid, name, price, mrp, stock, img, pkg) {
     '</div>' +
     '<button type="button" class="var-del-btn" onclick="removeVariationOption(\'' + rid + '\')" title="Remove">×</button>' +
     // Optional per-option PACKAGE dimensions (collapsed by default) — for options that
-    // ship in a different-sized box (e.g. 1 Qty vs 2 Qty). Blank = use the product's ⑨ pkg dims.
+    // ship in a different-sized box (e.g. 1 Qty vs 2 Qty). Blank = use the product's ⑧ pkg dims.
     '<div class="var-pkg-wrap">' +
       '<button type="button" class="var-pkg-toggle" onclick="toggleVarPkg(this)">📦 Package size (optional) ▾</button>' +
       '<div class="var-pkg-panel">' +
@@ -6753,7 +6760,7 @@ function syncVariationsField() {
       var stock = row.querySelector('.var-stock-input').value.trim();
       var imgEl   = row.querySelector('.var-img-input');
       var imgList = (imgEl && imgEl.value ? imgEl.value.split('|') : []).map(function(s){ return (s||'').trim(); }).filter(Boolean);
-      // Optional per-option package dimensions (blank ⇒ use the product's ⑨ pkg dims).
+      // Optional per-option package dimensions (blank ⇒ use the product's ⑧ pkg dims).
       var gp = function(sel){ var el = row.querySelector(sel); return el ? el.value.trim() : ''; };
       // Keep `img` (first photo) for any legacy reader; `imgs` carries the full list.
       allVars.push({ type: typeName, name: optName, price: price, mrp: mrp, stock: stock,
@@ -9076,6 +9083,30 @@ init();
               <div id="aiGenStatus" style="display:none;font-size:12px;font-weight:700;margin-top:10px;line-height:1.5;"></div>
             </div>
 
+            <!-- 📐 PRODUCT DIMENSIONS & WEIGHT (moved to the top — the ✨ AI needs the size & weight) -->
+            <div style="background:#f9fafb;border-radius:10px;padding:14px;border-left:4px solid #dc2626;">
+              <label class="sc-label" style="font-size:13px;color:#dc2626;">📐 Product Dimensions &amp; Weight <span style="color:#c00;font-size:15px;">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(Mandatory — the ✨ AI needs this)</span></label>
+              <div style="font-size:11px;color:#888;margin-bottom:10px;">Actual product size (without packaging). Fill this before ✨ Generate &amp; Fill.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
+                <div>
+                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Length (cm) <span style="color:#c00;">*</span></label>
+                  <input id="ap_prod_l" type="number" placeholder="e.g. 30" class="sc-input" min="0" step="0.1"/>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Width (cm) <span style="color:#c00;">*</span></label>
+                  <input id="ap_prod_w" type="number" placeholder="e.g. 7" class="sc-input" min="0" step="0.1"/>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Height (cm) <span style="color:#c00;">*</span></label>
+                  <input id="ap_prod_h" type="number" placeholder="e.g. 11" class="sc-input" min="0" step="0.1"/>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Weight (grams) <span style="color:#c00;">*</span></label>
+                  <input id="ap_prod_wt" type="number" placeholder="e.g. 520" class="sc-input" min="0"/>
+                </div>
+              </div>
+            </div>
+
             <!-- ① PRODUCT TITLE -->
             <div style="background:#f9fafb;border-radius:10px;padding:14px;border-left:4px solid #0098c9;">
               <label class="sc-label" style="font-size:13px;color:#0098c9;">① Product Title <span style="color:#c00;font-size:15px;">*</span></label>
@@ -9278,33 +9309,9 @@ init();
               </div>
             </div>
 
-            <!-- ⑧ PRODUCT DIMENSIONS -->
-            <div style="background:#f9fafb;border-radius:10px;padding:14px;border-left:4px solid #dc2626;">
-              <label class="sc-label" style="font-size:13px;color:#dc2626;">⑧ Product Dimensions <span style="color:#c00;font-size:15px;">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(Mandatory)</span></label>
-              <div style="font-size:11px;color:#888;margin-bottom:10px;">Actual product size (without packaging)</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
-                <div>
-                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Length (cm) <span style="color:#c00;">*</span></label>
-                  <input id="ap_prod_l" type="number" placeholder="e.g. 30" class="sc-input" min="0" step="0.1"/>
-                </div>
-                <div>
-                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Width (cm) <span style="color:#c00;">*</span></label>
-                  <input id="ap_prod_w" type="number" placeholder="e.g. 7" class="sc-input" min="0" step="0.1"/>
-                </div>
-                <div>
-                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Height (cm) <span style="color:#c00;">*</span></label>
-                  <input id="ap_prod_h" type="number" placeholder="e.g. 11" class="sc-input" min="0" step="0.1"/>
-                </div>
-                <div>
-                  <label style="font-size:11px;color:#555;display:block;margin-bottom:3px;">Weight (grams) <span style="color:#c00;">*</span></label>
-                  <input id="ap_prod_wt" type="number" placeholder="e.g. 520" class="sc-input" min="0"/>
-                </div>
-              </div>
-            </div>
-
-            <!-- ⑨ PACKAGE DIMENSIONS -->
+            <!-- ⑧ PACKAGE DIMENSIONS (Product Dimensions & Weight moved to the top, above ① Title) -->
             <div style="background:#f9fafb;border-radius:10px;padding:14px;border-left:4px solid #0079a3;">
-              <label class="sc-label" style="font-size:13px;color:#0079a3;">⑨ Package Dimensions <span style="color:#c00;font-size:15px;">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(Mandatory)</span></label>
+              <label class="sc-label" style="font-size:13px;color:#0079a3;">⑧ Package Dimensions <span style="color:#c00;font-size:15px;">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(Mandatory)</span></label>
               <div style="font-size:11px;color:#888;margin-bottom:10px;">Dimensions of the package as it will be shipped</div>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
                 <div>
