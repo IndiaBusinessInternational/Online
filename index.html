@@ -2340,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.2';
-window.IBI_VERSION_DATE = '17 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION      = 'v5.3';
+window.IBI_VERSION_DATE = '18 Jul 2026';
+window.IBI_VERSION_NOTE = 'v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3759,6 +3759,7 @@ function resetAddForm() {
   document.getElementById('ap_submit_btn').onclick = submitAddProduct;
   // Clear image uploads
   window._uploadedImgs = [];
+  window._imgB64Cache = {};   // drop cached AI-image bytes for the previous product
   var _grid = document.getElementById('imgPreviewGrid'); if (_grid) _grid.innerHTML = '';
   var _urlIn = document.getElementById('ap_img_url');   if (_urlIn) _urlIn.value = '';
   if (typeof ibiUpdateCount === 'function') ibiUpdateCount();
@@ -5431,6 +5432,10 @@ function ibiPushImg(url) {
 // huge base64), surfaces upload problems immediately, and makes submit instant. Matching
 // by value (not index) so it stays correct even if the seller reorders/removes meanwhile.
 window._ibiHostingSet = window._ibiHostingSet || {};
+// Original compressed base64 kept keyed by the permanent https URL it became.
+// The ✨ AI generator reads this so it always has decodable image bytes, even after
+// hosting swaps the grid entry to a Wix/ImgBB/Drive URL that blocks canvas re-reads (no CORS).
+window._imgB64Cache = window._imgB64Cache || {};
 function ibiHostGridImages() {
   (window._uploadedImgs || []).slice().forEach(function(entry) {
     if (typeof entry !== 'string' || entry.indexOf('data:') !== 0) return; // only un-hosted base64
@@ -5439,7 +5444,8 @@ function ibiHostGridImages() {
     ibiHostOneImage(entry).then(function(hostedUrl) {
       var i = window._uploadedImgs.indexOf(entry);
       if (i !== -1 && hostedUrl && hostedUrl.indexOf('http') === 0) {
-        window._uploadedImgs[i] = hostedUrl;   // base64 → permanent URL
+        window._imgB64Cache[hostedUrl] = entry; // remember the bytes before we drop them
+        window._uploadedImgs[i] = hostedUrl;    // base64 → permanent URL
         ibiSyncHiddenInputs();
         ibiRenderGrid();
       }
@@ -6140,10 +6146,13 @@ function ibiUrlToB64(url) {
 function ibiAIGetImages() {
   return new Promise(function(resolve) {
     var jobs = [];
+    var cache = window._imgB64Cache || {};
     (window._uploadedImgs || []).slice(0, 3).forEach(function(entry) {
       if (typeof entry !== 'string') return;
       if (entry.indexOf('data:') === 0)      jobs.push(Promise.resolve(entry.split(',')[1]));
-      else if (entry.indexOf('http') === 0)  jobs.push(ibiUrlToB64(entry));
+      else if (cache[entry] && cache[entry].indexOf('data:') === 0)
+                                             jobs.push(Promise.resolve(cache[entry].split(',')[1]));  // hosted, but we kept the bytes
+      else if (entry.indexOf('http') === 0)  jobs.push(ibiUrlToB64(entry));                            // legacy/edit: best-effort CORS re-read
     });
     Promise.all(jobs).then(function(fromUploaded) {
       var b64 = fromUploaded.filter(Boolean);
@@ -6177,7 +6186,10 @@ function ibiAIGenerate() {
   ibiAIGetImages().then(function(imgs) {
     if (!imgs.length) {
       btn.disabled = false; btn.textContent = oldTxt; status.style.display = 'none';
-      showToast('⚠️ Add at least one product photo — upload in ④ above, or use “＋ Add photo for AI”.');
+      var hasGridImg = (window._uploadedImgs || []).length > 0;
+      showToast(hasGridImg
+        ? '⚠️ Couldn’t read your existing photo (it’s hosted without cross-origin access). Re-add the photo in ④ above, or use “＋ Add photo for AI”, then Generate again.'
+        : '⚠️ Add at least one product photo — upload in ④ above, or use “＋ Add photo for AI”.');
       return;
     }
     status.textContent = '✍️ Writing SEO title, bullets, description & keywords…';
