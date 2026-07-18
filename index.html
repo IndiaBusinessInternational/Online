@@ -2340,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.6';
+window.IBI_VERSION      = 'v5.7';
 window.IBI_VERSION_DATE = '18 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3198,6 +3198,20 @@ function renderProductList(prods) {
     return;
   }
 
+  // Parse each row's variation-family metadata (for the row tag) and collect the seller's
+  // family names so the Add-Product "Family name" datalist can offer them.
+  window._ibiSellerFamilies = [];
+  prods.forEach(function(p){
+    try {
+      var _v = JSON.parse(p.variations || '[]');
+      if (_v && !Array.isArray(_v) && _v._family) {
+        p._fam = _v;
+        if (_v.familyName && window._ibiSellerFamilies.indexOf(_v.familyName) === -1) window._ibiSellerFamilies.push(_v.familyName);
+      }
+    } catch(e){}
+  });
+  if (typeof refreshFamilyDatalist === 'function') refreshFamilyDatalist();
+
   list.innerHTML = prods.map(p => {
     const disc = p.mrp && p.price ? Math.round((1 - p.price/p.mrp)*100) : 0;
     const statusClass = 'sc-status-' + (p.status||'Pending');
@@ -3222,6 +3236,7 @@ function renderProductList(prods) {
             ${disc>0?`<span style="font-size:11px;text-decoration:line-through;color:#888;">₹${parseFloat(p.mrp||0).toLocaleString('en-IN')}</span><span style="font-size:11px;background:#c00;color:#fff;padding:1px 5px;border-radius:3px;">${disc}% off</span>`:''}
             <span class="sc-status-badge ${statusClass}">${p.status||'Pending'}</span>
             ${p.hardcoded?'<span style="font-size:10px;background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:10px;">Existing</span>':''}
+            ${p._fam?`<span style="font-size:10px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;padding:2px 6px;border-radius:10px;font-weight:700;">${p._fam.role==='parent'?('⭐ PARENT · '+(p._fam.familyName||'')):('🎨 '+(p._fam.familyName||'')+(p._fam.option?(' · '+p._fam.option):''))}</span>`:''}
           </div>
           ${p.rejectReason?`<div style="font-size:11px;color:#dc2626;margin-top:4px;">❌ Rejected: ${p.rejectReason}</div>`:''}
         </div>
@@ -3408,6 +3423,7 @@ function resetAddForm() {
   const ic = document.getElementById('imgCountHint');  if(ic) ic.textContent='0 / 9 images added';
   document.getElementById('apFormTitle').textContent='➕ Add New Product';
   resetVariationForm();
+  resetFamilyForm();
   document.getElementById('ap_submit_btn').textContent='Submit Product for IBI Review →';
   document.getElementById('ap_submit_btn').onclick = submitAddProduct;
   // Clear image uploads
@@ -3521,27 +3537,44 @@ function submitAddProduct() {
   const hsn     = document.getElementById('ap_hsn').value.trim();
   const tags    = document.getElementById('ap_tags').value.trim();
 
+  // ── Variation-family mode. A PARENT is a non-buyable cover, so it skips the
+  //    buyable-only checks (price / MRP / bullets / dimensions / stock / HSN / tags).
+  //    Children + standalone products keep the full Amazon validation. ──
+  const _famRole  = (typeof famRole === 'function') ? famRole() : 'standalone';
+  const _isParent = (_famRole === 'parent');
+  if (_famRole !== 'standalone' && typeof syncFamilyField === 'function') syncFamilyField();
+  const famName  = (document.getElementById('fam_name')  || {}).value ? document.getElementById('fam_name').value.trim()  : '';
+  const famTheme = (document.getElementById('fam_theme') || {}).value ? document.getElementById('fam_theme').value.trim() : '';
+
   // ── Amazon format validation ──
   if (!title)              { showToast('⚠️ Enter product title');        scrollToField('ap_title');   return; }
-  if (title.length < 20)   { showToast('⚠️ Title too short — minimum 20 characters'); scrollToField('ap_title'); return; }
-  if (!price)              { showToast('⚠️ Enter selling price');         scrollToField('ap_price');   return; }
-  // Validate 5 bullet points
-  const b1 = (document.getElementById('ap_bullet1')||{}).value||'';
-  const b2 = (document.getElementById('ap_bullet2')||{}).value||'';
-  const b3 = (document.getElementById('ap_bullet3')||{}).value||'';
-  if (b1.length < 10) { showToast('⚠️ Bullet Point 1 must be at least 10 characters'); scrollToField('ap_bullet1'); return; }
-  if (b2.length < 10) { showToast('⚠️ Bullet Point 2 must be at least 10 characters'); scrollToField('ap_bullet2'); return; }
-  if (b3.length < 10) { showToast('⚠️ Bullet Point 3 must be at least 10 characters'); scrollToField('ap_bullet3'); return; }
-  // Validate dimensions
-  const prodL = document.getElementById('ap_prod_l') ? document.getElementById('ap_prod_l').value : '';
-  const pkgL  = document.getElementById('ap_pkg_l')  ? document.getElementById('ap_pkg_l').value  : '';
-  if (!prodL) { showToast('⚠️ Enter Product Dimensions (Length)'); scrollToField('ap_prod_l'); return; }
-  if (!pkgL)  { showToast('⚠️ Enter Package Dimensions (Length)'); scrollToField('ap_pkg_l');  return; }
-  if (!mrp)                { showToast('⚠️ Enter MRP');                 scrollToField('ap_mrp');     return; }
-  if (parseFloat(price)>=parseFloat(mrp)) { showToast('⚠️ Selling price must be less than MRP'); return; }
+  if (!_isParent && title.length < 20) { showToast('⚠️ Title too short — minimum 20 characters'); scrollToField('ap_title'); return; }
+  if (_famRole !== 'standalone') {
+    if (!famName)  { showToast('⚠️ Enter the Family name (use the same name on the parent and its children)'); scrollToField('fam_name'); return; }
+    if (!famTheme) { showToast('⚠️ Choose the Variation type (Size / Quantity / Colour…)'); scrollToField('fam_theme'); return; }
+    if (_famRole === 'child' && !((document.getElementById('fam_option')||{}).value||'').trim()) {
+      showToast('⚠️ Enter this variation’s label (e.g. 2 Qty / Large / Red)'); scrollToField('fam_option'); return;
+    }
+  }
+  // Buyable-only checks — skipped for a parent cover.
+  if (!_isParent) {
+    if (!price)            { showToast('⚠️ Enter selling price');         scrollToField('ap_price');   return; }
+    const b1 = (document.getElementById('ap_bullet1')||{}).value||'';
+    const b2 = (document.getElementById('ap_bullet2')||{}).value||'';
+    const b3 = (document.getElementById('ap_bullet3')||{}).value||'';
+    if (b1.length < 10) { showToast('⚠️ Bullet Point 1 must be at least 10 characters'); scrollToField('ap_bullet1'); return; }
+    if (b2.length < 10) { showToast('⚠️ Bullet Point 2 must be at least 10 characters'); scrollToField('ap_bullet2'); return; }
+    if (b3.length < 10) { showToast('⚠️ Bullet Point 3 must be at least 10 characters'); scrollToField('ap_bullet3'); return; }
+    const prodL = document.getElementById('ap_prod_l') ? document.getElementById('ap_prod_l').value : '';
+    const pkgL  = document.getElementById('ap_pkg_l')  ? document.getElementById('ap_pkg_l').value  : '';
+    if (!prodL) { showToast('⚠️ Enter Product Dimensions (Length)'); scrollToField('ap_prod_l'); return; }
+    if (!pkgL)  { showToast('⚠️ Enter Package Dimensions (Length)'); scrollToField('ap_pkg_l');  return; }
+    if (!mrp)              { showToast('⚠️ Enter MRP');                 scrollToField('ap_mrp');     return; }
+    if (parseFloat(price)>=parseFloat(mrp)) { showToast('⚠️ Selling price must be less than MRP'); return; }
+  }
   if (!cat)                { showToast('⚠️ Select a category');          scrollToField('ap_cat');     return; }
   if (!brand)              { showToast('⚠️ Enter brand name');           scrollToField('ap_brand');   return; }
-  // Accept file-uploaded images (data: URL) OR pasted http URL
+  // Accept file-uploaded images (data: URL) OR pasted http URL — required for ALL modes.
   var urlFldCheck = document.getElementById('ap_img_url');
   var hasAnyImage = uploadedImgsList.length > 0 || imgFromField ||
                     (urlFldCheck && urlFldCheck.value.trim().startsWith('http'));
@@ -3550,11 +3583,13 @@ function submitAddProduct() {
     scrollToField('ap_img');
     return;
   }
-  if (desc.length < 20)    { showToast('⚠️ Description too short (min 20 chars)'); scrollToField('ap_desc'); return; }
-  if (!bullets)            { showToast('⚠️ Enter at least 1 key feature'); scrollToField('ap_bullets'); return; }
-  if (!stock)              { showToast('⚠️ Enter stock quantity');        scrollToField('ap_stock');   return; }
-  if (!hsn)                { showToast('⚠️ Enter HSN Code — required for GST invoicing'); scrollToField('ap_hsn'); return; }
-  if (!tags)               { showToast('⚠️ Enter backend search keywords — helps buyers find this product'); scrollToField('ap_tags'); return; }
+  if (!_isParent) {
+    if (desc.length < 20)  { showToast('⚠️ Description too short (min 20 chars)'); scrollToField('ap_desc'); return; }
+    if (!bullets)          { showToast('⚠️ Enter at least 1 key feature'); scrollToField('ap_bullets'); return; }
+    if (!stock)            { showToast('⚠️ Enter stock quantity');        scrollToField('ap_stock');   return; }
+    if (!hsn)              { showToast('⚠️ Enter HSN Code — required for GST invoicing'); scrollToField('ap_hsn'); return; }
+    if (!tags)             { showToast('⚠️ Enter backend search keywords — helps buyers find this product'); scrollToField('ap_tags'); return; }
+  }
 
   // ── Duplicate-listing guard: warn before creating a repeat of an existing listing.
   //    Only for NEW products — an Overwrite (or a normal edit) sets editId and skips this. ──
@@ -3589,10 +3624,10 @@ function submitAddProduct() {
     var addImgs = finalImgUrls.slice(1).join('|');
     const params = {
       action, sellerId:session.sellerId, pin:session.pin,
-      title, price, mrp, category:cat, brand,
+      title, price:_isParent?'0':price, mrp:_isParent?'0':mrp, category:cat, brand,
       img: mainImg,
       description:desc, bullets:bullets.split('\n').filter(Boolean).join('|'),
-      stock, hsn, tags,
+      stock:_isParent?'0':stock, hsn, tags,
       variations,
       productDimensions, packageDimensions,
       additionalImgs: addImgs
@@ -3890,9 +3925,15 @@ function loadLiveProducts() {
         const imgList = [sp.img].concat(((sp.additionalImgs||'')).split(/[|,]/))
           .map(s => ibiNormalizeImgUrl((s||'').trim()))
           .filter(s => /^https?:\/\//i.test(s));
-        // Parse variations JSON sent by the backend
-        let spVars = [];
-        try { spVars = JSON.parse(sp.variations || '[]'); } catch(e) { spVars = []; }
+        // Parse variations JSON sent by the backend. It is EITHER a legacy options
+        // ARRAY (intra-listing variations) OR a family OBJECT with `_family`
+        // (Amazon-style parent/child linkage). Keep them apart.
+        let spVars = [], famMeta = null;
+        try {
+          var _pv = JSON.parse(sp.variations || '[]');
+          if (_pv && !Array.isArray(_pv) && _pv._family) famMeta = _pv;   // parent or child of a family
+          else if (Array.isArray(_pv)) spVars = _pv;                       // legacy intra-listing options
+        } catch(e) { spVars = []; }
         products.push({
           seller:sid, id:newId++, category:(sp.category||'home').split('-')[0],
           brand:sp.brand||sp.bizName||'IBI', badge:null, title:sp.title,
@@ -3902,7 +3943,14 @@ function loadLiveProducts() {
           price:parseFloat(sp.price)||0, mrp:parseFloat(sp.mrp)||parseFloat(sp.price)||0,
           rating:4.5, reviews:Math.floor(Math.random()*100+10), inStock:(parseInt(sp.stock||1)>0),
           deal:false, description:sp.description||'', bullets:(sp.bullets||'').split('|').filter(Boolean),
-          fromSheet:true, productId:sp.productId
+          fromSheet:true, productId:sp.productId,
+          // Amazon-style variation family (null on standalone/legacy products):
+          _family:        famMeta ? famMeta._family            : null,
+          _familyName:    famMeta ? (famMeta.familyName   ||'') : '',
+          _familyTheme:   famMeta ? (famMeta.theme        ||'') : '',
+          _familyRole:    famMeta ? (famMeta.role         ||'') : '',
+          _familyOption:  famMeta ? (famMeta.option       ||'') : '',
+          _familyDefault: famMeta ? (famMeta.defaultOption||'') : ''
         });
         // Auto-add seller to sellers array if not present
         if (!sellers.find(x => x.id === sid)) {
@@ -3923,7 +3971,8 @@ function loadLiveProducts() {
           });
         }
       });
-      allFilteredProducts = [...products];
+      ibiBuildFamilies();                                  // group parent/child variation families
+      allFilteredProducts = [...gridProducts()];           // grid shows one card per family
       renderAllProducts(); renderDeals(); renderFeatured(); renderNew(); renderSellers();
     }, 10000   // was 5000 — Apps Script JSONP is ~2.5s + redirect; 5s could time out on slow
                // mobile, dropping every real (sheet) product → storefront showed only demos
@@ -4297,11 +4346,17 @@ setTimeout(function() {
 // ══════════════════════════════════════════════════════════
 // PRODUCT PAGE (individual product URL-style page)
 // ══════════════════════════════════════════════════════════
-function openProductPage(idOrProd) {
+function openProductPage(idOrProd, _isVarSwitch) {
   // Accept either a catalog id (normal use) or a ready-made product object (seller preview
   // of a not-yet-approved product, so it never has to be injected into the public catalog).
-  const p = (idOrProd && typeof idOrProd === 'object') ? idOrProd : products.find(x => x.id === idOrProd);
+  let p = (idOrProd && typeof idOrProd === 'object') ? idOrProd : products.find(x => x.id === idOrProd);
   if (!p) return;
+  // Variation family: a PARENT is a non-buyable cover — open its default child instead, so
+  // the page always shows a real, buyable variation (with the family selector below).
+  if (p._familyRole === 'parent' && p._familyChildren && p._familyChildren.length) {
+    const _child = products.find(x => x.id === p._familyDefaultId) || p._familyChildren[0];
+    if (_child) p = _child;
+  }
   const id = p.id;
 
   const disc       = Math.round((1 - p.price / p.mrp) * 100);
@@ -4312,14 +4367,18 @@ function openProductPage(idOrProd) {
   const emiAmt     = Math.round(p.price / 12);
   const inStock    = p.inStock !== false;
 
-  // Update URL hash
-  history.pushState({ productId: id }, '', '#product-' + id);
+  // Update URL hash (replaceState when switching variation, so the Back button
+  // returns to the grid rather than stepping through every option the buyer tried).
+  if (_isVarSwitch) history.replaceState({ productId: id }, '', '#product-' + id);
+  else              history.pushState({ productId: id }, '', '#product-' + id);
   document.getElementById('ppCategory').textContent   = catName;
   document.getElementById('ppTitleShort').textContent = p.title.substring(0, 40) + (p.title.length > 40 ? '…' : '');
   document.getElementById('ppCartCount').textContent  = cart.reduce((s,i) => s+i.qty, 0);
 
-  // Similar products from same category
-  const similar = products.filter(x => x.id !== id && x.category === p.category).slice(0, 6);
+  // Similar products from same category — use the grid (family-collapsed) list and never
+  // show this product's own siblings as separate cards.
+  const similar = gridProducts().filter(x => x.id !== id && x.category === p.category &&
+                    (!p._familyId || x._familyId !== p._familyId)).slice(0, 6);
 
   // Ratings breakdown (simulated)
   const ratingBreakdown = [
@@ -4365,7 +4424,7 @@ function openProductPage(idOrProd) {
     <div>
       <!-- Brand + Title -->
       <div style="font-size:12px;color:#0098c9;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">${p.brand || 'India Business International'}</div>
-      <h1 style="font-size:clamp(16px,2.5vw,22px);font-weight:800;color:#131921;line-height:1.4;margin-bottom:10px;">${p.title}</h1>
+      <h1 id="ppTitle" style="font-size:clamp(16px,2.5vw,22px);font-weight:800;color:#131921;line-height:1.4;margin-bottom:10px;">${p.title}</h1>
 
       <!-- Rating row -->
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid #eee;margin-bottom:14px;">
@@ -4395,9 +4454,25 @@ function openProductPage(idOrProd) {
         </div>
       </div>
 
-      <!-- Product variations (Size / Colour / etc.) — placed directly under price so buyers see options
-           immediately (was previously below the delivery/return block, ~1200px down on mobile = easy to miss). -->
-      ${(p.variations && p.variations.length) ? (function(){
+      <!-- Variations — placed directly under price so buyers see options immediately. -->
+      ${(p._familyChildren && p._familyChildren.length) ? `
+        <!-- Amazon-style variation family: every child is its own listing (own title, images,
+             price). Clicking one opens that child's full details on this same page. -->
+        <div style="background:#fff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:800;color:#8B5CF6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">⚙️ ${p._familyThemeName || 'Select'} — ${p._familyChildren.length} option${p._familyChildren.length>1?'s':''}</div>
+          <div style="font-size:11px;color:#888;margin-bottom:10px;">Tap a variation to see its full details, photos &amp; price.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            ${p._familyChildren.map(c => `
+              <button onclick="openProductPage(${c.id}, true)" title="${(c.title||'').replace(/"/g,'&quot;')}"
+                style="display:flex;flex-direction:column;align-items:center;gap:4px;width:98px;padding:8px 6px;border:2px solid ${c.id===p.id?'#0098c9':'#e5e7eb'};border-radius:11px;background:${c.id===p.id?'#f0f9ff':'#fff'};cursor:pointer;position:relative;">
+                <img src="${c.img||''}" alt="" style="width:72px;height:72px;object-fit:contain;border-radius:7px;background:#f9f9f9;" onerror="ibiImgFallback(this)">
+                <span style="font-size:12px;font-weight:800;color:#131921;text-align:center;line-height:1.15;">${c._familyOption || (c.title||'').slice(0,16)}</span>
+                <span style="font-size:12px;font-weight:700;color:#0098c9;">₹${formatPrice(c.price)}</span>
+                ${c.inStock===false ? '<span style="font-size:9px;color:#c00;font-weight:800;">Out of stock</span>' : ''}
+                ${c.id===p.id ? '<span style="position:absolute;top:4px;right:4px;font-size:12px;">✓</span>' : ''}
+              </button>`).join('')}
+          </div>
+        </div>` : (p.variations && p.variations.length) ? (function(){
         const groups = {};
         p.variations.forEach(v => { (groups[v.type||'Variation'] = groups[v.type||'Variation'] || []).push(v); });
         return `<div style="background:#fff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
@@ -6436,12 +6511,97 @@ function resetVariationForm() {
 
 function setVariationType() {} // no-op — kept for backward compat
 
+// ══════════════════════════════════════════════════════════
+// 🔗 VARIATION FAMILY (Amazon-style parent + child listings)
+// A parent/child listing stores a family OBJECT in the same #ap_variations
+// hidden field the backend already carries verbatim (col 19) — so NO backend
+// change. Standalone/legacy products keep storing the options ARRAY.
+// ══════════════════════════════════════════════════════════
+function _famSlug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+
+function famRole() { var r = document.querySelector('input[name="fam_role"]:checked'); return r ? r.value : 'standalone'; }
+
+// Show/hide the family fields + legacy options block based on the chosen mode.
+function onFamRoleChange() {
+  var role   = famRole();
+  var fields = document.getElementById('famFields');
+  var legacy = document.getElementById('legacyVarBlock');
+  var optWrap= document.getElementById('famOptionWrap');
+  var defWrap= document.getElementById('famDefaultWrap');
+  var hint   = document.getElementById('famHint');
+  if (role === 'standalone') {
+    if (fields) fields.style.display = 'none';
+    if (legacy) legacy.style.display = '';       // legacy intra-listing options available again
+    syncVariationsField();                        // restore the options-array JSON (or '[]')
+    return;
+  }
+  if (fields) fields.style.display = 'grid';
+  if (legacy) legacy.style.display = 'none';       // family mode replaces the legacy options UI
+  if (optWrap) optWrap.style.display = (role === 'child')  ? '' : 'none';
+  if (defWrap) defWrap.style.display = (role === 'parent') ? '' : 'none';
+  if (hint) hint.innerHTML = (role === 'parent')
+    ? '⭐ <b>Parent</b> = the cover for this family. Give it the family Title &amp; the main Images buyers see first. Price / stock / HSN / dimensions are optional here — a parent is not sold directly. Then add a <b>Child</b> listing for each variation.'
+    : '🎨 <b>Child</b> = one real, buyable variation. Fill this listing normally (its OWN Title, Images, Price, Stock). Use the <b>same Family name</b> as the parent, and give this variation a short label (e.g. "2 Qty").';
+  refreshFamilyDatalist();
+  syncFamilyField();
+}
+
+// Serialize the parent/child family object into #ap_variations.
+function syncFamilyField() {
+  var role = famRole();
+  if (role === 'standalone') { syncVariationsField(); return; }
+  var session = {}; try { session = JSON.parse(sessionStorage.getItem('ibi_seller')||'{}'); } catch(e){}
+  var sid   = (session.sellerId || 'seller').toString().toLowerCase();
+  var name  = (document.getElementById('fam_name').value  || '').trim();
+  var theme = (document.getElementById('fam_theme').value || '').trim();
+  var obj = { _family:'FAM-'+sid+'-'+_famSlug(name), familyName:name, theme:theme, role:role };
+  if (role === 'child')  obj.option = (document.getElementById('fam_option').value || '').trim();
+  if (role === 'parent') { var d = (document.getElementById('fam_default').value || '').trim(); if (d) obj.defaultOption = d; }
+  document.getElementById('ap_variations').value = JSON.stringify(obj);
+}
+
+// Fill the family-name datalist from the seller's existing families (parents preferred).
+function refreshFamilyDatalist() {
+  var dl = document.getElementById('fam_name_list'); if (!dl) return;
+  var names = {};
+  (window._ibiSellerFamilies || []).forEach(function(n){ if (n) names[n] = 1; });
+  dl.innerHTML = Object.keys(names).map(function(n){ return '<option value="'+String(n).replace(/"/g,'&quot;')+'">'; }).join('');
+}
+
+// Restore family mode when editing a parent/child listing.
+function loadFamilyForEdit(obj) {
+  var role  = obj.role === 'parent' ? 'parent' : 'child';
+  var radio = document.querySelector('input[name="fam_role"][value="'+role+'"]');
+  if (radio) radio.checked = true;
+  var nm = document.getElementById('fam_name');  if (nm) nm.value = obj.familyName || '';
+  var th = document.getElementById('fam_theme');
+  if (th) {
+    if (obj.theme && !Array.prototype.some.call(th.options, function(o){ return o.value === obj.theme; }))
+      th.add(new Option(obj.theme, obj.theme));   // preserve a custom theme
+    th.value = obj.theme || '';
+  }
+  var op = document.getElementById('fam_option');  if (op) op.value = (role === 'child')  ? (obj.option || '')        : '';
+  var df = document.getElementById('fam_default'); if (df) df.value = (role === 'parent') ? (obj.defaultOption || '') : '';
+  onFamRoleChange();
+  syncFamilyField();
+}
+
+// Reset the family selector back to Standalone.
+function resetFamilyForm() {
+  var r = document.querySelector('input[name="fam_role"][value="standalone"]'); if (r) r.checked = true;
+  ['fam_name','fam_theme','fam_option','fam_default'].forEach(function(id){ var el=document.getElementById(id); if (el) el.value=''; });
+  var f = document.getElementById('famFields'); if (f) f.style.display = 'none';
+  var l = document.getElementById('legacyVarBlock'); if (l) l.style.display = '';
+}
+
 // Load variations when editing a product
 function loadVariationsForEdit(variationsJson) {
   if (!variationsJson || variationsJson === '[]') return;
-  var vars = [];
+  var vars;
   try { vars = JSON.parse(variationsJson); } catch(e) { return; }
-  if (!vars.length) return;
+  // NEW: a family parent/child listing stores an OBJECT (not an array) in col 19.
+  if (vars && !Array.isArray(vars) && vars._family) { loadFamilyForEdit(vars); return; }
+  if (!Array.isArray(vars) || !vars.length) return;
 
   document.getElementById('ap_has_variations').checked = true;
   document.getElementById('variationsSection').style.display = 'block';
@@ -6667,7 +6827,58 @@ function ibiImgFallback(el){
   if (el.nextElementSibling) el.nextElementSibling.style.display = 'flex';
 }
 
+// ══════════════════════════════════════════════════════════
+// 🔗 VARIATION FAMILIES (Amazon-style parent + child grouping)
+// Collapses each family to ONE grid card (the parent cover, else the default
+// child) and annotates every member with its siblings so the product page can
+// build the variation selector. Standalone/legacy products are untouched.
+// ══════════════════════════════════════════════════════════
+function ibiBuildFamilies() {
+  var fams = {};
+  products.forEach(function(p){
+    if (p) { p._isFamilyCover = false; p._hideFromGrid = false; }
+    if (!p || !p._family) return;
+    var f = (fams[p._family] = fams[p._family] || { parent:null, children:[], name:'', theme:'', defaultOption:'' });
+    if (p._familyName)  f.name  = p._familyName;
+    if (p._familyTheme) f.theme = p._familyTheme;
+    if (p._familyRole === 'parent') { f.parent = p; if (p._familyDefault) f.defaultOption = p._familyDefault; }
+    else f.children.push(p);
+  });
+  window._families = fams;
+  var hide = {};
+  Object.keys(fams).forEach(function(key){
+    var f = fams[key];
+    var children = f.children.slice();                       // sheet order
+    var def = null;
+    if (f.defaultOption) def = children.filter(function(c){ return (c._familyOption||'').toLowerCase() === f.defaultOption.toLowerCase(); })[0];
+    if (!def) def = children[0] || null;
+    var prices = children.map(function(c){ return c.price||0; }).filter(function(n){ return n>0; });
+    var fromPrice = prices.length ? Math.min.apply(null, prices) : 0;
+    var members = children.concat(f.parent ? [f.parent] : []);
+    members.forEach(function(m){
+      m._familyId          = key;
+      m._familyChildren    = children;
+      m._familyParent      = f.parent;
+      m._familyDefaultId   = def ? def.id : m.id;
+      m._familyThemeName   = f.theme || m._familyTheme || 'Option';
+      m._familyDisplayName = f.name  || m._familyName  || '';
+    });
+    var cover = f.parent || def;
+    if (cover) {
+      cover._isFamilyCover   = true;
+      cover._familyFromPrice = fromPrice || cover.price || 0;
+      cover._familyOpenId    = def ? def.id : cover.id;       // card opens the default child
+    }
+    members.forEach(function(m){ if (m !== cover) hide[m.id] = true; });
+  });
+  window._gridProducts = products.filter(function(p){ return !hide[p.id]; });
+}
+// Grid-facing product list (families collapsed to one card each).
+function gridProducts(){ return (window._gridProducts && window._gridProducts.length) ? window._gridProducts : products; }
+
 function productCard(p) {
+  // Family cover: a parent (or the default child) standing in for the whole family.
+  if (p._isFamilyCover && p._familyChildren && p._familyChildren.length) return familyCard(p);
   const disc = Math.round((1 - p.price/p.mrp)*100);
   const sellerObj = sellers.find(s => s.id === p.seller);
   const sellerName = sellerObj ? sellerObj.shortName : (p.seller || 'IBI');
@@ -6713,6 +6924,45 @@ function productCard(p) {
   `;
 }
 
+// Grid card for a variation family — one card standing in for all its children.
+function familyCard(p) {
+  const openId = p._familyOpenId || p.id;
+  const count  = (p._familyChildren||[]).length;
+  const theme  = p._familyThemeName || 'Options';
+  const title  = p._familyDisplayName || p.title;
+  const from   = p._familyFromPrice || p.price || 0;
+  const sellerObj  = sellers.find(s => s.id === p.seller);
+  const sellerName = sellerObj ? sellerObj.shortName : (p.seller || 'IBI');
+  const sellerColor= sellerObj ? sellerObj.color : '#0098c9';
+  return `
+    <div class="product-card" onclick="openProductPage(${openId})">
+      <span class="product-badge badge-deal">${count} ${theme}${count>1?' options':' option'}</span>
+      <div class="product-img-wrap">
+        ${p.img
+          ? `<img src="${p.img}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="ibiImgFallback(this)">
+             <div class="product-img-placeholder" style="display:none;"><div class="p-icon">🛍️</div><div class="p-label">${p.brand}</div></div>`
+          : `<div class="product-img-placeholder"><div class="p-icon">🛍️</div><div class="p-label">${p.brand}</div></div>`}
+        <button class="wishlist-btn" onclick="toggleWish(event,${openId})" title="Add to Wishlist">♡</button>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-title">${title}</div>
+        <div class="stars-row"><span class="stars">${getStars(p.rating||4.5)}</span><span class="rating-count">${(p.reviews||0).toLocaleString('en-IN')}</span></div>
+        <div class="price-row">
+          <span style="font-size:11px;color:#555;font-weight:600;margin-right:3px;">from</span>
+          <span class="price-symbol">₹</span><span class="price-main">${formatPrice(from)}</span>
+        </div>
+        <div class="delivery-info">FREE delivery <span>Tomorrow</span></div>
+        <div style="font-size:11px;color:#8B5CF6;font-weight:700;margin-top:3px;">🎨 ${count} ${theme} to choose from</div>
+        <div style="font-size:10px;color:#666;margin:4px 0 2px;display:flex;align-items:center;gap:4px;">
+          <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${sellerColor};"></span>
+          <span>Sold by <strong style="color:${sellerColor};cursor:pointer;" onclick="event.stopPropagation();openSellerStore('${p.seller}')">${sellerName}</strong></span>
+        </div>
+        <button class="add-cart-btn" onclick="event.stopPropagation();openProductPage(${openId})">Select options →</button>
+      </div>
+    </div>`;
+}
+
 let allPageSize = 24;
 let allPageCurrent = 0;
 let allFilteredProducts = products;
@@ -6720,17 +6970,19 @@ let allSearchQuery = '';
 let allCategoryFilter = 'all';
 
 function renderDeals() {
-  const deals = products.filter(p => p.deal).slice(0, 12);
+  const src = gridProducts();
+  const deals = src.filter(p => p.deal).slice(0, 12);
   document.getElementById('dealsGrid').innerHTML = deals.map(productCard).join('');
 }
 
 function renderFeatured(filter = 'all') {
+  const src = gridProducts();
   let fps;
   if (filter === 'all') {
-    fps = products.slice(0, 12);
+    fps = src.slice(0, 12);
   } else {
-    fps = products.filter(p => p.category === filter).slice(0, 24);
-    if (!fps.length) fps = products.slice(0, 12);
+    fps = src.filter(p => p.category === filter).slice(0, 24);
+    if (!fps.length) fps = src.slice(0, 12);
   }
   const titleMap = {electronics:'📱 Electronics',clothing:'👗 Clothing & Fashion',home:'🏠 Home & Kitchen',grocery:'🛒 Grocery',beauty:'💄 Beauty & Health',books:'📚 Books',jewellery:'💍 Jewellery',sports:'🏋️ Sports & Fitness'};
   document.getElementById('featuredTitle').textContent = filter !== 'all' ? (titleMap[filter]||'⭐ Featured') : '⭐ Featured Products';
@@ -6738,8 +6990,9 @@ function renderFeatured(filter = 'all') {
 }
 
 function renderNew() {
-  const newProds = products.filter(p => p.badge === 'new').slice(0, 12);
-  const fallback = products.slice(-12);
+  const src = gridProducts();
+  const newProds = src.filter(p => p.badge === 'new').slice(0, 12);
+  const fallback = src.slice(-12);
   document.getElementById('newGrid').innerHTML = (newProds.length ? newProds : fallback).map(productCard).join('');
 }
 
@@ -6788,9 +7041,10 @@ function initInfiniteScroll() {
 function applyAllFilters() {
   allPageCurrent = 0;
   window._allLoaded = false;
-  allFilteredProducts = products.filter(p => {
+  allFilteredProducts = gridProducts().filter(p => {
     const matchCat = allCategoryFilter === 'all' || p.category === allCategoryFilter;
-    const matchQ = !allSearchQuery || p.title.toLowerCase().includes(allSearchQuery) || p.category.toLowerCase().includes(allSearchQuery);
+    const _t = (p._familyDisplayName || p.title || '');
+    const matchQ = !allSearchQuery || _t.toLowerCase().includes(allSearchQuery) || p.category.toLowerCase().includes(allSearchQuery);
     return matchCat && matchQ;
   });
   renderAllProducts();
@@ -6820,7 +7074,7 @@ function doSearch() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   allSearchQuery = q;
   if (!q) {
-    allFilteredProducts = products;
+    allFilteredProducts = gridProducts();
     allPageCurrent = 0;
     renderAllProducts();
     document.getElementById('allProductsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -8819,8 +9073,50 @@ init();
             <div id="discountPreview" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;font-size:13px;color:#16a34a;font-weight:700;"></div>
 
 
+            <!-- 🔗 VARIATION FAMILY — Amazon-style parent + child listings -->
+            <div id="famBlock" style="background:#fff7ed;border-radius:10px;padding:14px;border-left:4px solid #f97316;">
+              <label class="sc-label" style="color:#c2410c;margin:0 0 4px;">🔗 Variation Family
+                <span style="font-size:11px;color:#888;font-weight:400;"> (Amazon-style parent / child — optional)</span>
+              </label>
+              <div style="font-size:11px;color:#888;margin-bottom:10px;">
+                Selling the same item in different <b>sizes, quantities, colours, styles or combos</b>? Create ONE <b>Parent</b> listing (the cover buyers see first), then a <b>Child</b> listing for each variation — every child keeps its <b>own title, own images, own price &amp; stock</b>. Buyers browse them all on one page.
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#131921;background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:7px 12px;cursor:pointer;">
+                  <input type="radio" name="fam_role" value="standalone" checked onchange="onFamRoleChange()" style="accent-color:#f97316;"> Standalone product</label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#131921;background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:7px 12px;cursor:pointer;">
+                  <input type="radio" name="fam_role" value="parent" onchange="onFamRoleChange()" style="accent-color:#f97316;"> ⭐ Parent (variation cover)</label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#131921;background:#fff;border:1.5px solid #fed7aa;border-radius:8px;padding:7px 12px;cursor:pointer;">
+                  <input type="radio" name="fam_role" value="child" onchange="onFamRoleChange()" style="accent-color:#f97316;"> 🎨 Child (one variation)</label>
+              </div>
+              <div id="famFields" style="display:none;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="grid-column:1 / -1;">
+                  <label style="font-size:11px;color:#c2410c;font-weight:700;display:block;margin-bottom:3px;">Family name <span style="color:#c00;">*</span> <span style="font-weight:400;color:#888;">— use the SAME name on the parent and all its children to link them</span></label>
+                  <input id="fam_name" list="fam_name_list" type="text" placeholder="e.g. Aluminium Tray" class="sc-input" style="font-size:13px;" oninput="syncFamilyField()"/>
+                  <datalist id="fam_name_list"></datalist>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:#c2410c;font-weight:700;display:block;margin-bottom:3px;">Variation type <span style="color:#c00;">*</span></label>
+                  <select id="fam_theme" class="sc-input" style="font-size:13px;" onchange="syncFamilyField()">
+                    <option value="">— choose —</option>
+                    <option>Size</option><option>Quantity</option><option>Colour</option><option>Style</option>
+                    <option>Combo</option><option>Pack</option><option>Weight</option><option>Flavour</option><option>Material</option>
+                  </select>
+                </div>
+                <div id="famOptionWrap">
+                  <label style="font-size:11px;color:#c2410c;font-weight:700;display:block;margin-bottom:3px;">This variation's label <span style="color:#c00;">*</span></label>
+                  <input id="fam_option" type="text" placeholder="e.g. 2 Qty  /  Large  /  Red" class="sc-input" style="font-size:13px;" oninput="syncFamilyField()"/>
+                </div>
+                <div id="famDefaultWrap" style="display:none;">
+                  <label style="font-size:11px;color:#c2410c;font-weight:700;display:block;margin-bottom:3px;">Default variation shown first <span style="font-weight:400;color:#888;">(optional)</span></label>
+                  <input id="fam_default" type="text" placeholder="e.g. 2 Qty" class="sc-input" style="font-size:13px;" oninput="syncFamilyField()"/>
+                </div>
+                <div id="famHint" style="grid-column:1 / -1;font-size:11px;color:#9a3412;background:#fff;border:1px dashed #fdba74;border-radius:8px;padding:8px;line-height:1.5;"></div>
+              </div>
+            </div>
+
             <!-- ③b PRODUCT VARIATIONS — Unlimited types, unlimited options -->
-            <div style="background:#f0f4ff;border-radius:10px;padding:14px;border-left:4px solid #4f46e5;">
+            <div id="legacyVarBlock" style="background:#f0f4ff;border-radius:10px;padding:14px;border-left:4px solid #4f46e5;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
                 <label class="sc-label" style="color:#4f46e5;margin:0;">③b Product Variations
                   <span style="font-size:11px;color:#888;font-weight:400;"> (optional)</span>
