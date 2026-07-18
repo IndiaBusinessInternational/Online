@@ -2340,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.3';
+window.IBI_VERSION      = 'v5.4';
 window.IBI_VERSION_DATE = '18 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -6120,24 +6120,64 @@ function ibiAIRenderFileNote() {
     : '';
 }
 
-// http(s) image URL → base64 (no data: prefix). Best-effort; resolves null on CORS/error.
+// A Drive URL the AI can actually READ. The app displays Drive images via
+// drive.google.com/thumbnail?id=… — but that endpoint blocks cross-origin reads
+// (fetch returns a tiny stub, canvas taints), so re-reading an already-hosted photo
+// for the AI failed. The lh3.googleusercontent.com/d/<id> mirror serves the SAME
+// file WITH CORS (Access-Control-Allow-Origin), so both fetch and canvas can read it.
+// Non-Drive URLs (Wix, Amazon, ImgBB, direct) are returned unchanged.
+function ibiImgUrlForRead(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  if (url.indexOf('drive.google.com') === -1 && url.indexOf('lh3.googleusercontent.com') === -1) return url;
+  var m = url.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/) ||
+          url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/)     ||
+          url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  return m ? ('https://lh3.googleusercontent.com/d/' + m[1] + '=w1024') : url;
+}
+
+// http(s) image URL → base64 (no data: prefix). Best-effort; resolves null only if the
+// host truly blocks cross-origin reads. Tries a direct CORS fetch first (works for Drive
+// via the lh3 mirror, Wix, Amazon, ImgBB and sidesteps AVIF-decode quirks), then falls
+// back to a crossOrigin <img>→canvas re-read for hosts that allow img-CORS but not fetch.
 function ibiUrlToB64(url) {
+  var readUrl = ibiImgUrlForRead(url);
   return new Promise(function(resolve) {
+    var done = false;
+    var finish = function(v) { if (!done) { done = true; resolve(v || null); } };
+
+    var canvasFallback = function() {
+      try {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          try {
+            var MAX = 1024, w = img.width, h = img.height;
+            if (w > MAX || h > MAX) { if (w >= h) { h = Math.round(h * MAX / w); w = MAX; } else { w = Math.round(w * MAX / h); h = MAX; } }
+            var c = document.createElement('canvas'); c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            finish(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+          } catch (e) { finish(null); }   // tainted canvas (no CORS header) → give up on this URL
+        };
+        img.onerror = function() { finish(null); };
+        img.src = readUrl;
+      } catch (e) { finish(null); }
+    };
+
     try {
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = function() {
-        try {
-          var MAX = 1024, w = img.width, h = img.height;
-          if (w > MAX || h > MAX) { if (w >= h) { h = Math.round(h * MAX / w); w = MAX; } else { w = Math.round(w * MAX / h); h = MAX; } }
-          var c = document.createElement('canvas'); c.width = w; c.height = h;
-          c.getContext('2d').drawImage(img, 0, 0, w, h);
-          resolve(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
-        } catch (e) { resolve(null); }   // tainted canvas (no CORS header) → give up on this URL
-      };
-      img.onerror = function() { resolve(null); };
-      img.src = url;
-    } catch (e) { resolve(null); }
+      fetch(readUrl, { mode: 'cors' })
+        .then(function(r) { if (!r.ok) throw 0; return r.blob(); })
+        .then(function(blob) {
+          // Reject stub / non-image responses — a blocked Drive endpoint answers with a
+          // ~7-byte text/plain body, which must NOT be sent to the AI as an "image".
+          if (!blob || blob.size < 200 || (blob.type && blob.type.indexOf('image/') !== 0)) throw 0;
+          if (blob.size > 1500000) { canvasFallback(); return; }   // very large → downscale via canvas
+          var fr = new FileReader();
+          fr.onload = function() { finish(String(fr.result).split(',')[1]); };
+          fr.onerror = function() { canvasFallback(); };
+          fr.readAsDataURL(blob);
+        })
+        .catch(function() { canvasFallback(); });
+    } catch (e) { canvasFallback(); }
   });
 }
 
