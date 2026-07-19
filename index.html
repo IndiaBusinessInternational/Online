@@ -2340,9 +2340,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.8';
+window.IBI_VERSION      = 'v5.9';
 window.IBI_VERSION_DATE = '18 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -5168,11 +5168,11 @@ window._ibiHostingSet = window._ibiHostingSet || {};
 // hosting swaps the grid entry to a Wix/ImgBB/Drive URL that blocks canvas re-reads (no CORS).
 window._imgB64Cache = window._imgB64Cache || {};
 function ibiHostGridImages() {
-  (window._uploadedImgs || []).slice().forEach(function(entry) {
+  (window._uploadedImgs || []).slice().forEach(function(entry, idx) {
     if (typeof entry !== 'string' || entry.indexOf('data:') !== 0) return; // only un-hosted base64
     if (window._ibiHostingSet[entry]) return;                              // already in flight
     window._ibiHostingSet[entry] = true;
-    ibiHostOneImage(entry).then(function(hostedUrl) {
+    ibiHostOneImage(entry, ibiImgFileName(idx)).then(function(hostedUrl) {  // name the Drive file after the product
       var i = window._uploadedImgs.indexOf(entry);
       if (i !== -1 && hostedUrl && hostedUrl.indexOf('http') === 0) {
         window._imgB64Cache[hostedUrl] = entry; // remember the bytes before we drop them
@@ -8424,15 +8424,31 @@ function ibiUploadToImgbbOnce(dataUrl) {
     });
 }
 
+// Build a human-readable Drive filename from the product's Title (falls back to the
+// family name, then to the old timestamp name if nothing is typed yet). `index` is the
+// 0-based photo position, so a listing's photos become "<Title> - 1.jpg", "… - 2.jpg", …
+// The Title (①) sits above Images (④) in the form, so it is normally filled before upload.
+function ibiImgFileName(index) {
+  var t = '';
+  var el = document.getElementById('ap_title');    if (el && el.value) t = el.value;
+  if (!t) { var fn = document.getElementById('fam_name'); if (fn && fn.value) t = fn.value; }
+  t = (t || '').replace(/[\\\/:*?"<>| -]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 70);
+  if (!t) return 'ibi_product_' + Date.now() + '.jpg';        // no title yet → keep unique fallback
+  return t + ' - ' + (((index | 0)) + 1) + '.jpg';
+}
+
 // Upload one compressed data: URL to Google Drive via Apps Script (CORS-safe POST).
-function ibiUploadToDriveOnce(dataUrl) {
+// `nameHint` (optional) names the Drive file; blank falls back to the timestamp name.
+function ibiUploadToDriveOnce(dataUrl, nameHint) {
   var m = dataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
   if (!m) return Promise.reject(new Error('not a base64 image'));
+  var fname = (nameHint && String(nameHint).trim()) ? String(nameHint).trim() : ('ibi_product_' + Date.now() + '.jpg');
+  if (!/\.[a-z0-9]{2,4}$/i.test(fname)) fname += '.jpg';
   var body = JSON.stringify({
     action:   'uploadImage',
     mimeType: m[1],
     data:     m[2],
-    filename: 'ibi_product_' + Date.now() + '.jpg'
+    filename: fname
   });
   return ibiFetchTimeout(window.IBI_SHEET_URL, {
     method:  'POST',
@@ -8447,12 +8463,13 @@ function ibiUploadToDriveOnce(dataUrl) {
     });
 }
 
-// Run a host fn up to `attempts` times with linear backoff.
-function ibiTryHost(fn, dataUrl, attempts) {
+// Run a host fn up to `attempts` times with linear backoff. `nameHint` (optional) is
+// forwarded to the host fn (Drive uses it as the filename; ImgBB ignores it).
+function ibiTryHost(fn, dataUrl, attempts, nameHint) {
   var n = 0;
   function go() {
     n++;
-    return fn(dataUrl).catch(function(err) {
+    return fn(dataUrl, nameHint).catch(function(err) {
       if ((err && err.fatal) || n >= attempts) throw err;  // don't retry config errors (e.g. bad key)
       return ibiDelay(500 * n).then(go);
     });
@@ -8462,16 +8479,16 @@ function ibiTryHost(fn, dataUrl, attempts) {
 
 // Host ONE image: ImgBB (primary) → Drive (fallback). http(s) URLs pass through.
 // Resolves to a https URL, or rejects only if BOTH hosts fail.
-function ibiHostOneImage(dataUrl) {
+function ibiHostOneImage(dataUrl, nameHint) {
   if (!dataUrl) return Promise.reject(new Error('no image'));
   if (dataUrl.indexOf('data:') !== 0) return Promise.resolve(dataUrl); // already a hosted URL
   // Google Drive is the PRIMARY host: drive.google.com resolves reliably (incl. on Indian
   // ISP networks where ImgBB's CDN i.ibb.co is DNS-blocked — images upload but won't display).
   // ImgBB is the fallback only, used if Drive fails AND a key is configured.
-  return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2).catch(function(driveErr) {
+  return ibiTryHost(ibiUploadToDriveOnce, dataUrl, 2, nameHint).catch(function(driveErr) {
     if (window._ibiImgbbDisabled || !window.IBI_IMGBB_KEY) throw driveErr;
     console.warn('Drive failed, trying ImgBB fallback:', driveErr && driveErr.message);
-    return ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2).catch(function(imgbbErr) {
+    return ibiTryHost(ibiUploadToImgbbOnce, dataUrl, 2, nameHint).catch(function(imgbbErr) {
       console.error('Both image hosts failed:', driveErr, imgbbErr);
       throw new Error('all image hosts failed');
     });
@@ -8501,7 +8518,7 @@ function ibiHostImages(list, onProgress) {
     function startOne() {
       var i = nextIdx++;
       if (i >= total) return;
-      ibiHostOneImage(list[i])
+      ibiHostOneImage(list[i], ibiImgFileName(i))     // name the Drive file after the product
         .then(function(url) { results[i] = url; })
         .catch(function()   { results[i] = null; })   // record failure, keep the slot
         .then(function() {
