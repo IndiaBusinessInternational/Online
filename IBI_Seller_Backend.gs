@@ -36,10 +36,28 @@ const PCOL = {
   STATUS:20, REJECT_REASON:21, APPROVED_ON:22, UPDATED_ON:23
 };
 
-// ⚠️ TEMPORARY — auto-approve every NEW product listing so it goes live instantly
-// (no manual "Approve" step). Turned ON while iINTELLIGENCEi's ~267 products are being
-// loaded. Set back to false to restore the normal "Pending → IBI review → Approved" flow.
-const AUTO_APPROVE_NEW_PRODUCTS = true;
+// ⚠️ TEMPORARY — auto-approve NEW product listings ONLY for the iINTELLIGENCEi seller
+// account, so its ~267-product catalogue goes live instantly (no manual "Approve" step)
+// while it is being loaded. EVERY OTHER seller still goes through normal IBI review.
+// A listing is auto-approved when its seller matches ANY entry below (seller ID, registered
+// email, or a business-name substring). To switch the whole thing off, set
+// AUTO_APPROVE_ENABLED = false (then all sellers, including iINTELLIGENCEi, need review again).
+const AUTO_APPROVE_ENABLED        = true;
+const AUTO_APPROVE_SELLER_IDS     = [];                                    // exact IDs, e.g. 'IBI123456' (fill in for a certain match)
+const AUTO_APPROVE_SELLER_EMAILS  = ['indiabusinessinternational@gmail.com']; // the account's registered email(s)
+const AUTO_APPROVE_NAME_MATCH     = ['iintelligencei','india intelligence international']; // business-name substrings, lowercased
+
+// True only for the whitelisted iINTELLIGENCEi seller (matched by ID / email / business name).
+function _isAutoApproveSeller(sellerRow) {
+  if (!AUTO_APPROVE_ENABLED || !sellerRow) return false;
+  const id    = String(sellerRow[COL.SELLER_ID-1] || '').toUpperCase().trim();
+  const email = String(sellerRow[COL.EMAIL-1]     || '').toLowerCase().trim();
+  const biz   = String(sellerRow[COL.BIZ_NAME-1]  || '').toLowerCase();
+  if (AUTO_APPROVE_SELLER_IDS.some(function(x){ return String(x).toUpperCase().trim() === id && id; }))       return true;
+  if (AUTO_APPROVE_SELLER_EMAILS.some(function(x){ return String(x).toLowerCase().trim() === email && email; })) return true;
+  if (AUTO_APPROVE_NAME_MATCH.some(function(x){ return x && biz.indexOf(x) !== -1; }))                        return true;
+  return false;
+}
 
 function doGet(e) {
   const action = (e.parameter.action||'').trim();
@@ -187,14 +205,15 @@ function addProduct(p) {
   const seller=findSellerById(getOrCreateSellerSheet(),p.sellerId.toUpperCase());
   const biz=seller?(seller[COL.BIZ_NAME-1]||''):p.sellerId;
   const pid='PROD-'+p.sellerId.toUpperCase()+'-'+Date.now().toString().slice(-6);
-  // TEMPORARY auto-approval: new listings are born Approved (live immediately) while the flag
-  // is on. When off, they start Pending and wait for the normal IBI review.
-  const initStatus   = AUTO_APPROVE_NEW_PRODUCTS ? 'Approved' : 'Pending';
-  const initApproved = AUTO_APPROVE_NEW_PRODUCTS ? new Date().toLocaleDateString('en-IN') : '';
+  // TEMPORARY auto-approval — ONLY for the whitelisted iINTELLIGENCEi seller: its new listings
+  // are born Approved (live immediately). Every other seller starts Pending for normal IBI review.
+  const autoApprove  = _isAutoApproveSeller(seller);
+  const initStatus   = autoApprove ? 'Approved' : 'Pending';
+  const initApproved = autoApprove ? new Date().toLocaleDateString('en-IN') : '';
   sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]',initStatus,'',initApproved,'']);
-  sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground(AUTO_APPROVE_NEW_PRODUCTS?'#C8E6C9':'#FFF9C4');
-  try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product'+(AUTO_APPROVE_NEW_PRODUCTS?' (auto-approved)':'')+': '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
-  return jsonResponse({success:true,productId:pid,status:initStatus,message:AUTO_APPROVE_NEW_PRODUCTS?'Product is live!':'Submitted for review!'});
+  sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground(autoApprove?'#C8E6C9':'#FFF9C4');
+  try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product'+(autoApprove?' (auto-approved)':'')+': '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
+  return jsonResponse({success:true,productId:pid,status:initStatus,message:autoApprove?'Product is live!':'Submitted for review!'});
 }
 
 // Find an existing product row for this seller whose title matches (normalised), else null.
