@@ -2362,9 +2362,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v6.2';
+window.IBI_VERSION      = 'v6.3';
 window.IBI_VERSION_DATE = '24 Jul 2026';
-window.IBI_VERSION_NOTE = 'v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v6.3 — (1) 💬 Listing Assistant: a new built-in help chatbot for sellers. A “💬 Listing help” button appears in Seller Central; tap it for a friendly, step-by-step guide to listing — how to add a product, product images, price/MRP/stock, variations, combinations (Colour × Size × Material), t-shirt/apparel sizes, the ✨ AI generator, HSN & keywords, submitting, and troubleshooting. Tap a topic or type a question; it always works (no internet AI needed). (2) The ✨ AI listing generator is now VARIATION-AWARE: it reads the colours/sizes/materials you added and writes a title that fits ALL of them (instead of locking to one), mentions the options in the description, and seeds them into the keywords. For t-shirts in Apparel mode, if the Size box is blank it now auto-uses your “Size” variation (M, L, XL…) so ✨ Generate no longer stalls. v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -2662,6 +2662,7 @@ function openSellerDashboard() {
   if (soi) soi.style.display = 'none';
   document.getElementById('sellerDashOverlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  if (typeof ibiHelpInit === 'function') ibiHelpInit();   // 💬 listing assistant FAB
 
   // Auto-restore session if already logged in
   const stored = sessionStorage.getItem('ibi_seller');
@@ -2719,6 +2720,203 @@ function closeSellerDashboard() {
   if (btn) { btn.textContent = 'Login to Seller Central →'; btn.disabled = false; }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// 💬 LISTING ASSISTANT — a built-in guided help chatbot for sellers.
+// Scripted (no AI backend, always works, free): a friendly step-by-step
+// guide to listing on the IBI Marketplace, with tappable topics + free-text
+// keyword routing. Lazy-built the first time the seller dashboard opens and
+// appended INTO #sellerDashOverlay, so it only shows on the seller pages.
+// ══════════════════════════════════════════════════════════════════
+var IBI_HELP_TOPICS = {
+  start: { label: '📝 How to list a product', body:
+    '<b>Listing a product — start to finish</b>' +
+    '<ol><li>Open the <b>➕ Add Product</b> tab.</li>' +
+    '<li>Fill <b>① Title</b>, <b>② Category</b> &amp; <b>Brand</b>.</li>' +
+    '<li>Set <b>③ Selling Price</b>, <b>MRP</b> &amp; <b>Stock</b>.</li>' +
+    '<li>Add your <b>④ Product Images</b> (first one = main image).</li>' +
+    '<li>Fill the <b>📐 Product Dimensions &amp; Weight</b> and <b>⑧ Package Dimensions</b>.</li>' +
+    '<li>Add <b>HSN code</b> &amp; a few <b>search keywords</b>.</li>' +
+    '<li>Click <b>Submit</b> — IBI reviews it, then it goes live.</li></ol>' +
+    'Selling one item in several colours/sizes? Tap <b>Variations</b> below. 💡 Tip: the ✨ AI can write the title, bullets &amp; description for you.',
+    chips: ['images','price','variations','ai','submit'] },
+
+  images: { label: '🖼️ Product images', body:
+    '<b>Adding photos</b>' +
+    '<ul><li>Up to <b>9 images</b>; the <b>first</b> is the main image buyers see.</li>' +
+    '<li>Use clear photos on a plain background. JPG / PNG / WEBP, up to 25&nbsp;MB each.</li>' +
+    '<li>Drag &amp; drop, or click <b>Choose Images</b>. Drag a photo to reorder.</li>' +
+    '<li>For variations, each colour/combination can carry its own photo too.</li></ul>',
+    chips: ['start','variations','ai'] },
+
+  price: { label: '💰 Price, MRP & Stock', body:
+    '<b>Pricing fields</b>' +
+    '<ul><li><b>Selling Price</b> = what the buyer pays.</li>' +
+    '<li><b>MRP</b> = the crossed-out original price (must be higher — the difference shows as the discount).</li>' +
+    '<li><b>Stock</b> = how many you have.</li></ul>' +
+    'For a combination product, the ③ Selling Price becomes the “from ₹…” shown on the storefront card; each combination sets its own price in the grid.',
+    chips: ['variations','combinations','start'] },
+
+  variations: { label: '🎨 Variations (colours / sizes)', body:
+    '<b>Selling one item in different options</b>' +
+    '<ol><li>In <b>③b Product Variations</b>, tick <b>Enable Variations</b>.</li>' +
+    '<li>Set the <b>Type Name</b> (Colour, Size, Material…). Not in the list? Choose <b>“✏️ Custom / Other…”</b> and type your own.</li>' +
+    '<li>Add the options. <b>You can type any value</b> — the coloured chips are just shortcuts.</li>' +
+    '<li>Need more than one axis (e.g. Colour <i>and</i> Size)? Add another type, then tap <b>Combinations</b> below.</li></ol>',
+    chips: ['combinations','apparel','start'] },
+
+  combinations: { label: '🧩 Combinations (Colour × Size × …)', body:
+    '<b>Every combination as its own variant</b>' +
+    '<ol><li>Add each axis (e.g. Colour, Size, Material) with its options.</li>' +
+    '<li>Tick <b>🧩 Combine axes into individual variants</b>.</li>' +
+    '<li>A grid of every combination appears — it <b>updates itself</b> as you add options.</li>' +
+    '<li>Use <b>Apply to all</b> for price/stock, then change any row. Add a <b>📷 photo</b> per combination.</li>' +
+    '<li>Untick <b>Sell?</b> for a combination you don’t make — it greys out for buyers.</li></ol>' +
+    'Buyers pick one option per axis and see that exact combination’s price, stock &amp; photo.',
+    chips: ['apparel','price','trouble'] },
+
+  apparel: { label: '👕 T-shirt / clothing sizes', body:
+    '<b>Clothing &amp; soft goods</b><br>A t-shirt has no fixed Length×Width×Height, so:' +
+    '<ol><li>In <b>📐 Product Dimensions</b>, switch to <b>“👕 Apparel / soft (Size + Weight)”</b>.</li>' +
+    '<li>Enter the <b>Size(s)</b> you sell (e.g. <i>M, L, XL</i>) and the <b>Weight</b> in grams — no L×W×H needed.</li>' +
+    '<li>Add a <b>Size</b> variation (and Colour, etc.) below, then tick <b>Combine</b> for per-size pricing.</li></ol>',
+    chips: ['combinations','variations','ai'] },
+
+  ai: { label: '✨ Using the AI generator', body:
+    '<b>Let the AI write your listing</b>' +
+    '<ol><li>Type the <b>product name</b> in the ✨ box, and fill <b>Dimensions/Size + Weight</b> and at least one <b>photo</b>.</li>' +
+    '<li>Click <b>✨ Generate &amp; Fill</b> — it writes the Title, 5 bullets, Description &amp; keywords.</li>' +
+    '<li>It asks before replacing anything you already typed.</li></ol>' +
+    'For variation products the AI now knows your colours/sizes/materials and writes a title that fits them all. If it says something’s missing, the reason shows in red under the button.',
+    chips: ['apparel','variations','trouble'] },
+
+  hsn: { label: '🔢 HSN & keywords', body:
+    '<b>HSN code &amp; search keywords</b>' +
+    '<ul><li><b>HSN</b> is the GST classification code for your product — required for correct tax invoices. (Keep any leading zeros.)</li>' +
+    '<li><b>Keywords</b> are hidden words buyers might search — add materials, uses, synonyms.</li></ul>',
+    chips: ['start','submit'] },
+
+  submit: { label: '✅ Submit & what’s next', body:
+    '<b>After you submit</b>' +
+    '<ul><li>Your listing goes to <b>Pending</b> — IBI reviews it before it appears to customers.</li>' +
+    '<li>Track it in <b>My Products</b>; you can Edit, Pause or Delete anytime.</li>' +
+    '<li>Edit a listing and everything — including your variation grid — loads back exactly as you left it.</li></ul>',
+    chips: ['start','trouble'] },
+
+  trouble: { label: '🛠️ Something’s not working', body:
+    '<b>Quick fixes</b>' +
+    '<ul><li><b>Combinations grid empty?</b> Add the option <i>names</i> in the axes first — they then appear on their own.</li>' +
+    '<li><b>A combination is missing?</b> Check for a typo, or that its <b>Sell?</b> box is ticked.</li>' +
+    '<li><b>AI says something’s missing?</b> The red note under the ✨ button tells you which field.</li>' +
+    '<li><b>Can’t submit?</b> A required field (⭐) is empty — the toast tells you which.</li></ul>',
+    chips: ['ai','combinations','start'] }
+};
+var IBI_HELP_KEYWORDS = [
+  [/combin|matrix|colour.*size|color.*size|both/i, 'combinations'],
+  [/t.?shirt|apparel|cloth|garment|dimension|size.*weight|fabric/i, 'apparel'],
+  [/variat|colour|color|\bsize\b|material|option/i, 'variations'],
+  [/image|photo|picture|pic\b/i, 'images'],
+  [/price|mrp|stock|cost|discount/i, 'price'],
+  [/\bai\b|generat|auto.?fill|write|✨/i, 'ai'],
+  [/hsn|gst|keyword|tax/i, 'hsn'],
+  [/submit|approv|review|live|pending|publish/i, 'submit'],
+  [/not work|error|missing|problem|stuck|help|fix|wrong/i, 'trouble'],
+  [/how|start|list|begin|add product|new product/i, 'start']
+];
+
+function ibiHelpInit() {
+  if (document.getElementById('ibiHelpWidget')) return;   // build once
+  var host = document.getElementById('sellerDashOverlay') || document.body;
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#ibiHelpFab{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:9px;' +
+      'background:#4f46e5;color:#fff;border:none;border-radius:30px;padding:12px 18px;font:800 13px/1 Hind,system-ui,sans-serif;' +
+      'cursor:pointer;box-shadow:0 6px 20px rgba(79,70,229,.45);} #ibiHelpFab:hover{background:#4338ca}' +
+    '#ibiHelpFab .dot{width:8px;height:8px;border-radius:50%;background:#a5f3cf;box-shadow:0 0 0 0 rgba(165,243,207,.7);animation:ibiHelpPulse 2s infinite}' +
+    '@keyframes ibiHelpPulse{0%{box-shadow:0 0 0 0 rgba(165,243,207,.6)}70%{box-shadow:0 0 0 8px rgba(165,243,207,0)}100%{box-shadow:0 0 0 0 rgba(165,243,207,0)}}' +
+    '#ibiHelpPanel{position:fixed;right:18px;bottom:18px;z-index:61;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100vh - 32px));' +
+      'display:none;flex-direction:column;background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 18px 50px rgba(19,25,33,.28);}' +
+    '#ibiHelpPanel.open{display:flex}' +
+    '#ibiHelpHead{background:#131921;color:#fff;padding:13px 16px;display:flex;align-items:center;gap:10px}' +
+    '#ibiHelpHead .t{font:800 14px/1.2 Hind,system-ui,sans-serif}#ibiHelpHead .s{font:500 11px/1.2 Hind,system-ui,sans-serif;color:#9fb0c9}' +
+    '#ibiHelpHead .x{margin-left:auto;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;opacity:.8}#ibiHelpHead .x:hover{opacity:1}' +
+    '#ibiHelpBody{flex:1;overflow-y:auto;padding:14px;background:#f6f7fb;display:flex;flex-direction:column;gap:10px}' +
+    '.ibiHelpMsg{max-width:88%;font:400 13px/1.55 Hind,system-ui,sans-serif;padding:10px 13px;border-radius:13px;word-wrap:break-word}' +
+    '.ibiHelpMsg.bot{align-self:flex-start;background:#fff;border:1px solid #e7e9f4;color:#1b2333;border-bottom-left-radius:4px}' +
+    '.ibiHelpMsg.user{align-self:flex-end;background:#131921;color:#fff;border-bottom-right-radius:4px}' +
+    '.ibiHelpMsg b{font-weight:800}.ibiHelpMsg ol,.ibiHelpMsg ul{margin:7px 0 2px;padding-left:19px}.ibiHelpMsg li{margin:3px 0}' +
+    '.ibiHelpMsg i{color:#4f46e5;font-style:normal;font-weight:600}' +
+    '#ibiHelpChips{display:flex;flex-wrap:wrap;gap:7px;padding:0 2px 2px}' +
+    '.ibiHelpChip{font:700 12px/1 Hind,system-ui,sans-serif;background:#eef0fe;color:#4f46e5;border:1px solid #dcdffb;border-radius:999px;padding:8px 12px;cursor:pointer}' +
+    '.ibiHelpChip:hover{background:#4f46e5;color:#fff;border-color:#4f46e5}' +
+    '#ibiHelpFoot{display:flex;gap:8px;padding:10px;border-top:1px solid #eceef6;background:#fff}' +
+    '#ibiHelpInput{flex:1;border:1px solid #d7dbec;border-radius:10px;padding:10px 12px;font:400 13px/1 Hind,system-ui,sans-serif;outline:none}' +
+    '#ibiHelpInput:focus{border-color:#4f46e5}' +
+    '#ibiHelpSend{background:#4f46e5;color:#fff;border:none;border-radius:10px;padding:0 15px;font:800 13px/1 Hind,system-ui,sans-serif;cursor:pointer}';
+  document.head.appendChild(css);
+
+  var wrap = document.createElement('div');
+  wrap.id = 'ibiHelpWidget';
+  wrap.innerHTML =
+    '<button id="ibiHelpFab" onclick="ibiHelpToggle()"><span class="dot"></span>💬 Listing help</button>' +
+    '<div id="ibiHelpPanel">' +
+      '<div id="ibiHelpHead"><span style="font-size:18px">💬</span><div><div class="t">Listing Assistant</div><div class="s">Your step-by-step guide</div></div><button class="x" onclick="ibiHelpToggle()" title="Close">×</button></div>' +
+      '<div id="ibiHelpBody"></div>' +
+      '<div id="ibiHelpChips"></div>' +
+      '<div id="ibiHelpFoot"><input id="ibiHelpInput" placeholder="Ask me anything about listing…" onkeydown="if(event.key===\'Enter\')ibiHelpSend()"><button id="ibiHelpSend" onclick="ibiHelpSend()">Send</button></div>' +
+    '</div>';
+  host.appendChild(wrap);
+}
+
+function ibiHelpToggle() {
+  ibiHelpInit();
+  var p = document.getElementById('ibiHelpPanel');
+  var open = p.classList.toggle('open');
+  document.getElementById('ibiHelpFab').style.display = open ? 'none' : 'flex';
+  if (open && !p.dataset.greeted) {
+    p.dataset.greeted = '1';
+    _ibiHelpBot('👋 Hi! I’m your <b>Listing Assistant</b>. I’ll walk you through listing a product on IBI — step by step. What would you like help with?',
+      ['start','variations','combinations','apparel','ai']);
+  }
+}
+
+function _ibiHelpBot(html, chipKeys) {
+  var body = document.getElementById('ibiHelpBody');
+  var m = document.createElement('div'); m.className = 'ibiHelpMsg bot'; m.innerHTML = html;
+  body.appendChild(m);
+  _ibiHelpRenderChips(chipKeys || []);
+  body.scrollTop = body.scrollHeight;
+}
+function _ibiHelpUser(text) {
+  var body = document.getElementById('ibiHelpBody');
+  var m = document.createElement('div'); m.className = 'ibiHelpMsg user'; m.textContent = text;
+  body.appendChild(m); body.scrollTop = body.scrollHeight;
+}
+function _ibiHelpRenderChips(keys) {
+  var c = document.getElementById('ibiHelpChips');
+  var list = keys.slice();
+  if (list.indexOf('start') === -1) list.push('start');   // always offer a way back to the overview
+  c.innerHTML = list.map(function(k){
+    var t = IBI_HELP_TOPICS[k]; if (!t) return '';
+    return '<button class="ibiHelpChip" onclick="ibiHelpTopic(\'' + k + '\')">' + t.label + '</button>';
+  }).join('');
+}
+function ibiHelpTopic(key) {
+  var t = IBI_HELP_TOPICS[key]; if (!t) return;
+  _ibiHelpUser(t.label.replace(/^[^\w]+\s*/, ''));   // echo the chip text as the "question"
+  _ibiHelpBot(t.body, t.chips);
+}
+function ibiHelpSend() {
+  var inp = document.getElementById('ibiHelpInput');
+  var q = (inp.value || '').trim(); if (!q) return;
+  inp.value = '';
+  _ibiHelpUser(q);
+  var hit = null;
+  for (var i = 0; i < IBI_HELP_KEYWORDS.length; i++) { if (IBI_HELP_KEYWORDS[i][0].test(q)) { hit = IBI_HELP_KEYWORDS[i][1]; break; } }
+  if (hit) { var t = IBI_HELP_TOPICS[hit]; _ibiHelpBot(t.body, t.chips); }
+  else _ibiHelpBot('I’m not sure about that one 🤔 — but here are the things I can walk you through. Pick a topic:',
+    ['start','variations','combinations','apparel','ai']);
+}
 
 function showDashMessage(icon, title, body, color) {
   document.getElementById('sellerDashLogin').style.display = 'none';
@@ -6196,6 +6394,28 @@ function ibiAIGetImages() {
   });
 }
 
+// Read the variation setup (matrix / flat / none) from #ap_variations into a summary
+// the AI can use: the axes (Colour, Size, Material…), any Size options (to auto-fill the
+// apparel Size field), and a natural-language sentence listing what's available.
+function _ibiVariationInfo() {
+  var out = { axes: [], sizes: [], text: '', words: '' };
+  var raw = (document.getElementById('ap_variations') || {}).value || '';
+  var v; try { v = JSON.parse(raw); } catch(e) { return out; }
+  if (v && v._matrix && Array.isArray(v.axes)) {
+    v.axes.forEach(function(a){ if (a && a.name && a.options && a.options.length) out.axes.push({ name: a.name, options: a.options.slice() }); });
+  } else if (Array.isArray(v) && v.length) {                       // legacy flat options array
+    var g = {}, order = [];
+    v.forEach(function(o){ var t = o.type || 'Variation'; if (!g[t]) { g[t] = []; order.push(t); } if (o.name && g[t].indexOf(o.name) < 0) g[t].push(o.name); });
+    order.forEach(function(t){ out.axes.push({ name: t, options: g[t] }); });
+  }
+  out.axes.forEach(function(a){ if (/size/i.test(a.name)) out.sizes = out.sizes.concat(a.options); });
+  if (out.axes.length) {
+    out.text  = 'This product is sold in these variations — ' + out.axes.map(function(a){ return a.name + ': ' + a.options.join(', '); }).join('; ') + '.';
+    out.words = out.axes.map(function(a){ return a.options.join(' '); }).join(' ');
+  }
+  return out;
+}
+
 // Main action — validate, POST, fill.
 function ibiAIGenerate() {
   var btn    = document.getElementById('aiGenBtn');
@@ -6212,13 +6432,21 @@ function ibiAIGenerate() {
   var productName = gv('ap_gen_name') || gv('ap_title');
   if (!productName) { guard('⚠️ Enter a product name for the AI (the “Product name for the AI” box above).', 'ap_gen_name'); return; }
 
+  var vinfo = _ibiVariationInfo();
+
   var Wt = gv('ap_prod_wt');
   var weight = Wt ? (Wt + ' g') : '';
   var dimensions;
   if (_prodDimMode() === 'apparel') {
     var pSize = gv('ap_prod_size');
+    // If the Size box is blank but a "Size" variation axis exists (e.g. M, L, XL),
+    // use those sizes — and fill the box so the seller sees it and it gets saved.
+    if (!pSize && vinfo.sizes.length) {
+      pSize = vinfo.sizes.join(', ');
+      var szEl = document.getElementById('ap_prod_size'); if (szEl && !szEl.value) szEl.value = pSize;
+    }
     dimensions = pSize ? ('Size: ' + pSize) : '';
-    if (!dimensions) { guard('⚠️ Enter the Size(s) in the 📐 Product Dimensions box above first — e.g. M, L, XL.', 'ap_prod_size'); return; }
+    if (!dimensions) { guard('⚠️ Enter the Size(s) in the 📐 Product Dimensions box above (e.g. M, L, XL) — or add a “Size” variation below.', 'ap_prod_size'); return; }
   } else {
     var L = gv('ap_prod_l'), W = gv('ap_prod_w'), H = gv('ap_prod_h');
     dimensions = (L && W && H) ? (L + ' × ' + W + ' × ' + H + ' cm') : (L ? (L + ' cm') : '');
@@ -6246,14 +6474,20 @@ function ibiAIGenerate() {
     var bulletDirective = ' || BULLET POINT FORMAT RULE (apply to features field only, do NOT echo as a keyword or in title/description): Output EXACTLY 5 bullet points. Each bullet MUST start with a lead phrase of EXACTLY 2-4 words in ALL CAPITAL LETTERS (NEVER 5 or more words; do NOT put a whole sentence before the colon), followed by ": " (colon and one space), then ONE or TWO COMPLETE sentences. EVERY bullet MUST END with a complete sentence and a full stop — NEVER cut a sentence off half-way; it is better to be 150 characters and complete than 200 and unfinished. Keep each bullet under 200 characters (aim ~180) and the COMBINED length of all 5 bullets UNDER 1000 characters total (Amazon indexes only the first ~1000 bytes across all five bullets combined). Example: "VERSATILE STITCHING TOOL: Ideal for shoe repair, leathercraft, canvas and upholstery, the hardened tip pierces thick hides cleanly for professional results." No emojis, no bullet symbols, no numbering — plain text, one bullet per line.';
     var kwDirective = '[FEATURES FORMAT: 5 bullets, each "ALL_CAPS_LEAD: 2-3 sentences." — do not include this note in keywords]';
     var userKw = gv('ap_gen_kw');
+    // Make the AI variation-aware: tell it which colours/sizes/materials this product
+    // comes in, so the title stays generic (not locked to one colour/size) and the
+    // description + keywords cover the range. The option words also seed the keywords.
+    var varDirective = vinfo.text
+      ? (' || VARIATIONS: ' + vinfo.text + ' Write the title and description so they fit ALL these variations — do NOT hard-code a single colour, size or material into the title. Mention the available options naturally in the description, and include the option words among the backend keywords.')
+      : '';
 
     var payload = new URLSearchParams();
     payload.append('productName',  productName);
     payload.append('dimensions',   dimensions);
     payload.append('weight',       weight);
     payload.append('platform',     'Amazon');   // Amazon limits mirror this form's field caps
-    payload.append('tone',         (gv('ap_gen_tone') || 'Professional and Engaging') + bulletDirective);
-    payload.append('extraKeywords', userKw ? (userKw + ' ' + kwDirective) : kwDirective);
+    payload.append('tone',         (gv('ap_gen_tone') || 'Professional and Engaging') + bulletDirective + varDirective);
+    payload.append('extraKeywords', [userKw, vinfo.words, kwDirective].filter(Boolean).join(' '));
     payload.append('imageCount',   String(imgs.length));
     imgs.forEach(function(b, i) { payload.append('image' + i, b); });
     payload.append('imageBase64',  imgs[0]);     // backward-compat: first image
