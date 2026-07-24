@@ -36,6 +36,11 @@ const PCOL = {
   STATUS:20, REJECT_REASON:21, APPROVED_ON:22, UPDATED_ON:23
 };
 
+// ⚠️ TEMPORARY — auto-approve every NEW product listing so it goes live instantly
+// (no manual "Approve" step). Turned ON while iINTELLIGENCEi's ~267 products are being
+// loaded. Set back to false to restore the normal "Pending → IBI review → Approved" flow.
+const AUTO_APPROVE_NEW_PRODUCTS = true;
+
 function doGet(e) {
   const action = (e.parameter.action||'').trim();
   const cb     = e.parameter.callback || null;  // JSONP support
@@ -182,10 +187,14 @@ function addProduct(p) {
   const seller=findSellerById(getOrCreateSellerSheet(),p.sellerId.toUpperCase());
   const biz=seller?(seller[COL.BIZ_NAME-1]||''):p.sellerId;
   const pid='PROD-'+p.sellerId.toUpperCase()+'-'+Date.now().toString().slice(-6);
-  sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]','Pending','','','']);
-  sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground('#FFF9C4');
-  try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product: '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
-  return jsonResponse({success:true,productId:pid,message:'Submitted for review!'});
+  // TEMPORARY auto-approval: new listings are born Approved (live immediately) while the flag
+  // is on. When off, they start Pending and wait for the normal IBI review.
+  const initStatus   = AUTO_APPROVE_NEW_PRODUCTS ? 'Approved' : 'Pending';
+  const initApproved = AUTO_APPROVE_NEW_PRODUCTS ? new Date().toLocaleDateString('en-IN') : '';
+  sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]',initStatus,'',initApproved,'']);
+  sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground(AUTO_APPROVE_NEW_PRODUCTS?'#C8E6C9':'#FFF9C4');
+  try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product'+(AUTO_APPROVE_NEW_PRODUCTS?' (auto-approved)':'')+': '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
+  return jsonResponse({success:true,productId:pid,status:initStatus,message:AUTO_APPROVE_NEW_PRODUCTS?'Product is live!':'Submitted for review!'});
 }
 
 // Find an existing product row for this seller whose title matches (normalised), else null.
@@ -228,9 +237,20 @@ function editProduct(p) {
   if (p.productDimensions !== undefined) sheet.getRange(r,PCOL.PRODUCT_DIMENSIONS,1,1).setValue(p.productDimensions||'');
   if (p.packageDimensions !== undefined) sheet.getRange(r,PCOL.PACKAGE_DIMENSIONS,1,1).setValue(p.packageDimensions||'');
   if (p.variations        !== undefined) sheet.getRange(r,PCOL.VARIATIONS,1,1).setValue(p.variations||'[]');
-  sheet.getRange(r,PCOL.STATUS,1,1).setValue('Pending').setBackground('#FFF9C4');
+  // ── Keep an already-vetted listing LIVE when its seller edits it, so price / stock /
+  //    content changes appear on the storefront IMMEDIATELY — no re-approval, no vanishing.
+  //    An Approved product stays Approved; a Paused one stays Paused (seller hid it on purpose).
+  //    Only listings that were never approved (Pending / Rejected) go to Pending for first review. ──
+  var curStatus = String(sheet.getRange(r,PCOL.STATUS,1,1).getValue()||'').trim();
+  var newStatus = (curStatus === 'Approved' || curStatus === 'Paused') ? curStatus : 'Pending';
+  var statusBg  = newStatus === 'Approved' ? '#C8E6C9' : (newStatus === 'Paused' ? '#CFD8DC' : '#FFF9C4');
+  sheet.getRange(r,PCOL.STATUS,1,1).setValue(newStatus).setBackground(statusBg);
   sheet.getRange(r,PCOL.UPDATED_ON,1,1).setValue(new Date().toLocaleString('en-IN'));
-  return jsonResponse({success:true,message:'Updated — pending re-approval'});
+  return jsonResponse({
+    success:true,
+    status:newStatus,
+    message: newStatus === 'Pending' ? 'Updated — pending review' : 'Updated — changes are live'
+  });
 }
 
 function getSellerProducts(p) {
