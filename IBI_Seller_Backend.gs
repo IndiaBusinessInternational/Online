@@ -43,7 +43,7 @@ const PCOL = {
 // email, or a business-name substring). To switch the whole thing off, set
 // AUTO_APPROVE_ENABLED = false (then all sellers, including iINTELLIGENCEi, need review again).
 const AUTO_APPROVE_ENABLED        = true;
-const AUTO_APPROVE_SELLER_IDS     = [];                                    // exact IDs, e.g. 'IBI123456' (fill in for a certain match)
+const AUTO_APPROVE_SELLER_IDS     = ['IINTELLIGENCEI'];                    // exact seller IDs (certain match; add more if needed)
 const AUTO_APPROVE_SELLER_EMAILS  = ['indiabusinessinternational@gmail.com']; // the account's registered email(s)
 const AUTO_APPROVE_NAME_MATCH     = ['iintelligencei','india intelligence international']; // business-name substrings, lowercased
 
