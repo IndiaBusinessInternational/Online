@@ -2362,9 +2362,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v6.0';
+window.IBI_VERSION      = 'v6.1';
 window.IBI_VERSION_DATE = '24 Jul 2026';
-window.IBI_VERSION_NOTE = 'v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -6401,18 +6401,21 @@ var _varRowCounters  = {};  // { typeId: rowCount }
 
 // Quick-fill suggestions per type keyword
 var _varSuggestions = {
-  'size':     ['XS','S','M','L','XL','XXL','Free Size','6','8','10','12','14','16'],
-  'color':    ['Red','Blue','Green','Black','White','Yellow','Pink','Brown','Grey','Orange','Purple','Natural'],
+  'size':     ['XS','S','M','L','XL','XXL','XXXL','Free Size','28','30','32','34','36','38','40','42','6','7','8','9','10'],
+  'color':    ['White','Black','Navy Blue','Blue','Sky Blue','Royal Blue','Red','Maroon','Green','Olive','Bottle Green','Yellow','Mustard','Pink','Peach','Purple','Lavender','Orange','Brown','Beige','Grey','Charcoal','Teal','Wine','Cream','Off White','Multicolour','Natural'],
+  'colour':   ['White','Black','Navy Blue','Blue','Sky Blue','Royal Blue','Red','Maroon','Green','Olive','Bottle Green','Yellow','Mustard','Pink','Peach','Purple','Lavender','Orange','Brown','Beige','Grey','Charcoal','Teal','Wine','Cream','Off White','Multicolour','Natural'],
   'quantity': ['1','2','3','4','5','6','10','12','24','Set of 2','Set of 3','Combo'],
   'pack':     ['1 Qty','2 Qty','3 Qty','5 Qty','6 Qty','10 Qty','Trial Pack','Combo Pack'],
   'weight':   ['50g','100g','200g','250g','500g','1kg','2kg','5kg'],
   'volume':   ['50ml','100ml','200ml','250ml','500ml','750ml','1L','2L'],
   'size ml':  ['50ml','100ml','200ml','250ml','500ml','1L','2L'],
-  'material': ['Coconut Shell','Coir','Bamboo','Wood','Steel','Copper','Cotton','Silk','Jute'],
+  'material': ['Cotton','Polyester','Cotton Blend','Linen','Silk','Wool','Denim','Rayon','Nylon','Leather','Coconut Shell','Coir','Bamboo','Wood','Steel','Copper','Jute'],
+  'fabric':   ['Cotton','Polyester','Cotton Blend','Linen','Silk','Wool','Denim','Rayon','Nylon'],
   'flavour':  ['Natural','Masala','Mint','Lemon','Rose','Mango','Coconut'],
   'length':   ['15cm','20cm','25cm','30cm','35cm','40cm','45cm','50cm'],
   'shape':    ['Round','Square','Rectangle','Oval','Heart','Star','Hexagon','Triangle'],
-  'style':    ['Classic','Modern','Premium','Basic','Deluxe','Standard'],
+  'style':    ['Classic','Modern','Premium','Basic','Deluxe','Standard','Round Neck','V Neck','Polo','Full Sleeve','Half Sleeve'],
+  'fit':      ['Slim Fit','Regular Fit','Loose Fit','Oversized'],
   'default':  ['Option 1','Option 2','Option 3']
 };
 
@@ -6532,6 +6535,7 @@ function onVarTypeNameChange(tid) {
   var tagsEl = document.getElementById(tid + '_tags');
   if (tagsEl) tagsEl.innerHTML = _buildQuickTags(tid, suggs);
   syncVariationsField();
+  _axisChanged();
 }
 
 function quickFillOption(tid, value) {
@@ -6548,6 +6552,7 @@ function quickFillOption(tid, value) {
   }
   if (!filled) addVariationOption(tid, value);
   syncVariationsField();
+  _axisChanged();
 }
 
 function addVariationOption(tid, name, price, mrp, stock, img, pkg) {
@@ -6570,8 +6575,8 @@ function addVariationOption(tid, name, price, mrp, stock, img, pkg) {
   row.className = 'var-row';
   row.id = rid;
   row.innerHTML =
-    '<input type="text"   class="var-name-input"  placeholder="e.g. Medium" ' +
-          'value="' + (name || '') + '" oninput="syncVariationsField()">' +
+    '<input type="text"   class="var-name-input"  placeholder="Type any value…" ' +
+          'value="' + (name || '') + '" oninput="onAxisOptionInput(this)">' +
     '<input type="number" class="var-price-input" placeholder="' + mainPrice + '" ' +
           'value="' + (price !== undefined ? price : '') + '" min="0" oninput="syncVariationsField()">' +
     '<input type="number" class="var-mrp-input"   placeholder="' + mainMrp   + '" ' +
@@ -6607,6 +6612,7 @@ function addVariationOption(tid, name, price, mrp, stock, img, pkg) {
     var _tg = row.querySelector('.var-pkg-toggle'); if (_tg) toggleVarPkg(_tg, true);
   }
   syncVariationsField();
+  _axisChanged();
 }
 
 // Show/hide one option's package-dimension inputs. Pass forceOpen=true to always open.
@@ -6681,12 +6687,14 @@ function clearVarOptionImages(btn) {
 function removeVariationOption(rid) {
   var el = document.getElementById(rid); if (el) el.remove();
   syncVariationsField();
+  _axisChanged();
 }
 
 function removeVariationType(tid) {
   var el = document.getElementById(tid); if (el) el.remove();
   delete _varRowCounters[tid];
   syncVariationsField();
+  _axisChanged();
 }
 
 function syncVariationsField() {
@@ -6754,6 +6762,21 @@ function setVariationType() {} // no-op — kept for backward compat
 // carried verbatim, exactly like the flat-array and family-object shapes).
 // ══════════════════════════════════════════════════════════
 var CX_MAX_COMBOS = 300;   // safety cap — avoid runaway grids
+
+// When combine-mode is ON and the seller changes an axis (adds/renames/removes an
+// option or type), auto-rebuild the combinations grid — debounced so it fires once
+// after they pause typing, and only when combine-mode is on. buildCombos() preserves
+// any prices/stock already entered (keyed by combination), so nothing is lost.
+var _comboRebuildTimer = null;
+function _axisChanged() {
+  var cb = document.getElementById('ap_combine_axes');
+  if (!cb || !cb.checked) return;
+  if (_comboRebuildTimer) clearTimeout(_comboRebuildTimer);
+  _comboRebuildTimer = setTimeout(function(){ _comboRebuildTimer = null; buildCombos(); }, 450);
+}
+// oninput handler for an axis OPTION name — keep the field serialized AND (in combine
+// mode) refresh the grid so newly typed values like "Navy Blue" appear as combinations.
+function onAxisOptionInput(inp) { syncVariationsField(); _axisChanged(); }
 
 function toggleCombineAxes(on) {
   var lb = document.getElementById('legacyVarBlock');
@@ -9669,8 +9692,11 @@ init();
                 </button>
 
                 <div style="font-size:11px;color:#888;margin-top:8px;">
-                  💡 Example: Add "Size" type with S, M, L options. Add "Color" type with Red, Blue options.
-                  Each option can have its own Price, MRP and Stock.
+                  💡 Example: Add a "Size" type with S, M, L options. Add a "Color" type with White, Black, Navy Blue.
+                  Each option can have its own Price, MRP and Stock.<br>
+                  ✍️ <b>You can type ANY value.</b> The coloured chips are just quick shortcuts — if the value or type you need
+                  (e.g. a colour, a size, or a custom type like "Fit" or "Sleeve") isn't shown, just type it in.
+                  For a custom <b>type name</b>, choose <b>"✏️ Custom / Other…"</b> in the Type Name dropdown, then type your own.
                 </div>
 
                 <!-- 🧩 COMBINE AXES — turn 2+ variation types into individual variants (SKUs) -->
