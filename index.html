@@ -1545,6 +1545,27 @@
 }
 .var-pkg-panel input:focus { outline: none; border-color: #4f46e5; }
 
+/* ── Combination-variations (matrix) mode ─────────────────────────────────── */
+/* When axes are combined into individual variants, the per-OPTION price/MRP/stock/
+   image/package controls are meaningless (pricing lives in the combo grid), so hide
+   them — the axis cards then only collect option LABELS. */
+.combine-on .var-col-header,
+.combine-on .var-price-input,
+.combine-on .var-mrp-input,
+.combine-on .var-stock-input,
+.combine-on .var-img-cell,
+.combine-on .var-pkg-wrap { display: none !important; }
+.combine-on .var-row { grid-template-columns: 1fr 26px; }
+.cx-grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
+table.cx-grid { border-collapse: collapse; width: 100%; font-size: 12px; min-width: 480px; }
+table.cx-grid th, table.cx-grid td { padding: 6px 7px; border-bottom: 1px solid #eef; text-align: left; white-space: nowrap; }
+table.cx-grid th { font-size: 10px; text-transform: uppercase; letter-spacing: .3px; color: #6b7280; background: #f5f6ff; font-weight: 800; position: sticky; top: 0; }
+table.cx-grid td.cx-axis { font-weight: 700; color: #131921; }
+table.cx-grid input.cx-num { width: 68px; padding: 5px 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; box-sizing: border-box; }
+table.cx-grid input.cx-num:focus { outline: none; border-color: #4f46e5; }
+table.cx-grid tr.cx-off td:not(.cx-onoff) { opacity: .38; }
+.cx-imgcell { display: flex; align-items: center; justify-content: center; position: relative; }
+
 .sc-input:focus { border-color:#0098c9; outline:none; box-shadow:0 0 0 3px rgba(0,152,201,.1); }
   .sc-prod-card {
     background:#fff; border:1px solid #e5e7eb; border-radius:10px;
@@ -2341,9 +2362,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v5.9.1';
-window.IBI_VERSION_DATE = '19 Jul 2026';
-window.IBI_VERSION_NOTE = 'v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION      = 'v6.0';
+window.IBI_VERSION_DATE = '24 Jul 2026';
+window.IBI_VERSION_NOTE = 'v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3293,7 +3314,8 @@ function previewSellerProduct(idOrTitle) {
     imgs: imgList.length ? imgList : (rec.img ? [ibiNormalizeImgUrl(rec.img)] : []),
     variations: spVars,
     price: parseFloat(rec.price)||0, mrp: parseFloat(rec.mrp)||parseFloat(rec.price)||0,
-    rating: 4.5, reviews: 0, inStock: (parseInt(rec.stock||1)>0),
+    rating: 4.5, reviews: 0,
+    inStock: (spVars && spVars._matrix) ? (spVars.combos||[]).some(_comboSellable) : (parseInt(rec.stock||1)>0),
     deal: false, description: rec.description||'', bullets: (rec.bullets||'').split('|').filter(Boolean),
     fromSheet: true, productId: rec.productId, _preview: true
   };
@@ -3932,10 +3954,11 @@ function loadLiveProducts() {
         // Parse variations JSON sent by the backend. It is EITHER a legacy options
         // ARRAY (intra-listing variations) OR a family OBJECT with `_family`
         // (Amazon-style parent/child linkage). Keep them apart.
-        let spVars = [], famMeta = null;
+        let spVars = [], famMeta = null, matrixMeta = null;
         try {
           var _pv = JSON.parse(sp.variations || '[]');
-          if (_pv && !Array.isArray(_pv) && _pv._family) famMeta = _pv;   // parent or child of a family
+          if (_pv && !Array.isArray(_pv) && _pv._matrix) matrixMeta = _pv; // NEW: combination (matrix) SKUs
+          else if (_pv && !Array.isArray(_pv) && _pv._family) famMeta = _pv;   // parent or child of a family
           else if (Array.isArray(_pv)) spVars = _pv;                       // legacy intra-listing options
         } catch(e) { spVars = []; }
         products.push({
@@ -3943,9 +3966,12 @@ function loadLiveProducts() {
           brand:sp.brand||sp.bizName||'IBI', badge:null, title:sp.title,
           img: imgList[0] || ibiNormalizeImgUrl(sp.img) || '',
           imgs: imgList.length ? imgList : (sp.img ? [ibiNormalizeImgUrl(sp.img)] : []),
-          variations: spVars,
+          variations: matrixMeta || spVars,
           price:parseFloat(sp.price)||0, mrp:parseFloat(sp.mrp)||parseFloat(sp.price)||0,
-          rating:4.5, reviews:Math.floor(Math.random()*100+10), inStock:(parseInt(sp.stock||1)>0),
+          // Matrix products track stock per combination, so availability = "any combo sellable"
+          // (the product's own ③ Stock cell is just the fallback for non-matrix listings).
+          rating:4.5, reviews:Math.floor(Math.random()*100+10),
+          inStock: matrixMeta ? (matrixMeta.combos||[]).some(_comboSellable) : (parseInt(sp.stock||1)>0),
           deal:false, description:sp.description||'', bullets:(sp.bullets||'').split('|').filter(Boolean),
           fromSheet:true, productId:sp.productId,
           // Amazon-style variation family (null on standalone/legacy products):
@@ -4362,6 +4388,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
     if (_child) p = _child;
   }
   const id = p.id;
+  window._ppMatrix = null;   // cleared per open; renderMatrixSelector() re-sets it for matrix products
 
   const disc       = Math.round((1 - p.price / p.mrp) * 100);
   const saving     = p.mrp - p.price;
@@ -4445,12 +4472,12 @@ function openProductPage(idOrProd, _isVarSwitch) {
 
       <!-- Price Section -->
       <div style="background:#fdf8ff;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #e9d5ff;">
-        <div style="font-size:12px;color:#888;margin-bottom:4px;">M.R.P.: <span style="text-decoration:line-through;">₹${formatPrice(p.mrp)}</span></div>
+        <div style="font-size:12px;color:#888;margin-bottom:4px;">M.R.P.: <span id="ppMrpMain" style="text-decoration:line-through;">₹${formatPrice(p.mrp)}</span></div>
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;">
           <span id="ppPriceMain" style="font-size:32px;font-weight:900;color:#131921;">₹${formatPrice(p.price)}</span>
-          <span style="background:#c00;color:#fff;font-size:13px;font-weight:800;padding:3px 8px;border-radius:5px;">${disc}% off</span>
+          <span id="ppDiscMain" style="background:#c00;color:#fff;font-size:13px;font-weight:800;padding:3px 8px;border-radius:5px;${disc>0?'':'display:none;'}">${disc}% off</span>
         </div>
-        <div style="font-size:13px;color:#16a34a;font-weight:700;margin-bottom:6px;">You Save: ₹${formatPrice(saving)}</div>
+        <div id="ppSaveMain" style="font-size:13px;color:#16a34a;font-weight:700;margin-bottom:6px;${saving>0?'':'display:none;'}">You Save: ₹${formatPrice(saving)}</div>
         <div style="display:flex;gap:16px;font-size:12px;color:#555;flex-wrap:wrap;">
           <span>✅ Inclusive of all taxes</span>
           <span>🚚 FREE Delivery</span>
@@ -4476,7 +4503,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
                 ${c.id===p.id ? '<span style="position:absolute;top:4px;right:4px;font-size:12px;">✓</span>' : ''}
               </button>`).join('')}
           </div>
-        </div>` : (p.variations && p.variations.length) ? (function(){
+        </div>` : (p.variations && p.variations._matrix) ? renderMatrixSelector(p) : (p.variations && p.variations.length) ? (function(){
         const groups = {};
         p.variations.forEach(v => { (groups[v.type||'Variation'] = groups[v.type||'Variation'] || []).push(v); });
         return `<div style="background:#fff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
@@ -4530,7 +4557,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
           <span id="ppQty" style="min-width:44px;text-align:center;font-weight:800;font-size:16px;padding:0 6px;">1</span>
           <button onclick="changePPQty(1)" style="width:38px;height:38px;background:#f5f5f5;border:none;font-size:20px;cursor:pointer;font-weight:700;transition:background .15s;" onmouseover="this.style.background='#eee'" onmouseout="this.style.background='#f5f5f5'">+</button>
         </div>
-        <div style="font-size:12px;color:${inStock?'#16a34a':'#c00'};font-weight:700;">${inStock?'✓ In Stock':'✗ Out of Stock'}</div>
+        <div id="ppStockLine" style="font-size:12px;color:${inStock?'#16a34a':'#c00'};font-weight:700;">${inStock?'✓ In Stock':'✗ Out of Stock'}</div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
@@ -4694,6 +4721,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
   // fallback, then reflect each variation type's pre-selected (first) option.
   _ppDefaultImgs = (thumbs && thumbs.length) ? thumbs.slice() : (p.img ? [p.img] : []);
   ppInitVarGallery();
+  ppInitMatrix();   // combination (matrix) products: auto-pick a valid combo + price/stock/gallery
   // Scroll to top of product page overlay
   document.getElementById('productPageOverlay').scrollTop = 0;
 }
@@ -4810,16 +4838,179 @@ function changePPQty(d) {
   el.textContent = q;
 }
 
+// ── Combination (matrix) variations — buyer side ────────────────────────────
+// Renders one option row per axis (Color / Size / Material…). As the buyer picks
+// one option per axis we resolve the exact combination and update the price, MRP,
+// discount, stock line and gallery; unavailable options grey out (Amazon-style),
+// and the chosen combination is stored for the cart in window._ppSelectedCombo.
+function renderMatrixSelector(p) {
+  const m = p.variations || {};
+  window._ppMatrix    = m;
+  window._ppMatrixPid = p.id;
+  window._ppMatrixSel = (m.axes || []).map(function(){ return null; });
+  const axesHtml = (m.axes || []).map(function(ax, ai) {
+    return '<div style="margin:0 0 10px;">' +
+      '<div style="font-size:13px;font-weight:700;color:#555;margin-bottom:8px;">' + _esc(ax.name) + ':</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      (ax.options || []).map(function(opt) {
+        return '<button class="ibi-mx-btn" data-ai="' + ai + '" data-opt="' + _escAttr(opt) + '" onclick="selectMatrixOption(this)" ' +
+          'style="padding:9px 14px;border:1.5px solid #d1d5db;border-radius:9px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#131921;">' +
+          _esc(opt) + '</button>';
+      }).join('') +
+      '</div></div>';
+  }).join('');
+  return '<div style="background:#fff;border:1.5px solid #e9d5ff;border-radius:12px;padding:14px 16px;margin-bottom:16px;">' +
+    '<div style="font-size:12px;font-weight:800;color:#8B5CF6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">⚙️ Select Options</div>' +
+    axesHtml +
+    '<div id="ppMxNote" style="font-size:12px;font-weight:700;margin-top:2px;display:none;"></div>' +
+    '</div>';
+}
+
+// Find the combo whose opts[] positionally match the given selection (all axes chosen).
+function _findCombo(m, sel) {
+  return (m.combos || []).find(function(c) {
+    var o = c.opts || [];
+    if (o.length !== sel.length) return false;
+    for (var i = 0; i < sel.length; i++) { if (o[i] !== sel[i]) return false; }
+    return true;
+  }) || null;
+}
+function _comboStock(c) {
+  if (c.stock === '' || c.stock == null) return null;   // untracked ⇒ treat as available
+  var n = parseInt(c.stock, 10); return isNaN(n) ? null : n;
+}
+function _comboSellable(c) {
+  if (!c || c.on === 0) return false;
+  var st = _comboStock(c); return !(st != null && st <= 0);
+}
+
+function selectMatrixOption(btn) {
+  if (btn.disabled) return;
+  var ai  = parseInt(btn.getAttribute('data-ai'), 10);
+  var opt = btn.getAttribute('data-opt');
+  if (!window._ppMatrixSel) return;
+  window._ppMatrixSel[ai] = opt;
+  var row = btn.parentElement;
+  row.querySelectorAll('.ibi-mx-btn').forEach(function(b) { b.style.border = '1.5px solid #d1d5db'; b.style.background = '#fff'; });
+  btn.style.border = '1.5px solid #0098c9'; btn.style.background = '#fff7ed';
+  ppRefreshMatrixAvailability();
+  ppResolveMatrixCombo();
+}
+
+// Grey out options that can't form any sellable combo given the other picks.
+function ppRefreshMatrixAvailability() {
+  var m = window._ppMatrix, sel = window._ppMatrixSel; if (!m || !sel) return;
+  document.querySelectorAll('#ppGrid .ibi-mx-btn').forEach(function(b) {
+    var ai = parseInt(b.getAttribute('data-ai'), 10);
+    var opt = b.getAttribute('data-opt');
+    var ok = (m.combos || []).some(function(c) {
+      if (!_comboSellable(c)) return false;
+      if ((c.opts || [])[ai] !== opt) return false;
+      for (var aj = 0; aj < sel.length; aj++) { if (aj !== ai && sel[aj] != null && c.opts[aj] !== sel[aj]) return false; }
+      return true;
+    });
+    var isSel = (sel[ai] === opt);
+    b.disabled = !ok && !isSel;
+    b.style.opacity = (!ok && !isSel) ? '.4' : '1';
+    b.style.textDecoration = (!ok && !isSel) ? 'line-through' : 'none';
+    b.style.cursor = (!ok && !isSel) ? 'not-allowed' : 'pointer';
+  });
+}
+
+function ppResolveMatrixCombo() {
+  var m = window._ppMatrix, sel = window._ppMatrixSel; if (!m || !sel) return;
+  var p = products.find(function(x){ return x.id === window._ppMatrixPid; });
+  var basePrice = p ? p.price : 0, baseMrp = p ? p.mrp : 0;
+  var note = document.getElementById('ppMxNote');
+  window._ppSelectedCombo = window._ppSelectedCombo || {};
+  delete window._ppSelectedCombo[window._ppMatrixPid];
+
+  var missing = m.axes.filter(function(a, i){ return sel[i] == null; });
+  if (missing.length) {
+    if (note) { note.style.display = 'block'; note.style.color = '#c2410c';
+      note.textContent = 'Select ' + missing.map(function(a){ return a.name; }).join(' & ') + ' to continue.'; }
+    return;
+  }
+  var combo = _findCombo(m, sel);
+  if (!combo || combo.on === 0) {
+    if (note) { note.style.display = 'block'; note.style.color = '#c00'; note.textContent = 'Sorry — that combination isn’t available.'; }
+    return;
+  }
+  var price = parseFloat(combo.price) || basePrice;
+  var mrp   = parseFloat(combo.mrp)   || baseMrp;
+  var st    = _comboStock(combo);
+  var out   = (st != null && st <= 0);
+
+  var pe = document.getElementById('ppPriceMain'); if (pe) pe.textContent = '₹' + formatPrice(price);
+  var me = document.getElementById('ppMrpMain');   if (me) me.textContent = '₹' + formatPrice(mrp);
+  var de = document.getElementById('ppDiscMain');
+  var se = document.getElementById('ppSaveMain');
+  var disc = (mrp > price) ? Math.round((1 - price / mrp) * 100) : 0;
+  if (de) { de.style.display = disc > 0 ? '' : 'none'; de.textContent = disc + '% off'; }
+  if (se) { se.style.display = (mrp > price) ? '' : 'none'; se.textContent = 'You Save: ₹' + formatPrice(mrp - price); }
+
+  var sl = document.getElementById('ppStockLine');
+  if (sl) { sl.style.color = out ? '#c00' : '#16a34a'; sl.textContent = out ? '✗ Out of Stock' : '✓ In Stock'; }
+
+  // Gallery: this combo's photos, else the product's default set.
+  var imgs = ibiVariationImgs(combo);
+  _ppVarSel = {};
+  setPPGallery(imgs.length ? imgs : _ppDefaultImgs);
+
+  if (note) {
+    note.style.display = 'block';
+    note.style.color = out ? '#c00' : '#16a34a';
+    note.textContent = out ? '✗ Out of stock' : (st != null ? '✓ In stock (' + st + ' available)' : '✓ Available');
+  }
+
+  var label = sel.join(' / ');
+  window._ppSelectedCombo[window._ppMatrixPid] = {
+    key: sel.join('|'), opts: sel.slice(), price: price, mrp: mrp,
+    label: label, img: imgs[0] || (p ? p.img : ''), stock: st, sellable: !out
+  };
+}
+
+// Auto-pick the first sellable combination so the page opens on a valid variant.
+function ppInitMatrix() {
+  if (!window._ppMatrix) return;
+  var m = window._ppMatrix;
+  var first = (m.combos || []).find(_comboSellable) || (m.combos || [])[0];
+  if (first && first.opts) {
+    window._ppMatrixSel = first.opts.slice();
+    document.querySelectorAll('#ppGrid .ibi-mx-btn').forEach(function(b) {
+      var ai = parseInt(b.getAttribute('data-ai'), 10);
+      if (b.getAttribute('data-opt') === window._ppMatrixSel[ai]) { b.style.border = '1.5px solid #0098c9'; b.style.background = '#fff7ed'; }
+    });
+  }
+  ppRefreshMatrixAvailability();
+  ppResolveMatrixCombo();
+}
+
+// For a matrix product, return the chosen combo as a cart `variant`, or null if
+// the buyer hasn't picked a full, sellable combination yet (then show a toast).
+function _ppMatrixVariant(id) {
+  var p = products.find(function(x){ return x.id === id; });
+  if (!p || !p.variations || !p.variations._matrix) return undefined;   // not a matrix product
+  var sc = (window._ppSelectedCombo || {})[id];
+  if (!sc) { showToast('⚠️ Please select all options first'); return false; }
+  if (sc.sellable === false) { showToast('⚠️ That combination is out of stock'); return false; }
+  return { vk: sc.key, vprice: sc.price, vmrp: sc.mrp, vlabel: sc.label, vimg: sc.img };
+}
+
 function addPPToCart(id) {
   const qty = parseInt(document.getElementById('ppQty')?.textContent || 1);
-  addToCart(id, qty);  // addToCart already shows the brand toast
+  const variant = _ppMatrixVariant(id);
+  if (variant === false) return;                 // matrix product with no/invalid selection
+  addToCart(id, qty, variant || undefined);      // addToCart already shows the brand toast
   const el = document.getElementById('ppCartCount');
   if (el) el.textContent = cart.reduce((s,i) => s+i.qty, 0);
 }
 
 function buyNowPP(id) {
   const qty = parseInt(document.getElementById('ppQty')?.textContent || 1);
-  addToCart(id, qty);
+  const variant = _ppMatrixVariant(id);
+  if (variant === false) return;
+  addToCart(id, qty, variant || undefined);
   closeProductPage();
   setTimeout(() => openOrderModal(), 300);
 }
@@ -5554,7 +5745,7 @@ function saveOrderToSheet(orderId, customer, orderItems, total, address) {
     commission:      commission.totalCommission,
     sellerPayouts:   JSON.stringify(commission.sellerPayouts),
     items:           JSON.stringify(orderItems.map(i => ({
-      title: i.title, qty: i.qty, price: i.price, total: i.total
+      title: i.variant ? (i.title + ' — ' + i.variant) : i.title, qty: i.qty, price: i.price, total: i.total
     }))),
     orderDate: new Date().toLocaleString('en-IN'),
     status:    'Placed'
@@ -6502,6 +6693,10 @@ function syncVariationsField() {
   var enabled = document.getElementById('ap_has_variations').checked;
   if (!enabled) { document.getElementById('ap_variations').value = '[]'; return; }
 
+  // Combine-axes (matrix) mode serializes a different shape — handle it first.
+  var combineEl = document.getElementById('ap_combine_axes');
+  if (combineEl && combineEl.checked) { syncMatrixField(); return; }
+
   var types = document.querySelectorAll('#varTypesContainer .var-type-card');
   var allVars = [];
 
@@ -6539,9 +6734,262 @@ function resetVariationForm() {
   document.getElementById('ap_variations').value = '[]';
   _varTypeCounter = 0;
   _varRowCounters = {};
+  // Reset combine-axes (matrix) mode too.
+  var cb = document.getElementById('ap_combine_axes'); if (cb) cb.checked = false;
+  var cs = document.getElementById('combosSection');   if (cs) cs.style.display = 'none';
+  var lb = document.getElementById('legacyVarBlock');  if (lb) lb.classList.remove('combine-on');
+  var gh = document.getElementById('combosGridHead');  if (gh) gh.innerHTML = '';
+  var gb = document.getElementById('combosGridBody');  if (gb) gb.innerHTML = '';
+  var cc = document.getElementById('combosCount');     if (cc) cc.textContent = '';
 }
 
 function setVariationType() {} // no-op — kept for backward compat
+
+// ══════════════════════════════════════════════════════════
+// 🧩 COMBINATION VARIATIONS (matrix) — Color × Size × Material …
+// Reuses the axis cards above (type name + option labels) as the axes, then
+// generates the full cartesian product into a grid where EACH combination
+// carries its own price / MRP / stock / photo(s). Serialized as a `_matrix`
+// object into the same #ap_variations field — no backend change (col 19 is
+// carried verbatim, exactly like the flat-array and family-object shapes).
+// ══════════════════════════════════════════════════════════
+var CX_MAX_COMBOS = 300;   // safety cap — avoid runaway grids
+
+function toggleCombineAxes(on) {
+  var lb = document.getElementById('legacyVarBlock');
+  var cs = document.getElementById('combosSection');
+  if (lb) lb.classList.toggle('combine-on', !!on);
+  if (cs) cs.style.display = on ? 'block' : 'none';
+  if (on) buildCombos();
+  syncVariationsField();
+}
+
+// Read the axis cards → [{name, options:[...]}], skipping blank names/options.
+function _readAxes() {
+  var axes = [];
+  document.querySelectorAll('#varTypesContainer .var-type-card').forEach(function(card) {
+    var nameEl = document.getElementById(card.id + '_name');
+    var name = nameEl ? nameEl.value.trim() : '';
+    if (!name) return;
+    var opts = [], seen = {};
+    card.querySelectorAll('.var-row .var-name-input').forEach(function(inp) {
+      var v = (inp.value || '').trim();
+      if (v && !seen[v.toLowerCase()]) { seen[v.toLowerCase()] = 1; opts.push(v); }
+    });
+    if (opts.length) axes.push({ name: name, options: opts });
+  });
+  return axes;
+}
+
+// Cartesian product of the axes' option lists → array of opts[] rows.
+function _cartesian(axes) {
+  var rows = [[]];
+  axes.forEach(function(ax) {
+    var next = [];
+    rows.forEach(function(prefix) {
+      ax.options.forEach(function(opt) { next.push(prefix.concat([opt])); });
+    });
+    rows = next;
+  });
+  return (axes.length ? rows : []);
+}
+
+function _comboKey(opts) { return opts.join(' ▸ '); }
+
+// Snapshot the current grid rows so a rebuild can preserve already-entered data.
+function _snapshotCombos() {
+  var map = {};
+  document.querySelectorAll('#combosGridBody tr').forEach(function(tr) {
+    var key = tr.getAttribute('data-key'); if (!key) return;
+    var g = function(sel){ var el = tr.querySelector(sel); return el ? el.value.trim() : ''; };
+    var imgEl = tr.querySelector('.cx-img-input');
+    map[key] = {
+      on:    tr.querySelector('.cx-on') ? tr.querySelector('.cx-on').checked : true,
+      price: g('.cx-price'), mrp: g('.cx-mrp'), stock: g('.cx-stock'),
+      imgs:  imgEl ? imgEl.value : ''
+    };
+  });
+  return map;
+}
+
+function buildCombos() {
+  var axes = _readAxes();
+  var head = document.getElementById('combosGridHead');
+  var body = document.getElementById('combosGridBody');
+  var cnt  = document.getElementById('combosCount');
+  if (!head || !body) return;
+
+  if (axes.length < 1) {
+    head.innerHTML = ''; body.innerHTML = '';
+    if (cnt) cnt.textContent = '';
+    body.innerHTML = '<tr><td style="padding:10px;color:#c00;font-size:12px;">Add at least one variation type (with option names) above, then click “Build combinations”.</td></tr>';
+    syncVariationsField();
+    return;
+  }
+
+  var combos = _cartesian(axes);
+  if (combos.length > CX_MAX_COMBOS) {
+    body.innerHTML = '<tr><td style="padding:10px;color:#c00;font-size:12px;">' + combos.length +
+      ' combinations is too many (max ' + CX_MAX_COMBOS + '). Reduce the number of options/axes.</td></tr>';
+    if (cnt) cnt.textContent = '';
+    return;
+  }
+
+  var prev = _snapshotCombos();
+  var mainPrice = (document.getElementById('ap_price') || {}).value || '';
+  var mainMrp   = (document.getElementById('ap_mrp')   || {}).value || '';
+  var mainStock = (document.getElementById('ap_stock') || {}).value || '';
+
+  // Header: one column per axis + price / mrp / stock / photo + on/off
+  head.innerHTML = '<tr>' +
+    '<th class="cx-onoff">Sell?</th>' +
+    axes.map(function(a){ return '<th>' + _esc(a.name) + '</th>'; }).join('') +
+    '<th>Price (₹)</th><th>MRP (₹)</th><th>Stock</th><th>Photo</th></tr>';
+
+  body.innerHTML = combos.map(function(opts) {
+    var key = _comboKey(opts);
+    var d = prev[key] || {};
+    var on = (d.on === undefined) ? true : d.on;
+    var imgs = d.imgs || '';
+    return '<tr data-key="' + _escAttr(key) + '"' + (on ? '' : ' class="cx-off"') + '>' +
+      '<td class="cx-onoff"><input type="checkbox" class="cx-on"' + (on ? ' checked' : '') +
+        ' onchange="onComboToggle(this)" style="accent-color:#4f46e5;"></td>' +
+      opts.map(function(o){ return '<td class="cx-axis">' + _esc(o) + '</td>'; }).join('') +
+      '<td><input type="number" class="cx-num cx-price" min="0" placeholder="' + _escAttr(mainPrice) + '" value="' + _escAttr(d.price || '') + '" oninput="syncVariationsField()"></td>' +
+      '<td><input type="number" class="cx-num cx-mrp"   min="0" placeholder="' + _escAttr(mainMrp)   + '" value="' + _escAttr(d.mrp   || '') + '" oninput="syncVariationsField()"></td>' +
+      '<td><input type="number" class="cx-num cx-stock" min="0" placeholder="' + _escAttr(mainStock) + '" value="' + _escAttr(d.stock || '') + '" oninput="syncVariationsField()"></td>' +
+      '<td class="cx-imgcell" title="Add photo(s) for this exact combination">' +
+        '<input type="hidden" class="cx-img-input var-img-input" value="' + _escAttr(imgs) + '">' +
+        '<input type="file" accept="image/*" multiple class="var-img-file" style="display:none" onchange="onComboImage(this)">' +
+        '<button type="button" class="var-img-btn" onclick="this.parentNode.querySelector(\'.var-img-file\').click()">📷</button>' +
+        '<span class="var-img-count"></span>' +
+        '<button type="button" class="var-img-clear" title="Remove all photos" onclick="clearComboImages(this)">×</button>' +
+      '</td></tr>';
+  }).join('');
+
+  // Render each combo's image cell thumbnail from its saved list.
+  body.querySelectorAll('.cx-imgcell').forEach(function(cell){ refreshVarImgCell(cell); });
+  if (cnt) cnt.textContent = combos.length + ' combination' + (combos.length > 1 ? 's' : '');
+  syncVariationsField();
+}
+
+function onComboToggle(cb) {
+  var tr = cb.closest('tr'); if (tr) tr.classList.toggle('cx-off', !cb.checked);
+  syncVariationsField();
+}
+
+function applyBulkCombos() {
+  var p = (document.getElementById('cx_bulk_price') || {}).value;
+  var m = (document.getElementById('cx_bulk_mrp')   || {}).value;
+  var s = (document.getElementById('cx_bulk_stock') || {}).value;
+  document.querySelectorAll('#combosGridBody tr').forEach(function(tr) {
+    if (p !== '' && p != null) { var e = tr.querySelector('.cx-price'); if (e) e.value = p; }
+    if (m !== '' && m != null) { var e = tr.querySelector('.cx-mrp');   if (e) e.value = m; }
+    if (s !== '' && s != null) { var e = tr.querySelector('.cx-stock'); if (e) e.value = s; }
+  });
+  syncVariationsField();
+}
+
+// Per-combination image upload — reuses the same compress→host pipeline the
+// per-option cells use, appending each permanent URL to the row's hidden list.
+function onComboImage(fileInput) {
+  var files = fileInput.files ? Array.prototype.slice.call(fileInput.files) : [];
+  fileInput.value = '';
+  if (!files.length) return;
+  var cell   = fileInput.parentNode;
+  var btn    = cell.querySelector('.var-img-btn');
+  var hidden = cell.querySelector('.cx-img-input');
+  btn.innerHTML = '⏳'; btn.style.backgroundImage = '';
+  var done = 0, ok = 0;
+  files.forEach(function(file) {
+    ibiCompressFileToDataUrl(file)
+      .then(function(dataUrl){ if (!dataUrl) throw new Error('read failed'); return ibiHostOneImage(dataUrl); })
+      .then(function(url){
+        var list = (hidden.value ? hidden.value.split('|') : []).filter(Boolean);
+        list.push(url); hidden.value = list.join('|'); ok++;
+      })
+      .catch(function(err){ console.warn('combo image upload failed:', err); })
+      .then(function(){
+        done++;
+        if (done === files.length) {
+          refreshVarImgCell(cell);
+          syncVariationsField();
+          if (ok) showToast('✅ ' + ok + ' combination image' + (ok>1?'s':'') + ' added!', 'success');
+          else    showToast('⚠️ Could not upload — please try again');
+        }
+      });
+  });
+}
+
+function clearComboImages(btn) {
+  var cell = btn.parentNode;
+  var hidden = cell.querySelector('.cx-img-input');
+  if (hidden) hidden.value = '';
+  refreshVarImgCell(cell);
+  syncVariationsField();
+}
+
+// Serialize the axes + grid into a `_matrix` object.
+function syncMatrixField() {
+  var axes = _readAxes();
+  var combos = [];
+  document.querySelectorAll('#combosGridBody tr').forEach(function(tr) {
+    var key = tr.getAttribute('data-key'); if (!key) return;
+    var opts = key.split(' ▸ ');
+    var g = function(sel){ var el = tr.querySelector(sel); return el ? el.value.trim() : ''; };
+    var onEl = tr.querySelector('.cx-on');
+    var imgEl = tr.querySelector('.cx-img-input');
+    var imgs = imgEl ? (imgEl.value || '') : '';
+    combos.push({
+      opts: opts,
+      price: g('.cx-price'), mrp: g('.cx-mrp'), stock: g('.cx-stock'),
+      imgs: imgs, img: imgs.split('|').filter(Boolean)[0] || '',
+      on: onEl ? (onEl.checked ? 1 : 0) : 1
+    });
+  });
+  document.getElementById('ap_variations').value = JSON.stringify({ _matrix: 1, axes: axes, combos: combos });
+}
+
+// Rebuild the axis cards + combo grid when editing a saved matrix product.
+function loadMatrixForEdit(obj) {
+  document.getElementById('ap_has_variations').checked = true;
+  document.getElementById('variationsSection').style.display = 'block';
+  var container = document.getElementById('varTypesContainer');
+  if (container) container.innerHTML = '';
+  _varTypeCounter = 0; _varRowCounters = {};
+
+  // Recreate each axis as a type card holding just its option labels.
+  (obj.axes || []).forEach(function(ax) {
+    addVariationType(ax.name);
+    var tid = 'vtype_' + _varTypeCounter;
+    var optList = document.getElementById(tid + '_options');
+    if (optList) optList.innerHTML = '';
+    _varRowCounters[tid] = 0;
+    (ax.options || []).forEach(function(o){ addVariationOption(tid, o); });
+  });
+
+  // Turn on combine mode, build the grid, then hydrate each row from saved combos.
+  var cb = document.getElementById('ap_combine_axes'); if (cb) cb.checked = true;
+  toggleCombineAxes(true);   // builds the grid from the axes we just created
+
+  var byKey = {};
+  (obj.combos || []).forEach(function(c){ byKey[_comboKey(c.opts || [])] = c; });
+  document.querySelectorAll('#combosGridBody tr').forEach(function(tr) {
+    var key = tr.getAttribute('data-key'); if (!key) return;
+    var c = byKey[key]; if (!c) return;
+    var set = function(sel, val){ var el = tr.querySelector(sel); if (el && val !== undefined && val !== null) el.value = val; };
+    set('.cx-price', c.price); set('.cx-mrp', c.mrp); set('.cx-stock', c.stock);
+    var onEl = tr.querySelector('.cx-on');
+    if (onEl) { onEl.checked = (c.on === undefined) ? true : !!c.on; tr.classList.toggle('cx-off', !onEl.checked); }
+    var imgEl = tr.querySelector('.cx-img-input');
+    if (imgEl) { imgEl.value = c.imgs || c.img || ''; refreshVarImgCell(tr.querySelector('.cx-imgcell')); }
+  });
+  syncVariationsField();
+}
+
+// Small HTML escapers for the grid.
+function _esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function _escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 
 // ══════════════════════════════════════════════════════════
 // 🔗 VARIATION FAMILY (Amazon-style parent + child listings)
@@ -6631,6 +7079,8 @@ function loadVariationsForEdit(variationsJson) {
   if (!variationsJson || variationsJson === '[]') return;
   var vars;
   try { vars = JSON.parse(variationsJson); } catch(e) { return; }
+  // NEW: a combination (matrix) listing stores a `_matrix` OBJECT in col 19.
+  if (vars && !Array.isArray(vars) && vars._matrix) { loadMatrixForEdit(vars); return; }
   // NEW: a family parent/child listing stores an OBJECT (not an array) in col 19.
   if (vars && !Array.isArray(vars) && vars._family) { loadFamilyForEdit(vars); return; }
   if (!Array.isArray(vars) || !vars.length) return;
@@ -7223,15 +7673,27 @@ function buyNow(id) {
 }
 
 // ========== CART ==========
-function addToCart(id, qty = 1) {
+// A cart line is identified by product id + variant key (so different combinations
+// of the same product are separate lines). `variant` (optional) carries a chosen
+// combination: { vk, vprice, vmrp, vlabel, vimg }.
+function _lineKey(c) { return c.id + '::' + (c.vk || ''); }
+
+function addToCart(id, qty = 1, variant) {
   const p = products.find(x => x.id === id);
-  if (!p || !p.inStock) return;
-  const ex = cart.find(c => c.id === id);
+  // Plain products still respect the base stock flag; a matrix variant has already
+  // been validated as sellable before reaching here, so it may pass even if the
+  // product's base stock cell is 0 (matrix stock is tracked per combination).
+  if (!p || (!variant && !p.inStock)) return;
+  const vk = variant ? variant.vk : '';
+  const ex = cart.find(c => c.id === id && (c.vk || '') === (vk || ''));
   if (ex) ex.qty = Math.min(ex.qty + qty, 10);
-  else cart.push({ id, qty });
+  else cart.push(variant
+    ? { id, qty, vk: variant.vk, vprice: variant.vprice, vmrp: variant.vmrp, vlabel: variant.vlabel, vimg: variant.vimg }
+    : { id, qty });
   updateCartCount();
   renderCart();
-  showToast('✅ ' + (p.title ? p.title.substring(0,35) + '...' : p.brand) + ' added to cart!', 'success');
+  const nm = variant && variant.vlabel ? (p.title.substring(0,28) + ' — ' + variant.vlabel) : (p.title ? p.title.substring(0,35) + '...' : p.brand);
+  showToast('✅ ' + nm + ' added to cart!', 'success');
 }
 
 function addToCartFromCard(e, id) {
@@ -7239,14 +7701,14 @@ function addToCartFromCard(e, id) {
   addToCart(id);
 }
 
-function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
+function removeFromCart(lk) {
+  cart = cart.filter(c => _lineKey(c) !== lk);
   updateCartCount();
   renderCart();
 }
 
-function changeCartQty(id, d) {
-  const item = cart.find(c => c.id === id);
+function changeCartQty(lk, d) {
+  const item = cart.find(c => _lineKey(c) === lk);
   if (!item) return;
   item.qty = Math.max(1, Math.min(10, item.qty + d));
   renderCart();
@@ -7269,22 +7731,28 @@ function renderCart() {
   let subtotal = 0, savings = 0;
   container.innerHTML = cart.map(c => {
     const p = products.find(x => x.id === c.id);
-    const lineTotal = p.price * c.qty;
+    // Use the chosen combination's price when present, else the base product price.
+    const unit = (c.vprice != null && c.vprice !== '') ? parseFloat(c.vprice) : p.price;
+    const unitMrp = (c.vmrp != null && c.vmrp !== '') ? parseFloat(c.vmrp) : p.mrp;
+    const lineTotal = unit * c.qty;
     subtotal += lineTotal;
-    savings += (p.mrp - p.price) * c.qty;
+    savings += Math.max(0, (unitMrp - unit)) * c.qty;
+    const lk = _lineKey(c);
+    const img = c.vimg || p.img;
     return `
       <div class="cart-item">
-        <div class="cart-item-img">${p.img ? `<img src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (p.icon||'🛍️')}</div>
+        <div class="cart-item-img">${img ? `<img src="${img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (p.icon||'🛍️')}</div>
         <div class="cart-item-info">
           <div class="cart-item-name">${p.title}</div>
+          ${c.vlabel ? `<div style="font-size:11px;color:#8B5CF6;font-weight:700;margin:2px 0;">${c.vlabel}</div>` : ''}
           <div class="cart-item-price">₹${formatPrice(lineTotal)}</div>
           <div class="cart-item-qty-row">
-            <button class="cart-qty-btn" onclick="changeCartQty(${p.id},-1)">−</button>
+            <button class="cart-qty-btn" onclick="changeCartQty('${lk}',-1)">−</button>
             <span class="cart-qty-num">${c.qty}</span>
-            <button class="cart-qty-btn" onclick="changeCartQty(${p.id},1)">+</button>
+            <button class="cart-qty-btn" onclick="changeCartQty('${lk}',1)">+</button>
           </div>
         </div>
-        <button class="cart-item-remove" onclick="removeFromCart(${p.id})" title="Remove">🗑️</button>
+        <button class="cart-item-remove" onclick="removeFromCart('${lk}')" title="Remove">🗑️</button>
       </div>
     `;
   }).join('');
@@ -7317,7 +7785,13 @@ function checkout() {
 function openOrderModal() {
   window._orderCart = cart.map(i => {
     const p = products.find(x => x.id === i.id);
-    return p ? { title: p.title, price: p.price, qty: i.qty, total: p.price * i.qty } : null;
+    if (!p) return null;
+    // Carry the chosen combination's own price + label. `title` stays the canonical
+    // product title (stock-reduction & commission look products up by exact title);
+    // the combination label rides along in `variant` for display + the sheet.
+    const unit = (i.vprice != null && i.vprice !== '') ? parseFloat(i.vprice) : p.price;
+    const umrp = (i.vmrp   != null && i.vmrp   !== '') ? parseFloat(i.vmrp)   : p.mrp;
+    return { title: p.title, variant: i.vlabel || '', price: unit, mrp: umrp, qty: i.qty, total: unit * i.qty };
   }).filter(Boolean);
   window._orderTotal = window._orderCart.reduce((s, i) => s + i.total, 0);
   window._orderId = 'IBI' + Date.now().toString().slice(-8);
@@ -7325,7 +7799,8 @@ function openOrderModal() {
 
   // Show order summary
   const summaryItems = window._orderCart.map(i =>
-    '<tr><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;">' + i.title + '</td>' +
+    '<tr><td style="padding:5px 8px;border-bottom:1px solid #e5e7eb;">' + i.title +
+      (i.variant ? '<span style="color:#8B5CF6;font-weight:700;"> — ' + i.variant + '</span>' : '') + '</td>' +
     '<td style="padding:5px 8px;text-align:center;border-bottom:1px solid #e5e7eb;">x' + i.qty + '</td>' +
     '<td style="padding:5px 8px;text-align:right;border-bottom:1px solid #e5e7eb;">₹' + i.total.toLocaleString('en-IN') + '</td></tr>'
   ).join('');
@@ -7392,15 +7867,16 @@ function sendWhatsAppOrder() {
     const sellerName = sellerObj ? sellerObj.name : 'India Business International';
     const category = prod.category ? prod.category.charAt(0).toUpperCase() + prod.category.slice(1) : '-';
     const brand = prod.brand || 'IBI';
-    const discount = prod.mrp ? Math.round((1 - it.price / prod.mrp) * 100) : 0;
+    const itMrp = (it.mrp != null && it.mrp !== '') ? it.mrp : prod.mrp;
+    const discount = itMrp ? Math.round((1 - it.price / itMrp) * 100) : 0;
 
     return (
-      (i+1) + '. *' + it.title + '*\n' +
+      (i+1) + '. *' + it.title + '*' + (it.variant ? ' — ' + it.variant : '') + '\n' +
       '   🏷️ Brand: ' + brand + '\n' +
       '   📂 Category: ' + category + '\n' +
       '   🏪 Seller: ' + sellerName + '\n' +
       '   💰 Unit Price: ₹' + it.price.toLocaleString('en-IN') +
-        (discount > 0 ? ' (' + discount + '% off MRP ₹' + (prod.mrp||'').toLocaleString('en-IN') + ')' : '') + '\n' +
+        (discount > 0 ? ' (' + discount + '% off MRP ₹' + (itMrp||'').toLocaleString('en-IN') + ')' : '') + '\n' +
       '   🔢 Qty: ' + it.qty + '\n' +
       '   💵 Subtotal: ₹' + it.total.toLocaleString('en-IN') +
       (prod.id ? '\n   🔑 Product ID: #' + prod.id : '')
@@ -7409,7 +7885,8 @@ function sendWhatsAppOrder() {
 
   const savings = orderItems.reduce((s, it) => {
     const prod = products.find(p => p.title === it.title) || {};
-    return s + ((prod.mrp || it.price) - it.price) * it.qty;
+    const m = (it.mrp != null && it.mrp !== '') ? it.mrp : (prod.mrp || it.price);
+    return s + Math.max(0, (m - it.price)) * it.qty;
   }, 0);
 
   const waMsg = encodeURIComponent(
@@ -9194,6 +9671,45 @@ init();
                 <div style="font-size:11px;color:#888;margin-top:8px;">
                   💡 Example: Add "Size" type with S, M, L options. Add "Color" type with Red, Blue options.
                   Each option can have its own Price, MRP and Stock.
+                </div>
+
+                <!-- 🧩 COMBINE AXES — turn 2+ variation types into individual variants (SKUs) -->
+                <div style="margin-top:14px;border-top:1px dashed #c7d2fe;padding-top:12px;">
+                  <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;">
+                    <input type="checkbox" id="ap_combine_axes" onchange="toggleCombineAxes(this.checked)"
+                      style="width:16px;height:16px;accent-color:#4f46e5;margin-top:2px;flex-shrink:0;">
+                    <span>
+                      <span style="font-size:12px;font-weight:800;color:#4f46e5;">🧩 Combine axes into individual variants (Color × Size × Material…)</span>
+                      <span style="display:block;font-size:11px;color:#888;margin-top:2px;">
+                        Tick this when the types above are <b>combined</b> — e.g. a T‑shirt that comes in each Colour <b>and</b> each Size <b>and</b> each Material. The app builds every combination into a grid where each one gets its <b>own Price, MRP, Stock &amp; photo</b>. Leave it unticked to keep the types independent (the classic behaviour).
+                      </span>
+                    </span>
+                  </label>
+
+                  <div id="combosSection" style="display:none;margin-top:12px;">
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px;">
+                      <button type="button" onclick="buildCombos()"
+                        style="background:#4f46e5;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">
+                        🔄 Build / refresh combinations
+                      </button>
+                      <span id="combosCount" style="font-size:11px;font-weight:700;color:#4f46e5;"></span>
+                    </div>
+                    <!-- Bulk-apply helpers -->
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:8px;font-size:11px;color:#555;">
+                      <span style="font-weight:700;">Apply to all:</span>
+                      <input type="number" id="cx_bulk_price" placeholder="Price" min="0" style="width:74px;padding:5px 6px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;">
+                      <input type="number" id="cx_bulk_mrp"   placeholder="MRP"   min="0" style="width:74px;padding:5px 6px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;">
+                      <input type="number" id="cx_bulk_stock" placeholder="Stock" min="0" style="width:74px;padding:5px 6px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;">
+                      <button type="button" onclick="applyBulkCombos()"
+                        style="background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer;">Apply</button>
+                    </div>
+                    <div class="cx-grid-wrap">
+                      <table class="cx-grid" id="combosGrid"><thead id="combosGridHead"></thead><tbody id="combosGridBody"></tbody></table>
+                    </div>
+                    <div style="font-size:11px;color:#888;margin-top:6px;">
+                      💡 Untick a row to mark that combination as <b>not sold</b>. Each row's photo shows when the buyer selects that exact combination. The ③ Selling Price above is used as the "from" price on the storefront card.
+                    </div>
+                  </div>
                 </div>
               </div>
 
