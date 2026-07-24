@@ -2362,9 +2362,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v6.5.1';
+window.IBI_VERSION      = 'v6.6';
 window.IBI_VERSION_DATE = '24 Jul 2026';
-window.IBI_VERSION_NOTE = 'v6.5.1 — Auto-approval is now limited to the iINTELLIGENCEi seller account only; every other seller still goes through normal IBI review. v6.5 — Edits go live instantly + temporary auto-approval. (1) Editing an ALREADY-APPROVED listing now updates the storefront IMMEDIATELY — the new price, stock, images or text apply without re-approval and the product no longer disappears into a “pending” queue (previously any edit reset the listing to Pending, so changes like a new price never showed until an admin re-approved). A product the seller has Paused stays paused; only never-approved listings still wait for first review. The seller’s success screen now says “Changes Are Live!” when the edit is live. (2) TEMPORARY: new listings from the iINTELLIGENCEi account are auto-approved and go live instantly (no manual approval step) while its full ~267-product catalogue is being loaded — the success screen shows “Product Is Live!”. Both behaviours are backend changes in IBI_Seller_Backend.gs (editProduct keeps the live status; addProduct auto-approves only sellers matched by AUTO_APPROVE_SELLER_IDS/EMAILS/NAME_MATCH) — the Apps Script must be re-pasted & redeployed for them to take effect. Set AUTO_APPROVE_ENABLED=false to restore normal review for everyone. v6.4 — Clearer image uploads: when adding a product’s photos, every uploaded image is now shown in a large, responsive tile grid (≈150–190px squares that adapt to your screen) instead of tiny 110px thumbnails — so all your images are visible at once, not just the first. Each photo is shown in FULL (no more cropping — the whole image is fitted on a clean white background exactly as buyers will see it), with a bigger “⭐ MAIN IMAGE” badge on the cover photo, a clear “2 / 5” position counter, and larger ◄ ► reorder / ⭐ set-main / DEL buttons that are easier to tap on a phone. Front-end only — no backend change. v6.3.4 — Clearer variations guidance: the 🔗 Variation Family box now shows a “Which one do I use?” hint — for one product in different colours/sizes (e.g. a T-shirt), leave it on “Standalone product” and use ③b Product Variations → 🧩 Combine; use a Family only when each variation should be its own separate listing. The 💬 Listing Assistant gained a matching “Variation Family — what is it?” topic explaining the two approaches. v6.3.3 — Nudged the floating “Save Draft” button down a little so it no longer sits over the ✨ Generate & Fill button (it now floats in the lower-right area, clear of both Generate & Fill above and 💬 Listing help below). v6.3.2 — Fixed the floating “Save Draft” button overlapping the new “💬 Listing help” button — Save Draft now sits at the right-middle of the screen, clear of the chatbot at the bottom-right. v6.3.1 — The 💬 Listing Assistant now has a Minimise (–) button next to Close (×). Minimise tucks the chat back to the button but keeps your conversation so you can pick up where you left off; Close clears it and starts fresh next time. v6.3 — (1) 💬 Listing Assistant: a new built-in help chatbot for sellers. A “💬 Listing help” button appears in Seller Central; tap it for a friendly, step-by-step guide to listing — how to add a product, product images, price/MRP/stock, variations, combinations (Colour × Size × Material), t-shirt/apparel sizes, the ✨ AI generator, HSN & keywords, submitting, and troubleshooting. Tap a topic or type a question; it always works (no internet AI needed). (2) The ✨ AI listing generator is now VARIATION-AWARE: it reads the colours/sizes/materials you added and writes a title that fits ALL of them (instead of locking to one), mentions the options in the description, and seeds them into the keywords. For t-shirts in Apparel mode, if the Size box is blank it now auto-uses your “Size” variation (M, L, XL…) so ✨ Generate no longer stalls. v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v6.6 — Seller Central stays put on refresh + a professional new sign-in page. (1) Refreshing the browser inside Seller Central no longer kicks you back to the storefront — you stay on the exact tab you were on (My Products / Add Product / Orders / Earnings / Profile). The dashboard remembers it is open and which tab is active (sessionStorage `ibi_seller_view`) and restores it on page load; minimising or signing out returns you to the storefront as before. (2) Redesigned the Seller Login page to an industry-standard two-panel layout: a branded benefits panel (reach, AI listing, GST invoices, fast payouts) beside a clean sign-in form with focus states, a show/hide PIN toggle, a collapsible “Forgot your PIN?” helper, a clearer Register call-to-action and a security note. The top-bar “Logged in as” badge now shows only after you sign in. v6.5.1 — Auto-approval is now limited to the iINTELLIGENCEi seller account only; every other seller still goes through normal IBI review. v6.5 — Edits go live instantly + temporary auto-approval. (1) Editing an ALREADY-APPROVED listing now updates the storefront IMMEDIATELY — the new price, stock, images or text apply without re-approval and the product no longer disappears into a “pending” queue (previously any edit reset the listing to Pending, so changes like a new price never showed until an admin re-approved). A product the seller has Paused stays paused; only never-approved listings still wait for first review. The seller’s success screen now says “Changes Are Live!” when the edit is live. (2) TEMPORARY: new listings from the iINTELLIGENCEi account are auto-approved and go live instantly (no manual approval step) while its full ~267-product catalogue is being loaded — the success screen shows “Product Is Live!”. Both behaviours are backend changes in IBI_Seller_Backend.gs (editProduct keeps the live status; addProduct auto-approves only sellers matched by AUTO_APPROVE_SELLER_IDS/EMAILS/NAME_MATCH) — the Apps Script must be re-pasted & redeployed for them to take effect. Set AUTO_APPROVE_ENABLED=false to restore normal review for everyone. v6.4 — Clearer image uploads: when adding a product’s photos, every uploaded image is now shown in a large, responsive tile grid (≈150–190px squares that adapt to your screen) instead of tiny 110px thumbnails — so all your images are visible at once, not just the first. Each photo is shown in FULL (no more cropping — the whole image is fitted on a clean white background exactly as buyers will see it), with a bigger “⭐ MAIN IMAGE” badge on the cover photo, a clear “2 / 5” position counter, and larger ◄ ► reorder / ⭐ set-main / DEL buttons that are easier to tap on a phone. Front-end only — no backend change. v6.3.4 — Clearer variations guidance: the 🔗 Variation Family box now shows a “Which one do I use?” hint — for one product in different colours/sizes (e.g. a T-shirt), leave it on “Standalone product” and use ③b Product Variations → 🧩 Combine; use a Family only when each variation should be its own separate listing. The 💬 Listing Assistant gained a matching “Variation Family — what is it?” topic explaining the two approaches. v6.3.3 — Nudged the floating “Save Draft” button down a little so it no longer sits over the ✨ Generate & Fill button (it now floats in the lower-right area, clear of both Generate & Fill above and 💬 Listing help below). v6.3.2 — Fixed the floating “Save Draft” button overlapping the new “💬 Listing help” button — Save Draft now sits at the right-middle of the screen, clear of the chatbot at the bottom-right. v6.3.1 — The 💬 Listing Assistant now has a Minimise (–) button next to Close (×). Minimise tucks the chat back to the button but keeps your conversation so you can pick up where you left off; Close clears it and starts fresh next time. v6.3 — (1) 💬 Listing Assistant: a new built-in help chatbot for sellers. A “💬 Listing help” button appears in Seller Central; tap it for a friendly, step-by-step guide to listing — how to add a product, product images, price/MRP/stock, variations, combinations (Colour × Size × Material), t-shirt/apparel sizes, the ✨ AI generator, HSN & keywords, submitting, and troubleshooting. Tap a topic or type a question; it always works (no internet AI needed). (2) The ✨ AI listing generator is now VARIATION-AWARE: it reads the colours/sizes/materials you added and writes a title that fits ALL of them (instead of locking to one), mentions the options in the description, and seeds them into the keywords. For t-shirts in Apparel mode, if the Size box is blank it now auto-uses your “Size” variation (M, L, XL…) so ✨ Generate no longer stalls. v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -2657,11 +2657,57 @@ function showSellerRegSuccess(sellerId, bizName) {
 }
 
 
+// ── Remember whether Seller Central is open + which tab, so a browser REFRESH
+//    keeps the seller exactly where they were instead of dropping back to the
+//    storefront. Stored in sessionStorage (same-tab, cleared on tab close / sign-out).
+function _saveSellerView(patch) {
+  try {
+    var v = {};
+    try { v = JSON.parse(sessionStorage.getItem('ibi_seller_view') || '{}') || {}; } catch(e) {}
+    for (var k in patch) v[k] = patch[k];
+    sessionStorage.setItem('ibi_seller_view', JSON.stringify(v));
+  } catch(e) {}
+}
+function _getSellerView() {
+  try { return JSON.parse(sessionStorage.getItem('ibi_seller_view') || '{}') || {}; } catch(e) { return {}; }
+}
+function _clearSellerView() {
+  try { sessionStorage.removeItem('ibi_seller_view'); } catch(e) {}
+}
+
+// Called on page load — if Seller Central was open before a refresh, re-open it
+// (dashboard + last tab when logged in, else the login panel) so the seller stays put.
+function restoreSellerViewOnLoad() {
+  var view = _getSellerView();
+  if (!view || !view.open) return;                       // wasn't in Seller Central → leave storefront as-is
+  var overlay = document.getElementById('sellerDashOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  if (typeof ibiHelpInit === 'function') ibiHelpInit();
+
+  var sess = null;
+  try { sess = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch(e) {}
+  if (sess && sess.sellerId && sess.pin) {
+    // Logged in → restore the dashboard and the exact tab they were on.
+    document.getElementById('scSellerName').textContent = sess.bizName || sess.sellerId;
+    renderSellerDashboard(sess);                          // lands on 'products' + loads
+    var tab = view.tab || 'products';
+    if (tab !== 'products') switchDashTab(tab);           // then jump to the saved tab
+  } else {
+    // Was on the login panel → keep them there.
+    document.getElementById('sellerDashLogin').style.display    = 'flex';
+    document.getElementById('sellerDashContent').style.display  = 'none';
+    var _b = document.getElementById('scSellerBadge'); if (_b) _b.style.display = 'none';
+  }
+}
+
 function openSellerDashboard() {
   const soi = document.getElementById('sellOnIBIOverlay');
   if (soi) soi.style.display = 'none';
   document.getElementById('sellerDashOverlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
+  _saveSellerView({ open: true });                        // remember we're in Seller Central (survives refresh)
   if (typeof ibiHelpInit === 'function') ibiHelpInit();   // 💬 listing assistant FAB
 
   // Auto-restore session if already logged in
@@ -2680,6 +2726,7 @@ function openSellerDashboard() {
   // No session — show login panel
   document.getElementById('sellerDashLogin').style.display = 'flex';
   document.getElementById('sellerDashContent').style.display = 'none';
+  var _b = document.getElementById('scSellerBadge'); if (_b) _b.style.display = 'none';
 }
 
 
@@ -2688,6 +2735,7 @@ function minimiseSellerDashboard() {
   // Just hide the overlay — session stays alive
   document.getElementById('sellerDashOverlay').style.display = 'none';
   document.body.style.overflow = '';
+  _saveSellerView({ open: false });   // back on the storefront → a refresh stays on the storefront
 }
 
 // ── Seller sign-out with confirmation ────────────────────
@@ -2698,6 +2746,7 @@ function confirmSellerSignOut() {
     document.getElementById('sellerDashContent').style.display = 'none';
     document.getElementById('sellerDashLogin').style.display = 'flex';
     sessionStorage.removeItem('ibi_seller');
+    _clearSellerView();
     var idEl  = document.getElementById('sd_seller_id'); if (idEl)  idEl.value  = '';
     var pinEl = document.getElementById('sd_pin');       if (pinEl) pinEl.value = '';
     var btn   = document.getElementById('scLoginBtn');
@@ -2712,6 +2761,7 @@ function closeSellerDashboard() {
   document.getElementById('sellerDashLogin').style.display = 'flex';
   // Clear session on sign-out
   sessionStorage.removeItem('ibi_seller');
+  _clearSellerView();
   // Also reset seller ID / PIN fields
   var idEl  = document.getElementById('sd_seller_id'); if (idEl)  idEl.value  = '';
   var pinEl = document.getElementById('sd_pin');       if (pinEl) pinEl.value = '';
@@ -3177,6 +3227,7 @@ function showDashMessage(icon, title, body, color) {
 function renderSellerDashboard(res) {
   document.getElementById('sellerDashLogin').style.display = 'none';
   document.getElementById('sellerDashContent').style.display = 'block';
+  var _badge = document.getElementById('scSellerBadge'); if (_badge) _badge.style.display = 'flex';   // top-bar "Logged in as" only when signed in
 
   const sellerId = res.sellerId || (JSON.parse(sessionStorage.getItem('ibi_seller')||'{}').sellerId) || '';
   const bizName  = res.bizName || sellerId;
@@ -3345,6 +3396,7 @@ function switchDashTab(tab) {
   if (tab === 'earnings') loadSellerEarnings();
   if (tab === 'orders')   loadSellerOrders();
   _toggleFloatDraft(tab);
+  _saveSellerView({ open: true, tab: tab });   // remember the tab so a refresh returns here
 }
 
 // ══════════════════════════════════════════════════════════
@@ -9698,42 +9750,87 @@ init();
     </div>
 
     <!-- ══ LOGIN PANEL ══ -->
-    <div id="sellerDashLogin" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:20px;">
-      <div style="background:#fff;border-radius:12px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);">
-        <div style="background:linear-gradient(135deg,#232F3E,#1e1b4b);padding:28px;color:#fff;text-align:center;">
-          <div style="font-size:40px;margin-bottom:8px;">🔐</div>
-          <div style="font-size:20px;font-weight:900;">Seller Central Login</div>
-          <div style="font-size:13px;opacity:.75;margin-top:4px;">Manage your IBI Marketplace store</div>
+    <div id="sellerDashLogin" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:28px 16px;background:radial-gradient(1200px 500px at 15% 0%,#eef2f8 0%,#f0f2f2 55%);">
+      <div class="sc-login-card">
+
+        <!-- LEFT — brand & benefits -->
+        <div class="sc-login-brand">
+          <div style="position:relative;z-index:2;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:26px;">
+              <div style="width:46px;height:46px;border-radius:12px;background:#fff;color:#131921;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;letter-spacing:-1px;box-shadow:0 4px 14px rgba(0,0,0,.25);">IBI</div>
+              <div>
+                <div style="font-size:15px;font-weight:900;line-height:1.1;">Seller Central</div>
+                <div style="font-size:11px;opacity:.7;">India Business International</div>
+              </div>
+            </div>
+            <div style="font-size:24px;font-weight:900;line-height:1.25;margin-bottom:10px;">Grow your business with IBI Marketplace</div>
+            <div style="font-size:13px;opacity:.72;margin-bottom:26px;">Sign in to manage your listings, orders, earnings and more — all in one place.</div>
+
+            <div class="sc-login-benefit"><span class="ic">🛍️</span><div><div style="font-weight:800;font-size:13.5px;">Reach customers across India</div><div style="font-size:12px;opacity:.68;">Your products, live on a nationwide storefront.</div></div></div>
+            <div class="sc-login-benefit"><span class="ic">⚡</span><div><div style="font-weight:800;font-size:13.5px;">List in minutes with AI</div><div style="font-size:12px;opacity:.68;">Auto-generate titles, bullets &amp; descriptions.</div></div></div>
+            <div class="sc-login-benefit"><span class="ic">🧾</span><div><div style="font-weight:800;font-size:13.5px;">GST-ready invoices</div><div style="font-size:12px;opacity:.68;">Compliant billing &amp; reports out of the box.</div></div></div>
+            <div class="sc-login-benefit"><span class="ic">💰</span><div><div style="font-weight:800;font-size:13.5px;">Fast, transparent payouts</div><div style="font-size:12px;opacity:.68;">Track every order and settlement clearly.</div></div></div>
+          </div>
+          <div style="position:relative;z-index:2;margin-top:26px;font-size:11.5px;opacity:.6;">🔒 Secure seller login · eCommerce for the World</div>
         </div>
-        <div style="padding:28px;">
-          <div style="margin-bottom:14px;">
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">Seller ID</label>
-            <input id="sd_seller_id" type="text" placeholder="e.g. iINTELLIGENCEi or IBI421257" autocomplete="username" style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:15px;box-sizing:border-box;" oninput="normalizeSellerIdInput(this)"/>
+
+        <!-- RIGHT — sign-in form -->
+        <div class="sc-login-form">
+          <div style="margin-bottom:22px;">
+            <div style="font-size:21px;font-weight:900;color:#131921;">Seller Sign In</div>
+            <div style="font-size:13px;color:#6b7280;margin-top:3px;">Enter your credentials to access your dashboard.</div>
           </div>
-          <div id="sd_id_hint" style="display:none;font-size:11px;color:#16a34a;font-weight:600;margin:-8px 0 10px 2px;"></div>
-          <div style="margin-bottom:8px;">
-            <label style="font-size:12px;font-weight:700;color:#555;display:block;margin-bottom:5px;">PIN</label>
-            <div style="position:relative;">
-              <input id="sd_pin" type="password" placeholder="e.g. 421257@IBI" autocomplete="current-password" style="width:100%;padding:11px 44px 11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:15px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')sellerDashLogin()"/>
-              <button onclick="var i=document.getElementById('sd_pin');i.type=i.type==='password'?'text':'password'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#888;">👁</button>
+
+          <label class="sc-login-label" for="sd_seller_id">Seller ID</label>
+          <div class="sc-login-wrap">
+            <span class="sc-login-ic">🏷️</span>
+            <input id="sd_seller_id" type="text" placeholder="e.g. iINTELLIGENCEi or IBI421257" autocomplete="username" class="sc-login-input" oninput="normalizeSellerIdInput(this)"/>
+          </div>
+          <div id="sd_id_hint" style="display:none;font-size:11px;color:#16a34a;font-weight:600;margin:2px 0 0 2px;"></div>
+
+          <label class="sc-login-label" for="sd_pin" style="margin-top:14px;">PIN</label>
+          <div class="sc-login-wrap">
+            <span class="sc-login-ic">🔒</span>
+            <input id="sd_pin" type="password" placeholder="e.g. 421257@IBI" autocomplete="current-password" class="sc-login-input" style="padding-right:46px;" onkeydown="if(event.key==='Enter')sellerDashLogin()"/>
+            <button type="button" onclick="var i=document.getElementById('sd_pin');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" title="Show / hide PIN" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#888;padding:4px;">👁</button>
+          </div>
+
+          <!-- PIN helper (collapsible, keeps the form clean) -->
+          <details style="margin-top:12px;background:#f6fbfe;border:1px solid #d8eef8;border-radius:10px;padding:0 12px;">
+            <summary style="cursor:pointer;list-style:none;padding:10px 0;font-size:12px;font-weight:800;color:#0079a3;display:flex;align-items:center;gap:6px;">💡 Forgot your PIN? <span style="margin-left:auto;font-size:11px;color:#0098c9;font-weight:700;">Show help</span></summary>
+            <div style="font-size:11.5px;color:#555;line-height:1.9;padding-bottom:10px;">
+              • Default PIN = last 6 digits of your Seller ID + <strong>@IBI</strong><br>
+              • Example: ID <strong>IBI421257</strong> → PIN <strong>421257@IBI</strong><br>
+              • Or check your approval email from IBI.
+              <div><button type="button" onclick="showPinHelper()" style="margin-top:8px;background:#0098c9;border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer;">🔑 Calculate My PIN</button></div>
             </div>
-          </div>
-          <!-- PIN Helper -->
-          <div style="background:#f0fbff;border:1.5px solid #b8e8f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
-            <div style="font-size:12px;font-weight:800;color:#0079a3;margin-bottom:4px;">💡 How to find your PIN:</div>
-            <div style="font-size:11px;color:#555;line-height:1.8;">
-              • Default PIN = last 6 digits of Seller ID + <strong>@IBI</strong><br>
-              • Example: ID is <strong>IBI421257</strong> → PIN is <strong>421257@IBI</strong><br>
-              • Or check your approval email from IBI
-            </div>
-            <button onclick="showPinHelper()" style="margin-top:6px;background:none;border:1px solid #0098c9;color:#0098c9;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;">🔑 Calculate My PIN</button>
-          </div>
-          <button onclick="sellerDashLogin()" id="scLoginBtn" style="width:100%;padding:13px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">Login to Seller Central →</button>
-          <button onclick="sellerDashLoginHelp()" style="width:100%;margin-top:8px;padding:10px;background:#f0f0f0;color:#555;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">❓ Having trouble logging in?</button>
-          <p style="text-align:center;font-size:12px;color:#888;margin-top:14px;">Not a seller? <a href="#" onclick="closeSellerDashboard();openSellerRegistration();return false;" style="color:#0098c9;font-weight:700;">Register Now →</a></p>
+          </details>
+
+          <button onclick="sellerDashLogin()" id="scLoginBtn" style="width:100%;margin-top:18px;padding:14px;background:linear-gradient(135deg,#0098c9,#0079a3);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(0,152,201,.28);transition:filter .15s;">Sign In to Seller Central →</button>
+          <button onclick="sellerDashLoginHelp()" style="width:100%;margin-top:10px;padding:11px;background:#fff;color:#555;border:1.5px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">❓ Having trouble signing in?</button>
+
+          <div style="display:flex;align-items:center;gap:10px;margin:20px 0 16px;color:#c3c9d2;font-size:11px;"><span style="flex:1;height:1px;background:#e5e7eb;"></span>NEW TO IBI?<span style="flex:1;height:1px;background:#e5e7eb;"></span></div>
+          <button onclick="closeSellerDashboard();openSellerRegistration();return false;" style="width:100%;padding:12px;background:#fff7ed;color:#c2410c;border:1.5px solid #fed7aa;border-radius:10px;font-size:13.5px;font-weight:800;cursor:pointer;">🚀 Register as a Seller</button>
+
+          <p style="text-align:center;font-size:11px;color:#9aa4b2;margin-top:16px;">🔒 Your connection is secure. IBI never shares your credentials.</p>
         </div>
       </div>
     </div>
+    <style>
+      .sc-login-card{display:flex;flex-wrap:wrap;width:100%;max-width:880px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(19,25,33,.20);}
+      .sc-login-brand{flex:1 1 340px;background:linear-gradient(155deg,#232F3E 0%,#1e1b4b 58%,#4c1d95 100%);color:#fff;padding:42px 36px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+      .sc-login-brand::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.45),transparent 70%);z-index:1;}
+      .sc-login-brand .ic{font-size:18px;flex-shrink:0;width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;}
+      .sc-login-benefit{display:flex;align-items:flex-start;gap:13px;margin-bottom:15px;}
+      .sc-login-form{flex:1 1 360px;padding:42px 38px;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;}
+      .sc-login-label{font-size:12.5px;font-weight:800;color:#374151;display:block;margin-bottom:6px;}
+      .sc-login-wrap{position:relative;}
+      .sc-login-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:.7;}
+      .sc-login-input{width:100%;padding:12px 14px 12px 42px;border:1.5px solid #d1d5db;border-radius:10px;font-size:15px;box-sizing:border-box;background:#fff;transition:border-color .15s,box-shadow .15s;}
+      .sc-login-input:focus{outline:none;border-color:#0098c9;box-shadow:0 0 0 3px rgba(0,152,201,.16);}
+      #scLoginBtn:hover{filter:brightness(1.06);}
+      @media(max-width:640px){ .sc-login-brand{flex-basis:100%;padding:30px 26px;} .sc-login-form{flex-basis:100%;padding:30px 24px;} .sc-login-card{max-width:440px;} }
+    </style>
 
     <!-- ══ DASHBOARD CONTENT ══ -->
     <div id="sellerDashContent" style="display:none;padding:16px 20px;width:100%;max-width:100%;box-sizing:border-box;">
@@ -10828,6 +10925,11 @@ init();
 
 
 <script>
+// ── Keep the seller on their current page across a browser refresh ──
+// (init() runs earlier in the file, before the Seller Central markup exists, so
+//  this restore is bound here where the overlay elements are guaranteed present.)
+window.addEventListener('load', function(){ try { restoreSellerViewOnLoad(); } catch(e){} });
+
 // ── PWA Service Worker Registration ──────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
