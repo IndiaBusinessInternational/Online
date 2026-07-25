@@ -262,6 +262,18 @@ function editProduct(p) {
   //    Only listings that were never approved (Pending / Rejected) go to Pending for first review. ──
   var curStatus = String(sheet.getRange(r,PCOL.STATUS,1,1).getValue()||'').trim();
   var newStatus = (curStatus === 'Approved' || curStatus === 'Paused') ? curStatus : 'Pending';
+  // TEMPORARY auto-approval on EDITS too (mirrors addProduct): the whitelisted
+  // iINTELLIGENCEi seller's saves go live instantly — even a listing stuck in
+  // Pending/Rejected from before auto-approval flips to Approved on its next
+  // save. A Paused listing stays Paused (the seller hid it on purpose).
+  if (newStatus === 'Pending') {
+    var _autoSeller = findSellerById(getOrCreateSellerSheet(), String(p.sellerId||'').toUpperCase());
+    if (_isAutoApproveSeller(_autoSeller)) {
+      newStatus = 'Approved';
+      var _apCell = sheet.getRange(r,PCOL.APPROVED_ON,1,1);
+      if (!String(_apCell.getValue()||'').trim()) _apCell.setValue(new Date().toLocaleDateString('en-IN'));
+    }
+  }
   var statusBg  = newStatus === 'Approved' ? '#C8E6C9' : (newStatus === 'Paused' ? '#CFD8DC' : '#FFF9C4');
   sheet.getRange(r,PCOL.STATUS,1,1).setValue(newStatus).setBackground(statusBg);
   sheet.getRange(r,PCOL.UPDATED_ON,1,1).setValue(new Date().toLocaleString('en-IN'));
