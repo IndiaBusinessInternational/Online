@@ -2362,9 +2362,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v6.8';
+window.IBI_VERSION      = 'v6.9';
 window.IBI_VERSION_DATE = '25 Jul 2026';
-window.IBI_VERSION_NOTE = 'v6.8 — ✨ AI listing upgrades. (1) The “Product name for the AI” box now offers IBI’s full master catalogue (267 product names with size/weight/qty) as type-to-filter suggestions — same list as the standalone Listing Generator — so listing the catalogue is a pick, not a re-type. (2) The shared AI backend was overhauled today: current Gemini models (2.5-flash), Claude upgraded to Opus 4.8, DeepSeek fixed for its V4 engine (auto-disables its “thinking” mode), and a smarter parser that survives AI formatting quirks — so ✨ Generate & Fill is reliable again on every provider. v6.7 — Cleaner pricing: no more price in two places. For a COMBINATION product (③b Product Variations → 🧩 Combine), the top ③ Selling Price / MRP / Stock fields are now hidden — you set ONE price, MRP and stock per combination in the grid, and nowhere else. The headline “from ₹…” price shown on the storefront browse card is filled in automatically from the lowest combination price (MRP = the highest, stock = the total). A SINGLE-pack product is unchanged: you set its one price at the top ③ as before. This removes the confusing duplicate price entry for variation products. Front-end only. v6.6 — Seller Central stays put on refresh + a professional new sign-in page. (1) Refreshing the browser inside Seller Central no longer kicks you back to the storefront — you stay on the exact tab you were on (My Products / Add Product / Orders / Earnings / Profile). The dashboard remembers it is open and which tab is active (sessionStorage `ibi_seller_view`) and restores it on page load; minimising or signing out returns you to the storefront as before. (2) Redesigned the Seller Login page to an industry-standard two-panel layout: a branded benefits panel (reach, AI listing, GST invoices, fast payouts) beside a clean sign-in form with focus states, a show/hide PIN toggle, a collapsible “Forgot your PIN?” helper, a clearer Register call-to-action and a security note. The top-bar “Logged in as” badge now shows only after you sign in. v6.5.1 — Auto-approval is now limited to the iINTELLIGENCEi seller account only; every other seller still goes through normal IBI review. v6.5 — Edits go live instantly + temporary auto-approval. (1) Editing an ALREADY-APPROVED listing now updates the storefront IMMEDIATELY — the new price, stock, images or text apply without re-approval and the product no longer disappears into a “pending” queue (previously any edit reset the listing to Pending, so changes like a new price never showed until an admin re-approved). A product the seller has Paused stays paused; only never-approved listings still wait for first review. The seller’s success screen now says “Changes Are Live!” when the edit is live. (2) TEMPORARY: new listings from the iINTELLIGENCEi account are auto-approved and go live instantly (no manual approval step) while its full ~267-product catalogue is being loaded — the success screen shows “Product Is Live!”. Both behaviours are backend changes in IBI_Seller_Backend.gs (editProduct keeps the live status; addProduct auto-approves only sellers matched by AUTO_APPROVE_SELLER_IDS/EMAILS/NAME_MATCH) — the Apps Script must be re-pasted & redeployed for them to take effect. Set AUTO_APPROVE_ENABLED=false to restore normal review for everyone. v6.4 — Clearer image uploads: when adding a product’s photos, every uploaded image is now shown in a large, responsive tile grid (≈150–190px squares that adapt to your screen) instead of tiny 110px thumbnails — so all your images are visible at once, not just the first. Each photo is shown in FULL (no more cropping — the whole image is fitted on a clean white background exactly as buyers will see it), with a bigger “⭐ MAIN IMAGE” badge on the cover photo, a clear “2 / 5” position counter, and larger ◄ ► reorder / ⭐ set-main / DEL buttons that are easier to tap on a phone. Front-end only — no backend change. v6.3.4 — Clearer variations guidance: the 🔗 Variation Family box now shows a “Which one do I use?” hint — for one product in different colours/sizes (e.g. a T-shirt), leave it on “Standalone product” and use ③b Product Variations → 🧩 Combine; use a Family only when each variation should be its own separate listing. The 💬 Listing Assistant gained a matching “Variation Family — what is it?” topic explaining the two approaches. v6.3.3 — Nudged the floating “Save Draft” button down a little so it no longer sits over the ✨ Generate & Fill button (it now floats in the lower-right area, clear of both Generate & Fill above and 💬 Listing help below). v6.3.2 — Fixed the floating “Save Draft” button overlapping the new “💬 Listing help” button — Save Draft now sits at the right-middle of the screen, clear of the chatbot at the bottom-right. v6.3.1 — The 💬 Listing Assistant now has a Minimise (–) button next to Close (×). Minimise tucks the chat back to the button but keeps your conversation so you can pick up where you left off; Close clears it and starts fresh next time. v6.3 — (1) 💬 Listing Assistant: a new built-in help chatbot for sellers. A “💬 Listing help” button appears in Seller Central; tap it for a friendly, step-by-step guide to listing — how to add a product, product images, price/MRP/stock, variations, combinations (Colour × Size × Material), t-shirt/apparel sizes, the ✨ AI generator, HSN & keywords, submitting, and troubleshooting. Tap a topic or type a question; it always works (no internet AI needed). (2) The ✨ AI listing generator is now VARIATION-AWARE: it reads the colours/sizes/materials you added and writes a title that fits ALL of them (instead of locking to one), mentions the options in the description, and seeds them into the keywords. For t-shirts in Apparel mode, if the Size box is blank it now auto-uses your “Size” variation (M, L, XL…) so ✨ Generate no longer stalls. v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
+window.IBI_VERSION_NOTE = 'v6.9 — 📋 Catalogue Tracker: a new tab in Seller Central for EVERY seller. Upload your master product-name list as an Excel/CSV file (one name per row) and the dashboard instantly shows which of those products are ✅ COMPLETED (already listed, with the live listing it matched) and which are 🕐 PENDING, with a progress % and a search filter. Matching is smart — it recognises the same product even though listed titles are longer SEO titles (it compares dimensions, pack quantity, weight and name words). Each pending product has a “➕ List now” button that opens Add Product with the name pre-filled for the ✨ AI generator, and “📋 Copy pending list” copies what’s left. Your list is saved on your device per seller account and survives sign-outs; re-upload the file anytime to update it. v6.8 — ✨ AI listing upgrades. (1) The “Product name for the AI” box now offers IBI’s full master catalogue (267 product names with size/weight/qty) as type-to-filter suggestions — same list as the standalone Listing Generator — so listing the catalogue is a pick, not a re-type. (2) The shared AI backend was overhauled today: current Gemini models (2.5-flash), Claude upgraded to Opus 4.8, DeepSeek fixed for its V4 engine (auto-disables its “thinking” mode), and a smarter parser that survives AI formatting quirks — so ✨ Generate & Fill is reliable again on every provider. v6.7 — Cleaner pricing: no more price in two places. For a COMBINATION product (③b Product Variations → 🧩 Combine), the top ③ Selling Price / MRP / Stock fields are now hidden — you set ONE price, MRP and stock per combination in the grid, and nowhere else. The headline “from ₹…” price shown on the storefront browse card is filled in automatically from the lowest combination price (MRP = the highest, stock = the total). A SINGLE-pack product is unchanged: you set its one price at the top ③ as before. This removes the confusing duplicate price entry for variation products. Front-end only. v6.6 — Seller Central stays put on refresh + a professional new sign-in page. (1) Refreshing the browser inside Seller Central no longer kicks you back to the storefront — you stay on the exact tab you were on (My Products / Add Product / Orders / Earnings / Profile). The dashboard remembers it is open and which tab is active (sessionStorage `ibi_seller_view`) and restores it on page load; minimising or signing out returns you to the storefront as before. (2) Redesigned the Seller Login page to an industry-standard two-panel layout: a branded benefits panel (reach, AI listing, GST invoices, fast payouts) beside a clean sign-in form with focus states, a show/hide PIN toggle, a collapsible “Forgot your PIN?” helper, a clearer Register call-to-action and a security note. The top-bar “Logged in as” badge now shows only after you sign in. v6.5.1 — Auto-approval is now limited to the iINTELLIGENCEi seller account only; every other seller still goes through normal IBI review. v6.5 — Edits go live instantly + temporary auto-approval. (1) Editing an ALREADY-APPROVED listing now updates the storefront IMMEDIATELY — the new price, stock, images or text apply without re-approval and the product no longer disappears into a “pending” queue (previously any edit reset the listing to Pending, so changes like a new price never showed until an admin re-approved). A product the seller has Paused stays paused; only never-approved listings still wait for first review. The seller’s success screen now says “Changes Are Live!” when the edit is live. (2) TEMPORARY: new listings from the iINTELLIGENCEi account are auto-approved and go live instantly (no manual approval step) while its full ~267-product catalogue is being loaded — the success screen shows “Product Is Live!”. Both behaviours are backend changes in IBI_Seller_Backend.gs (editProduct keeps the live status; addProduct auto-approves only sellers matched by AUTO_APPROVE_SELLER_IDS/EMAILS/NAME_MATCH) — the Apps Script must be re-pasted & redeployed for them to take effect. Set AUTO_APPROVE_ENABLED=false to restore normal review for everyone. v6.4 — Clearer image uploads: when adding a product’s photos, every uploaded image is now shown in a large, responsive tile grid (≈150–190px squares that adapt to your screen) instead of tiny 110px thumbnails — so all your images are visible at once, not just the first. Each photo is shown in FULL (no more cropping — the whole image is fitted on a clean white background exactly as buyers will see it), with a bigger “⭐ MAIN IMAGE” badge on the cover photo, a clear “2 / 5” position counter, and larger ◄ ► reorder / ⭐ set-main / DEL buttons that are easier to tap on a phone. Front-end only — no backend change. v6.3.4 — Clearer variations guidance: the 🔗 Variation Family box now shows a “Which one do I use?” hint — for one product in different colours/sizes (e.g. a T-shirt), leave it on “Standalone product” and use ③b Product Variations → 🧩 Combine; use a Family only when each variation should be its own separate listing. The 💬 Listing Assistant gained a matching “Variation Family — what is it?” topic explaining the two approaches. v6.3.3 — Nudged the floating “Save Draft” button down a little so it no longer sits over the ✨ Generate & Fill button (it now floats in the lower-right area, clear of both Generate & Fill above and 💬 Listing help below). v6.3.2 — Fixed the floating “Save Draft” button overlapping the new “💬 Listing help” button — Save Draft now sits at the right-middle of the screen, clear of the chatbot at the bottom-right. v6.3.1 — The 💬 Listing Assistant now has a Minimise (–) button next to Close (×). Minimise tucks the chat back to the button but keeps your conversation so you can pick up where you left off; Close clears it and starts fresh next time. v6.3 — (1) 💬 Listing Assistant: a new built-in help chatbot for sellers. A “💬 Listing help” button appears in Seller Central; tap it for a friendly, step-by-step guide to listing — how to add a product, product images, price/MRP/stock, variations, combinations (Colour × Size × Material), t-shirt/apparel sizes, the ✨ AI generator, HSN & keywords, submitting, and troubleshooting. Tap a topic or type a question; it always works (no internet AI needed). (2) The ✨ AI listing generator is now VARIATION-AWARE: it reads the colours/sizes/materials you added and writes a title that fits ALL of them (instead of locking to one), mentions the options in the description, and seeds them into the keywords. For t-shirts in Apparel mode, if the Size box is blank it now auto-uses your “Size” variation (M, L, XL…) so ✨ Generate no longer stalls. v6.2 — Apparel-friendly Product Dimensions. The 📐 Product Dimensions & Weight box now has two modes: “📦 Boxed item (L × W × H)” for rigid products (unchanged), and “👕 Apparel / soft (Size + Weight)” for clothing and other soft goods where a Length × Width × Height makes no sense. In apparel mode you enter the Size(s) you sell (e.g. “M, L, XL” or “Free Size”) plus the Weight in grams — no L×W×H needed. The ✨ AI listing generator, the required-field checks, saving and editing all understand both modes (apparel products are stored as “Size: M, L, XL, 220 g”). Boxed products are completely unchanged. v6.1 — Combination variations, easier to build. (1) The combinations grid now REBUILDS AUTOMATICALLY as you add or type new options — e.g. typing a new colour like “Navy Blue” or adding a size now makes its combinations appear on their own; before, you had to click “Build / refresh combinations” by hand (a step that was easy to miss, so newly typed values seemed to “not come”). (2) Many more one-click quick-fill chips: Colour now includes Navy Blue, Sky/Royal Blue, Maroon, Olive, Teal, Beige, Off White and more; Material/Fabric includes Cotton, Polyester, Linen, Denim, Wool…; new “Fit” (Slim/Regular/Loose/Oversized) and apparel Style options; sizes now include 28–42 and XXXL. (3) Clearer guidance that you can TYPE ANY value — the chips are only shortcuts — and how to add a custom TYPE via “✏️ Custom / Other…”. Front-end only, no backend change. v6.0 — Combination variations (Color × Size × Material…). In Add/Edit Product → ③b Product Variations, add your axes as before (e.g. a “Color” type with White/Black/Navy, a “Size” type with M/L/XL, a “Material” type with Cotton/Polyester), then tick 🧩 “Combine axes into individual variants”. The app builds every combination (3×3×2 = 18) into a grid where EACH combination gets its OWN Price, MRP, Stock and photo(s) — so one listing can carry every real SKU. On the product page the buyer picks one option per axis (Color, then Size, then Material); the price, stock status and photos update to the exact chosen combination, unavailable combinations grey out, and Add-to-Cart is blocked until a valid combination is selected. The chosen combination (e.g. “White / M / Cotton”) and its own price now flow all the way into the Cart, checkout summary and the order saved to your sheet, so billing is correct per SKU. Any number of axes is supported. Existing standalone products, single-list variations and parent/child variation families are unchanged. Front-end only — no backend change. v5.9 — Product photos are now saved to Google Drive named after the PRODUCT (e.g. “Coir Brush Floor Cleaning - 1.jpg”, “… - 2.jpg”) instead of an opaque “ibi_product_1784…​.jpg” timestamp — so your Drive “IBI Product Images” folder is easy to browse. The name is taken from the ① Product Title at the moment each photo uploads (Title sits above Images in the form, so it is normally already filled); if the title is still blank when a photo uploads, that file keeps the old timestamp name as a safe fallback. Front-end only — no backend change. v5.8 — After you submit a Parent or Child in a variation family, the success screen now shows a “🎨 Add another variation to <family>” button — it opens a fresh Add-Product form already in Child mode with the family name & type pre-filled, so building out 1/2/4/6 Qty (or sizes/colours) is a quick loop. v5.7 — Amazon-style variation families (parent + child listings). Selling the same item in different sizes / quantities / colours / styles / combos? In Add Product pick 🔗 Variation Family → create ONE ⭐ Parent (the cover) then a 🎨 Child listing for each variation. Every child keeps its OWN title, OWN images and OWN price/stock — link them by giving them the SAME family name. Buyers see ONE card on the storefront (“from ₹…”, “N options”); opening it shows a variation picker with every child (photo + label + price), and tapping one shows that child’s full details on the same page. A Parent is a non-buyable cover, so it skips price/MRP/stock/HSN/dimensions. Existing single-listing variations and standalone products are unchanged. v5.6 — Removed all built-in demo/seed products. The storefront and “My Products” now show ONLY real listings from the seller backend (Google Sheet) — no more placeholder catalogue. v5.5 — Easier AI listing: the 📐 Product Dimensions & Weight box now sits at the TOP of the Add/Edit Product form (right under the ✨ AI panel), so the size & weight the AI needs are filled before you click Generate — no more scrolling down to find them. And if anything the AI needs is missing (product name, dimensions, weight or a photo), the reason now shows in red RIGHT UNDER the ✨ Generate & Fill button (not just as a quick toast you can miss). Package Dimensions is now step ⑧. v5.4 — ✨ AI Listing Generator now works even when EDITING an existing product or after a page reload. Root cause: your product photos are stored on Google Drive and shown via Drive\'s drive.google.com/thumbnail address, which blocks the browser from reading the image back for the AI — so on an edit (or reload) the generator saw "no readable photo" and produced nothing. The app now reads that same Drive photo through Google\'s lh3.googleusercontent.com mirror (which DOES allow it), and uses a direct download-then-read path that also covers Wix, Amazon and ImgBB images. Net result: ✨ Generate & Fill now finds your photo whether you just uploaded it, reloaded the page, or opened an old listing to edit — no need to re-add the photo. v5.3 — Fixed the ✨ AI Listing Generator not filling the form while creating a new listing. Your uploaded photo is quietly moved to permanent hosting a few seconds after upload; the AI then couldn\'t re-read that hosted photo (cross-origin blocked), so it reported "Add at least one product photo" and generated nothing. The app now keeps a copy of your photo\'s image data the moment it uploads, so ✨ Generate & Fill always has a readable image — no more empty results, whether you click straight away or after the upload finishes. Clearer message too if an older product\'s hosted photo can\'t be read (just re-add the photo). v5.2 — My Products: click any product card (or the new 👁️ View button, now on demo/seed products too) to open its full listing exactly as customers see it. Fixed the "Coconut Coir Brush 2 Qty" card — its main image was a dead Wix asset; repointed to a working photo, and the My Products thumbnail now retries enc_avif→enc_auto like the rest of the app. Demo/seed products are now hidden from My Products once you have really listed the same item (close-title match), not just on exact-title match. v5.1 — Per-variation package size: each variation option (e.g. 1 Qty vs 2 Qty) can now carry its OWN optional package dimensions (L·W·H + weight) via a 📦 collapsible row — blank options fall back to the product\'s ⑨ Package Dimensions. Optional, per option. v5 — ✨ AI Listing Generator built into Add/Edit Product: one click writes the SEO Title (long), 5 bullet points, Description & backend keywords straight into the form (from the product name, dimensions & photo) — and records the same content to IBI\'s Google Docs automatically, exactly like the standalone Listing Generator. Asks before overwriting content you already typed. v4.19 — Social sharing previews: proper Open Graph + Twitter Card tags and a branded 1200×630 link-preview banner (rich previews on WhatsApp, Facebook, X). v4.18 — Per-variation image galleries: each variation option (e.g. each pack size / colour) can now carry its OWN photo(s). When a buyer picks an option, the product gallery (main image + thumbnails) rebuilds to show ONLY that option\'s photos; options without photos fall back to the product\'s full gallery. Sellers can attach MULTIPLE images per option (📷 appends, +N badge, × clears). v4.17 — Fixed mobile search (full-width row). v4.16 — Variations shown directly under price. v4.15 — Mobile fully edge-to-edge. v4.14 — Data Backup & Restore.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3378,7 +3378,7 @@ function ibiRestoreBackup(input){
 }
 
 function switchDashTab(tab) {
-  ['products','add','orders','earnings','profile'].forEach(t => {
+  ['products','add','orders','earnings','profile','catalog'].forEach(t => {
     const el  = document.getElementById('dashTab_' + t);
     const btn = document.getElementById('tab_' + t);
     if (el)  el.style.display  = (t === tab) ? 'block' : 'none';
@@ -3395,8 +3395,223 @@ function switchDashTab(tab) {
   if (tab === 'add')      { setupAddForm(); if (!window._scAllProds || !window._scAllProds.length) loadSellerProducts(); }
   if (tab === 'earnings') loadSellerEarnings();
   if (tab === 'orders')   loadSellerOrders();
+  if (tab === 'catalog')  ibiCatalogOpen();
   _toggleFloatDraft(tab);
   _saveSellerView({ open: true, tab: tab });   // remember the tab so a refresh returns here
+}
+
+// ══════════════════════════════════════════════════════════
+// CATALOGUE TRACKER — any seller uploads their product-name Excel and sees
+// which names are already listed (fuzzy match on dims + qty + words) and
+// which are still pending. List stored per-seller in localStorage.
+// ══════════════════════════════════════════════════════════
+function _catStoreKey() {
+  const s = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+  return 'ibi_catalog_' + (s ? s.sellerId : 'anon');
+}
+function _catLoadSaved() { try { return JSON.parse(localStorage.getItem(_catStoreKey()) || 'null'); } catch(e) { return null; } }
+
+// Lazy-load SheetJS only when a file is actually chosen (keeps first paint fast).
+function _catLoadLib(cb) {
+  if (window.XLSX) { cb(); return; }
+  const sc = document.createElement('script');
+  sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  sc.onload = cb;
+  sc.onerror = function() { showToast('⚠️ Could not load the Excel reader — check your internet and try again.'); };
+  document.head.appendChild(sc);
+}
+
+function ibiCatalogUpload(inp) {
+  const file = inp.files && inp.files[0];
+  inp.value = '';
+  if (!file) return;
+  _catLoadLib(function() {
+    const fr = new FileReader();
+    fr.onload = function(e) {
+      try {
+        const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        const names = _catExtractNames(rows);
+        if (!names.length) { showToast('⚠️ No product names found — put one product name per row in the first sheet.'); return; }
+        localStorage.setItem(_catStoreKey(), JSON.stringify({ names: names, fileName: file.name, uploadedAt: new Date().toLocaleString('en-IN') }));
+        showToast('✅ ' + names.length + ' product names loaded from ' + file.name, 'success');
+        ibiCatalogOpen();
+      } catch(err) { console.error(err); showToast('⚠️ Could not read that file. Save it as .xlsx and try again.'); }
+    };
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+// Pick the column that holds the product names: the one with the most texty
+// cells. Header rows / serial numbers are skipped automatically.
+function _catExtractNames(rows) {
+  let best = 0, bestCount = -1;
+  const colCount = rows.reduce(function(m, r) { return Math.max(m, r.length); }, 0);
+  for (let c = 0; c < colCount; c++) {
+    let n = 0;
+    for (let r = 0; r < rows.length; r++) {
+      const v = String(rows[r][c] || '').trim();
+      if (v.length >= 6 && !/^[\d.\s]+$/.test(v)) n++;
+    }
+    if (n > bestCount) { bestCount = n; best = c; }
+  }
+  const out = [], seen = {};
+  for (let r = 0; r < rows.length; r++) {
+    const v = String(rows[r][best] || '').trim();
+    if (v.length < 3) continue;
+    if (/^(sl\.?\s*no|s\.?\s*no|serial|name of the product|product\s*names?|item\s*names?)\b/i.test(v)) continue;  // header cells
+    if (/^[\d.\s]+$/.test(v)) continue;
+    const k = v.toLowerCase();
+    if (seen[k]) continue;
+    seen[k] = 1; out.push(v);
+  }
+  return out;
+}
+
+// ── fuzzy matcher: dims + qty + weight + word overlap (same logic as IBI's
+//    standalone comparison tool) ──
+const _CAT_STOP = {};
+'a an the of for and with in to qty pack set pcs piece pieces gm g gram grams kg cm mm liter liters litre litres bis each iintelligencei ibi india business international'
+  .split(' ').forEach(function(w) { _CAT_STOP[w] = 1; });
+function _catNorm(s) { return String(s || '').toLowerCase().normalize('NFKC').replace(/\u00d7/g, 'x').replace(/[^\w.\s]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function _catProfile(s) {
+  const n = _catNorm(s);
+  const dm = n.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)(?:\s*x\s*(\d+(?:\.\d+)?))?/);
+  const qm = n.match(/\b(\d+)\s*qty\b/) || n.match(/\bpack of (\d+)\b/) || n.match(/\bset of (\d+)\b/);
+  const wm = n.match(/\b(\d+(?:\.\d+)?)\s*(?:gm|g|grams?)\b/);
+  const toks = {};
+  n.split(' ').forEach(function(w) { if (!_CAT_STOP[w] && w.length >= 3 && !/^[\d.]+$/.test(w)) toks[w] = 1; });
+  return {
+    dims: dm ? dm.slice(1).filter(Boolean).map(parseFloat).join('x') : null,
+    qty : qm ? parseInt(qm[1], 10) : 1,
+    wt  : wm ? parseFloat(wm[1]) : null,
+    toks: toks
+  };
+}
+function _catScore(c, p) {
+  let s = 0;
+  if (c.dims && p.dims) s += (c.dims === p.dims) ? 3 : -1.5;
+  s += (c.qty === p.qty) ? 2 : -2.5;
+  if (c.wt != null && p.wt != null && Math.abs(c.wt - p.wt) < 1) s += 1;
+  const ck = Object.keys(c.toks);
+  if (ck.length) {
+    let ov = 0; ck.forEach(function(w) { if (p.toks[w]) ov++; });
+    s += 3 * (ov / ck.length);
+  }
+  return s;
+}
+function _catCompare(names, prods) {
+  const cp = names.map(function(n) { return _catProfile(n); });
+  const pp = prods.map(function(p) { return _catProfile(p.title || ''); });
+  const pairs = [];
+  for (let i = 0; i < cp.length; i++) for (let j = 0; j < pp.length; j++) {
+    const sc = _catScore(cp[i], pp[j]);
+    if (sc >= 3) pairs.push([sc, i, j]);
+  }
+  pairs.sort(function(a, b) { return b[0] - a[0]; });
+  const catM = {}, prodM = {};
+  pairs.forEach(function(pr) {
+    if (catM[pr[1]] !== undefined || prodM[pr[2]] !== undefined) return;
+    catM[pr[1]] = pr[2]; prodM[pr[2]] = pr[1];
+  });
+  return catM;   // catalogue index -> product index
+}
+
+// ── open / render ──
+function ibiCatalogOpen() {
+  const saved = _catLoadSaved();
+  const meta = document.getElementById('cat_meta');
+  document.getElementById('cat_clear_btn').style.display = saved ? '' : 'none';
+  document.getElementById('cat_search').style.display = saved ? '' : 'none';
+  if (!saved) {
+    meta.textContent = '';
+    document.getElementById('cat_summary').innerHTML = '';
+    document.getElementById('cat_pending').innerHTML =
+      '<div style="text-align:center;padding:34px;color:#888;"><div style="font-size:34px;margin-bottom:8px;">📄</div>No list uploaded yet — tap <b>⬆ Upload / Update Excel</b> to add your product-name sheet.</div>';
+    document.getElementById('cat_done').innerHTML = '';
+    return;
+  }
+  meta.textContent = '📄 ' + saved.fileName + ' · ' + saved.names.length + ' names · uploaded ' + saved.uploadedAt;
+  if (!window._scAllProds || !window._scAllProds.length) {
+    document.getElementById('cat_pending').innerHTML = '<div style="text-align:center;padding:24px;color:#888;">⏳ Loading your listings…</div>';
+    document.getElementById('cat_done').innerHTML = '';
+    loadSellerProducts();
+    let tries = 0;
+    const t = setInterval(function() {
+      tries++;
+      if (window._scAllProds && window._scAllProds.length) { clearInterval(t); _ibiCatRenderLists(); }
+      else if (tries > 25) { clearInterval(t); _ibiCatRenderLists(); }   // render anyway (0 products = everything pending)
+    }, 700);
+    return;
+  }
+  _ibiCatRenderLists();
+}
+
+function ibiCatalogClear() {
+  if (!confirm('Remove the uploaded product-name list from this device? (Your live listings are not affected.)')) return;
+  localStorage.removeItem(_catStoreKey());
+  ibiCatalogOpen();
+}
+
+function _ibiCatRenderLists() {
+  const saved = _catLoadSaved();
+  if (!saved) return;
+  const prods = (window._scAllProds || []).filter(function(p) { return p && p.title; });
+  const map = _catCompare(saved.names, prods);
+  const q = (document.getElementById('cat_search').value || '').toLowerCase();
+  const pending = [], done = [];
+  saved.names.forEach(function(n, i) {
+    if (q && n.toLowerCase().indexOf(q) === -1) return;
+    if (map[i] !== undefined) done.push([n, prods[map[i]]]); else pending.push(n);
+  });
+  const totalDone = Object.keys(map).length, total = saved.names.length;
+  const pc = total ? Math.round(totalDone * 100 / total) : 0;
+  document.getElementById('cat_summary').innerHTML =
+    _catChip('#eef2ff', '#4338ca', total + ' in your list') +
+    _catChip('#dcfce7', '#166534', '✅ ' + totalDone + ' completed') +
+    _catChip('#fef3c7', '#92400e', '🕐 ' + (total - totalDone) + ' pending') +
+    _catChip('#f1f5f9', '#334155', pc + '% done') +
+    '<button onclick="ibiCatCopyPending()" style="padding:6px 12px;background:transparent;border:1px solid #cbd5e1;border-radius:20px;font-size:12px;cursor:pointer;color:#334155;">📋 Copy pending list</button>';
+  document.getElementById('cat_pending').innerHTML =
+    '<h4 style="margin:0 0 8px;color:#92400e;">🕐 Pending — not listed yet (' + pending.length + (q ? ' shown' : '') + ')</h4>' +
+    (pending.length ? pending.map(function(n) {
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border:1px solid #fde68a;background:#fffbeb;border-radius:8px;margin-bottom:6px;">' +
+             '<span style="font-size:13px;color:#131921;">' + _catEsc(n) + '</span>' +
+             '<button onclick="ibiCatListNow(this.getAttribute(\'data-n\'))" data-n="' + _catEsc(n) + '" style="flex-shrink:0;padding:6px 12px;background:#0098c9;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">➕ List now</button></div>';
+    }).join('') : '<div style="font-size:13px;color:#16a34a;padding:8px;">🎉 Nothing pending — every name in your list is listed!</div>');
+  document.getElementById('cat_done').innerHTML =
+    '<h4 style="margin:0 0 8px;color:#166534;">✅ Completed (' + done.length + (q ? ' shown' : '') + ')</h4>' +
+    (done.length ? done.map(function(d) {
+      const st = (d[1].status || '').toString();
+      const stChip = st && st !== 'Approved' ? ' <span style="font-size:11px;background:#fef3c7;color:#92400e;border-radius:10px;padding:1px 8px;">' + _catEsc(st) + '</span>' : '';
+      return '<div style="padding:8px 12px;border:1px solid #bbf7d0;background:#f0fdf4;border-radius:8px;margin-bottom:6px;">' +
+             '<div style="font-size:13px;color:#131921;">' + _catEsc(d[0]) + stChip + '</div>' +
+             '<div style="font-size:11.5px;color:#888;">↳ listed as: ' + _catEsc((d[1].title || '').slice(0, 110)) + '</div></div>';
+    }).join('') : '<div style="font-size:13px;color:#888;padding:8px;">None matched yet.</div>');
+}
+function _catChip(bg, fg, label) { return '<span style="background:' + bg + ';color:' + fg + ';border-radius:20px;padding:6px 14px;font-size:12.5px;font-weight:700;">' + label + '</span>'; }
+function _catEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+// Jump to Add Product with the AI name box pre-filled with the pending name.
+function ibiCatListNow(name) {
+  switchDashTab('add');
+  setTimeout(function() {
+    const el = document.getElementById('ap_gen_name');
+    if (el) { el.value = name; el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
+    showToast('✨ Name filled — add dimensions, weight & a photo, then Generate & Fill.', 'success');
+  }, 450);
+}
+function ibiCatCopyPending() {
+  const saved = _catLoadSaved(); if (!saved) return;
+  const prods = (window._scAllProds || []).filter(function(p) { return p && p.title; });
+  const map = _catCompare(saved.names, prods);
+  const pending = saved.names.filter(function(n, i) { return map[i] === undefined; });
+  const txt = pending.join('\n');
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(
+    function() { showToast('📋 ' + pending.length + ' pending names copied.', 'success'); },
+    function() { prompt('Copy your pending list:', txt); }
+  );
 }
 
 // ══════════════════════════════════════════════════════════
@@ -9935,6 +10150,7 @@ init();
           <button onclick="switchDashTab('orders')"   id="tab_orders"   class="sc-tab">🛒 Orders</button>
           <button onclick="switchDashTab('earnings')" id="tab_earnings" class="sc-tab">💰 Earnings</button>
           <button onclick="switchDashTab('profile')"  id="tab_profile"  class="sc-tab">👤 Profile</button>
+          <button onclick="switchDashTab('catalog')"  id="tab_catalog"  class="sc-tab">📋 Catalogue</button>
         </div>
       </div>
 
@@ -10700,6 +10916,26 @@ init();
       </div>
 
       <!-- TAB: Earnings & Payouts -->
+      <!-- ═══ CATALOGUE TRACKER — upload a product-name Excel, see Completed vs Pending ═══ -->
+      <div id="dashTab_catalog" style="display:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+            <h3 style="margin:0;color:#131921;">📋 Catalogue Tracker</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="document.getElementById('cat_file').click()" style="padding:8px 16px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">⬆ Upload / Update Excel</button>
+              <button onclick="ibiCatalogClear()" id="cat_clear_btn" style="display:none;padding:8px 12px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:13px;cursor:pointer;">🗑 Clear list</button>
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:#666;margin:0 0 4px;">Upload your master product-name list (<b>.xlsx / .xls / .csv</b> — one product name per row, e.g. “Coir Brush, 37.5x11x4 cm, 233 gm, 1 Qty”). The tracker compares it with your listings and shows what is <b style="color:#16a34a;">✅ Completed</b> and what is <b style="color:#d97706;">🕐 Pending</b>. Your list is saved on this device, so it is still here tomorrow — re-upload anytime to update it.</p>
+          <input type="file" id="cat_file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="ibiCatalogUpload(this)"/>
+          <div id="cat_meta" style="font-size:12px;color:#888;margin:4px 0 10px;"></div>
+          <div id="cat_summary" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;"></div>
+          <input id="cat_search" type="text" placeholder="🔍 Type to filter product names…" oninput="_ibiCatRenderLists()" style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;margin-bottom:12px;display:none;"/>
+          <div id="cat_pending"></div>
+          <div id="cat_done" style="margin-top:14px;"></div>
+        </div>
+      </div>
+
       <div id="dashTab_earnings" style="display:none;">
         <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;margin-bottom:16px;">
           <div style="background:linear-gradient(135deg,#16a34a,#15803d);padding:20px;color:#fff;">
