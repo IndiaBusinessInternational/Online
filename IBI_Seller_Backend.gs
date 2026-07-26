@@ -52,6 +52,20 @@ const AUTO_APPROVE_SELLER_EMAILS  = ['indiabusinessinternational@gmail.com']; //
 const AUTO_APPROVE_NAME_MATCH     = ['iintelligencei','india intelligence international']; // business-name substrings, lowercased
 
 // True only for the whitelisted iINTELLIGENCEi seller (matched by ID / email / business name).
+// Match by SELLER ID ALONE — no Sellers-sheet row needed.
+// ⚠ WHY THIS EXISTS: verifySellerPin() has a built-in bypass for the legacy accounts
+// ('IINTELLIGENCEI' / 'IBI'), so that seller authenticates WITHOUT having a row in the
+// Sellers sheet. findSellerById() therefore returns null in addProduct/editProduct and
+// _isAutoApproveSeller(null) bailed on its first line — so auto-approval never fired for
+// the very account it was written for, and its listings sat on 'Pending'.
+// Still strictly limited to AUTO_APPROVE_SELLER_IDS, i.e. iINTELLIGENCEi only.
+function _isAutoApproveSellerId(sellerId) {
+  if (!AUTO_APPROVE_ENABLED) return false;
+  const id = String(sellerId || '').toUpperCase().trim();
+  if (!id) return false;
+  return AUTO_APPROVE_SELLER_IDS.some(function(x){ return String(x).toUpperCase().trim() === id; });
+}
+
 function _isAutoApproveSeller(sellerRow) {
   if (!AUTO_APPROVE_ENABLED || !sellerRow) return false;
   const id    = String(sellerRow[COL.SELLER_ID-1] || '').toUpperCase().trim();
@@ -211,7 +225,7 @@ function addProduct(p) {
   const pid='PROD-'+p.sellerId.toUpperCase()+'-'+Date.now().toString().slice(-6);
   // TEMPORARY auto-approval — ONLY for the whitelisted iINTELLIGENCEi seller: its new listings
   // are born Approved (live immediately). Every other seller starts Pending for normal IBI review.
-  const autoApprove  = _isAutoApproveSeller(seller);
+  const autoApprove  = _isAutoApproveSeller(seller) || _isAutoApproveSellerId(p.sellerId);
   const initStatus   = autoApprove ? 'Approved' : 'Pending';
   const initApproved = autoApprove ? new Date().toLocaleDateString('en-IN') : '';
   sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]',initStatus,'',initApproved,'',parseInt(p.minQty)||1,parseInt(p.maxQty)||0]);
@@ -274,7 +288,7 @@ function editProduct(p) {
   // save. A Paused listing stays Paused (the seller hid it on purpose).
   if (newStatus === 'Pending') {
     var _autoSeller = findSellerById(getOrCreateSellerSheet(), String(p.sellerId||'').toUpperCase());
-    if (_isAutoApproveSeller(_autoSeller)) {
+    if (_isAutoApproveSeller(_autoSeller) || _isAutoApproveSellerId(p.sellerId)) {
       newStatus = 'Approved';
       var _apCell = sheet.getRange(r,PCOL.APPROVED_ON,1,1);
       if (!String(_apCell.getValue()||'').trim()) _apCell.setValue(new Date().toLocaleDateString('en-IN'));
