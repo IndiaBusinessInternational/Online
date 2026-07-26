@@ -27,13 +27,17 @@ const COL = {
 };
 
 // IMPORTANT: this MUST match the column order written by appendRow in addProduct().
-// Layout is 23 columns. Do NOT change one without changing the other.
+// Layout is 25 columns. Do NOT change one without changing the other.
+// (cols 24-25 added 26 Jul 2026: Amazon-style Min / Max Order Quantity. Existing rows
+//  read back blank, which the front-end treats as min 1 / no max, so no migration is
+//  strictly required — run migrateProductRows() only if you want the cells filled.)
 const PCOL = {
   TIMESTAMP:1, PRODUCT_ID:2, SELLER_ID:3, BIZ_NAME:4,
   TITLE:5, CATEGORY:6, BRAND:7, PRICE:8, MRP:9, IMG:10,
   ADDITIONAL_IMGS:11, DESCRIPTION:12, BULLETS:13, STOCK:14, HSN:15,
   TAGS:16, PRODUCT_DIMENSIONS:17, PACKAGE_DIMENSIONS:18, VARIATIONS:19,
-  STATUS:20, REJECT_REASON:21, APPROVED_ON:22, UPDATED_ON:23
+  STATUS:20, REJECT_REASON:21, APPROVED_ON:22, UPDATED_ON:23,
+  MIN_QTY:24, MAX_QTY:25
 };
 
 // ⚠️ TEMPORARY — auto-approve NEW product listings ONLY for the iINTELLIGENCEi seller
@@ -210,7 +214,7 @@ function addProduct(p) {
   const autoApprove  = _isAutoApproveSeller(seller);
   const initStatus   = autoApprove ? 'Approved' : 'Pending';
   const initApproved = autoApprove ? new Date().toLocaleDateString('en-IN') : '';
-  sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]',initStatus,'',initApproved,'']);
+  sheet.appendRow([new Date().toLocaleString('en-IN'),pid,p.sellerId.toUpperCase(),biz,p.title,p.category,p.brand,parseFloat(p.price)||0,parseFloat(p.mrp)||0,p.img||'',p.additionalImgs||'',p.description||'',p.bullets||'',parseInt(p.stock)||0,p.hsn||'',p.tags||'',p.productDimensions||'',p.packageDimensions||'',p.variations||'[]',initStatus,'',initApproved,'',parseInt(p.minQty)||1,parseInt(p.maxQty)||0]);
   sheet.getRange(sheet.getLastRow(),PCOL.STATUS,1,1).setBackground(autoApprove?'#C8E6C9':'#FFF9C4');
   try{MailApp.sendEmail({to:'indiabusinessinternational@gmail.com',subject:'New Product'+(autoApprove?' (auto-approved)':'')+': '+p.title.substring(0,40)+' ['+p.sellerId+']',htmlBody:prodSubmitHTML(pid,p,biz)});}catch(e2){Logger.log(e2);}
   return jsonResponse({success:true,productId:pid,status:initStatus,message:autoApprove?'Product is live!':'Submitted for review!'});
@@ -256,6 +260,8 @@ function editProduct(p) {
   if (p.productDimensions !== undefined) sheet.getRange(r,PCOL.PRODUCT_DIMENSIONS,1,1).setValue(p.productDimensions||'');
   if (p.packageDimensions !== undefined) sheet.getRange(r,PCOL.PACKAGE_DIMENSIONS,1,1).setValue(p.packageDimensions||'');
   if (p.variations        !== undefined) sheet.getRange(r,PCOL.VARIATIONS,1,1).setValue(p.variations||'[]');
+  if (p.minQty            !== undefined) sheet.getRange(r,PCOL.MIN_QTY,1,1).setValue(parseInt(p.minQty)||1);
+  if (p.maxQty            !== undefined) sheet.getRange(r,PCOL.MAX_QTY,1,1).setValue(parseInt(p.maxQty)||0);
   // ── Keep an already-vetted listing LIVE when its seller edits it, so price / stock /
   //    content changes appear on the storefront IMMEDIATELY — no re-approval, no vanishing.
   //    An Approved product stays Approved; a Paused one stays Paused (seller hid it on purpose).
@@ -292,7 +298,7 @@ function getSellerProducts(p) {
   for(let i=1;i<data.length;i++){
     const row=data[i];
     if((row[PCOL.SELLER_ID-1]||'').toUpperCase()!==p.sellerId.toUpperCase()) continue;
-    prods.push({productId:row[PCOL.PRODUCT_ID-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1]||'',additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',description:row[PCOL.DESCRIPTION-1]||'',bullets:row[PCOL.BULLETS-1]||'',stock:row[PCOL.STOCK-1],tags:row[PCOL.TAGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',status:row[PCOL.STATUS-1]||'Pending',rejectReason:row[PCOL.REJECT_REASON-1]||'',approvedOn:row[PCOL.APPROVED_ON-1]||''});
+    prods.push({productId:row[PCOL.PRODUCT_ID-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1]||'',additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',description:row[PCOL.DESCRIPTION-1]||'',bullets:row[PCOL.BULLETS-1]||'',stock:row[PCOL.STOCK-1],tags:row[PCOL.TAGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||'',status:row[PCOL.STATUS-1]||'Pending',rejectReason:row[PCOL.REJECT_REASON-1]||'',approvedOn:row[PCOL.APPROVED_ON-1]||''});
   }
   return jsonResponse({success:true,products:prods});
 }
@@ -303,7 +309,7 @@ function getProduct(p) {
   const f=findProductRow(sheet,p.productId,p.sellerId);
   if(!f.data) return jsonResponse({success:false,message:'Not found'});
   const d=f.data;
-  return jsonResponse({success:true,product:{productId:d[PCOL.PRODUCT_ID-1],title:d[PCOL.TITLE-1],category:d[PCOL.CATEGORY-1],brand:d[PCOL.BRAND-1],price:d[PCOL.PRICE-1],mrp:d[PCOL.MRP-1],img:d[PCOL.IMG-1],additionalImgs:d[PCOL.ADDITIONAL_IMGS-1]||'',description:d[PCOL.DESCRIPTION-1],bullets:d[PCOL.BULLETS-1],stock:d[PCOL.STOCK-1],hsn:d[PCOL.HSN-1],tags:d[PCOL.TAGS-1]||'',productDimensions:d[PCOL.PRODUCT_DIMENSIONS-1]||'',packageDimensions:d[PCOL.PACKAGE_DIMENSIONS-1]||'',variations:d[PCOL.VARIATIONS-1]||'[]',status:d[PCOL.STATUS-1]}});
+  return jsonResponse({success:true,product:{productId:d[PCOL.PRODUCT_ID-1],title:d[PCOL.TITLE-1],category:d[PCOL.CATEGORY-1],brand:d[PCOL.BRAND-1],price:d[PCOL.PRICE-1],mrp:d[PCOL.MRP-1],img:d[PCOL.IMG-1],additionalImgs:d[PCOL.ADDITIONAL_IMGS-1]||'',description:d[PCOL.DESCRIPTION-1],bullets:d[PCOL.BULLETS-1],stock:d[PCOL.STOCK-1],hsn:d[PCOL.HSN-1],tags:d[PCOL.TAGS-1]||'',productDimensions:d[PCOL.PRODUCT_DIMENSIONS-1]||'',packageDimensions:d[PCOL.PACKAGE_DIMENSIONS-1]||'',variations:d[PCOL.VARIATIONS-1]||'[]',minQty:d[PCOL.MIN_QTY-1]||'',maxQty:d[PCOL.MAX_QTY-1]||'',status:d[PCOL.STATUS-1]}});
 }
 
 function pauseProduct_fn(p) {
@@ -332,7 +338,7 @@ function getApprovedProducts() {
   for(let i=1;i<data.length;i++){
     const row=data[i];
     if((row[PCOL.STATUS-1]||'')!=='Approved') continue;
-    prods.push({productId:row[PCOL.PRODUCT_ID-1],sellerId:row[PCOL.SELLER_ID-1],bizName:row[PCOL.BIZ_NAME-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1],additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',description:row[PCOL.DESCRIPTION-1],bullets:row[PCOL.BULLETS-1],stock:row[PCOL.STOCK-1]});
+    prods.push({productId:row[PCOL.PRODUCT_ID-1],sellerId:row[PCOL.SELLER_ID-1],bizName:row[PCOL.BIZ_NAME-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1],additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',description:row[PCOL.DESCRIPTION-1],bullets:row[PCOL.BULLETS-1],stock:row[PCOL.STOCK-1],minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||''});
   }
   return jsonResponse({success:true,products:prods});
 }
