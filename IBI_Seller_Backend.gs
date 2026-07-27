@@ -384,12 +384,37 @@ function findDuplicateProductRow(sheet,sellerId,title){
   return null;
 }
 
+// Append a product row to the "Product Backups" tab BEFORE it is overwritten, so a
+// mistaken edit/overwrite is always recoverable. A seller once replaced an Aluminium
+// Bucket listing with an Aluminium Food Strainer and the bucket's title, photos, price
+// and content were gone for good. Append-only; one row per edit.
+const BACKUP_SHEET_NAME = 'Product Backups';
+function _backupProductRow(sheet, rowNum, reason) {
+  try {
+    const ss = sheet.getParent();
+    let b = ss.getSheetByName(BACKUP_SHEET_NAME);
+    const width = sheet.getLastColumn();
+    if (!b) {
+      b = ss.insertSheet(BACKUP_SHEET_NAME);
+      const head = ['Backed up at','Reason','Original row'].concat(sheet.getRange(1,1,1,width).getValues()[0]);
+      b.appendRow(head);
+      b.getRange(1,1,1,head.length).setFontWeight('bold').setBackground('#eef2ff');
+      b.setFrozenRows(1);
+    }
+    const vals = sheet.getRange(rowNum,1,1,width).getValues()[0];
+    b.appendRow([new Date().toLocaleString('en-IN'), reason||'edit', rowNum].concat(vals));
+    return true;
+  } catch (e) { return false; }     // a backup failure must never block the edit
+}
+
 function editProduct(p) {
   if(!verifySellerPin(p.sellerId,p.pin)) return jsonResponse({success:false,message:'Unauthorized'});
   const sheet=getOrCreateProductSheet();
   const f=findProductRow(sheet,p.productId,p.sellerId);
   if(!f.rowNum) return jsonResponse({success:false,message:'Not found'});
   const r=f.rowNum;
+  // Snapshot what is about to be replaced (see _backupProductRow).
+  const backedUp=_backupProductRow(sheet,r,(String(p.overwrite||'')==='1')?'overwrite from Add Product':'seller edit');
   sheet.getRange(r,PCOL.TITLE,1,1).setValue(p.title||'');
   sheet.getRange(r,PCOL.CATEGORY,1,1).setValue(p.category||'');
   sheet.getRange(r,PCOL.BRAND,1,1).setValue(p.brand||'');
@@ -433,6 +458,7 @@ function editProduct(p) {
   return jsonResponse({
     success:true,
     status:newStatus,
+    backedUp:backedUp,
     message: newStatus === 'Pending' ? 'Updated — pending review' : 'Updated — changes are live'
   });
 }
