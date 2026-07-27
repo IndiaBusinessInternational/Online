@@ -394,7 +394,7 @@ function getSellerProducts(p) {
   for(let i=1;i<data.length;i++){
     const row=data[i];
     if((row[PCOL.SELLER_ID-1]||'').toUpperCase()!==p.sellerId.toUpperCase()) continue;
-    prods.push({productId:row[PCOL.PRODUCT_ID-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1]||'',additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',description:row[PCOL.DESCRIPTION-1]||'',bullets:row[PCOL.BULLETS-1]||'',stock:row[PCOL.STOCK-1],tags:row[PCOL.TAGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||'',status:row[PCOL.STATUS-1]||'Pending',rejectReason:row[PCOL.REJECT_REASON-1]||'',approvedOn:row[PCOL.APPROVED_ON-1]||''});
+    prods.push({productId:row[PCOL.PRODUCT_ID-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1]||'',additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',description:row[PCOL.DESCRIPTION-1]||'',bullets:row[PCOL.BULLETS-1]||'',stock:row[PCOL.STOCK-1],tags:row[PCOL.TAGS-1]||'',productDimensions:row[PCOL.PRODUCT_DIMENSIONS-1]||'',packageDimensions:row[PCOL.PACKAGE_DIMENSIONS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||'',status:row[PCOL.STATUS-1]||'Pending',rejectReason:row[PCOL.REJECT_REASON-1]||'',approvedOn:row[PCOL.APPROVED_ON-1]||''});
   }
   return jsonResponse({success:true,products:prods});
 }
@@ -434,7 +434,7 @@ function getApprovedProducts() {
   for(let i=1;i<data.length;i++){
     const row=data[i];
     if((row[PCOL.STATUS-1]||'')!=='Approved') continue;
-    prods.push({productId:row[PCOL.PRODUCT_ID-1],sellerId:row[PCOL.SELLER_ID-1],bizName:row[PCOL.BIZ_NAME-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1],additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',description:row[PCOL.DESCRIPTION-1],bullets:row[PCOL.BULLETS-1],stock:row[PCOL.STOCK-1],minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||''});
+    prods.push({productId:row[PCOL.PRODUCT_ID-1],sellerId:row[PCOL.SELLER_ID-1],bizName:row[PCOL.BIZ_NAME-1],title:row[PCOL.TITLE-1],category:row[PCOL.CATEGORY-1],brand:row[PCOL.BRAND-1],price:row[PCOL.PRICE-1],mrp:row[PCOL.MRP-1],img:row[PCOL.IMG-1],additionalImgs:row[PCOL.ADDITIONAL_IMGS-1]||'',variations:row[PCOL.VARIATIONS-1]||'[]',description:row[PCOL.DESCRIPTION-1],bullets:row[PCOL.BULLETS-1],stock:row[PCOL.STOCK-1],productDimensions:row[PCOL.PRODUCT_DIMENSIONS-1]||'',packageDimensions:row[PCOL.PACKAGE_DIMENSIONS-1]||'',minQty:row[PCOL.MIN_QTY-1]||'',maxQty:row[PCOL.MAX_QTY-1]||''});
   }
   return jsonResponse({success:true,products:prods});
 }
