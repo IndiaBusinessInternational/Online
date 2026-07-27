@@ -218,8 +218,11 @@ function addProduct(p) {
   // ── Duplicate-listing guard: reject a repeat of an existing listing (same seller + same
   //    title). The seller's front-end turns this into a Cancel / Overwrite choice; Overwrite
   //    routes through editProduct, which updates the existing row in place. ──
-  const dupRow=findDuplicateProductRow(sheet,p.sellerId,p.title);
-  if(dupRow) return jsonResponse({success:false,duplicate:true,productId:dupRow.productId,status:dupRow.status,message:'You have already listed this product.'});
+  //    `allowDuplicate=1` is the seller answering "no, it really is a different product"
+  //    in that dialog — a false positive must never force them to overwrite a good listing
+  //    (an Aluminium Food Strainer replaced the Aluminium Bucket that way).
+  const dupRow=(String(p.allowDuplicate||'')==='1')?null:findDuplicateProductRow(sheet,p.sellerId,p.title);
+  if(dupRow) return jsonResponse({success:false,duplicate:true,productId:dupRow.productId,title:dupRow.title||'',status:dupRow.status,message:'You have already listed this product.'});
   const seller=findSellerById(getOrCreateSellerSheet(),p.sellerId.toUpperCase());
   const biz=seller?(seller[COL.BIZ_NAME-1]||''):p.sellerId;
   const pid='PROD-'+p.sellerId.toUpperCase()+'-'+Date.now().toString().slice(-6);
@@ -358,7 +361,7 @@ function findDuplicateProductRow(sheet,sellerId,title){
     const row=data[i];
     if(String(row[PCOL.SELLER_ID-1]||'').toUpperCase()!==sid) continue;
     // exact match wins immediately (fast path, unchanged behaviour)
-    if(norm(row[PCOL.TITLE-1])===t) return {productId:row[PCOL.PRODUCT_ID-1],status:row[PCOL.STATUS-1]||'Pending',rowNum:i+1};
+    if(norm(row[PCOL.TITLE-1])===t) return {productId:row[PCOL.PRODUCT_ID-1],title:String(row[PCOL.TITLE-1]||''),status:row[PCOL.STATUS-1]||'Pending',rowNum:i+1};
     mine.push({row:row,rowNum:i+1});
   }
   // fuzzy pass — same rules as the front-end (content words weighted by rarity)
@@ -377,7 +380,7 @@ function findDuplicateProductRow(sheet,sellerId,title){
     if(q.wt!=null&&cp.wt!=null) sc+=(Math.abs(q.wt-cp.wt)<1)?1:-1;
     if(sc>=DUP_MIN_SCORE&&sc>bestScore){bestScore=sc;best=mine[k];}
   }
-  if(best) return {productId:best.row[PCOL.PRODUCT_ID-1],status:best.row[PCOL.STATUS-1]||'Pending',rowNum:best.rowNum};
+  if(best) return {productId:best.row[PCOL.PRODUCT_ID-1],title:String(best.row[PCOL.TITLE-1]||''),status:best.row[PCOL.STATUS-1]||'Pending',rowNum:best.rowNum};
   return null;
 }
 
