@@ -500,8 +500,11 @@ function deleteProduct_fn(p) {
   const sheet=getOrCreateProductSheet();
   const f=findProductRow(sheet,p.productId,p.sellerId);
   if(!f.rowNum) return jsonResponse({success:false,message:'Not found'});
+  // Snapshot the row into "Product Backups" BEFORE it disappears — a delete is
+  // otherwise unrecoverable, and Delete-all removes a whole catalogue at once.
+  const backedUp=_backupProductRow(sheet,f.rowNum,'delete');
   sheet.deleteRow(f.rowNum);
-  return jsonResponse({success:true,message:'Deleted'});
+  return jsonResponse({success:true,message:'Deleted',backedUp:backedUp});
 }
 
 function getApprovedProducts() {
