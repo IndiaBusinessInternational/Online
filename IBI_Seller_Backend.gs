@@ -303,6 +303,50 @@ function _dupJaccard(a,b){
   return inter / (ka.length + kb.length - inter);
 }
 
+// ── CONTENT-word comparison (mirror of the front-end _findDuplicateProduct) ────────────
+// The AI writes the same marketing prose for every product, so whole-title similarity made
+// unrelated products look alike (a Dust Pan matched an Aluminium Bucket). Compare only the
+// words that identify the product, weighted by how RARE each is in this seller's catalogue.
+// KEEP IN STEP WITH index.html — the thresholds were measured on the 54 live listings.
+const _DUP_GENERIC = (function(){
+  const o = {};
+  ('iintelligencei ibi india brand new premium quality best top super ultra heavy duty rust free rustfree ' +
+   'stainless steel metal plastic strong sturdy durable lightweight light weight multipurpose multi purpose ' +
+   'use useful reusable easy handle handles grip with without for and the home house kitchen bathroom bath ' +
+   'garden office restaurant hotel outdoor indoor cleaning clean storage store organizer holder tool tools ' +
+   'set pack pcs piece pieces capacity certified isi bis iso approved standard size large medium small big ' +
+   'mini litre liter ltr inch water proof waterproof anti slip nonstick non stick long lasting perfect ideal ' +
+   'daily commercial professional traditional modern classic stylish elegant smooth finish coated coating ' +
+   'safe safety hygienic food grade all everyday').split(' ').forEach(function(w){ o[w] = 1; });
+  return o;
+})();
+const DUP_WC_MIN = 0.34, DUP_MIN_SCORE = 3.2;
+
+function _dupContentToks(t){
+  const out = {};
+  _dupNorm(t || '').split(' ').forEach(function(w){
+    if (w.length >= 3 && !_DUP_STOP[w] && !_DUP_GENERIC[w] && !/^[\d.]+$/.test(w)) out[w] = 1;
+  });
+  return Object.keys(out);
+}
+function _dupIdf(titles){
+  const df = {}, n = (titles || []).length;
+  (titles || []).forEach(function(t){ _dupContentToks(t).forEach(function(w){ df[w] = (df[w] || 0) + 1; }); });
+  return function(w){ return Math.log(1 + n / (1 + (df[w] || 0))); };
+}
+function _dupWordSim(a,b,idf){
+  const A = _dupContentToks(a), B = _dupContentToks(b), inB = {};
+  B.forEach(function(w){ inB[w] = 1; });
+  let shared = 0, wa = 0, wb = 0;
+  A.forEach(function(w){ wa += idf(w); if (inB[w]) shared += idf(w); });
+  B.forEach(function(w){ wb += idf(w); });
+  const denom = Math.min(wa, wb);
+  return denom > 0 ? (shared / denom) : 0;
+}
+function _dupDimsKey(d){
+  return String(d || '').split('x').map(parseFloat).sort(function(x,y){ return x - y; }).join('x');
+}
+
 function findDuplicateProductRow(sheet,sellerId,title){
   const norm=function(s){return String(s==null?'':s).toLowerCase().replace(/\s+/g,' ').trim();};
   const t=norm(title);
@@ -317,17 +361,21 @@ function findDuplicateProductRow(sheet,sellerId,title){
     if(norm(row[PCOL.TITLE-1])===t) return {productId:row[PCOL.PRODUCT_ID-1],status:row[PCOL.STATUS-1]||'Pending',rowNum:i+1};
     mine.push({row:row,rowNum:i+1});
   }
-  // fuzzy pass — same rules as the front-end
+  // fuzzy pass — same rules as the front-end (content words weighted by rarity)
   const q=_dupProfile(title);
+  const idf=_dupIdf(mine.map(function(m){ return String(m.row[PCOL.TITLE-1]||''); }));
   let best=null,bestScore=0;
   for(let k=0;k<mine.length;k++){
     const cTitle=String(mine[k].row[PCOL.TITLE-1]||'');
     if(!cTitle) continue;
     const cp=_dupProfile(cTitle);
     if(cp.qty!==q.qty) continue;                       // 1 Qty vs 2 Qty = different products
-    const sc=_dupScore(q,cp);
-    const jac=_dupJaccard(title,cTitle);
-    if((sc>=2.5||jac>=0.5)&&sc>bestScore){bestScore=sc;best=mine[k];}
+    const wc=_dupWordSim(title,cTitle,idf);
+    if(wc<DUP_WC_MIN) continue;                        // no distinctive word in common
+    let sc=4*wc;
+    if(q.dims&&cp.dims) sc+=(_dupDimsKey(q.dims)===_dupDimsKey(cp.dims))?2:-2;
+    if(q.wt!=null&&cp.wt!=null) sc+=(Math.abs(q.wt-cp.wt)<1)?1:-1;
+    if(sc>=DUP_MIN_SCORE&&sc>bestScore){bestScore=sc;best=mine[k];}
   }
   if(best) return {productId:best.row[PCOL.PRODUCT_ID-1],status:best.row[PCOL.STATUS-1]||'Pending',rowNum:best.rowNum};
   return null;
