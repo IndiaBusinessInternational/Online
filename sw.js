@@ -3,7 +3,7 @@
 // Version: 4.0 — Updated for indiabusinessinternational.online
 // ============================================================
 
-const CACHE_NAME  = 'ibi-marketplace-v8-5-1';   // bump on every MAJOR release — purges old caches
+const CACHE_NAME  = 'ibi-marketplace-v8-6';   // bump on every MAJOR release — purges old caches
 const OFFLINE_URL = '/';
 
 const CACHE_FILES = [
