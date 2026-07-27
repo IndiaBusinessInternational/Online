@@ -237,17 +237,99 @@ function addProduct(p) {
 // Find an existing product row for this seller whose title matches (normalised), else null.
 // Used by addProduct to block repeat listings (same seller + same title). Normalisation
 // (lowercase, collapse whitespace, trim) MUST match the front-end _findDuplicateProduct().
+// ── Duplicate detection, mirrored from the front-end (index.html _findDuplicateProduct)
+//    ⚠ An EXACT title match alone is far too weak: the AI listing generator rewrites the
+//    title on every run, so re-listing the SAME product produced a fresh title, slipped
+//    past this guard and created a duplicate row. Keep BOTH layers in step — if you change
+//    the scoring here, change it there too.
+//
+//    Scoring measured on real seller titles:
+//                            jaccard  score  qty
+//      Polo, AI re-worded     0.378    3.09  1/1  -> SAME product
+//      Dog Chain, re-worded    0.371    3.74  1/1  -> SAME product
+//      Coir 2 Qty vs 1 Qty     0.800    4.50  2/1  -> DIFFERENT (pack variant)
+//      Achu Mould vs Coir      0.263    0.50  1/1  -> DIFFERENT product
+//    The pack variant scores HIGHEST on both measures, so pack quantity is a HARD GATE
+//    (a differing qty can NEVER be a duplicate); with qty equal, score >= 2.5 (or
+//    jaccard >= 0.5) separates a re-worded title from an unrelated product.
+const _DUP_STOP = (function(){
+  const o = {};
+  ('a an the of for and with in to qty pack set pcs piece pieces gm g gram grams kg cm mm liter liters litre litres ' +
+   'bis each iintelligencei ibi india business international').split(' ').forEach(function(w){ o[w] = 1; });
+  return o;
+})();
+
+function _dupNorm(s){
+  return String(s==null?'':s).toLowerCase()
+    .replace(/\u00d7/g,'x')            // × -> x so dimensions compare
+    .replace(/[^\w.\s]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+function _dupProfile(s){
+  const n = _dupNorm(s);
+  const dm = n.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)(?:\s*x\s*(\d+(?:\.\d+)?))?/);
+  const qm = n.match(/\b(\d+)\s*qty\b/) || n.match(/\bpack of (\d+)\b/) || n.match(/\bset of (\d+)\b/);
+  const wm = n.match(/\b(\d+(?:\.\d+)?)\s*(?:gm|g|grams?)\b/);
+  const toks = {};
+  n.split(' ').forEach(function(w){
+    if (!_DUP_STOP[w] && w.length >= 3 && !/^[\d.]+$/.test(w)) toks[w] = 1;
+  });
+  return {
+    dims: dm ? dm.slice(1).filter(Boolean).map(parseFloat).join('x') : null,
+    qty : qm ? parseInt(qm[1],10) : 1,
+    wt  : wm ? parseFloat(wm[1]) : null,
+    toks: toks
+  };
+}
+function _dupScore(c,p){
+  let s = 0;
+  if (c.dims && p.dims) s += (c.dims === p.dims) ? 3 : -1.5;
+  s += (c.qty === p.qty) ? 2 : -2.5;
+  if (c.wt != null && p.wt != null && Math.abs(c.wt - p.wt) < 1) s += 1;
+  const ck = Object.keys(c.toks);
+  if (ck.length) {
+    let ov = 0;
+    ck.forEach(function(w){ if (p.toks[w]) ov++; });
+    s += 3 * (ov / ck.length);
+  }
+  return s;
+}
+function _dupJaccard(a,b){
+  const A = _dupProfile(a).toks, B = _dupProfile(b).toks;
+  const ka = Object.keys(A), kb = Object.keys(B);
+  if (!ka.length || !kb.length) return 0;
+  let inter = 0;
+  ka.forEach(function(w){ if (B[w]) inter++; });
+  return inter / (ka.length + kb.length - inter);
+}
+
 function findDuplicateProductRow(sheet,sellerId,title){
   const norm=function(s){return String(s==null?'':s).toLowerCase().replace(/\s+/g,' ').trim();};
   const t=norm(title);
   if(!t) return null;
   const sid=String(sellerId||'').toUpperCase();
   const data=sheet.getDataRange().getValues();
+  const mine=[];
   for(let i=1;i<data.length;i++){
     const row=data[i];
     if(String(row[PCOL.SELLER_ID-1]||'').toUpperCase()!==sid) continue;
+    // exact match wins immediately (fast path, unchanged behaviour)
     if(norm(row[PCOL.TITLE-1])===t) return {productId:row[PCOL.PRODUCT_ID-1],status:row[PCOL.STATUS-1]||'Pending',rowNum:i+1};
+    mine.push({row:row,rowNum:i+1});
   }
+  // fuzzy pass — same rules as the front-end
+  const q=_dupProfile(title);
+  let best=null,bestScore=0;
+  for(let k=0;k<mine.length;k++){
+    const cTitle=String(mine[k].row[PCOL.TITLE-1]||'');
+    if(!cTitle) continue;
+    const cp=_dupProfile(cTitle);
+    if(cp.qty!==q.qty) continue;                       // 1 Qty vs 2 Qty = different products
+    const sc=_dupScore(q,cp);
+    const jac=_dupJaccard(title,cTitle);
+    if((sc>=2.5||jac>=0.5)&&sc>bestScore){bestScore=sc;best=mine[k];}
+  }
+  if(best) return {productId:best.row[PCOL.PRODUCT_ID-1],status:best.row[PCOL.STATUS-1]||'Pending',rowNum:best.rowNum};
   return null;
 }
 
