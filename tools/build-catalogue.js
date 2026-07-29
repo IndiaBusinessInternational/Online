@@ -262,6 +262,16 @@ function ssrCard(p, slug) {
   // Never redirect a slug that is in live use again.
   Object.keys(redirects).forEach(s => { if (Object.values(slugs).includes(s)) delete redirects[s]; });
 
+  // Nothing actually changed? Then write NOTHING. products.json carries a generatedAt
+  // stamp, so without this check every half-hourly run would produce a fresh timestamp,
+  // a commit and a full Pages redeploy — 48 empty deploys a day.
+  const core = JSON.stringify({ slugs, redirects, products: list });
+  const prevCore = JSON.stringify({ slugs: prev.slugs || {}, redirects: prev.redirects || {}, products: prev.products || [] });
+  if (core === prevCore && fs.existsSync(path.join(ROOT, 'p'))) {
+    console.log('catalogue unchanged — nothing to write');
+    return;
+  }
+
   // ── write /p/ pages ──
   const pDir = path.join(ROOT, 'p');
   fs.rmSync(pDir, { recursive: true, force: true });
