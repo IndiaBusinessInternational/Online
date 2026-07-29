@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  The storefront is a single-page app: products open via openProductPage() without their
-  own URLs, so there is nothing per-product to list here yet. Giving each product a real
-  crawlable URL is the next step if product pages are to rank individually.
--->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.indiabusinessinternational.online/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.indiabusinessinternational.online/privacy-policy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <url><loc>https://www.indiabusinessinternational.online/</loc><lastmod>2026-07-29</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/coconut-broom-sticks-natural-eco-friendly-floor-sweeping-broom-premium-handmade/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/big-stone-diya-natural-granite-handmade-oil-lamp-for-home-temple-pooja/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/therali-leaves-fresh-natural-food-wrapping-leaves-for-kozhukattai-appam-steam/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/fresh-biryani-leaves-10-qty-pack-farm-fresh-aromatic-rambai-rampe-screwpine/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/men-s-cotton-polo-t-shirt-with-pocket-xl-half-sleeve-polo-neck-collar-tee/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/mars-polo-t-shirt-for-men-275-gsm-premium-cotton-blend-half-sleeve-polo-collar/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-achu-murukku-mould-37x8x5-cm-achappam-maker-with-7-flower-cavities/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-tea-mug-800-ml-bis-certified-coffee-cup-with-curved-handle-17x10-5x17/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-food-strainer-colander-bis-certified-29-5-x-29-5-x-8-cm-200-g/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-square-cake-baking-tray-26x26x5-cm-3-litre-bis-certified-deep-mould/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-rectangular-tray-31x21x5-cm-2-litre-bis-grade-serving-tray/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-flat-tray-43-5-x-33-5-x-7-5-cm-premium-rectangular-serving-tray-deep/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/aluminium-dust-pan-set-of-2-premium-heavy-duty-metal-dustpan-with-handle/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/natural-coir-door-mat-62x36x2-cm-handmade-coconut-fibre-welcome-mat-for/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/palm-leaf-sulavu-winnowing-basket-48x42x7-cm-handmade-handwoven-natural-eco/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/coir-brush-37-5x11x4-cm-natural-coconut-fibre-cleaning-scrub-brush-with-wooden/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/palmyrah-brush-22x6x5-cm-natural-palm-fiber-cleaning-brush-with-wooden-handle/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/p/coir-rope-21-6-ft-126-gm-natural-coconut-fibre-twine-eco-friendly-biodegradable/</loc><lastmod>2026-07-29</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.indiabusinessinternational.online/privacy-policy.html</loc><lastmod>2026-07-29</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
