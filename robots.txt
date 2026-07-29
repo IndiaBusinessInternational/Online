@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Seller Central and the admin panel are behind a login and hold no shopper-facing
+# content — keep them out of the index rather than have crawlers spend budget on them.
+Disallow: /admin.html
+Disallow: /print.html
+
+Sitemap: https://www.indiabusinessinternational.online/sitemap.xml
