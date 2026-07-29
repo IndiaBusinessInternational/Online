@@ -4,3 +4,16 @@
 # Windows junk
 Thumbs.db
 desktop.ini
+
+# ── NEVER DEPLOY THESE ─────────────────────────────────────────────────────────
+# GitHub Pages serves EVERY committed file as part of the public website.
+# IBI_Seller_Backend.gs is the backend source (it held login bypass PINs and was
+# downloadable from the live domain until 29 Jul 2026). Internal docs likewise.
+# These stay as LOCAL files only — the .gs remains the local mirror you paste
+# into the Apps Script editor.
+IBI_Seller_Backend.gs
+CLAUDE.md
+IBI_Marketplace_Feature_Gap_and_Roadmap.md
+ibi-auth-deployment-guide.md
+ibi-password-generator.html
+ibi-topbar-component.html
