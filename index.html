@@ -1904,6 +1904,64 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
   .all-cat-btn.active { background: #0098c9 !important; color: #fff !important; border-color: #0098c9 !important; }
   .all-cat-btn:hover:not(.active) { background: #f0e8ff !important; color: #0079a3 !important; border-color: #0098c9 !important; }
 
+  /* ---- Grid toolbar: sort + filters (31 Jul 2026) ----
+     One wrapping flex row. min-width:0 on the inputs so a long <select> label can
+     never widen the toolbar past its card — the exact fault that clipped the
+     seller form's right-edge controls in v8.3.2. */
+  .ibi-grid-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .ibi-tb-group { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .ibi-tb-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  .ibi-tb-input {
+    min-width: 0;
+    max-width: 100%;
+    padding: 7px 10px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #222;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .ibi-tb-input:focus { outline: none; border-color: #0098c9; box-shadow: 0 0 0 3px rgba(0,152,201,.15); }
+  .ibi-tb-num { width: 92px; cursor: text; }
+  .ibi-tb-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .ibi-tb-check input { width: 16px; height: 16px; accent-color: #0098c9; cursor: pointer; }
+  @media (max-width: 640px) {
+    .ibi-grid-toolbar { gap: 10px 12px; padding: 11px; }
+    /* Sort is the control people actually reach for on a phone — give it the full
+       first line instead of letting it share with the price boxes. */
+    .ibi-grid-toolbar > label:first-child { flex: 1 1 100%; }
+    .ibi-grid-toolbar > label:first-child .ibi-tb-input { flex: 1; }
+    .ibi-tb-num { width: 76px; }
+  }
+
 
   /* ---- Search Suggestions ---- */
   .search-suggestions {
@@ -2131,55 +2189,12 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
   </nav>
 </header>
 
-<!-- ===== HERO CAROUSEL ===== -->
-<div class="hero">
-  <div class="carousel-track" id="carouselTrack">
-    <div class="carousel-slide">
-      <div class="slide-bg" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);"></div>
-      <div class="slide-content">
-        <span class="slide-tag">🇮🇳 Great Indian Festival</span>
-        <div class="slide-title">Monsoon Sale<br>Is Here!</div>
-        <div class="slide-subtitle">Up to 70% off on Top Brands</div>
-        <button class="slide-cta" onclick="filterCat('electronics')">Shop Now</button>
-      </div>
-    </div>
-    <div class="carousel-slide">
-      <div class="slide-bg" style="background: linear-gradient(135deg, #1B5E20, #2E7D32, #43A047);"></div>
-      <div class="slide-content">
-        <span class="slide-tag">Fresh Picks</span>
-        <div class="slide-title">Farm Fresh<br>Groceries</div>
-        <div class="slide-subtitle">Delivered in 2 Hours to Your Door</div>
-        <button class="slide-cta" onclick="filterCat('grocery')">Order Now</button>
-      </div>
-    </div>
-    <div class="carousel-slide">
-      <div class="slide-bg" style="background: linear-gradient(135deg, #880E4F, #AD1457, #C2185B);"></div>
-      <div class="slide-content">
-        <span class="slide-tag">✨ Festive Collection</span>
-        <div class="slide-title">Dazzling<br>Jewellery</div>
-        <div class="slide-subtitle">Exclusive Designs — Starting ₹499</div>
-        <button class="slide-cta" onclick="filterCat('jewellery')">Explore</button>
-      </div>
-    </div>
-    <div class="carousel-slide">
-      <div class="slide-bg" style="background: linear-gradient(135deg, #E65100, #BF360C, #7B1FA2);"></div>
-      <div class="slide-content">
-        <span class="slide-tag">Tech Sale</span>
-        <div class="slide-title">Latest Gadgets<br>Best Prices</div>
-        <div class="slide-subtitle">EMI from ₹0 • No-Cost Options Available</div>
-        <button class="slide-cta" onclick="filterCat('electronics')">View Deals</button>
-      </div>
-    </div>
-  </div>
-
-  <button class="carousel-arrow prev" onclick="slideCarousel(-1)">
-    <svg viewBox="0 0 10 16"><path d="M8 2L2 8l6 6" stroke="#444" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <button class="carousel-arrow next" onclick="slideCarousel(1)">
-    <svg viewBox="0 0 10 16"><path d="M2 2l6 6-6 6" stroke="#444" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <div class="carousel-dots" id="carouselDots"></div>
-</div>
+<!-- ⚠ HERO CAROUSEL REMOVED 31 Jul 2026 — do not put it back without real content.
+     It was 4 hardcoded stock slides ("Monsoon Sale", "Farm Fresh Groceries",
+     "Dazzling Jewellery", "Latest Gadgets") advertising departments this store does
+     not stock: 3 of the 4 CTAs (electronics ×2, jewellery) opened an empty grid, and
+     grocery held a single product. It also pushed the first purchasable item a full
+     screen down. Products now start immediately. -->
 
 <!-- ===== MAIN CONTENT ===== -->
 <div class="main-content">
@@ -2190,99 +2205,43 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
     <div><strong>Free Delivery</strong> on all products · <strong>Easy Returns</strong> within 7–10 Days · <strong>100% Prepaid</strong> — Safe &amp; Secure Online Payments</div>
   </div>
 
-  <!-- Categories -->
-  <section class="categories-section">
-  <!-- ⚠⚠ PRODUCTS COME FIRST. This section used to sit BELOW "Shop by Category",
-       putting the first purchasable item ~1230px down — past two screens on a laptop.
-       Shoppers were stopping at the banner. Keep a row of real products inside the
-       first screenful; category tiles browse perfectly well further down. -->
-  <section class="products-section" id="featuredSection">
-    <div class="section-header">
-      <h2 class="section-title" id="featuredTitle">⭐ Featured Products</h2>
-      <a class="see-all" href="#" onclick="filterCat('all')">View all →</a>
-    </div>
-    <div class="products-row" id="featuredGrid"></div>
-  </section>
+  <!-- ⚠⚠ PRODUCTS COME FIRST. The first purchasable item must stay inside the first
+       screenful — it once sat ~1230px down and shoppers stopped at the banner.
+       "Shop by Category" now lives BELOW the grid, because the grid carries its own
+       category chips (#allCatFilters) and the nav bar carries the same links again;
+       three copies of one control is what made the page feel cluttered. -->
 
-    <div class="section-header">
-      <h2 class="section-title">Shop by Category</h2>
-      <a class="see-all" href="#">See all →</a>
-    </div>
-    <div class="categories-grid" id="categoriesGrid"></div>
-  </section>
+  <!-- ⚠ "⭐ Featured Products" REMOVED 31 Jul 2026 — it was not curated. With no
+       `deal` or `new` flags set on any listing, _homeRows() just sliced the catalogue
+       by position: Featured = items 1–12, New Arrivals = items 13–24, then All
+       Products repeated all of them. Three headings, one shelf. The seller's own
+       "🔀 Arrange order" now drives the "Featured" SORT option on the grid instead,
+       which is the same curation with none of the duplication. -->
 
-  <!-- Promo Banners -->
-  <div class="promo-grid">
-    <div class="promo-card promo-saffron" onclick="filterCat('electronics')">
-      <span class="promo-eyebrow">Limited Time</span>
-      <span class="promo-title">Electronics Under ₹999</span>
-      <span class="promo-sub">Earbuds, Chargers, Accessories & More</span>
-      <span class="promo-link">Shop Now →</span>
-      <span class="promo-emoji">⚡</span>
-    </div>
-    <div class="promo-card promo-teal" onclick="filterCat('clothing')">
-      <span class="promo-eyebrow">New Arrivals</span>
-      <span class="promo-title">Fashion for Everyone</span>
-      <span class="promo-sub">Ethnic, Western & Casual Wear</span>
-      <span class="promo-link">Explore →</span>
-      <span class="promo-emoji">👗</span>
-    </div>
-    <div class="promo-card promo-navy" onclick="filterCat('home')">
-      <span class="promo-eyebrow">Home Makeover</span>
-      <span class="promo-title">Home & Kitchen Sale</span>
-      <span class="promo-sub">Upgrade Your Space Today</span>
-      <span class="promo-link">Browse →</span>
-      <span class="promo-emoji">🏡</span>
-    </div>
-  </div>
+  <!-- ⚠ PROMO BANNERS REMOVED 31 Jul 2026 — same fault as the hero. Three hardcoded
+       ad cards ("Electronics Under ₹999", "Fashion for Everyone", "Home & Kitchen
+       Sale") for departments that were never stocked: the electronics card opened an
+       empty grid, and all three duplicated links the nav bar already has. -->
 
-  <!-- Deals of the Day -->
-  <section class="products-section" id="dealsSection">
-    <div class="section-header">
-      <h2 class="section-title">🔥 Deals of the Day</h2>
-      <a class="see-all" href="#" onclick="filterCat('all')">See all deals →</a>
-    </div>
-    <div class="products-row" id="dealsGrid"></div>
-  </section>
-
-  <!-- Featured Products -->
-
-  <!-- New Arrivals -->
-  <section class="products-section" id="newSection">
-    <div class="section-header">
-      <h2 class="section-title">🆕 New Arrivals</h2>
-    </div>
-    <div class="products-row" id="newGrid"></div>
-  </section>
+  <!-- ⚠ "🔥 Deals of the Day", "🆕 New Arrivals" and "⚡ Lightning Deals" REMOVED
+       31 Jul 2026. None was curated: no listing carries a `deal` or `new` flag, so
+       Deals and Lightning rendered empty (Lightning still printed a red heading and a
+       live countdown over zero products) and New Arrivals was simply "items 13–24 of
+       the same catalogue". Shoppers met each product up to three times before
+       reaching the real grid. Sorting on the grid replaces all of it — see
+       ibiSortProducts(). Do NOT reinstate these rows until listings carry real
+       deal/new flags AND a listing date exists in the feed to sort "newest" by. -->
 
 
 
-  <!-- ===== LIGHTNING DEALS ===== -->
-  <section class="products-section" style="background:#fff;padding:20px 0;">
-    <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
-        <h2 class="section-title" style="color:#c00;margin:0;">⚡ Lightning Deals</h2>
-        <div style="display:flex;align-items:center;gap:6px;background:#c00;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;">
-          <span>Ends in:</span>
-          <span id="ldTimer" style="font-family:monospace;font-size:15px;">00:00:00</span>
-        </div>
-        <span style="font-size:12px;color:#888;">Limited time offers • While stocks last</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;" id="lightningGrid"></div>
-    </div>
-  </section>
+  <!-- ⚠ "⚡ Lightning Deals" REMOVED 31 Jul 2026 (see the note above) — with zero
+       `deal` listings it printed a red heading and a live ticking countdown over an
+       empty grid, which reads as a broken page. -->
 
-  <!-- ===== SELLERS / MARKETPLACE ===== -->
-  <section class="products-section" style="background:#fff;padding:28px 0;">
-    <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
-      <div class="section-header" style="margin-bottom:18px;">
-        <h2 class="section-title">🏪 Our Sellers & Partners</h2>
-        <a href="#" onclick="openSellerRegistration()" style="font-size:13px;color:#0098c9;font-weight:700;text-decoration:none;">+ Become a Seller</a>
-      </div>
-      <div id="sellersGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
-    </div>
-  </section>
-
+  <!-- The shop. This is the ONLY product grid on the page — everything a shopper
+       needs to narrow it down (sort, price, discount, availability, category) lives
+       in the toolbar inside it, not in extra rows above it. "Shop by Category" and
+       "Our Sellers" moved BELOW the grid on the same date, so products come first. -->
   <!-- All Products -->
   <section class="products-section" id="allProductsSection" style="background:#f8f8f8;padding:24px 0 40px;">
     <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
@@ -2293,6 +2252,53 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
         <h2 class="section-title">🛍️ All Products <span id="allProductsTotal"></span></h2>
         <span id="allProductsCount" style="color:#555;font-size:14px;"></span>
       </div>
+
+      <!-- ===== GRID TOOLBAR — sort + filters =====
+           Everything that narrows the catalogue lives here, in the same card as the
+           products it acts on. Wraps onto as many lines as the viewport needs.
+           ⚠ Every control calls a function that ends in applyAllFilters(); none of
+           them writes allFilteredProducts directly, or they would cancel each other. -->
+      <div class="ibi-grid-toolbar">
+        <label class="ibi-tb-group">
+          <span class="ibi-tb-label">Sort by</span>
+          <!-- options injected by buildSortOptions() — it drops any the catalogue
+               cannot honestly support (see IBI_SORT_OPTIONS) -->
+          <select id="allSortSelect" onchange="sortAllProducts(this.value)" class="ibi-tb-input"></select>
+        </label>
+
+        <span class="ibi-tb-group">
+          <span class="ibi-tb-label">Price</span>
+          <input id="allPriceMin" type="number" min="0" step="1" inputmode="numeric" placeholder="Min ₹"
+                 class="ibi-tb-input ibi-tb-num" onchange="applyPriceFilter()"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();applyPriceFilter();}">
+          <span style="color:#999;">–</span>
+          <input id="allPriceMax" type="number" min="0" step="1" inputmode="numeric" placeholder="Max ₹"
+                 class="ibi-tb-input ibi-tb-num" onchange="applyPriceFilter()"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();applyPriceFilter();}">
+        </span>
+
+        <label class="ibi-tb-group">
+          <span class="ibi-tb-label">Discount</span>
+          <select id="allDiscSelect" onchange="filterAllDiscount(this.value)" class="ibi-tb-input">
+            <option value="0">Any</option>
+            <option value="10">10% off or more</option>
+            <option value="25">25% off or more</option>
+            <option value="40">40% off or more</option>
+            <option value="50">50% off or more</option>
+            <option value="70">70% off or more</option>
+          </select>
+        </label>
+
+        <label class="ibi-tb-check">
+          <input id="allInStockOnly" type="checkbox" onchange="toggleInStockOnly(this.checked)">
+          <span>In stock only</span>
+        </label>
+      </div>
+
+      <!-- Reads back the active filters + the only "Clear all"; hidden while nothing
+           is filtered, so it never sits there as dead furniture. -->
+      <div id="allActiveFilters" style="display:none;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;"></div>
+
       <!-- Category Filter Tabs — generated from IBI_CATEGORIES by buildCategoryChips() -->
       <div id="allCatFilters" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
       <div class="products-row" id="allProductsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"><!-- IBI:SSR:START -->
@@ -2339,6 +2345,29 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
       <div style="text-align:center;margin-top:28px;padding-bottom:16px;" id="infiniteScrollSentinel">
         <span id="infiniteScrollSpinner" style="display:none;color:#0098c9;font-size:14px;font-weight:600;">⏳ Loading more products...</span>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== BROWSE BY DEPARTMENT =====
+       Moved BELOW the grid 31 Jul 2026. renderCategories() only draws departments
+       that actually hold stock, so this stays a live index rather than a wall of
+       dead tiles — but the grid's own chips do the same job, so it belongs after
+       the products, not in front of them. -->
+  <section class="categories-section">
+    <div class="section-header">
+      <h2 class="section-title">Shop by Category</h2>
+    </div>
+    <div class="categories-grid" id="categoriesGrid"></div>
+  </section>
+
+  <!-- ===== SELLERS / MARKETPLACE ===== -->
+  <section class="products-section" style="background:#fff;padding:28px 0;">
+    <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
+      <div class="section-header" style="margin-bottom:18px;">
+        <h2 class="section-title">🏪 Our Sellers & Partners</h2>
+        <a href="#" onclick="openSellerRegistration()" style="font-size:13px;color:#0098c9;font-weight:700;text-decoration:none;">+ Become a Seller</a>
+      </div>
+      <div id="sellersGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
     </div>
   </section>
 
@@ -2495,9 +2524,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v11.8';
+window.IBI_VERSION      = 'v12.0';
 window.IBI_VERSION_DATE = '31 Jul 2026';
-window.IBI_VERSION_NOTE = 'v11.8 — ❌ SOLD-OUT PRODUCTS WERE STILL SHOWING “✓ In Stock”. You set the Palm Leaf Sulavu to 0 in the Stock Availability app; the warehouse figure reached the shop’s records correctly within a minute, but the product page still invited shoppers to buy it. The cause was one small piece of code: the page read the stock figure as “stock or 1”, meaning “if no figure was ever recorded, assume there is one” — and to a browser the number 0 counts as “no figure”. So a product with exactly zero left was read as having one. It hid because the two places the page gets its figures from disagree in a way nobody would notice: the live backend sends stock as text (“0”), which was read correctly, while the saved catalogue file stores it as a number (0), which was not — and that saved file is what a visitor sees the instant a page opens. Zero now means zero on both paths; a missing figure still means “assume available”, which is what it was always meant to mean. Add to Cart was already refusing out-of-stock items, so nothing could be over-sold.';
+window.IBI_VERSION_NOTE = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
+window.IBI_VERSION_NOTE_PREV = 'v11.8 — ❌ SOLD-OUT PRODUCTS WERE STILL SHOWING “✓ In Stock”. You set the Palm Leaf Sulavu to 0 in the Stock Availability app; the warehouse figure reached the shop’s records correctly within a minute, but the product page still invited shoppers to buy it. The cause was one small piece of code: the page read the stock figure as “stock or 1”, meaning “if no figure was ever recorded, assume there is one” — and to a browser the number 0 counts as “no figure”. So a product with exactly zero left was read as having one. It hid because the two places the page gets its figures from disagree in a way nobody would notice: the live backend sends stock as text (“0”), which was read correctly, while the saved catalogue file stores it as a number (0), which was not — and that saved file is what a visitor sees the instant a page opens. Zero now means zero on both paths; a missing figure still means “assume available”, which is what it was always meant to mean. Add to Cart was already refusing out-of-stock items, so nothing could be over-sold.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -2742,8 +2772,6 @@ let products = [];   // re-ordered in place by ibiApplySellerOrder()
 // ========== STATE ==========
 let cart = [];
 let currentFilter = 'all';
-let carouselIdx = 0;
-const totalSlides = 4;
 
 
 // ========== SELLERS ==========
@@ -6423,9 +6451,14 @@ function _ibiIngestCatalogue(list) {
       // changed nothing a shopper could see. Sort FIRST, then snapshot.
       ibiApplySellerOrder();                               // honour each seller's own arrangement
       ibiBuildFamilies();                                  // group parent/child variation families
-      allFilteredProducts = [...gridProducts()];           // grid shows one card per family
-      renderAllProducts(); renderDeals(); renderFeatured(); renderNew(); renderSellers();
+      // ⚠ Goes through applyAllFilters(), NOT a bare `allFilteredProducts = [...]`.
+      // The live catalogue lands seconds after first paint; assigning the raw list
+      // here would silently throw away whatever sort or filter the shopper had
+      // already chosen and snap the grid back to Featured / no filters.
+      applyAllFilters();                          // grid shows one card per family
+      renderSellers();
       renderCategories(); buildCategoryChips();   // departments now that the real catalogue is in
+      buildSortOptions();                         // "Customer Rating" appears here if the feed ever carries real ratings
 
       // Deep link from a static /p/<slug>/ page: its "Buy on IBI Marketplace" button lands
       // on /?p=<productId>. Open that product as soon as ANY paint has it (cached, snapshot
@@ -6791,47 +6824,13 @@ function closeSuggestions() {
 }
 
 // ══════════════════════════════════════════════════════════
-// LIGHTNING DEALS
+// LIGHTNING DEALS — removed 31 Jul 2026 along with its markup.
+// renderLightningDeals() drew `products.filter(p => p.deal)` and startLightningTimer()
+// ran a setInterval to midnight. No listing has ever carried a `deal` flag, so the
+// section was a red heading plus a ticking countdown over an empty grid, and the
+// timer kept firing every second for nothing. Shoppers sort by "Discount: High to
+// Low" on the main grid instead — that runs off real MRP-vs-price data.
 // ══════════════════════════════════════════════════════════
-function renderLightningDeals() {
-  const deals = products.filter(p => p.deal).sort((a,b) => (b.mrp-b.price)-(a.mrp-a.price)).slice(0, 8);
-  const grid = document.getElementById('lightningGrid');
-  if (!grid) return;
-  grid.innerHTML = deals.map(p => {
-    const disc = Math.round((1 - p.price/p.mrp)*100);
-    // ⚠ was: Math.floor(Math.random()*60+30) — a fake "63% claimed" scarcity bar, invented
-    // on every render. Manufactured urgency is a dark pattern and India's CCPA guidelines
-    // name it directly. Real stock drives the bar now, or it does not show at all.
-    return `
-    <div class="ld-card" onclick="openProductPage(${p.id})">
-      <img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x200?text=IBI'">
-      <div class="ld-body">
-        <div class="ld-disc">-${disc}% OFF</div>
-        <div class="ld-title">${p.title}</div>
-        <div><span class="ld-price">₹${p.price.toLocaleString('en-IN')}</span><span class="ld-mrp">₹${p.mrp.toLocaleString('en-IN')}</span></div>
-        ${(parseInt(p.stock,10) > 0 && parseInt(p.stock,10) <= 10)
-            ? `<div class="ld-claimed">Only ${parseInt(p.stock,10)} left in stock</div>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function startLightningTimer() {
-  function updateTimer() {
-    const now = new Date();
-    const end = new Date();
-    end.setHours(23, 59, 59, 0);
-    let diff = Math.floor((end - now) / 1000);
-    if (diff < 0) diff = 0;
-    const h = String(Math.floor(diff/3600)).padStart(2,'0');
-    const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
-    const s = String(diff%60).padStart(2,'0');
-    const el = document.getElementById('ldTimer');
-    if (el) el.textContent = h + ':' + m + ':' + s;
-  }
-  updateTimer();
-  setInterval(updateTimer, 1000);
-}
 
 // Hook into sendWhatsAppOrder to save order
 const _origSendWA = sendWhatsAppOrder;
@@ -10959,19 +10958,13 @@ function checkAndRestoreDraft() {
 // ========== INIT ==========
 function init() {
   buildCategorySelect();   // ② Category dropdown in the seller form
-  buildCategoryChips();    // filter chips above All Products
-  renderCategories();
-  renderDeals();
-  renderFeatured();
-  renderNew();
-  renderCarouselDots();
-  startCarouselAuto();
+  buildCategoryChips();    // department chips inside the grid toolbar
+  buildSortOptions();      // "Sort by" menu — built from what the catalogue supports
+  renderCategories();      // "Shop by Category" tiles, now BELOW the grid
   renderCart();
   renderAllProducts();
   renderSellers();
   initInfiniteScroll();
-  renderLightningDeals();
-  startLightningTimer();
   checkAutoLogin();
   checkSavedPincode();
   // Check if returning from Zoho payment
@@ -11246,68 +11239,87 @@ let allSearchQuery = '';
 let allCategoryFilter = 'all';
 
 // ══════════════════════════════════════════════════════════
-// HOME ROWS — each product should appear ONCE above "All Products".
-// The three rows are rendered in order (Deals → Featured → New Arrivals) and
-// each records what it showed here, so a later row never repeats a card the
-// shopper has already scrolled past. With a small catalogue that means the
-// lower rows simply hide themselves instead of reprinting the same items under
-// a different heading. ("All Products" below is the full catalogue and is
-// SUPPOSED to list everything — that repeat is correct and expected.)
+// GRID SORT & FILTERS  (replaced the Deals / Featured / New Arrivals rows,
+// 31 Jul 2026)
+//
+// Those three rows pretended to be curation. Nothing set a `deal` or `new` flag,
+// so _homeRows() just sliced the catalogue by position — Featured was "items
+// 1–12", New Arrivals was "items 13–24" — and then All Products listed the lot
+// again underneath. One shelf, three headings, every product seen twice.
+//
+// A shopper narrows the ONE grid instead, the way every major storefront works.
+//
+// ⚠ WHAT THIS DELIBERATELY DOES NOT OFFER, and why:
+//   • "Popularity" / "Best Selling" — the product feed carries no units-sold
+//     figure. Faking it (view counts, random weights, newest-first dressed up as
+//     popular) is the same class of invention as the ₹0 ratings removed in v11.1
+//     and the random "63% claimed" bar removed from Lightning Deals. Real sales
+//     ranking needs a sold-count per product coming out of the Orders sheet.
+//     Until that exists, "Featured" carries the curation instead: it is the
+//     seller's own 🔀 Arrange order, which is a human choosing what to show first.
+//   • "Newest First" — there is no listing date in the feed. `sortOrder` is where
+//     the SELLER put a product, not when it was listed, so sorting or reversing on
+//     it produces an order nobody chose. (v9.7 shipped exactly that bug.)
+// Add either one only once the underlying number is real.
 // ══════════════════════════════════════════════════════════
-// Worked out fresh from the catalogue every time, so it never depends on which
-// row rendered first or how often a row is re-rendered.
-function _homeRows() {
-  const src   = gridProducts();
-  const deals = src.filter(p => p.deal).slice(0, 12);
-  const taken = new Set(deals.map(p => p.id));
+let allSortBy      = 'featured';
+let allPriceMin    = null;
+let allPriceMax    = null;
+let allMinDiscount = 0;
+let allInStockOnly = false;
 
-  const featured = src.filter(p => !taken.has(p.id)).slice(0, 12);
-  featured.forEach(p => taken.add(p.id));
-
-  // Whatever is left after Deals and Featured, IN THE SELLER'S OWN ORDER.
-  // ⚠ This used to be `src.slice().reverse()`, on the v9.7 assumption that the
-  // catalogue arrives in the order it was listed, so the last rows are the newest.
-  // That stopped being true once v10.6 made this list respect "🔀 Arrange order":
-  // position now means where the SELLER put it, not when it was listed, so reversing
-  // it produced an order nobody chose — the seller's #13–#16 came out #16, #15, #14, #13.
-  // Without a real listing date in the feed there is nothing to sort "newest" by, and
-  // the seller's own arrangement is the only order anyone actually asked for.
-  const flagged = src.filter(p => p.badge === 'new' && !taken.has(p.id));
-  const rest    = src.filter(p => !taken.has(p.id));
-  const fresh   = (flagged.length ? flagged : rest).slice(0, 12);
-
-  return { deals, featured, fresh };
+function _pPrice(p) { const n = parseFloat(p && p.price); return isFinite(n) ? n : 0; }
+function _pMrp(p)   { const n = parseFloat(p && p.mrp);   return isFinite(n) ? n : 0; }
+function _pTitle(p) { return String((p && (p._familyDisplayName || p.title)) || ''); }
+function _pDiscount(p) {
+  const price = _pPrice(p), mrp = _pMrp(p);
+  return (mrp > price && mrp > 0) ? Math.round((1 - price / mrp) * 100) : 0;
 }
-function _homeSection(id, hasItems) {
-  var sec = document.getElementById(id);
-  if (sec) sec.style.display = hasItems ? '' : 'none';   // no bare heading over an empty row
-}
+// −1 for an unrated product so "Customer Rating" never floats a 0-star item above
+// a real 3-star one. ibiHasRating() is the single source of truth for "is this a
+// real rating" — every product currently ships rating:0/reviews:0 by design.
+function _pRating(p) { return ibiHasRating(p) ? (parseFloat(p.rating) || 0) : -1; }
 
-function renderDeals() {
-  const deals = _homeRows().deals;
-  _homeSection('dealsSection', deals.length);
-  document.getElementById('dealsGrid').innerHTML = deals.map(productCard).join(''); ibiStartCardCarousels();
-}
+// A family cover card stands in for its children; price them by the cover, which
+// already carries the "from ₹…" minimum the shopper sees on it.
+const IBI_SORT_OPTIONS = [
+  { id: 'featured',   label: 'Featured',              cmp: null },
+  { id: 'price_asc',  label: 'Price: Low to High',    cmp: (a, b) => _pPrice(a) - _pPrice(b) },
+  { id: 'price_desc', label: 'Price: High to Low',    cmp: (a, b) => _pPrice(b) - _pPrice(a) },
+  { id: 'discount',   label: 'Discount: High to Low', cmp: (a, b) => _pDiscount(b) - _pDiscount(a) },
+  { id: 'name_asc',   label: 'Name: A to Z',          cmp: (a, b) => _pTitle(a).localeCompare(_pTitle(b), 'en', { sensitivity: 'base' }) },
+  // Rendered ONLY when at least one listing has a real rating — an option that
+  // cannot reorder anything is worse than a missing one.
+  { id: 'rating',     label: 'Customer Rating',       cmp: (a, b) => _pRating(b) - _pRating(a), needs: () => gridProducts().some(ibiHasRating) }
+];
 
-function renderFeatured(filter = 'all') {
-  const src = gridProducts();
-  let fps;
-  if (filter === 'all') {
-    fps = _homeRows().featured;
-  } else {
-    fps = src.filter(p => categoryMatches(p.category, filter)).slice(0, 24);
-    if (!fps.length) fps = src.slice(0, 12);
-  }
-  const titleMap = {electronics:'📱 Electronics',clothing:'👗 Clothing & Fashion',home:'🏠 Home & Kitchen',grocery:'🛒 Grocery',beauty:'💄 Beauty & Health',books:'📚 Books',jewellery:'💍 Jewellery',sports:'🏋️ Sports & Fitness'};
-  document.getElementById('featuredTitle').textContent = filter !== 'all' ? (titleMap[filter]||'⭐ Featured') : '⭐ Featured Products';
-  _homeSection('featuredSection', fps.length);
-  document.getElementById('featuredGrid').innerHTML = fps.map(productCard).join(''); ibiStartCardCarousels();
+function _sortOption(id) { return IBI_SORT_OPTIONS.find(o => o.id === id) || IBI_SORT_OPTIONS[0]; }
+
+// Builds the "Sort by" menu from what the catalogue can actually support, and is
+// re-run after the live feed lands (ratings could exist by then).
+function buildSortOptions() {
+  const sel = document.getElementById('allSortSelect');
+  if (!sel) return;
+  const usable = IBI_SORT_OPTIONS.filter(o => !o.needs || o.needs());
+  if (!usable.some(o => o.id === allSortBy)) allSortBy = 'featured';
+  sel.innerHTML = usable.map(o =>
+    '<option value="' + o.id + '"' + (o.id === allSortBy ? ' selected' : '') + '>' + o.label + '</option>'
+  ).join('');
 }
 
-function renderNew() {
-  const fresh = _homeRows().fresh;
-  _homeSection('newSection', fresh.length);
-  document.getElementById('newGrid').innerHTML = fresh.map(productCard).join(''); ibiStartCardCarousels();
+// ⚠ Sorts a COPY. `gridProducts()` hands back window._gridProducts — the live
+// snapshot every other part of the storefront reads — so sorting it in place would
+// silently reorder the seller's arrangement for the whole session.
+// Out-of-stock always sinks to the bottom (Amazon/Flipkart behaviour): a shopper
+// sorting by price wants the cheapest thing they can actually buy first.
+function ibiSortProducts(list) {
+  const opt = _sortOption(allSortBy);
+  const out = list.slice();
+  const buyable = p => (p && p.inStock) ? 0 : 1;
+  // Array#sort is stable (ES2019+), so within one stock/sort bucket the seller's
+  // own arrangement survives untouched — that is what makes 'featured' a no-op.
+  out.sort((a, b) => (buyable(a) - buyable(b)) || (opt.cmp ? opt.cmp(a, b) : 0));
+  return out;
 }
 
 function renderAllProducts() {
@@ -11354,18 +11366,98 @@ function initInfiniteScroll() {
   observer.observe(sentinel);
 }
 
+// THE one place the grid's contents are decided. Every control — category chips,
+// search box, sort menu, price range, discount, in-stock — funnels through here so
+// they compose instead of overwriting each other.
 function applyAllFilters() {
   allPageCurrent = 0;
   window._allLoaded = false;
-  allFilteredProducts = gridProducts().filter(p => {
+  allFilteredProducts = ibiSortProducts(gridProducts().filter(p => {
     // A department shows its sub-categories too — filtering "Pet Supplies" must
     // find products listed as "pets-accessories", not just plain "pets".
     const matchCat = categoryMatches(p.category, allCategoryFilter);
     const _t = (p._familyDisplayName || p.title || '');
     const matchQ = !allSearchQuery || _t.toLowerCase().includes(allSearchQuery) || p.category.toLowerCase().includes(allSearchQuery);
-    return matchCat && matchQ;
-  });
+    const price  = _pPrice(p);
+    const matchMin   = (allPriceMin === null) || price >= allPriceMin;
+    const matchMax   = (allPriceMax === null) || price <= allPriceMax;
+    const matchDisc  = !allMinDiscount || _pDiscount(p) >= allMinDiscount;
+    const matchStock = !allInStockOnly || !!p.inStock;
+    return matchCat && matchQ && matchMin && matchMax && matchDisc && matchStock;
+  }));
   renderAllProducts();
+  renderActiveFilters();
+}
+
+function sortAllProducts(id) {
+  allSortBy = id;
+  applyAllFilters();
+}
+
+// Price box: blank means "no bound". A max below the min is the shopper mistyping,
+// not an empty shop — swap them rather than returning zero results.
+function applyPriceFilter() {
+  const rd = id => {
+    const el = document.getElementById(id);
+    if (!el || el.value.trim() === '') return null;
+    const n = parseFloat(el.value);
+    return isFinite(n) && n >= 0 ? n : null;
+  };
+  let lo = rd('allPriceMin'), hi = rd('allPriceMax');
+  if (lo !== null && hi !== null && hi < lo) {
+    const t = lo; lo = hi; hi = t;
+    document.getElementById('allPriceMin').value = lo;
+    document.getElementById('allPriceMax').value = hi;
+  }
+  allPriceMin = lo; allPriceMax = hi;
+  applyAllFilters();
+}
+
+function filterAllDiscount(pct) {
+  allMinDiscount = parseInt(pct, 10) || 0;
+  applyAllFilters();
+}
+
+function toggleInStockOnly(on) {
+  allInStockOnly = !!on;
+  applyAllFilters();
+}
+
+function clearAllFilters() {
+  allCategoryFilter = 'all';
+  allPriceMin = allPriceMax = null;
+  allMinDiscount = 0;
+  allInStockOnly = false;
+  allSortBy = 'featured';
+  ['allPriceMin', 'allPriceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const d = document.getElementById('allDiscSelect');   if (d) d.value = '0';
+  const s = document.getElementById('allSortSelect');   if (s) s.value = 'featured';
+  const c = document.getElementById('allInStockOnly');  if (c) c.checked = false;
+  buildCategoryChips();
+  applyAllFilters();
+}
+
+// A "Clear all" button nobody can see is a trap — show it only once something is
+// actually narrowing the grid, and say what is active.
+function renderActiveFilters() {
+  const bar = document.getElementById('allActiveFilters');
+  if (!bar) return;
+  const bits = [];
+  if (allCategoryFilter !== 'all') {
+    const cat = (typeof IBI_CATEGORIES !== 'undefined') && IBI_CATEGORIES.find(c => c.id === allCategoryFilter);
+    bits.push(cat ? cat.name : allCategoryFilter);
+  }
+  if (allPriceMin !== null && allPriceMax !== null) bits.push('₹' + allPriceMin + ' – ₹' + allPriceMax);
+  else if (allPriceMin !== null)                    bits.push('₹' + allPriceMin + ' and above');
+  else if (allPriceMax !== null)                    bits.push('Up to ₹' + allPriceMax);
+  if (allMinDiscount) bits.push(allMinDiscount + '% off or more');
+  if (allInStockOnly) bits.push('In stock only');
+  bar.innerHTML = bits.length
+    ? '<span style="font-size:13px;color:#555;">Filtered by:</span>' +
+      bits.map(b => '<span style="background:#eaf6fb;border:1px solid #b8e3f2;color:#036;border-radius:14px;padding:3px 11px;font-size:12px;font-weight:600;">' + b + '</span>').join('') +
+      '<button onclick="clearAllFilters()" style="background:none;border:none;color:#c00;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;padding:3px 4px;">Clear all</button>'
+    : '';
+  bar.style.display = bits.length ? 'flex' : 'none';
 }
 
 function filterAllCat(cat) {
@@ -11391,13 +11483,10 @@ function filterCat(cat) {
 function doSearch() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
   allSearchQuery = q;
-  if (!q) {
-    allFilteredProducts = gridProducts();
-    allPageCurrent = 0;
-    renderAllProducts();
-    document.getElementById('allProductsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
+  // ⚠ An empty box used to short-circuit to `allFilteredProducts = gridProducts()`,
+  // which threw away the category chip as well. Now that sort and price/discount
+  // filters ride in applyAllFilters() too, that shortcut would have reset all of
+  // them. Clearing the SEARCH clears the search — nothing else.
   applyAllFilters();
   document.getElementById('allProductsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -12931,40 +13020,14 @@ function showToast(msg, type = '') {
   setTimeout(() => t.remove(), 2600);
 }
 
-// ========== CAROUSEL ==========
-function renderCarouselDots() {
-  const dots = document.getElementById('carouselDots');
-  dots.innerHTML = Array.from({ length: totalSlides }, (_, i) =>
-    `<button class="dot ${i === 0 ? 'active' : ''}" onclick="goSlide(${i})"></button>`
-  ).join('');
-}
-
-function updateCarousel() {
-  document.getElementById('carouselTrack').style.transform = `translateX(-${carouselIdx * 100}%)`;
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('active', i === carouselIdx);
-  });
-}
-
-function slideCarousel(dir) {
-  carouselIdx = (carouselIdx + dir + totalSlides) % totalSlides;
-  updateCarousel();
-}
-
-function goSlide(i) {
-  carouselIdx = i;
-  updateCarousel();
-}
-
-let autoSlide;
-function startCarouselAuto() {
-  autoSlide = setInterval(() => slideCarousel(1), 4500);
-  document.querySelector('.hero').addEventListener('mouseenter', () => clearInterval(autoSlide));
-  document.querySelector('.hero').addEventListener('mouseleave', () => {
-    clearInterval(autoSlide);
-    autoSlide = setInterval(() => slideCarousel(1), 4500);
-  });
-}
+// ========== CAROUSEL — REMOVED 31 Jul 2026 ==========
+// renderCarouselDots / updateCarousel / slideCarousel / goSlide / startCarouselAuto
+// all drove the hero slider deleted from the markup. startCarouselAuto() also called
+// document.querySelector('.hero').addEventListener(...) with no null guard, so leaving
+// it wired into init() after the markup went would have thrown on every page load and
+// killed everything after it in init(). Deleted together, deliberately.
+// (This is NOT the product-image carousel on a product page — that is ppNavImg /
+// ibiStartCardCarousels and is untouched.)
 
 function toggleMenu() {
   // Mobile menu – toggles nav bar
