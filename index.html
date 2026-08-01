@@ -2524,10 +2524,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.0';
-window.IBI_VERSION_DATE = '31 Jul 2026';
-window.IBI_VERSION_NOTE = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
-window.IBI_VERSION_NOTE_PREV = 'v11.8 — ❌ SOLD-OUT PRODUCTS WERE STILL SHOWING “✓ In Stock”. You set the Palm Leaf Sulavu to 0 in the Stock Availability app; the warehouse figure reached the shop’s records correctly within a minute, but the product page still invited shoppers to buy it. The cause was one small piece of code: the page read the stock figure as “stock or 1”, meaning “if no figure was ever recorded, assume there is one” — and to a browser the number 0 counts as “no figure”. So a product with exactly zero left was read as having one. It hid because the two places the page gets its figures from disagree in a way nobody would notice: the live backend sends stock as text (“0”), which was read correctly, while the saved catalogue file stores it as a number (0), which was not — and that saved file is what a visitor sees the instant a page opens. Zero now means zero on both paths; a missing figure still means “assume available”, which is what it was always meant to mean. Add to Cart was already refusing out-of-stock items, so nothing could be over-sold.';
+window.IBI_VERSION      = 'v12.1';
+window.IBI_VERSION_DATE = '1 Aug 2026';
+window.IBI_VERSION_NOTE = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
+window.IBI_VERSION_NOTE_PREV = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -3865,7 +3865,7 @@ var IBI_HSN_MASTER = [
   {n:"Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 700 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm each, 2 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Non-stick Dosa Tawa, BIS, 44x26.5x5 cm, 552 gm, 1 Qty",h:"76151012",g:"5"},
+  {n:"Aluminium Non-stick Dosa Tawa, BIS, 47x29.5x1.5 cm, 543 gm, 1 Qty",h:"76151012",g:"5"},
   {n:"Aluminium Dust Pan, 26x24x3 cm, 243 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Dust Pan, 26x24x3 cm, 243 gm each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Saucepan with Lid and Handle, BIS, 35.5x20.5x13.5 cm, 2.5 Liters, 576 gm, 1 Qty",h:"76151030",g:"5"},
@@ -3876,7 +3876,7 @@ var IBI_HSN_MASTER = [
   {n:"Aluminium Tope Set of 6, 29x29x18 cm, 1.97 Kg, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm each, 1 Qty",h:"76151030",g:"5"},
-  {n:"Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 550 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 540 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Saucepan, 35x18.5x15.5 cm, 2 Liters, 523 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Grater, 28.5x11 cm, 145 gm,1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Grater, 28.5x11 cm, 145 gm each, 2 Qty",h:"73239390",g:"5"},
@@ -3953,7 +3953,7 @@ var IBI_HSN_MASTER = [
   {n:"Stone Diya, 7x6x4 cm, 190 gm each, 2 Qty",h:"68029900",g:"5"},
   {n:"Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty",h:"73269090",g:"18"},
   {n:"Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty",h:"73269090",g:"18"},
-  {n:"Rat Trap - Iron, SpringLess Type, 32x16.5x15 cm, 826 gm, 1 Qty",h:"73269090",g:"18"},
+  {n:"Rat Trap - Iron, SpringLess Type, 35x16x14.5 cm, 561 gm, 1 Qty",h:"73269090",g:"18"},
   {n:"Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm, 1 Qty",h:"82059000",g:"18"},
   {n:"Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm each, 2 Qty",h:"82059000",g:"18"},
   {n:"Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 2 Qty",h:"82159900",g:"18"},
@@ -13479,8 +13479,8 @@ init();
                     <option value="Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 700 gm, 1 Qty"></option>
                     <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm, 1 Qty"></option>
                     <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm each, 2 Qty"></option>
-                    <option value="Aluminium Non-stick Dosa Tawa, BIS, 44x26.5x5 cm, 552 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 550 gm, 1 Qty"></option>
+                    <option value="Aluminium Non-stick Dosa Tawa, BIS, 47x29.5x1.5 cm, 543 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 540 gm, 1 Qty"></option>
                     <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm, 1 Qty"></option>
                     <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm each, 2 Qty"></option>
                     <option value="Aluminium Saucepan with Lid and Handle, BIS, 35.5x20.5x13.5 cm, 2.5 Liters, 576 gm, 1 Qty"></option>
@@ -13522,7 +13522,7 @@ init();
                     <option value="Floor Brush Palmyrah, 30x7x11 cm, 520 gm, 1 Qty"></option>
                     <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty"></option>
                     <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty"></option>
-                    <option value="Rat Trap - Iron, SpringLess Type, 32x16.5x15 cm, 826 gm, 1 Qty"></option>
+                    <option value="Rat Trap - Iron, SpringLess Type, 35x16x14.5 cm, 561 gm, 1 Qty"></option>
                     <option value="Rat Trap - Wooden, 25x11x26 cm, 758 gm, 1 Qty"></option>
                     <option value="Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm, 1Qty"></option>
                     <option value="Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 2 Qty"></option>
