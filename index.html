@@ -2526,13 +2526,14 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.4';
+window.IBI_VERSION      = 'v12.5';
 window.IBI_VERSION_DATE = '1 Aug 2026';
-window.IBI_VERSION_NOTE = 'v12.4 — 💰 THE SAME MRP RULE INSIDE THE VARIATION GRID. v12.3 made the MRP follow the Selling Price everywhere you TYPE a price, including each row of a combination grid. This finishes the job for the one place a price is set without typing: the "⚡ Fill every row at once" bar above the grid. Applying a price there wrote it into every row but left each row\'s MRP untouched, so a grid filled that way kept whatever MRP was already saved against it — the same wrong-discount problem, one level down. Now a bulk price sets every row\'s MRP to 1.5 times it as well. If you fill in the bulk MRP box too, that figure wins and is used exactly as you typed it. Nothing else changed.';
-window.IBI_VERSION_NOTE_PREV = 'v12.3 — 💰 MRP NOW FOLLOWS THE PRICE. The listing form has always offered to work out the MRP for you as 1.5 times the Selling Price, but it only did so while the MRP box was still empty or still held a figure it had put there itself. That meant it never worked on a product you were EDITING: an MRP that came from your saved listing looks like a figure you typed by hand, so the form left it alone. Change the price of a live listing from ₹1,499 to ₹1,099 and the old MRP just sat there, quietly showing shoppers the wrong discount. From now on, every change to a Selling Price re-works the MRP to 1.5 times it, rounded to whole rupees — on the top price box and on every row of a variation or combination grid, whether you are adding a product or editing one. You can still set your own MRP: type it after the price and it is kept exactly as typed. It is only re-worked if you go back and change the price again — so enter the price first, then the MRP if you want a different one. A line under the MRP box now says so.';
-window.IBI_VERSION_NOTE_PREV2 = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
-window.IBI_VERSION_NOTE_PREV3 = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
-window.IBI_VERSION_NOTE_PREV4 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
+window.IBI_VERSION_NOTE = 'v12.5 — 🧺 THE SHOP IS NOW ARRANGED BY WHAT THINGS ARE MADE OF. Until now the grid ran in whatever order the listings happened to be in, so a coir mat could sit between a steel pan and a t-shirt. The products are now grouped into the eighteen families the product master already uses, and each family appears together under its own heading with a count: Coconut & Coir, Palmyrah & Palm Leaf, Aluminium, Stainless Steel, Clay & Terracotta, Stone, Iron & Steel Tools, Wooden, Imitation Jewellery, Live Plants, Fresh Leaves, Spices, Food, Textile & Apparel, Stationery, Garden, Pooja & Festive, and Agricultural Inputs. Anything that does not fit one of them falls into a final "Other Products" group rather than disappearing. These groupings are NOT newly invented: they are read straight from the Category column of the IBI Complete Product Master HSN & GST spreadsheet, which already files all 268 product names into exactly these eighteen families — so the shop now matches the master list. Within a family the order is still your own 🔀 Arrange order, and sold-out items sink to the bottom of their own family instead of being dragged to the end of the page. This is the new default of the SORT BY menu, listed as "Product Group"; every other sort still works exactly as before, so choosing Price low to high (or Featured, which is the old ungrouped arrangement) drops the headings and sorts the whole shop as one list. The pre-built page that search engines and the first split-second of a visit see is arranged the same way, so nothing jumps around while the page loads.';
+window.IBI_VERSION_NOTE_PREV = 'v12.4 — 💰 THE SAME MRP RULE INSIDE THE VARIATION GRID. v12.3 made the MRP follow the Selling Price everywhere you TYPE a price, including each row of a combination grid. This finishes the job for the one place a price is set without typing: the "⚡ Fill every row at once" bar above the grid. Applying a price there wrote it into every row but left each row\'s MRP untouched, so a grid filled that way kept whatever MRP was already saved against it — the same wrong-discount problem, one level down. Now a bulk price sets every row\'s MRP to 1.5 times it as well. If you fill in the bulk MRP box too, that figure wins and is used exactly as you typed it. Nothing else changed.';
+window.IBI_VERSION_NOTE_PREV2 = 'v12.3 — 💰 MRP NOW FOLLOWS THE PRICE. The listing form has always offered to work out the MRP for you as 1.5 times the Selling Price, but it only did so while the MRP box was still empty or still held a figure it had put there itself. That meant it never worked on a product you were EDITING: an MRP that came from your saved listing looks like a figure you typed by hand, so the form left it alone. Change the price of a live listing from ₹1,499 to ₹1,099 and the old MRP just sat there, quietly showing shoppers the wrong discount. From now on, every change to a Selling Price re-works the MRP to 1.5 times it, rounded to whole rupees — on the top price box and on every row of a variation or combination grid, whether you are adding a product or editing one. You can still set your own MRP: type it after the price and it is kept exactly as typed. It is only re-worked if you go back and change the price again — so enter the price first, then the MRP if you want a different one. A line under the MRP box now says so.';
+window.IBI_VERSION_NOTE_PREV3 = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
+window.IBI_VERSION_NOTE_PREV4 = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
+window.IBI_VERSION_NOTE_PREV5 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -11337,7 +11338,7 @@ let allCategoryFilter = 'all';
 //     it produces an order nobody chose. (v9.7 shipped exactly that bug.)
 // Add either one only once the underlying number is real.
 // ══════════════════════════════════════════════════════════
-let allSortBy      = 'featured';
+let allSortBy      = 'grouped';   // default: keep each material family together (see IBI_PRODUCT_GROUPS)
 let allPriceMin    = null;
 let allPriceMax    = null;
 let allMinDiscount = 0;
@@ -11355,9 +11356,93 @@ function _pDiscount(p) {
 // real rating" — every product currently ships rating:0/reviews:0 by design.
 function _pRating(p) { return ibiHasRating(p) ? (parseFloat(p.rating) || 0) : -1; }
 
+// ══════════════════════════════════════════════════════════
+// PRODUCT GROUPS — the 18 material/type families the grid is organised into.
+// ⚠ These groupings are NOT invented here. They are the "Category" column of
+// D:\India Business International\eCommerce Business\1. Products and Other
+// Details\IBI_Complete_Product_Master_HSN_GST.xlsx (sheet "IBI Product
+// Master"), which already files all 268 master SKUs into exactly these 18
+// families. If a product ever needs to move group, change it THERE and mirror
+// the rule below — the spreadsheet is the authority, this is the mirror.
+// Order below = the order the groups appear down the page.
+// ══════════════════════════════════════════════════════════
+const IBI_PRODUCT_GROUPS = [
+  { id: 'coconut',    icon: '🥥', label: 'Coconut & Coir Products' },
+  { id: 'palmyrah',   icon: '🌴', label: 'Palmyrah & Palm Leaf Products' },
+  { id: 'aluminium',  icon: '🍳', label: 'Aluminium Products' },
+  { id: 'steel',      icon: '🥄', label: 'Stainless Steel Products' },
+  { id: 'clay',       icon: '🏺', label: 'Clay & Terracotta Products' },
+  { id: 'stone',      icon: '🪨', label: 'Stone Products' },
+  { id: 'irontools',  icon: '🔧', label: 'Iron & Steel Tools' },
+  { id: 'wood',       icon: '🪵', label: 'Wooden Products' },
+  { id: 'jewellery',  icon: '💍', label: 'Imitation Jewellery' },
+  { id: 'plants',     icon: '🪴', label: 'Live Plants' },
+  { id: 'leaves',     icon: '🍃', label: 'Fresh Leaves' },
+  { id: 'spices',     icon: '🌶️', label: 'Spices' },
+  { id: 'food',       icon: '🍯', label: 'Food Products' },
+  { id: 'textile',    icon: '👕', label: 'Textile & Apparel' },
+  { id: 'stationery', icon: '📒', label: 'Stationery' },
+  { id: 'garden',     icon: '🌱', label: 'Garden Products' },
+  { id: 'pooja',      icon: '🪔', label: 'Pooja & Festive Products' },
+  { id: 'agri',       icon: '🌾', label: 'Agricultural Inputs' },
+  { id: 'other',      icon: '🧺', label: 'Other Products' }   // never empty-handed: anything unmatched lands here, last
+];
+
+// FIRST match wins, so the order of this list is load-bearing — a listing's SEO
+// title names several materials at once ("Coir Brush … with Wooden Handle",
+// "Cobbler Awl … Stainless Steel Tip", "Achu Murukku Mould … Rosette Iron").
+// Named tools are tested before the metals they are made of; "palm leaf" is
+// claimed before the catch-all "leaves"; the wooden rat trap before the iron one.
+// Verified: this reproduces the spreadsheet's own category for all 268 master
+// names, and files all live listings correctly.
+const IBI_GROUP_RULES = [
+  ['irontools',  /\b(cast\s*iron|aari\s*work|cobbler|sewing\s*awl|stitching\s*tool|sack\s*needle|dog\s*chain|seed\s*remover|cultivator|trowel)\b/],
+  ['wood',       /(rat\s*trap[\s\-|,]*wooden|wooden[\s\-|,]*rat\s*trap|wooden\s+(half\s+)?stool|wood\s+stool)/],
+  ['coconut',    /\b(coir|coconut|copra|thengai)\b/],
+  ['palmyrah',   /\b(palmyrah|palmyra|palm\s*leaf|palm\s*jaggery|panai\s*ola|koram\s*pai)\b/],
+  ['aluminium',  /\b(alumini?um)\b/],
+  ['steel',      /\bstainless\b/],
+  ['clay',       /\b(clay|terracotta|terra\s*cotta|earthen)\b/],
+  ['stone',      /\b(stone|granite|mortar\s*and\s*pestle|ammikkal)\b/],
+  ['jewellery',  /\b(jewellery|jewelry|invisible\s*chain|beads\s*chain|bangle|anklet|necklace|earring)\b/],
+  ['plants',     /\b(live\s*plant|stem\s*cuttings|sapling|seedling)\b/],
+  ['spices',     /\b(spices|chilli\s*powder|coriander\s*powder|turmeric\s*powder|pepper\s*powder|masala)\b/],
+  ['agri',       /\b(cow\s*dung|manure|vermicompost|fertiliz|fertilis)\b/],
+  ['garden',     /\b(grow\s*bag)\b/],
+  ['stationery', /\b(note\s*book|notebook|ruled\s*book|stationery)\b/],
+  ['pooja',      /\b(kolam\s*powder|conch|sambrani\s*powder)\b/],   // NOT thoranam — the master files mango-leaf thoranam under Fresh Leaves
+  ['irontools',  /\b(rat\s*trap|iron)\b/],                          // generic, after the wooden rat trap
+  ['textile',    /\b(cotton|t-?shirt|tshirt|towel|pillow|scrunchie|apparel|shirt|saree|dhoti|lungi|lunch\s*bag)\b/],
+  ['leaves',     /\b(leaves|leaf)\b/],                              // last: "palm leaf" is already claimed above
+  ['food',       /\b(jaggery|tamarind|honey|snack|pickle|edible)\b/]
+];
+
+const _IBI_GRP_POS = {};
+IBI_PRODUCT_GROUPS.forEach((g, i) => _IBI_GRP_POS[g.id] = i);
+
+// Cached on the product — a title never changes inside one page session, and
+// this runs for every card on every filter/sort pass.
+function ibiProductGroup(p) {
+  if (!p) return 'other';
+  if (p._grpId) return p._grpId;
+  const t = ' ' + String((p._familyDisplayName || p.title || '')).toLowerCase() + ' ';
+  let id = 'other';
+  for (let i = 0; i < IBI_GROUP_RULES.length; i++) {
+    if (IBI_GROUP_RULES[i][1].test(t)) { id = IBI_GROUP_RULES[i][0]; break; }
+  }
+  try { p._grpId = id; } catch (e) {}
+  return id;
+}
+function _grpIdx(p) { const i = _IBI_GRP_POS[ibiProductGroup(p)]; return (i === undefined) ? 999 : i; }
+function _grpDef(id) { return IBI_PRODUCT_GROUPS.find(g => g.id === id) || IBI_PRODUCT_GROUPS[IBI_PRODUCT_GROUPS.length - 1]; }
+
 // A family cover card stands in for its children; price them by the cover, which
 // already carries the "from ₹…" minimum the shopper sees on it.
 const IBI_SORT_OPTIONS = [
+  // DEFAULT — keeps every material family together (Coconut & Coir, then
+  // Palmyrah, then Aluminium …). groupFirst changes how ibiSortProducts orders,
+  // and is what makes renderAllProducts print the group headings.
+  { id: 'grouped',    label: 'Product Group',         cmp: (a, b) => _grpIdx(a) - _grpIdx(b), groupFirst: true },
   { id: 'featured',   label: 'Featured',              cmp: null },
   { id: 'price_asc',  label: 'Price: Low to High',    cmp: (a, b) => _pPrice(a) - _pPrice(b) },
   { id: 'price_desc', label: 'Price: High to Low',    cmp: (a, b) => _pPrice(b) - _pPrice(a) },
@@ -11376,7 +11461,7 @@ function buildSortOptions() {
   const sel = document.getElementById('allSortSelect');
   if (!sel) return;
   const usable = IBI_SORT_OPTIONS.filter(o => !o.needs || o.needs());
-  if (!usable.some(o => o.id === allSortBy)) allSortBy = 'featured';
+  if (!usable.some(o => o.id === allSortBy)) allSortBy = IBI_SORT_OPTIONS[0].id;
   sel.innerHTML = usable.map(o =>
     '<option value="' + o.id + '"' + (o.id === allSortBy ? ' selected' : '') + '>' + o.label + '</option>'
   ).join('');
@@ -11393,8 +11478,44 @@ function ibiSortProducts(list) {
   const buyable = p => (p && p.inStock) ? 0 : 1;
   // Array#sort is stable (ES2019+), so within one stock/sort bucket the seller's
   // own arrangement survives untouched — that is what makes 'featured' a no-op.
-  out.sort((a, b) => (buyable(a) - buyable(b)) || (opt.cmp ? opt.cmp(a, b) : 0));
+  if (opt.groupFirst) {
+    // ⚠ Grouping has to outrank the sold-out sink. If stock were compared first,
+    // a sold-out coir mat would be torn out of Coconut & Coir and stranded at the
+    // very end of the page — and since headings print on every group CHANGE, that
+    // tail would reprint headings the shopper has already scrolled past. Sold-out
+    // still sinks, but only to the bottom of its OWN group.
+    out.sort((a, b) => (_grpIdx(a) - _grpIdx(b)) || (buyable(a) - buyable(b)));
+  } else {
+    out.sort((a, b) => (buyable(a) - buyable(b)) || (opt.cmp ? opt.cmp(a, b) : 0));
+  }
   return out;
+}
+
+// Cards for one page. In grouped mode a full-width heading is emitted whenever
+// the group changes — `start` lets it look BACK into allFilteredProducts, so a
+// group running across a page boundary is not given a second heading when the
+// next page is appended by the infinite scroller.
+function _ibiPageCards(page, start) {
+  if (!_sortOption(allSortBy).groupFirst) return page.map(productCard).join('');
+  const counts = {};
+  allFilteredProducts.forEach(p => { const g = ibiProductGroup(p); counts[g] = (counts[g] || 0) + 1; });
+  let prev = start > 0 ? ibiProductGroup(allFilteredProducts[start - 1]) : null;
+  let html = '';
+  page.forEach(p => {
+    const g = ibiProductGroup(p);
+    if (g !== prev) {
+      const d = _grpDef(g);
+      html += '<div class="ibi-grp-head" style="grid-column:1/-1;display:flex;align-items:baseline;gap:8px;margin:' +
+              (prev === null ? '0' : '18px') + ' 0 2px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">' +
+                '<span style="font-size:17px;">' + d.icon + '</span>' +
+                '<span style="font-size:16px;font-weight:800;color:#131921;letter-spacing:.2px;">' + d.label + '</span>' +
+                '<span style="font-size:12px;color:#888;font-weight:600;">' + (counts[g] || 0) + ' item' + ((counts[g] || 0) === 1 ? '' : 's') + '</span>' +
+              '</div>';
+      prev = g;
+    }
+    html += productCard(p);
+  });
+  return html;
 }
 
 function renderAllProducts() {
@@ -11402,9 +11523,9 @@ function renderAllProducts() {
   const page = allFilteredProducts.slice(start, start + allPageSize);
   const grid = document.getElementById('allProductsGrid');
   if (allPageCurrent === 0) {
-    grid.innerHTML = page.map(productCard).join(''); ibiStartCardCarousels();
+    grid.innerHTML = _ibiPageCards(page, start); ibiStartCardCarousels();
   } else {
-    grid.innerHTML += page.map(productCard).join(''); ibiStartCardCarousels();
+    grid.innerHTML += _ibiPageCards(page, start); ibiStartCardCarousels();
   }
   const total = allFilteredProducts.length;
   const shown = Math.min((allPageCurrent + 1) * allPageSize, total);
@@ -11503,10 +11624,10 @@ function clearAllFilters() {
   allPriceMin = allPriceMax = null;
   allMinDiscount = 0;
   allInStockOnly = false;
-  allSortBy = 'featured';
+  allSortBy = IBI_SORT_OPTIONS[0].id;    // back to the grouped default, not "Featured"
   ['allPriceMin', 'allPriceMax'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   const d = document.getElementById('allDiscSelect');   if (d) d.value = '0';
-  const s = document.getElementById('allSortSelect');   if (s) s.value = 'featured';
+  const s = document.getElementById('allSortSelect');   if (s) s.value = allSortBy;
   const c = document.getElementById('allInStockOnly');  if (c) c.checked = false;
   buildCategoryChips();
   applyAllFilters();

@@ -313,11 +313,49 @@ function ssrCard(p, slug) {
   const S = '<!-- IBI:SSR:START -->', E = '<!-- IBI:SSR:END -->';
   const si = src.indexOf(S), ei = src.indexOf(E);
   if (si < 0 || ei < 0) { console.error('SSR markers missing in index.html — grid not pre-rendered'); process.exit(1); }
+  // The app groups the grid by material family (Coconut & Coir, Palmyrah,
+  // Aluminium …). Order the pre-rendered block the same way, or the first paint
+  // shows the feed order and visibly reshuffles a moment later.
+  // ⚠ MIRROR of IBI_PRODUCT_GROUPS / IBI_GROUP_RULES in index.html — both come
+  // from the Category column of IBI_Complete_Product_Master_HSN_GST.xlsx. Keep
+  // the two in step; a drift only costs a reshuffle on load, never correctness.
+  const GRP_ORDER = ['coconut','palmyrah','aluminium','steel','clay','stone','irontools','wood','jewellery',
+                     'plants','leaves','spices','food','textile','stationery','garden','pooja','agri','other'];
+  const GRP_RULES = [
+    ['irontools',  /\b(cast\s*iron|aari\s*work|cobbler|sewing\s*awl|stitching\s*tool|sack\s*needle|dog\s*chain|seed\s*remover|cultivator|trowel)\b/],
+    ['wood',       /(rat\s*trap[\s\-|,]*wooden|wooden[\s\-|,]*rat\s*trap|wooden\s+(half\s+)?stool|wood\s+stool)/],
+    ['coconut',    /\b(coir|coconut|copra|thengai)\b/],
+    ['palmyrah',   /\b(palmyrah|palmyra|palm\s*leaf|palm\s*jaggery|panai\s*ola|koram\s*pai)\b/],
+    ['aluminium',  /\b(alumini?um)\b/],
+    ['steel',      /\bstainless\b/],
+    ['clay',       /\b(clay|terracotta|terra\s*cotta|earthen)\b/],
+    ['stone',      /\b(stone|granite|mortar\s*and\s*pestle|ammikkal)\b/],
+    ['jewellery',  /\b(jewellery|jewelry|invisible\s*chain|beads\s*chain|bangle|anklet|necklace|earring)\b/],
+    ['plants',     /\b(live\s*plant|stem\s*cuttings|sapling|seedling)\b/],
+    ['spices',     /\b(spices|chilli\s*powder|coriander\s*powder|turmeric\s*powder|pepper\s*powder|masala)\b/],
+    ['agri',       /\b(cow\s*dung|manure|vermicompost|fertiliz|fertilis)\b/],
+    ['garden',     /\b(grow\s*bag)\b/],
+    ['stationery', /\b(note\s*book|notebook|ruled\s*book|stationery)\b/],
+    ['pooja',      /\b(kolam\s*powder|conch|sambrani\s*powder)\b/],
+    ['irontools',  /\b(rat\s*trap|iron)\b/],
+    ['textile',    /\b(cotton|t-?shirt|tshirt|towel|pillow|scrunchie|apparel|shirt|saree|dhoti|lungi|lunch\s*bag)\b/],
+    ['leaves',     /\b(leaves|leaf)\b/],
+    ['food',       /\b(jaggery|tamarind|honey|snack|pickle|edible)\b/]
+  ];
+  const grpIdx = p => {
+    const t = ' ' + String(p.title || '').toLowerCase() + ' ';
+    for (const [g, re] of GRP_RULES) if (re.test(t)) return GRP_ORDER.indexOf(g);
+    return GRP_ORDER.indexOf('other');
+  };
+  // Sort a COPY — `list` keeps feed/arrangement order so slug assignment above
+  // and products.json stay byte-stable run to run.
+  const ssrList = list.slice().sort((a, b) => grpIdx(a) - grpIdx(b));
+
   const itemList = {
     '@context': 'https://schema.org', '@type': 'ItemList',
-    itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: ORIGIN + '/p/' + slugs[String(p.productId)] + '/' })),
+    itemListElement: ssrList.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: ORIGIN + '/p/' + slugs[String(p.productId)] + '/' })),
   };
-  const block = S + '\n' + list.map(p => ssrCard(p, slugs[String(p.productId)])).join('\n') +
+  const block = S + '\n' + ssrList.map(p => ssrCard(p, slugs[String(p.productId)])).join('\n') +
     '\n<script type="application/ld+json">' + JSON.stringify(itemList) + '</script>\n';
   const eol = src.includes('\r\n') ? '\r\n' : '\n';
   const out = src.slice(0, si) + block.replace(/\n/g, eol) + src.slice(ei);
@@ -325,6 +363,6 @@ function ssrCard(p, slug) {
   fs.writeFileSync(idx + '.tmp', out, 'utf8');
   if (!/<\/html>\s*$/.test(fs.readFileSync(idx + '.tmp', 'utf8'))) { console.error('lost the tail — aborting'); process.exit(1); }
   fs.renameSync(idx + '.tmp', idx);
-  console.log('  index.html grid pre-rendered (' + list.length + ' cards) · sitemap ' + urls.length + ' urls');
+  console.log('  index.html grid pre-rendered (' + ssrList.length + ' cards, grouped) · sitemap ' + urls.length + ' urls');
   console.log('done.');
 })();
