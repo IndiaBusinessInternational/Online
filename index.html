@@ -2526,10 +2526,11 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.1';
+window.IBI_VERSION      = 'v12.2';
 window.IBI_VERSION_DATE = '1 Aug 2026';
-window.IBI_VERSION_NOTE = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
-window.IBI_VERSION_NOTE_PREV = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
+window.IBI_VERSION_NOTE = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
+window.IBI_VERSION_NOTE_PREV = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
+window.IBI_VERSION_NOTE_PREV2 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -5306,6 +5307,7 @@ function setupAddForm() {
   document.getElementById('ap_submit_btn').textContent = 'Submit Product for IBI Review →';
   document.getElementById('ap_submit_btn').onclick = submitAddProduct;
   document.getElementById('ap_editing_id').value = '';
+  if (typeof _syncCancelBtns === 'function') _syncCancelBtns();
   // Live preview update
   ['ap_title','ap_price','ap_mrp','ap_img','ap_brand'].forEach(id => {
     const el = document.getElementById(id);
@@ -5407,7 +5409,53 @@ function updateProductPreview() {
   var pd = $('previewDisc'); if (pd) pd.style.display = disc ? 'inline' : 'none';
 }
 
-function resetAddForm() {
+// ══════════════════════════════════════════════════════════
+// CANCEL / EXIT the Add-or-Edit form (v12.2)
+// ══════════════════════════════════════════════════════════
+// A seller who opened ✏️ Edit and then changed their mind had no way out: the
+// only button was "Update Product →", which SAVES. These helpers add a Cancel
+// that discards the on-screen form, drops the auto-saved draft (so an abandoned
+// edit can never be silently auto-restored over the next listing) and returns to
+// My Products. The live listing is left untouched — Cancel never calls the API.
+function _apIsEditing() {
+  const el = document.getElementById('ap_editing_id');
+  return !!(el && el.value);
+}
+
+// "Is there anything worth warning about before we throw the form away?"
+function _apFormHasContent() {
+  if ((window._uploadedImgs || []).length) return true;
+  return ['ap_title','ap_gen_name','ap_price','ap_desc','ap_bullet1'].some(function(id) {
+    const el = document.getElementById(id);
+    return !!(el && el.value && el.value.trim());
+  });
+}
+
+// Keep both Cancel buttons' wording in step with the form mode (add vs edit).
+function _syncCancelBtns() {
+  const editing = _apIsEditing();
+  const bottom = document.getElementById('ap_cancel_btn');
+  if (bottom) bottom.textContent = editing ? '✖ Cancel Edit — Discard Changes' : '✖ Cancel & Go Back';
+  const top = document.getElementById('ap_cancel_btn_top');
+  if (top) top.textContent = editing ? '✖ Cancel Edit' : '✖ Cancel';
+}
+
+function cancelProductForm() {
+  const editing = _apIsEditing();
+  const msg = editing
+    ? 'Cancel editing this listing?\n\nYour changes here will be discarded. The product stays exactly as it is now on the website — nothing is saved and nothing is deleted.'
+    : 'Leave this form?\n\nAnything you have entered for this new product will be discarded.';
+  if ((editing || _apFormHasContent()) && !confirm(msg)) return;
+  resetAddForm(true);                       // silent — no "Form reset!" toast
+  clearDraft();                             // an abandoned edit must not come back later
+  const banner = document.getElementById('draftRestoreBanner');
+  if (banner) banner.style.display = 'none';
+  switchDashTab('products');                // back to My Products (it reloads the list)
+  showToast(editing ? '✖ Edit cancelled — nothing was changed' : '✖ Form closed — nothing was saved', 'success');
+}
+
+// `silent` is passed by cancelProductForm() so the exit doesn't toast twice.
+function resetAddForm(silent) {
   ['ap_title','ap_price','ap_mrp','ap_brand','ap_img','ap_desc','ap_bullets','ap_stock','ap_hsn','ap_tags','ap_bullet1','ap_bullet2','ap_bullet3','ap_bullet4','ap_bullet5','ap_prod_l','ap_prod_w','ap_prod_h','ap_prod_wt','ap_prod_size','ap_pkg_l','ap_pkg_w','ap_pkg_h','ap_pkg_wt'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -5453,7 +5501,8 @@ function resetAddForm() {
   var _ic = document.getElementById('imgCountHint'); if(_ic) { _ic.textContent='0 / 9 images added'; _ic.style.color='#888'; _ic.style.fontWeight='400'; }
   // Clear draft cache
   try { var s=JSON.parse(sessionStorage.getItem('ibi_seller')||'{}'); if(s.sellerId) sessionStorage.removeItem('ibi_prods_'+s.sellerId); } catch(e) {}
-  showToast('🔄 Form reset!', 'success');
+  if (typeof _syncCancelBtns === 'function') _syncCancelBtns();   // back to "Cancel & Go Back"
+  if (!silent) showToast('🔄 Form reset!', 'success');
 }
 
 // ══════════════════════════════════════════════════════════
@@ -6141,6 +6190,7 @@ function editProduct(productId) {
         const btn = document.getElementById('ap_submit_btn');
         btn.textContent = 'Update Product →';
         btn.onclick = submitAddProduct;
+        _syncCancelBtns();                 // → "✖ Cancel Edit — Discard Changes"
         previewImage(p.img);
         updateDiscount();
         updateProductPreview();
@@ -13436,6 +13486,8 @@ init();
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
               <span id="draftStatusMsg" style="font-size:11px;color:#86efac;transition:opacity 1s;opacity:0;"></span>
               <button onclick="resetAddForm()" style="background:rgba(255,80,80,.25);border:1px solid rgba(255,80,80,.4);color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;">🔄 Reset</button>
+              <!-- Cancel = leave the form without saving (Reset only empties it). Label swaps to "✖ Cancel Edit" in edit mode via _syncCancelBtns(). -->
+              <button type="button" onclick="cancelProductForm()" id="ap_cancel_btn_top" style="background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;">✖ Cancel</button>
               <button onclick="submitAddProduct()" style="background:#0098c9;border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:800;">🚀 Submit →</button>
             </div>
           </div>
@@ -14210,6 +14262,14 @@ init();
             <button onclick="submitAddProduct()" id="ap_submit_btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#232F3E,#1e1b4b);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.3px;">
               Submit Product for IBI Review →
             </button>
+
+            <!-- Leave without saving. In edit mode this reads "✖ Cancel Edit — Discard Changes"
+                 (set by _syncCancelBtns) so a seller who opened the wrong listing, or changed
+                 their mind, is never forced to press Update. -->
+            <button type="button" onclick="cancelProductForm()" id="ap_cancel_btn" style="width:100%;padding:12px;margin-top:10px;background:#fff;color:#b91c1c;border:1.5px solid #fca5a5;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.2px;">
+              ✖ Cancel &amp; Go Back
+            </button>
+            <div style="text-align:center;font-size:11px;color:#888;margin-top:6px;">Cancel discards what is on this form and takes you back to My Products. Your live listing is not changed.</div>
           </div>
         </div>
       </div>
