@@ -2526,11 +2526,12 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.2';
+window.IBI_VERSION      = 'v12.3';
 window.IBI_VERSION_DATE = '1 Aug 2026';
-window.IBI_VERSION_NOTE = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
-window.IBI_VERSION_NOTE_PREV = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
-window.IBI_VERSION_NOTE_PREV2 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
+window.IBI_VERSION_NOTE = 'v12.3 — 💰 MRP NOW FOLLOWS THE PRICE. The listing form has always offered to work out the MRP for you as 1.5 times the Selling Price, but it only did so while the MRP box was still empty or still held a figure it had put there itself. That meant it never worked on a product you were EDITING: an MRP that came from your saved listing looks like a figure you typed by hand, so the form left it alone. Change the price of a live listing from ₹1,499 to ₹1,099 and the old MRP just sat there, quietly showing shoppers the wrong discount. From now on, every change to a Selling Price re-works the MRP to 1.5 times it, rounded to whole rupees — on the top price box and on every row of a variation or combination grid, whether you are adding a product or editing one. You can still set your own MRP: type it after the price and it is kept exactly as typed. It is only re-worked if you go back and change the price again — so enter the price first, then the MRP if you want a different one. A line under the MRP box now says so.';
+window.IBI_VERSION_NOTE_PREV = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
+window.IBI_VERSION_NOTE_PREV2 = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
+window.IBI_VERSION_NOTE_PREV3 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -9171,9 +9172,13 @@ function ibiAIRenderFileNote() {
 // ══════════════════════════════════════════════════════════
 // MRP AUTO-FILL — MRP = Price × 1.5, rounded to a WHOLE rupee (no decimals in
 // MRP, ever). Applies to the top ③ pair, every combination-grid row and every
-// legacy variation row via ONE delegated listener. Manual entry still works:
-// typing in an MRP box marks it manual (data-mrp-auto removed) so price edits
-// never overwrite it; clearing the MRP box re-enables auto-fill.
+// legacy variation row via ONE delegated listener.
+// v12.3: EVERY change to a Price re-derives its MRP, including on an existing
+// listing being edited. Before, the fill was gated to an empty or still-auto
+// MRP — an MRP loaded from the sheet carries no data-mrp-auto flag, so editing
+// the price of a live product left the old MRP (and therefore a wrong discount)
+// standing. A seller can still type their own MRP afterwards and it is kept
+// as typed — until the price is changed again, which re-derives it.
 // ══════════════════════════════════════════════════════════
 var _mrpProg = false;   // true while WE set an MRP programmatically (skip manual-marking)
 function _ibiMrpPairOf(t) {
@@ -9188,15 +9193,22 @@ document.addEventListener('input', function(ev) {
   if (t.matches('#ap_price, .cx-price, .var-price-input')) {
     var m = _ibiMrpPairOf(t);
     if (!m) return;
-    // Fill only when the MRP is empty or still holds OUR auto value.
-    if (m.value.trim() === '' || m.getAttribute('data-mrp-auto') === '1') {
-      var p = parseFloat(t.value);
-      if (p > 0) { m.value = Math.round(p * 1.5); m.setAttribute('data-mrp-auto', '1'); }
-      else if (m.getAttribute('data-mrp-auto') === '1') { m.value = ''; }
-      _mrpProg = true;
-      try { m.dispatchEvent(new Event('input', { bubbles: true })); }   // runs the box's own oninput (discount % / serialization)
-      finally { _mrpProg = false; }
+    // A price edit ALWAYS re-derives the MRP (see the v12.3 note above).
+    var p = parseFloat(t.value);
+    if (!(p > 0)) {
+      // Price emptied: only clear an MRP we put there ourselves — never wipe
+      // a figure the seller typed or one that came from the saved listing.
+      if (m.getAttribute('data-mrp-auto') !== '1') return;
+      m.value = '';
+    } else {
+      var _new = String(Math.round(p * 1.5));
+      if (m.value === _new) return;           // nothing to do — don't fire a pointless input event
+      m.value = _new;
+      m.setAttribute('data-mrp-auto', '1');
     }
+    _mrpProg = true;
+    try { m.dispatchEvent(new Event('input', { bubbles: true })); }   // runs the box's own oninput (discount % / serialization)
+    finally { _mrpProg = false; }
   } else if (!_mrpProg && t.matches('#ap_mrp, .cx-mrp, .var-mrp-input')) {
     t.removeAttribute('data-mrp-auto');   // the seller typed this MRP — manual from now on
   }
@@ -13892,6 +13904,7 @@ init();
               <div>
                 <label class="sc-label">MRP (₹) <span style="color:#c00;font-size:15px;">*</span></label>
                 <input id="ap_mrp" type="number" placeholder="e.g. 624" class="sc-input" min="1" oninput="updateDiscount()"/>
+                <div style="font-size:11px;color:#888;margin-top:3px;">Set automatically to <strong>1.5 × the Selling Price</strong> every time you change the price. Type your own to override it.</div>
               </div>
               <div>
                 <label class="sc-label">Stock Qty <span style="color:#c00;font-size:15px;">*</span></label>
