@@ -2528,14 +2528,15 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.5';
+window.IBI_VERSION      = 'v12.6';
 window.IBI_VERSION_DATE = '1 Aug 2026';
-window.IBI_VERSION_NOTE = 'v12.5 — 🧺 THE SHOP IS NOW ARRANGED BY WHAT THINGS ARE MADE OF. Until now the grid ran in whatever order the listings happened to be in, so a coir mat could sit between a steel pan and a t-shirt. The products are now grouped into the eighteen families the product master already uses, and each family appears together under its own heading with a count: Coconut & Coir, Palmyrah & Palm Leaf, Aluminium, Stainless Steel, Clay & Terracotta, Stone, Iron & Steel Tools, Wooden, Imitation Jewellery, Live Plants, Fresh Leaves, Spices, Food, Textile & Apparel, Stationery, Garden, Pooja & Festive, and Agricultural Inputs. Anything that does not fit one of them falls into a final "Other Products" group rather than disappearing. These groupings are NOT newly invented: they are read straight from the Category column of the IBI Complete Product Master HSN & GST spreadsheet, which already files all 268 product names into exactly these eighteen families — so the shop now matches the master list. Within a family the order is still your own 🔀 Arrange order, and sold-out items sink to the bottom of their own family instead of being dragged to the end of the page. This is the new default of the SORT BY menu, listed as "Product Group"; every other sort still works exactly as before, so choosing Price low to high (or Featured, which is the old ungrouped arrangement) drops the headings and sorts the whole shop as one list. The pre-built page that search engines and the first split-second of a visit see is arranged the same way, so nothing jumps around while the page loads.';
-window.IBI_VERSION_NOTE_PREV = 'v12.4 — 💰 THE SAME MRP RULE INSIDE THE VARIATION GRID. v12.3 made the MRP follow the Selling Price everywhere you TYPE a price, including each row of a combination grid. This finishes the job for the one place a price is set without typing: the "⚡ Fill every row at once" bar above the grid. Applying a price there wrote it into every row but left each row\'s MRP untouched, so a grid filled that way kept whatever MRP was already saved against it — the same wrong-discount problem, one level down. Now a bulk price sets every row\'s MRP to 1.5 times it as well. If you fill in the bulk MRP box too, that figure wins and is used exactly as you typed it. Nothing else changed.';
-window.IBI_VERSION_NOTE_PREV2 = 'v12.3 — 💰 MRP NOW FOLLOWS THE PRICE. The listing form has always offered to work out the MRP for you as 1.5 times the Selling Price, but it only did so while the MRP box was still empty or still held a figure it had put there itself. That meant it never worked on a product you were EDITING: an MRP that came from your saved listing looks like a figure you typed by hand, so the form left it alone. Change the price of a live listing from ₹1,499 to ₹1,099 and the old MRP just sat there, quietly showing shoppers the wrong discount. From now on, every change to a Selling Price re-works the MRP to 1.5 times it, rounded to whole rupees — on the top price box and on every row of a variation or combination grid, whether you are adding a product or editing one. You can still set your own MRP: type it after the price and it is kept exactly as typed. It is only re-worked if you go back and change the price again — so enter the price first, then the MRP if you want a different one. A line under the MRP box now says so.';
-window.IBI_VERSION_NOTE_PREV3 = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
-window.IBI_VERSION_NOTE_PREV4 = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
-window.IBI_VERSION_NOTE_PREV5 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
+window.IBI_VERSION_NOTE = 'v12.6 — 📦 "IT SAVED THE STOCK SOMETIMES, AND SOMETIMES IT DID NOT". Three separate faults were behind that, all now fixed. FIRST, pressing "Fill stock & pack size" is really TWO trips to two different apps — the stock count comes back from Stock Availability, and only then does it go to Order Processing for the pack size and weight. The button stopped saying "Reading" as soon as the FIRST trip finished, so if you pressed Update in that gap the listing was saved before the sizes had arrived, and the sizes you were waiting for were quietly dropped. Worse, if the save finished first, the arriving figures were written into a form that had already been cleared — or into the next product you had started. The button now stays busy until BOTH trips are done, Update says "Reading stock & pack size…" and refuses to save until they are, and figures that arrive after you have moved to a different listing are discarded instead of being pasted into it. SECOND, both apps were being read from a copy that could be up to five minutes old. If you corrected a count in the Stock app and came straight here, you were shown the OLD number and saved it without knowing. Pressing the button now always re-reads both apps fresh, and opening a listing to edit re-reads anything older than a minute. THIRD, if you typed a stock figure in by hand, the background sync that runs while you edit could silently replace it a second later. A figure you type is now left alone by that background sync — only pressing the button yourself overwrites it. Auto-filled figures are also recorded in the 💾 draft now, so a refresh no longer loses them.';
+window.IBI_VERSION_NOTE_PREV = 'v12.5 — 🧺 THE SHOP IS NOW ARRANGED BY WHAT THINGS ARE MADE OF. Until now the grid ran in whatever order the listings happened to be in, so a coir mat could sit between a steel pan and a t-shirt. The products are now grouped into the eighteen families the product master already uses, and each family appears together under its own heading with a count: Coconut & Coir, Palmyrah & Palm Leaf, Aluminium, Stainless Steel, Clay & Terracotta, Stone, Iron & Steel Tools, Wooden, Imitation Jewellery, Live Plants, Fresh Leaves, Spices, Food, Textile & Apparel, Stationery, Garden, Pooja & Festive, and Agricultural Inputs. Anything that does not fit one of them falls into a final "Other Products" group rather than disappearing. These groupings are NOT newly invented: they are read straight from the Category column of the IBI Complete Product Master HSN & GST spreadsheet, which already files all 268 product names into exactly these eighteen families — so the shop now matches the master list. Within a family the order is still your own 🔀 Arrange order, and sold-out items sink to the bottom of their own family instead of being dragged to the end of the page. This is the new default of the SORT BY menu, listed as "Product Group"; every other sort still works exactly as before, so choosing Price low to high (or Featured, which is the old ungrouped arrangement) drops the headings and sorts the whole shop as one list. The pre-built page that search engines and the first split-second of a visit see is arranged the same way, so nothing jumps around while the page loads.';
+window.IBI_VERSION_NOTE_PREV2 = 'v12.4 — 💰 THE SAME MRP RULE INSIDE THE VARIATION GRID. v12.3 made the MRP follow the Selling Price everywhere you TYPE a price, including each row of a combination grid. This finishes the job for the one place a price is set without typing: the "⚡ Fill every row at once" bar above the grid. Applying a price there wrote it into every row but left each row\'s MRP untouched, so a grid filled that way kept whatever MRP was already saved against it — the same wrong-discount problem, one level down. Now a bulk price sets every row\'s MRP to 1.5 times it as well. If you fill in the bulk MRP box too, that figure wins and is used exactly as you typed it. Nothing else changed.';
+window.IBI_VERSION_NOTE_PREV3 = 'v12.3 — 💰 MRP NOW FOLLOWS THE PRICE. The listing form has always offered to work out the MRP for you as 1.5 times the Selling Price, but it only did so while the MRP box was still empty or still held a figure it had put there itself. That meant it never worked on a product you were EDITING: an MRP that came from your saved listing looks like a figure you typed by hand, so the form left it alone. Change the price of a live listing from ₹1,499 to ₹1,099 and the old MRP just sat there, quietly showing shoppers the wrong discount. From now on, every change to a Selling Price re-works the MRP to 1.5 times it, rounded to whole rupees — on the top price box and on every row of a variation or combination grid, whether you are adding a product or editing one. You can still set your own MRP: type it after the price and it is kept exactly as typed. It is only re-worked if you go back and change the price again — so enter the price first, then the MRP if you want a different one. A line under the MRP box now says so.';
+window.IBI_VERSION_NOTE_PREV4 = 'v12.2 — ✖ A WAY OUT OF THE LISTING FORM. Until now, once you opened ✏️ Edit on one of your products the only button at the bottom was "Update Product" — if you changed your mind, or opened the wrong listing, or only wanted to look at what you had entered, there was no way to back out. People either pressed Update anyway (saving changes they did not want) or left the form sitting open. Every Add / Edit Product form now carries a Cancel button: a red-outlined "✖ Cancel Edit — Discard Changes" under the Update button, and a small ✖ Cancel in the dark bar at the top of the form. It asks you to confirm, then throws away whatever is on screen and takes you straight back to My Products. The listing on the website is left exactly as it was — nothing is saved, nothing is deleted, and the half-finished text is also cleared from the auto-saved draft so it cannot reappear later and overwrite your next listing. When you are adding a NEW product instead of editing one, the same button reads "✖ Cancel & Go Back" and simply closes the form. Note that "🔄 Reset" is a different thing and still there: Reset empties the form but keeps you in it, Cancel leaves the form altogether.';
+window.IBI_VERSION_NOTE_PREV5 = 'v12.1 — 📋 PRODUCT CATALOGUE REFRESHED. Three product names in the master catalogue had their measured size and weight corrected, and the shop had been carrying the old figures: the Aluminium Non-stick Dosa Tawa (now 47x29.5x1.5 cm, 543 gm), the Stainless Steel Non-Stick Fry Pan (now 540 gm) and the SpringLess Iron Rat Trap (now 35x16x14.5 cm, 561 gm). The name suggestions offered when you add a listing, and the HSN and GST lookup table behind them, now match the master spreadsheet exactly — all 268 names, with no name added or removed. Nothing about existing listings, prices, stock, the cart or checkout changed. If a live listing still shows an old measurement in its title, edit that listing to pick the corrected name from the suggestion list.';
+window.IBI_VERSION_NOTE_PREV6 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVES. The home page used to show the same products over and over: a big rotating banner, then “Deals of the Day”, then “Featured Products”, then “New Arrivals”, then “Lightning Deals”, and only then “All Products” — which listed everything again. It looked like six different collections but it was one catalogue cut into slices, because nothing was ever marked as a deal or as new. So “Featured” simply meant items 1 to 12, “New Arrivals” meant items 13 to 24, and a shopper met the same product two or three times before reaching the real grid. Worse, the rotating banner advertised Electronics, Jewellery and Groceries, none of which are stocked — three of its four buttons opened an empty shop, and the “Lightning Deals” heading sat above a live countdown clock with no products under it at all. All of that is gone. The page now goes straight to the products, and the first item is visible without scrolling. In its place the grid has a proper toolbar, the kind every large store uses: SORT BY (Featured, Price low to high, Price high to low, Discount high to low, Name A to Z), a PRICE range box, a DISCOUNT filter (25% off or more, 50% off or more, and so on), and an “In stock only” tick. They all work together — pick a department, set a price band and sort it, and the grid honours all three at once, with a line above it naming what is active and one “Clear all” to reset. Sold-out items always drop to the bottom. Two notes on what is deliberately NOT in the sort list: “Popularity / Best Selling” needs a real number of units sold per product, which the shop does not record yet, and “Newest First” needs the date each product was listed, which is not stored either. Rather than invent them, “Featured” carries your own 🔀 Arrange order from Seller Central — so the order you arrange is the order shoppers see first. “Shop by Category” and “Our Sellers” now sit below the grid instead of in front of it. Nothing about products, prices, stock, the cart or checkout changed.';
 // Render version + date into the header badge (the <header> markup is parsed above this script);
 // the changelog shows as a hover tooltip.
 (function(){
@@ -4153,7 +4154,9 @@ function ibiAutoSyncStock(reason) {
   _ibiAutoSyncTimer = setTimeout(function () {
     _ibiAutoSyncTimer = null;
     _ibiAutoSyncNote('⏳ Syncing stock &amp; sizes…');
-    try { ibiFillStockFromApp(null, true); } catch (e) {}
+    // 'edit' is passed through as the auto flag so opening a listing re-reads
+    // anything older than a minute instead of trusting the 5-minute cache.
+    try { ibiFillStockFromApp(null, reason === 'edit' ? 'edit' : true); } catch (e) {}
     setTimeout(function () {
       _ibiAutoSyncNote('🔄 Stock, product &amp; package size and weight are kept in step with the ' +
                        'Stock Availability and Order Processing apps — no need to fill them by hand.');
@@ -4185,10 +4188,16 @@ function _ibiAutoSyncNote(html) {
 // ══════════════════════════════════════════════════════════
 window.IBI_ORDERS_URL = 'https://script.google.com/macros/s/AKfycbydsL-wCm-oJzXNEBf58q7FkM8JehYijkkiBd8NuzJScjIQ4beR06FSFNdLnZT_yEDq/exec';
 
-function ibiOrdersFetch(cb) {
+// maxAge (ms) = how stale a cached copy may be. Default 5 min for the silent
+// background sync; an explicit button click passes 0 so it always re-reads —
+// the seller has usually JUST changed the figure in the Order Processing app,
+// and answering them from a 5-minute-old copy is the whole "it didn't save my
+// new number" complaint.
+function ibiOrdersFetch(cb, maxAge) {
   if (!_ibiStockSellerOK()) { cb(null, 'not-allowed'); return; }
   var now = Date.now();
-  if (window._ibiOrderRows && window._ibiOrdersAt && (now - window._ibiOrdersAt) < 300000) {
+  var age = (maxAge === undefined) ? 300000 : maxAge;
+  if (age > 0 && window._ibiOrderRows && window._ibiOrdersAt && (now - window._ibiOrdersAt) < age) {
     cb(window._ibiOrderRows, null); return;
   }
   fetch(window.IBI_ORDERS_URL)
@@ -4340,7 +4349,10 @@ function _ibiRowQuery(base, axes, opts) {
 // combination row (matched on that row's pack quantity); single products fill ⑧.
 // Only ever fills BLANK boxes — never overwrites what the seller typed.
 function ibiFillPkgDimsFromOrders(rows, base) {
-  var setIfEmpty = function (el, v) { if (el && !el.value.trim() && v !== '' && v != null) { el.value = v; return 1; } return 0; };
+  var setIfEmpty = function (el, v) {
+    if (el && !el.value.trim() && v !== '' && v != null) { return (typeof _ibiFillSet === 'function') ? _ibiFillSet(el, v) : ((el.value = v), 1); }
+    return 0;
+  };
   var hasVars = !!(document.getElementById('ap_has_variations') || {}).checked;
   var report = [], anyFilled = 0;
   var idf = _ibiFillIdf((rows || []).map(_ibiOrderName));   // built once for the whole feed
@@ -4424,11 +4436,13 @@ function _ibiStockSellerOK() {
   } catch (e) { return false; }
 }
 
-// Fetch once and cache for 5 minutes (the sheet has ~300 rows).
-function ibiStockFetch(cb) {
+// Fetch once and cache (the sheet has ~300 rows). maxAge: see ibiOrdersFetch —
+// 0 forces a fresh read, which is what an explicit button click does.
+function ibiStockFetch(cb, maxAge) {
   if (!_ibiStockSellerOK()) { cb(null, 'not-allowed'); return; }
   var now = Date.now();
-  if (window._ibiStockRows && window._ibiStockAt && (now - window._ibiStockAt) < 300000) {
+  var age = (maxAge === undefined) ? 300000 : maxAge;
+  if (age > 0 && window._ibiStockRows && window._ibiStockAt && (now - window._ibiStockAt) < age) {
     cb(window._ibiStockRows, null); return;
   }
   fetch(window.IBI_STOCK_URL + '?action=getAll')
@@ -4474,6 +4488,66 @@ function ibiStockLookup(rows, name, idf) {
 // the matching "N Qty" stock row) for variation products, else the single ③ Stock.
 // `auto` = the automatic sync calling in: no toasts, no scrolling, no complaint about a
 // missing name. The manual button passes only `btn`, so its behaviour is unchanged.
+// ══════════════════════════════════════════════════════════
+// AUTO-FILL SAFETY (v12.6) — why "it saves sometimes, sometimes it misses"
+// ══════════════════════════════════════════════════════════
+// A fill is TWO round-trips: stock first, then Order Processing for the pack
+// sizes. The button used to re-enable after the FIRST one, so pressing "Update
+// Product →" in the gap saved the listing before the sizes had landed — and a
+// callback arriving after the save wrote into an already-reset form. These
+// three helpers make a fill atomic from the seller's point of view: while one
+// is in flight the submit button says so and refuses, and a fill whose form has
+// since changed (different listing opened, name retyped, form reset) is dropped
+// instead of writing into whatever is on screen now.
+window._ibiFillBusy = 0;
+function _ibiFormToken() {
+  var v = function (id) { return String((document.getElementById(id) || {}).value || ''); };
+  return v('ap_editing_id') + '|' + v('ap_gen_name') + '|' + v('ap_title');
+}
+function _ibiFillBusyPaint() {
+  var busy = window._ibiFillBusy > 0;
+  var b = document.getElementById('ap_submit_btn');
+  if (!b) return;
+  // A save owns the button while it runs. Reading its own label is deliberate:
+  // a boolean flag would have to be cleared on all three of submitAddProduct's
+  // exit paths, and one missed exit would freeze the button for the session.
+  if (/Submitting|Uploading|Successfully/i.test(b.textContent || '')) return;
+  if (busy) {
+    if (b.getAttribute('data-fill-prev') === null) b.setAttribute('data-fill-prev', b.textContent);
+    b.disabled = true;
+    b.textContent = '⏳ Reading stock & pack size…';
+  } else if (b.getAttribute('data-fill-prev') !== null) {
+    b.disabled = false;
+    b.textContent = b.getAttribute('data-fill-prev');
+    b.removeAttribute('data-fill-prev');
+  }
+}
+function _ibiFillBusyStart() { window._ibiFillBusy++; _ibiFillBusyPaint(); }
+function _ibiFillBusyEnd()   { window._ibiFillBusy = Math.max(0, window._ibiFillBusy - 1); _ibiFillBusyPaint(); }
+
+// Write a value AND tell the rest of the form about it. Setting .value in code
+// fires no `input`, so without this the 💾 draft auto-save never sees an
+// auto-filled figure and a refresh silently loses it.
+function _ibiFillSet(el, v) {
+  if (!el) return 0;
+  el.value = v;
+  // ⚠ _ibiFillWriting must wrap the dispatch, or our own synthetic `input` would
+  // trip the listener below and mark the box as hand-typed — after which the
+  // background sync would never refresh it again.
+  window._ibiFillWriting = true;
+  try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+  finally { window._ibiFillWriting = false; }
+  return 1;
+}
+
+// A stock box the seller typed into themselves. The SILENT background sync must
+// never overwrite it (pressing the button still does — that is what it is for).
+document.addEventListener('input', function (ev) {
+  var t = ev.target;
+  if (!t || !t.matches || window._ibiFillWriting) return;
+  if (t.matches('#ap_stock, .cx-stock')) t.setAttribute('data-stock-manual', '1');
+}, true);
+
 function ibiFillStockFromApp(btn, auto) {
   var _say = auto ? function () {} : showToast;
   if (!_ibiStockSellerOK()) { _say('\u26a0\ufe0f Stock auto-fill is available for the iINTELLIGENCEi account only.'); return; }
@@ -4483,10 +4557,21 @@ function ibiFillStockFromApp(btn, auto) {
 
   var old = btn ? btn.textContent : '';
   if (btn) { btn.disabled = true; btn.textContent = '\u23f3 Reading stock\u2026'; }
+  // Held until BOTH round-trips are done (see _ibiFillBusyPaint); `token` pins
+  // the listing this fill belongs to.
+  var token = _ibiFormToken();
+  var done = false;
+  var finish = function () { if (done) return; done = true; if (btn) { btn.disabled = false; btn.textContent = old; } _ibiFillBusyEnd(); };
+  var stale = function () {
+    if (_ibiFormToken() === token) return false;
+    finish();                                   // a different listing is on screen now \u2014 drop this fill
+    return true;
+  };
+  _ibiFillBusyStart();
   ibiStockFetch(function (rows, err) {
-    if (btn) { btn.disabled = false; btn.textContent = old; }
-    if (err === 'not-allowed') { _say('\u26a0\ufe0f Not available for this account.'); return; }
-    if (!rows) { _say('\u26a0\ufe0f Could not read the Stock Availability app (' + (err || 'error') + '). Try again.'); return; }
+    if (stale()) return;
+    if (err === 'not-allowed') { finish(); _say('\u26a0\ufe0f Not available for this account.'); return; }
+    if (!rows) { finish(); _say('\u26a0\ufe0f Could not read the Stock Availability app (' + (err || 'error') + '). Try again.'); return; }
 
     var hasVars = !!(document.getElementById('ap_has_variations') || {}).checked;
     var trs = document.querySelectorAll('#combosGridBody tr');
@@ -4506,8 +4591,11 @@ function ibiFillStockFromApp(btn, auto) {
         // the matcher, so a 2 Qty row can never take the 1 Qty figure.
         var hit = ibiStockLookup(rows, _ibiRowQuery(base, axes, opts), _stockIdf);
         var el = tr.querySelector('.cx-stock');
-        if (hit && el) {
-          el.value = hit.sellable; filled++;
+        // The silent background sync leaves a hand-typed count alone; the button overwrites.
+        if (el && auto && el.getAttribute('data-stock-manual') === '1') {
+          report.push(opts.join('/') + ' = kept your typed figure');
+        } else if (hit && el) {
+          _ibiFillSet(el, hit.sellable); filled++;
           report.push(opts.join('/') + ' = ' + hit.sellable + ' ("' + hit.product.slice(0, 30) + '")');
         } else {
           report.push(opts.join('/') + ' = no stock row, left blank');
@@ -4515,24 +4603,33 @@ function ibiFillStockFromApp(btn, auto) {
       });
       if (typeof syncVariationsField === 'function') syncVariationsField();
       _ibiApplyHsnFromStock(rows, base);
-      ibiOrdersFetch(function (ords) { if (ords) ibiFillPkgDimsFromOrders(ords, base); });
       _say(filled ? ('\ud83d\udce6 Stock filled: ' + report.join(', ')) : '\u26a0\ufe0f No matching stock rows found for "' + base + '"', filled ? 'success' : '');
       if (!axes.length && filled) _say('\u2139\ufe0f No variation axes \u2014 every row used the same stock figure. Check each row.');
+      // Second round-trip: finish() runs when THIS lands, not when the stock did.
+      ibiOrdersFetch(function (ords) {
+        if (stale()) return;
+        if (ords) ibiFillPkgDimsFromOrders(ords, base);
+        finish();
+      }, auto ? undefined : 0);
       return;
     }
 
     // ── Single product: the one ③ Stock field ──
     var hit = ibiStockLookup(rows, base);
-    if (!hit) { _say('\u26a0\ufe0f No matching product in Stock Availability for "' + base + '"'); return; }
+    if (!hit) { finish(); _say('\u26a0\ufe0f No matching product in Stock Availability for "' + base + '"'); return; }
     var se = document.getElementById('ap_stock');
-    if (se) se.value = hit.sellable;
+    if (se && !(auto && se.getAttribute('data-stock-manual') === '1')) _ibiFillSet(se, hit.sellable);
     _ibiApplyHsnFromStock(rows, base);
-    ibiOrdersFetch(function (ords) { if (ords) ibiFillPkgDimsFromOrders(ords, base); });
     if (typeof updateProductPreview === 'function') updateProductPreview();
     _say('\ud83d\udce6 Stock ' + hit.sellable + ' (packed ' + hit.packed + ' + loose ' + hit.loose +
               (hit.damage ? ', ' + hit.damage + ' damaged excluded' : '') + ') \u2014 matched "' +
               hit.product.slice(0, 42) + '"', 'success');
-  });
+    ibiOrdersFetch(function (ords) {
+      if (stale()) return;
+      if (ords) ibiFillPkgDimsFromOrders(ords, base);
+      finish();
+    }, auto ? undefined : 0);
+  }, auto ? (auto === 'edit' ? 60000 : undefined) : 0);
 }
 
 // Fill ⑦ HSN Code from the matched stock row, when that row actually has one.
@@ -5506,6 +5603,8 @@ function resetAddForm(silent) {
   var _ic = document.getElementById('imgCountHint'); if(_ic) { _ic.textContent='0 / 9 images added'; _ic.style.color='#888'; _ic.style.fontWeight='400'; }
   // Clear draft cache
   try { var s=JSON.parse(sessionStorage.getItem('ibi_seller')||'{}'); if(s.sellerId) sessionStorage.removeItem('ibi_prods_'+s.sellerId); } catch(e) {}
+  // A fresh form has no hand-typed stock to protect from the background sync.
+  document.querySelectorAll('#ap_stock, .cx-stock').forEach(function (el) { el.removeAttribute('data-stock-manual'); });
   if (typeof _syncCancelBtns === 'function') _syncCancelBtns();   // back to "Cancel & Go Back"
   if (!silent) showToast('🔄 Form reset!', 'success');
 }
@@ -5738,6 +5837,17 @@ function submitAddProduct() {
   const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) { showToast('⚠️ Please login first'); return; }
 
+  // ⚠ Never save on top of a fill that is still in flight. "Fill stock & pack
+  // size" is TWO round-trips (stock, then Order Processing for the sizes) — a
+  // save started in that gap wrote the OLD figures, which is exactly the
+  // "sometimes it saves, sometimes it misses" report. The submit button already
+  // says "⏳ Reading stock & pack size…" and is disabled; this covers the
+  // header's 🚀 Submit, which calls straight in here.
+  if (window._ibiFillBusy > 0) {
+    showToast('⏳ Still reading the latest stock & pack size — one moment, then press Update again.');
+    return;
+  }
+
   // ── Prevent duplicate submission ──
   const submittedFlag = document.getElementById('ap_submitted');
   const editId = document.getElementById('ap_editing_id').value.trim();
@@ -5897,6 +6007,9 @@ function submitAddProduct() {
 
   const btn = document.getElementById('ap_submit_btn');
   btn.textContent = '⏳ Submitting…'; btn.disabled = true;
+  // From here the button belongs to the save — _ibiFillBusyPaint reads its label
+  // and leaves it alone, so a background stock sync firing mid-save can neither
+  // repaint nor re-enable it.
 
   const action = editId ? 'editProduct' : 'addProduct';
   // Collect dimensions
