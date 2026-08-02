@@ -2544,7 +2544,7 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.11';
+window.IBI_VERSION      = 'v12.12';
 window.IBI_VERSION_DATE = '1 Aug 2026';
 window.IBI_VERSION_NOTE = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
 window.IBI_VERSION_NOTE_PREV = 'v12.10 — ✈️ TELEGRAM ADDED, COMPLETING THE SET. The public channel link came through, so Follow Us now carries all nine: Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X, Telegram and WhatsApp. Before publishing it the address was opened the way a stranger would see it, signed out, and it does load the real channel — "India Business International eStore", offering to view and join. That is the check the earlier address failed: the one first supplied pointed at the Telegram Web app with a channel number after the #, which only ever opens the reader\'s own Telegram. Telegram was added to the search-engine "sameAs" list too, so all nine accounts are now declared as belonging to this business.';
@@ -3852,13 +3852,13 @@ const _CAT_STOP = {};
 //   filing. Never parseInt an HSN.
 // ══════════════════════════════════════════════════════════
 var IBI_HSN_MASTER = [
-  {n:"Coir Brush, 37.5x11x4 cm, 233 gm, 1 Qty",h:"96031000",g:"5"},
-  {n:"Coir Brush, 37.5x11x4 cm, 233 gm each, 2 Qty",h:"96031000",g:"5"},
-  {n:"Coir Brush, 37.5x11x4 cm, 233 gm each, 4 Qty",h:"96031000",g:"5"},
-  {n:"Coir Brush, 37.5x11x4 cm, 233 gm each, 6 Qty",h:"96031000",g:"5"},
-  {n:"Coir Rope 21.6 ft, 126 gm each, 2 Qty",h:"56079010",g:"5"},
-  {n:"Coir Rope 21.6 ft, 126 gm each, 4 Qty",h:"56079010",g:"5"},
-  {n:"Coir Rope 21.6 ft, 126 gm each, 6 Qty",h:"56079010",g:"5"},
+  {n:"Coir Brush, 37.5x11x4 cm, 275 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Coir Brush, 37.5x11x4 cm, 275 gm each, 2 Qty",h:"96031000",g:"5"},
+  {n:"Coir Brush, 37.5x11x4 cm, 275 gm each, 4 Qty",h:"96031000",g:"5"},
+  {n:"Coir Brush, 37.5x11x4 cm, 275 gm each, 6 Qty",h:"96031000",g:"5"},
+  {n:"Coir Rope 19.6 ft, 126 gm each, 2 Qty",h:"56079010",g:"5"},
+  {n:"Coir Rope 19.6 ft, 126 gm each, 4 Qty",h:"56079010",g:"5"},
+  {n:"Coir Rope 19.6 ft, 126 gm each, 6 Qty",h:"56079010",g:"5"},
   {n:"Coir Mat 68x41x2 cm, 925 gm, 1 Qty",h:"57050010",g:"5"},
   {n:"Coir Mat 62x36x2 cm, 703 gm, 1 Qty",h:"57050010",g:"5"},
   {n:"Coir Mat 52x31x2 cm, 446 gm, 1 Qty",h:"57050010",g:"5"},
@@ -3868,8 +3868,8 @@ var IBI_HSN_MASTER = [
   {n:"Coconut Broom Sticks 80x5.5x5.5 cm, 430 gm each, 6 Qty",h:"96031000",g:"5"},
   {n:"Coconut Shell Charcoal 500 gm, 15x13x7 cm, 1 Qty",h:"44029010",g:"0"},
   {n:"Coconut Shell Charcoal 22x14x8 cm, 1 Kg",h:"44029010",g:"0"},
-  {n:"Coconut Shell Charcoal Powder 500 gm, 14x14x4 cm, 1 Qty",h:"44029010",g:"0"},
-  {n:"Traditional Coconuts Fresh 2 Qty",h:"08011990",g:"0"},
+  {n:"Coconut Shell Charcoal Powder 500 gm, 15x14x5 cm, 1 Qty",h:"44029010",g:"0"},
+  {n:"Traditional Coconuts Fresh 11.5 x 10 .5 x 10.5 ,600g, 2 Qty",h:"08011990",g:"0"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm, 1 Qty",h:"14049060",g:"5"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm each, 2 Qty",h:"14049060",g:"5"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm each, 4 Qty",h:"14049060",g:"5"},
@@ -3877,12 +3877,12 @@ var IBI_HSN_MASTER = [
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 15 Qty",h:"14049060",g:"0"},
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 30 Qty",h:"14049060",g:"0"},
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 75 Qty",h:"14049060",g:"0"},
-  {n:"Natural Organic Coconut Husk, 1 Kg",h:"53050040",g:"0"},
-  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm, 1 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 2 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 4 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 6 Qty",h:"96031000",g:"5"},
-  {n:"Floor Brush Palmyrah, 45x7x11 cm, 725 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Natural Organic Coconut Husk, 22 x 10 x 8 , 138 g, 1 Kg",h:"53050040",g:"0"},
+  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 2 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 4 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 6 Qty",h:"96031000",g:"5"},
+  {n:"Floor Brush Palmyrah, 45x7x11 cm, 570 gm, 1 Qty",h:"96031000",g:"5"},
   {n:"Floor Brush Palmyrah, 30x7x11 cm, 520 gm, 1 Qty",h:"96031000",g:"5"},
   {n:"Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm, 1Qty",h:"46021919",g:"0"},
   {n:"Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 2 Qty",h:"46021919",g:"0"},
@@ -13841,13 +13841,13 @@ init();
                     <option value="Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm, 1 Qty"></option>
                     <option value="Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm each, 2 Qty"></option>
                     <option value="Aluminium Kadhai With Lid, 26.5 x 26.5 x 14 cm, 3 Liters, 469 gm,1 Qty"></option>
-                    <option value="Coir Brush, 37.5x11x4 cm, 233 gm, 1 Qty"></option>
-                    <option value="Coir Brush, 37.5x11x4 cm, 233 gm each, 2 Qty"></option>
-                    <option value="Coir Brush, 37.5x11x4 cm, 233 gm each, 4 Qty"></option>
-                    <option value="Coir Brush, 37.5x11x4 cm, 233 gm each, 6 Qty"></option>
-                    <option value="Coir Rope 21.6 ft, 126 gm each, 2 Qty"></option>
-                    <option value="Coir Rope 21.6 ft, 126 gm each, 4 Qty"></option>
-                    <option value="Coir Rope 21.6 ft, 126 gm each, 6 Qty"></option>
+                    <option value="Coir Brush, 37.5x11x4 cm, 275 gm, 1 Qty"></option>
+                    <option value="Coir Brush, 37.5x11x4 cm, 275 gm each, 2 Qty"></option>
+                    <option value="Coir Brush, 37.5x11x4 cm, 275 gm each, 4 Qty"></option>
+                    <option value="Coir Brush, 37.5x11x4 cm, 275 gm each, 6 Qty"></option>
+                    <option value="Coir Rope 19.6 ft, 126 gm each, 2 Qty"></option>
+                    <option value="Coir Rope 19.6 ft, 126 gm each, 4 Qty"></option>
+                    <option value="Coir Rope 19.6 ft, 126 gm each, 6 Qty"></option>
                     <option value="Coir Mat 68x41x2 cm, 925 gm, 1 Qty"></option>
                     <option value="Coir Mat 62x36x2 cm, 703 gm, 1 Qty"></option>
                     <option value="Coir Mat 52x31x2 cm, 446 gm, 1 Qty"></option>
@@ -13857,8 +13857,8 @@ init();
                     <option value="Coconut Broom Sticks 80x5.5x5.5 cm, 430 gm each, 6 Qty"></option>
                     <option value="Coconut Shell Charcoal 500 gm, 15x13x7 cm, 1 Qty"></option>
                     <option value="Coconut Shell Charcoal 22x14x8 cm, 1 Kg"></option>
-                    <option value="Coconut Shell Charcoal Powder 500 gm, 14x14x4 cm, 1 Qty"></option>
-                    <option value="Traditional Coconuts Fresh 2 Qty"></option>
+                    <option value="Coconut Shell Charcoal Powder 500 gm, 15x14x5 cm, 1 Qty"></option>
+                    <option value="Traditional Coconuts Fresh 11.5 x 10 .5 x 10.5 ,600g, 2 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm, 1 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm each, 2 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm each, 4 Qty"></option>
@@ -13866,11 +13866,11 @@ init();
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 15 Qty"></option>
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 30 Qty"></option>
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 75 Qty"></option>
-                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm, 1 Qty"></option>
-                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 2 Qty"></option>
-                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 4 Qty"></option>
-                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 6 Qty"></option>
-                    <option value="Floor Brush Palmyrah, 45x7x11 cm, 725 gm, 1 Qty"></option>
+                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm, 1 Qty"></option>
+                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 2 Qty"></option>
+                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 4 Qty"></option>
+                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 6 Qty"></option>
+                    <option value="Floor Brush Palmyrah, 45x7x11 cm, 570 gm, 1 Qty"></option>
                     <option value="Floor Brush Palmyrah, 30x7x11 cm, 520 gm, 1 Qty"></option>
                     <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty"></option>
                     <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty"></option>
@@ -14072,7 +14072,7 @@ init();
                     <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm, 1 Qty"></option>
                     <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm each, 2 Qty"></option>
                     <option value="Lunch Bag, 22 x 12 x 26 cm, 220 gm, 1 Qty."></option>
-                    <option value="Natural Organic Coconut Husk, 1 Kg"></option>
+                    <option value="Natural Organic Coconut Husk, 22 x 10 x 8 , 138 g, 1 Kg"></option>
                     <option value="Cast Iron Dosai, 12 inch, 2.16 kg, 1 Qty"></option>
                     <option value="Sacred Conch Shell, 11 x 6 x 6 cm, 140 gm, 1 Qty"></option>
                     <option value="Stone Diya, 7x6x4 cm, 190 gm, 1 Qty"></option>
@@ -14584,7 +14584,7 @@ init();
               <button onclick="ibiCatalogClear()" id="cat_clear_btn" style="display:none;padding:8px 12px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:13px;cursor:pointer;">🗑 Clear list</button>
             </div>
           </div>
-          <p style="font-size:12.5px;color:#666;margin:0 0 4px;">Upload your master product-name list (<b>.xlsx / .xls / .csv</b> — one product name per row, e.g. “Coir Brush, 37.5x11x4 cm, 233 gm, 1 Qty”). The tracker compares it with your listings and shows what is <b style="color:#16a34a;">✅ Completed</b> and what is <b style="color:#d97706;">🕐 Pending</b>. Your list is saved on this device, so it is still here tomorrow — re-upload anytime to update it.</p>
+          <p style="font-size:12.5px;color:#666;margin:0 0 4px;">Upload your master product-name list (<b>.xlsx / .xls / .csv</b> — one product name per row, e.g. “Coir Brush, 37.5x11x4 cm, 275 gm, 1 Qty”). The tracker compares it with your listings and shows what is <b style="color:#16a34a;">✅ Completed</b> and what is <b style="color:#d97706;">🕐 Pending</b>. Your list is saved on this device, so it is still here tomorrow — re-upload anytime to update it.</p>
           <input type="file" id="cat_file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="ibiCatalogUpload(this)"/>
           <div id="cat_meta" style="font-size:12px;color:#888;margin:4px 0 10px;"></div>
           <div id="cat_summary" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;"></div>
