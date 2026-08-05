@@ -2545,9 +2545,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.14';
+window.IBI_VERSION      = 'v12.15';
 window.IBI_VERSION_DATE = '5 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.14 — 📏 THE PRODUCT LIST NOW COMES FROM THE NEW MASTER SHEET, AND IT CARRIES SIZES AND WEIGHTS. The 268 product names behind the seller\'s Add Product box - the ones that fill in the HSN code and the GST rate - are now read from the new master spreadsheet, "Product Names, HSN Code, GST, Prod & Pack Dimensions 5 Aug 2026". Only its first sheet is used; the second is working notes and is ignored. Thirty-seven names changed with it, all of them corrected measurements rather than new or discontinued products: the Round Grow Bag is 40x40x41 cm and not 66x66x44, the 45 cm Palmyrah floor brush is 725 gm and not 570, the Palmyrah hand brush is 22x6x5 cm at 165 gm, and the aluminium kadhai, buckets, tea mugs, tiffin boxes, storage containers and steel plates were all re-measured too. Nothing was added and nothing was dropped - every one of the 268 products is still here. Two things were also put right in the reading of the sheet. The GST rate is now stored in the new sheet as a proper percentage rather than as the words "5%", and it is read as a number, so a rate such as 2.5% can no longer be misread. And 33 of the HSN codes begin with a zero that a spreadsheet quietly drops when it treats the code as a number - those are padded back to their full eight digits before they reach this shop, so 07099990 cannot arrive as 7099990 on an invoice. The new sheet also records the size and weight of each product AND of its packed parcel; those are being carried through the shared catalogue file now, ready for the packing and shipping tools to use.';
+window.IBI_VERSION_NOTE      = 'v12.15 — 🔑 SELLER LOGIN AND “MY PRODUCTS” NOW WAIT LONG ENOUGH FOR THE SHEET TO ANSWER. Signing in to Seller Central often failed and said the server could not be reached, and the product list either sat on “Loading…” or quietly showed an older copy. The account and the PIN were never the problem. Every Seller Central request was giving the Google sheet between six and ten seconds to reply and then throwing the answer away, with no second try. Timed on the live system this morning, the same sign-in request came back in 9 seconds, then 22, then 77, then 6, then 3 — so the reply was usually still on its way when we stopped listening. Sign-in, the product list, opening a listing to edit, orders and earnings now wait up to 25 seconds and try three times before giving up, which is what the shop front was already doing for customers. While it waits it tells you what is happening instead of sitting silent, and if it truly cannot get through it now says the sheet is busy rather than blaming your connection. Three related things were put right at the same time. A warning that the list was a saved copy rather than the live one had been written into a box that did not exist on the page, so nobody ever saw it — the box is now there, and it also says when a retry is under way. A failed load can no longer overwrite your saved copy with an empty list, which is what could make the next visit open on an empty shop. And the orders page no longer reports “no orders yet” when what actually happened is that the sheet did not answer. Pausing and deleting a listing also wait longer, but they are still sent only once, because a request that timed out may already have been carried out and must not be repeated.';
 window.IBI_VERSION_NOTE_PREV = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
 window.IBI_VERSION_NOTE_PREV2 = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
 window.IBI_VERSION_NOTE_PREV3 = 'v12.10 — ✈️ TELEGRAM ADDED, COMPLETING THE SET. The public channel link came through, so Follow Us now carries all nine: Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X, Telegram and WhatsApp. Before publishing it the address was opened the way a stranger would see it, signed out, and it does load the real channel — "India Business International eStore", offering to view and join. That is the check the earlier address failed: the one first supplied pointed at the Telegram Web app with a channel number after the #, which only ever opens the reader\'s own Telegram. Telegram was added to the search-engine "sameAs" list too, so all nine accounts are now declared as belonging to this business.';
@@ -3439,21 +3439,32 @@ function sellerDashLogin() {
   // 'Approved' and a PIN, which is the supported path.
   // ══════════════════════════════════════════════════════════════════════════
 
-  // ── Verify with the server (with 8s timeout) ──
-  ibi_fetch_simple({ action:'checkStatus', sellerId, pin },
+  // ── Verify with the server ──
+  // ⚠ 25s × 3 attempts, NOT the old single 8s try. The sheet answers anywhere between
+  // 3s and 77s (measured — see ibi_fetch_retry), so an 8s cap was rejecting the owner's
+  // own correct PIN most of the time and blaming the connection for it.
+  ibi_fetch_retry({ action:'checkStatus', sellerId, pin },
     function(res) {
       restore();
       if (!res) {
         // ⚠ NO FALLBACK LOGIN HERE. This branch used to sign the seller in on the
         // auto-PIN when the sheet was unreachable — i.e. the one moment we cannot
         // check a credential was the moment we stopped checking it. A failed
-        // verification must fail closed. (Apps Script can take 2–11s; see v10.7.)
-        showToast('⚠️ Could not reach the server. Please check your connection and try again.');
+        // verification must fail closed.
+        showToast('⚠️ The server did not answer after 3 tries. It is usually busy, not down — please wait a moment and try again.');
         return;
       }
       handleSellerLoginResponse(res, sellerId, pin);
     },
-    8000
+    25000, 3,
+    // Say what is happening. A silent 25s button reads as a dead page, which is
+    // exactly what "login is not working" looked like from the seller's side.
+    function(n, total) {
+      if (!btn) return;
+      btn.textContent = (n === 1)
+        ? '⏳ Verifying…'
+        : '⏳ Server is busy — retrying (' + n + ' of ' + total + ')…';
+    }
   );
 }
 
@@ -3491,6 +3502,39 @@ function ibi_fetch_simple(params, callback, timeoutMs) {
     callback(null);
   };
   document.head.appendChild(script);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ibi_fetch_retry — ibi_fetch_simple that waits long enough and tries again.
+//
+// ⚠ WHY THIS EXISTS. Apps Script answers on a very long tail. MEASURED against the
+// live backend on 5 Aug 2026, `checkStatus` five times back to back:
+//     9.1s · 22.2s · 77.1s · 6.0s · 3.1s     (plus one run that came back HTTP 404)
+// and `getApprovedProducts`: 3.8s · 14.2s · 3.2s · 35.4s.
+//
+// Every Seller Central call was capped at 6–10s with NO retry, so the SLOW REPLY WAS
+// BEING THROWN AWAY: the seller login timed out on most attempts and reported
+// "Could not reach the server", and My Products fell back to its cache or sat on
+// "Loading…" — both looking like a broken account rather than a slow sheet. The
+// storefront already got this treatment in v10.7 (15s + 3 attempts); the seller
+// paths were simply never given the same, which is the whole of this bug.
+//
+// Retries are for READS. A write that may already have landed server-side must not be
+// fired twice — give those a longer timeout and one attempt instead.
+// ══════════════════════════════════════════════════════════════════════════
+function ibi_fetch_retry(params, callback, timeoutMs, attempts, onAttempt) {
+  timeoutMs = timeoutMs || 25000;
+  attempts  = attempts  || 3;
+  var n = 0;
+  (function go() {
+    n++;
+    if (onAttempt) { try { onAttempt(n, attempts); } catch (e) {} }
+    ibi_fetch_simple(params, function (res) {
+      if (res) { callback(res); return; }          // a real answer — even an unhappy one — is final
+      if (n < attempts) { setTimeout(go, n * 1200); return; }
+      callback(null);                              // out of attempts: fail, honestly
+    }, timeoutMs);
+  })();
 }
 
 
@@ -5060,7 +5104,10 @@ function loadSellerProducts(forceRefresh) {
   }
 
   // ── Step 2: Fetch fresh data in background ──
-  ibi_fetch_simple({ action:'getSellerProducts', sellerId:session.sellerId, pin:session.pin },
+  // ⚠ 25s × 3 attempts. At the old 8s the sheet's slow tail (measured 3s–77s) was being
+  // discarded, so the list either stuck on "Loading…" or silently kept showing the cached
+  // copy — which is what "products are not loading smoothly" was.
+  ibi_fetch_retry({ action:'getSellerProducts', sellerId:session.sellerId, pin:session.pin },
     function(res) {
       // Restore refresh button
       const refreshBtn = document.querySelector('button[onclick="loadSellerProducts()"]');
@@ -5091,11 +5138,21 @@ function loadSellerProducts(forceRefresh) {
       // listings" the dashboard and the 📋 Catalogue Tracker went on counting the
       // listings that no longer exist. An empty sheet is now taken at face value.
       if (!fetchOK && !prods.length && cached) {
-        try {
-          prods = JSON.parse(cached);
-          const note = document.getElementById('sd_refresh_note');
-          if (note) note.textContent = '(Showing cached data — sheet unavailable)';
-        } catch(e) {}
+        try { prods = JSON.parse(cached); } catch(e) {}
+      }
+
+      if (fetchOK) {
+        _sdNote('');                        // fresh data landed — clear any retry/stale warning
+      } else if (prods.length) {
+        // ⚠ The seller is looking at a SAVED copy, not the sheet. Say so — this note was
+        // written by the code but had no element to write into, so a stale list looked live.
+        _sdNote('⚠️ Showing your last saved copy — the product sheet did not answer after 3 tries. Press 🔄 Refresh in a moment.');
+      } else {
+        _sdNote('⚠️ The product sheet did not answer after 3 tries. Nothing has been lost — press 🔄 Refresh in a moment.');
+        // ⚠ Do NOT cache or paint this empty list: a FAILED call is not evidence of an
+        // empty shop, and caching [] would make the next visit open on "no products".
+        renderProductList(window._scAllProds || []);
+        return;
       }
 
       // Cache for next instant load
@@ -5111,8 +5168,23 @@ function loadSellerProducts(forceRefresh) {
       var _catTab = document.getElementById('dashTab_catalog');
       if (_catTab && _catTab.style.display !== 'none' && typeof _ibiCatRenderLists === 'function') _ibiCatRenderLists();
     },
-    8000
+    25000, 3,
+    // Keep the seller informed instead of leaving a bare "⏳ Loading…" for a minute.
+    function(n, total) {
+      if (n === 1) return;
+      const rb = document.querySelector('button[onclick="loadSellerProducts()"]');
+      if (rb) rb.textContent = '🔄 Retrying (' + n + '/' + total + ')…';
+      _sdNote('⏳ The product sheet is busy — retrying (' + n + ' of ' + total + ')…');
+    }
   );
+}
+
+/** Show or clear the status line above My Products. Pass nothing to hide it. */
+function _sdNote(msg) {
+  const note = document.getElementById('sd_refresh_note');
+  if (!note) return;
+  note.textContent = msg || '';
+  note.style.display = msg ? 'block' : 'none';
 }
 
 function _updateProdStats(prods) {
@@ -6309,9 +6381,12 @@ function editProduct(productId) {
   if (String(productId).charAt(0) === '#') { editDemoProduct(productId); return; }
   showToast('⏳ Loading product…');
 
-  ibi_fetch_simple({ action:'getProduct', productId, sellerId:session.sellerId, pin:session.pin },
+  // ⚠ READ — retried. At the old 6s cap, opening a listing to edit failed on a slow
+  // sheet and said "Could not load product", which reads as a broken listing.
+  ibi_fetch_retry({ action:'getProduct', productId, sellerId:session.sellerId, pin:session.pin },
     function(res) {
-      if (!res || !res.success) { showToast('❌ Could not load product'); return; }
+      if (!res)            { showToast('⚠️ The sheet did not answer after 3 tries — please try again in a moment.'); return; }
+      if (!res.success)    { showToast('❌ Could not load product'); return; }
       const p = res.product;
       switchDashTab('add');
       setTimeout(() => {
@@ -6405,7 +6480,7 @@ function editProduct(productId) {
         document.getElementById('ap_title_count').textContent = (p.title||'').length + '/200 characters';
       }, 100);
     },
-    6000
+    25000, 3
   );
 }
 
@@ -6415,7 +6490,10 @@ function pauseProduct(productId, currentStatus) {
   const newStatus = currentStatus === 'Paused' ? 'Approved' : 'Paused';
   ibi_fetch_simple({ action:'pauseProduct', productId, sellerId:session.sellerId, pin:session.pin, newStatus },
     function(res) {
-      showToast(res && res.success ? (newStatus==='Paused'?'⏸️ Paused':'▶️ Resumed') : '❌ Failed');
+      // ⚠ WRITE — long timeout, but ONE attempt. A pause that timed out may already have
+      // been applied on the sheet, so it is not safe to fire again automatically.
+      showToast(res && res.success ? (newStatus==='Paused'?'⏸️ Paused':'▶️ Resumed')
+                : (!res ? '⚠️ No answer from the sheet — press 🔄 Refresh to see whether it went through.' : '❌ Failed'));
       if (res && res.success) {
         // Reflect the new status at once so "Live on Site" / "Pending Review" are right.
         _scApplyLocalChange(session, function (list) {
@@ -6424,7 +6502,7 @@ function pauseProduct(productId, currentStatus) {
         });
         loadSellerProducts(true);
       }
-    }, 6000);
+    }, 25000);
 }
 
 function deleteProduct(productId) {
@@ -6434,7 +6512,9 @@ function deleteProduct(productId) {
   if (!session) return;
   ibi_fetch_simple({ action:'deleteProduct', productId, sellerId:session.sellerId, pin:session.pin },
     function(res) {
-      showToast(res && res.success ? '🗑️ Product deleted' : '❌ Failed');
+      // ⚠ WRITE — long timeout, ONE attempt (see pauseProduct).
+      showToast(res && res.success ? '🗑️ Product deleted'
+                : (!res ? '⚠️ No answer from the sheet — press 🔄 Refresh to see whether it went through.' : '❌ Failed'));
       if (res && res.success) {
         // Update the list + the Total / Live / Pending counters IMMEDIATELY.
         // (loadSellerProducts() alone repaints the CACHE first, which still holds
@@ -6444,7 +6524,7 @@ function deleteProduct(productId) {
         });
         loadSellerProducts(true);        // then force a fresh fetch (skip the cache)
       }
-    }, 6000);
+    }, 25000);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -9036,7 +9116,7 @@ function loadSellerEarnings() {
   const session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) return;
 
-  ibi_fetch_simple({
+  ibi_fetch_retry({
     action:   'getSellerEarnings',
     sellerId: session.sellerId,
     pin:      session.pin
@@ -9068,7 +9148,7 @@ function loadSellerEarnings() {
       // Calculate from local orders (fallback)
       loadLocalEarnings(session.sellerId);
     }
-  }, 6000);
+  }, 25000, 3);
 }
 
 function loadLocalEarnings(sellerId) {
@@ -9838,12 +9918,20 @@ function loadSellerOrders() {
   if (!container) return;
   container.innerHTML = '<div style="text-align:center;padding:30px;color:#888;">⏳ Loading your orders...</div>';
 
-  ibi_fetch_simple({
+  ibi_fetch_retry({
     action:   'getSellerOrders',
     sellerId: session.sellerId,
     pin:      session.pin
   }, function(res) {
-    if (!res || !res.success) {
+    // ⚠ A call that never answered is NOT the same as "you have no orders" — it used to
+    // print the empty-state either way, so a slow sheet looked like a seller with no sales.
+    if (!res) {
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:#92400e;">' +
+        '⚠️ The sheet did not answer after 3 tries.<br><span style="font-size:12px;color:#888;">Your orders are safe — please try again in a moment.</span>' +
+        '<div style="margin-top:14px;"><button onclick="loadSellerOrders()" style="padding:8px 18px;background:#131921;color:#fff;border:none;border-radius:7px;font-size:13px;cursor:pointer;font-weight:700;">🔄 Try again</button></div></div>';
+      return;
+    }
+    if (!res.success) {
       container.innerHTML = '<div style="text-align:center;padding:30px;color:#888;">No orders yet for your products.</div>';
       return;
     }
@@ -9878,7 +9966,7 @@ function loadSellerOrders() {
     // Update stats
     var statsEl = document.getElementById('sellerOrdersStats');
     if (statsEl) statsEl.textContent = orders.length + ' order(s)';
-  }, 10000);
+  }, 25000, 3);
 }
 
 
@@ -13809,6 +13897,11 @@ init();
             </div>
           </div>
         </div>
+        <!-- Loading / stale-data status. ⚠ The code has written to #sd_refresh_note since
+             the cache fallback was added, but the element was never in the markup — so
+             "Showing cached data" silently went nowhere and a seller looking at a stale
+             list had no way to know it. Empty (and hidden) unless there is something to say. -->
+        <div id="sd_refresh_note" style="display:none;font-size:12px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;margin-bottom:10px;"></div>
         <div id="sd_products_list"></div>
       </div>
 
