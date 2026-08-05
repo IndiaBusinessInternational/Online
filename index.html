@@ -2545,14 +2545,14 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.13';
-window.IBI_VERSION_DATE = '2 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
-window.IBI_VERSION_NOTE_PREV = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
-window.IBI_VERSION_NOTE_PREV2 = 'v12.10 — ✈️ TELEGRAM ADDED, COMPLETING THE SET. The public channel link came through, so Follow Us now carries all nine: Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X, Telegram and WhatsApp. Before publishing it the address was opened the way a stranger would see it, signed out, and it does load the real channel — "India Business International eStore", offering to view and join. That is the check the earlier address failed: the one first supplied pointed at the Telegram Web app with a channel number after the #, which only ever opens the reader\'s own Telegram. Telegram was added to the search-engine "sameAs" list too, so all nine accounts are now declared as belonging to this business.';
-window.IBI_VERSION_NOTE_PREV3 = 'v12.9 — 📣 THE SOCIAL ACCOUNTS ARE LIVE IN THE FOOTER. Follow Us now carries Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X and WhatsApp, each opening the real account in a new tab. They are labelled with their names rather than left as bare icons, because a 🧵 or a 📌 on its own tells a shopper nothing. The same seven addresses were also added to the page\'s structured data (the "sameAs" list search engines read), which is how Google learns that these accounts and this shop are the same business — worth doing now that the site is verified in Search Console. TWO were left out on purpose. The LinkedIn address supplied ends in /admin/dashboard/, which is the page-management screen: it only opens for someone signed in as an admin of the page, and everyone else is bounced. The public address for the same page — /company/142920160/ — is what has been published instead. The Telegram address supplied was web.telegram.org with a channel number after the #; that is the Telegram Web app pointing at an internal id, so it opens the reader\'s OWN Telegram rather than the channel. Telegram is therefore not shown yet and will be added as soon as its public t.me link is to hand.';
-window.IBI_VERSION_NOTE_PREV4 = 'v12.8 — 🔗 EVERY LINK NOW GOES SOMEWHERE. The footer carried twenty-four links, and seventeen of them led nowhere at all — they were placeholders copied from the template the shop was built on, naming things that do not exist: Careers at IBI, Press Releases, Investor Relations, IBI Cares, Gift a Smile, IBI Business, Become an Affiliate, Advertise Your Products, IBI Wholesale, and a whole "IBI Payment Products" column offering an IBI Credit Card, IBI Gift Cards and IBI Pay Later. A customer clicking any of them got nothing, and two of them implied credit products you do not offer. Also gone: the Return Centre and 100% Purchase Protection links, the "Download the IBI App" band with its Google Play and App Store buttons (there is no app), and the Conditions of Use and Interest-Based Ads links at the very bottom. What remains all works: Sell on IBI, Become a Seller and Seller Central Login; Your Account, Your Orders, Track My Order, Help, Contact Us and the Privacy Policy; and a new "Talk to Us" column with the WhatsApp number and email address the shop already uses everywhere else. The Follow Us row keeps WhatsApp, and the four social icons will return the moment their real page addresses are added — the slots are waiting in the file. The same clean-up reached the black department bar at the top of every page: it listed Electronics, Beauty & Health, Books & Media, Jewellery and Sports & Fitness, none of which have a single product, so five of its eight departments opened an empty shop — exactly what v12.0 fixed on the old rotating banner. That bar is now built from the catalogue itself and shows only departments that actually contain something, so it will add Jewellery by itself the day a jewellery listing goes live. The dead gold "Today\'s Deals" link beside them is gone too.';
-window.IBI_VERSION_NOTE_PREV5 = 'v12.7 — 🧹 TWO MORE INVENTED CLAIMS REMOVED (EMI, and next-day delivery). Every product page carried a line reading "EMI from ₹39/month". No bank or lender was ever involved: the figure was simply the price divided by twelve, and since the shop is 100% prepaid there was no way for a buyer to pay in instalments at all. It has been removed, along with the quick-view popup\'s "See all EMI options", the "No-Cost EMI" link in the footer, the EMI payment icon, and EMI in the product details table. The MasterCard, RuPay, UPI, GPay, PhonePe and Net Banking icons all STAY — those are genuine, because Zoho Payments really does accept cards and net banking at checkout, and the details table now says so properly: "UPI · Credit/Debit Card · Net Banking · WhatsApp Pay · 100% Prepaid (No COD)". Separately, the product page promised delivery "Tomorrow if ordered before 5:00 PM" and every product card said "FREE delivery Tomorrow". That was a fixed sentence, not a calculation: it took no notice of the delivery pincode the buyer had just chosen on the same screen, of stock, of the courier, or of the fact that parcels leave from Kanyakumari. Nothing in the shop knows a delivery date, so it no longer claims one — the line now reads simply "FREE Delivery on all orders", which is true and is yours to keep. This is the same clean-up as v11.1, which removed the invented star ratings and reviews.';
+window.IBI_VERSION      = 'v12.14';
+window.IBI_VERSION_DATE = '5 Aug 2026';
+window.IBI_VERSION_NOTE      = 'v12.14 — 📏 THE PRODUCT LIST NOW COMES FROM THE NEW MASTER SHEET, AND IT CARRIES SIZES AND WEIGHTS. The 268 product names behind the seller\'s Add Product box - the ones that fill in the HSN code and the GST rate - are now read from the new master spreadsheet, "Product Names, HSN Code, GST, Prod & Pack Dimensions 5 Aug 2026". Only its first sheet is used; the second is working notes and is ignored. Thirty-seven names changed with it, all of them corrected measurements rather than new or discontinued products: the Round Grow Bag is 40x40x41 cm and not 66x66x44, the 45 cm Palmyrah floor brush is 725 gm and not 570, the Palmyrah hand brush is 22x6x5 cm at 165 gm, and the aluminium kadhai, buckets, tea mugs, tiffin boxes, storage containers and steel plates were all re-measured too. Nothing was added and nothing was dropped - every one of the 268 products is still here. Two things were also put right in the reading of the sheet. The GST rate is now stored in the new sheet as a proper percentage rather than as the words "5%", and it is read as a number, so a rate such as 2.5% can no longer be misread. And 33 of the HSN codes begin with a zero that a spreadsheet quietly drops when it treats the code as a number - those are padded back to their full eight digits before they reach this shop, so 07099990 cannot arrive as 7099990 on an invoice. The new sheet also records the size and weight of each product AND of its packed parcel; those are being carried through the shared catalogue file now, ready for the packing and shipping tools to use.';
+window.IBI_VERSION_NOTE_PREV = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
+window.IBI_VERSION_NOTE_PREV2 = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
+window.IBI_VERSION_NOTE_PREV3 = 'v12.10 — ✈️ TELEGRAM ADDED, COMPLETING THE SET. The public channel link came through, so Follow Us now carries all nine: Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X, Telegram and WhatsApp. Before publishing it the address was opened the way a stranger would see it, signed out, and it does load the real channel — "India Business International eStore", offering to view and join. That is the check the earlier address failed: the one first supplied pointed at the Telegram Web app with a channel number after the #, which only ever opens the reader\'s own Telegram. Telegram was added to the search-engine "sameAs" list too, so all nine accounts are now declared as belonging to this business.';
+window.IBI_VERSION_NOTE_PREV4 = 'v12.9 — 📣 THE SOCIAL ACCOUNTS ARE LIVE IN THE FOOTER. Follow Us now carries Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X and WhatsApp, each opening the real account in a new tab. They are labelled with their names rather than left as bare icons, because a 🧵 or a 📌 on its own tells a shopper nothing. The same seven addresses were also added to the page\'s structured data (the "sameAs" list search engines read), which is how Google learns that these accounts and this shop are the same business — worth doing now that the site is verified in Search Console. TWO were left out on purpose. The LinkedIn address supplied ends in /admin/dashboard/, which is the page-management screen: it only opens for someone signed in as an admin of the page, and everyone else is bounced. The public address for the same page — /company/142920160/ — is what has been published instead. The Telegram address supplied was web.telegram.org with a channel number after the #; that is the Telegram Web app pointing at an internal id, so it opens the reader\'s OWN Telegram rather than the channel. Telegram is therefore not shown yet and will be added as soon as its public t.me link is to hand.';
+window.IBI_VERSION_NOTE_PREV5 = 'v12.8 — 🔗 EVERY LINK NOW GOES SOMEWHERE. The footer carried twenty-four links, and seventeen of them led nowhere at all — they were placeholders copied from the template the shop was built on, naming things that do not exist: Careers at IBI, Press Releases, Investor Relations, IBI Cares, Gift a Smile, IBI Business, Become an Affiliate, Advertise Your Products, IBI Wholesale, and a whole "IBI Payment Products" column offering an IBI Credit Card, IBI Gift Cards and IBI Pay Later. A customer clicking any of them got nothing, and two of them implied credit products you do not offer. Also gone: the Return Centre and 100% Purchase Protection links, the "Download the IBI App" band with its Google Play and App Store buttons (there is no app), and the Conditions of Use and Interest-Based Ads links at the very bottom. What remains all works: Sell on IBI, Become a Seller and Seller Central Login; Your Account, Your Orders, Track My Order, Help, Contact Us and the Privacy Policy; and a new "Talk to Us" column with the WhatsApp number and email address the shop already uses everywhere else. The Follow Us row keeps WhatsApp, and the four social icons will return the moment their real page addresses are added — the slots are waiting in the file. The same clean-up reached the black department bar at the top of every page: it listed Electronics, Beauty & Health, Books & Media, Jewellery and Sports & Fitness, none of which have a single product, so five of its eight departments opened an empty shop — exactly what v12.0 fixed on the old rotating banner. That bar is now built from the catalogue itself and shows only departments that actually contain something, so it will add Jewellery by itself the day a jewellery listing goes live. The dead gold "Today\'s Deals" link beside them is gone too.';
 window.IBI_VERSION_NOTE_PREV6 = 'v12.6 —📦 "IT SAVED THE STOCK SOMETIMES, AND SOMETIMES IT DID NOT". Three separate faults were behind that, all now fixed. FIRST, pressing "Fill stock & pack size" is really TWO trips to two different apps — the stock count comes back from Stock Availability, and only then does it go to Order Processing for the pack size and weight. The button stopped saying "Reading" as soon as the FIRST trip finished, so if you pressed Update in that gap the listing was saved before the sizes had arrived, and the sizes you were waiting for were quietly dropped. Worse, if the save finished first, the arriving figures were written into a form that had already been cleared — or into the next product you had started. The button now stays busy until BOTH trips are done, Update says "Reading stock & pack size…" and refuses to save until they are, and figures that arrive after you have moved to a different listing are discarded instead of being pasted into it. SECOND, both apps were being read from a copy that could be up to five minutes old. If you corrected a count in the Stock app and came straight here, you were shown the OLD number and saved it without knowing. Pressing the button now always re-reads both apps fresh, and opening a listing to edit re-reads anything older than a minute. THIRD, if you typed a stock figure in by hand, the background sync that runs while you edit could silently replace it a second later. A figure you type is now left alone by that background sync — only pressing the button yourself overwrites it. Auto-filled figures are also recorded in the 💾 draft now, so a refresh no longer loses them.';
 window.IBI_VERSION_NOTE_PREV7 = 'v12.5 — 🧺 THE SHOP IS NOW ARRANGED BY WHAT THINGS ARE MADE OF. Until now the grid ran in whatever order the listings happened to be in, so a coir mat could sit between a steel pan and a t-shirt. The products are now grouped into the eighteen families the product master already uses, and each family appears together under its own heading with a count: Coconut & Coir, Palmyrah & Palm Leaf, Aluminium, Stainless Steel, Clay & Terracotta, Stone, Iron & Steel Tools, Wooden, Imitation Jewellery, Live Plants, Fresh Leaves, Spices, Food, Textile & Apparel, Stationery, Garden, Pooja & Festive, and Agricultural Inputs. Anything that does not fit one of them falls into a final "Other Products" group rather than disappearing. These groupings are NOT newly invented: they are read straight from the Category column of the IBI Complete Product Master HSN & GST spreadsheet, which already files all 268 product names into exactly these eighteen families — so the shop now matches the master list. Within a family the order is still your own 🔀 Arrange order, and sold-out items sink to the bottom of their own family instead of being dragged to the end of the page. This is the new default of the SORT BY menu, listed as "Product Group"; every other sort still works exactly as before, so choosing Price low to high (or Featured, which is the old ungrouped arrangement) drops the headings and sorts the whole shop as one list. The pre-built page that search engines and the first split-second of a visit see is arranged the same way, so nothing jumps around while the page loads.';
 window.IBI_VERSION_NOTE_PREV8 = 'v12.4 — 💰 THE SAME MRP RULE INSIDE THE VARIATION GRID. v12.3 made the MRP follow the Selling Price everywhere you TYPE a price, including each row of a combination grid. This finishes the job for the one place a price is set without typing: the "⚡ Fill every row at once" bar above the grid. Applying a price there wrote it into every row but left each row\'s MRP untouched, so a grid filled that way kept whatever MRP was already saved against it — the same wrong-discount problem, one level down. Now a bulk price sets every row\'s MRP to 1.5 times it as well. If you fill in the bulk MRP box too, that figure wins and is used exactly as you typed it. Nothing else changed.';
@@ -3870,8 +3870,8 @@ var IBI_HSN_MASTER = [
   {n:"Coconut Broom Sticks 80x5.5x5.5 cm, 430 gm each, 6 Qty",h:"96031000",g:"5"},
   {n:"Coconut Shell Charcoal 500 gm, 15x13x7 cm, 1 Qty",h:"44029010",g:"0"},
   {n:"Coconut Shell Charcoal 22x14x8 cm, 1 Kg",h:"44029010",g:"0"},
-  {n:"Coconut Shell Charcoal Powder 500 gm, 15x14x5 cm, 1 Qty",h:"44029010",g:"0"},
-  {n:"Traditional Coconuts Fresh 11.5 x 10 .5 x 10.5 ,600g, 2 Qty",h:"08011990",g:"0"},
+  {n:"Coconut Shell Charcoal Powder 500 gm, 14x14x4 cm, 1 Qty",h:"44029010",g:"0"},
+  {n:"Traditional Coconuts Fresh 2 Qty",h:"08011990",g:"0"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm, 1 Qty",h:"14049060",g:"5"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm each, 2 Qty",h:"14049060",g:"5"},
   {n:"Coconut Shell Spatula 60x9x8 cm, 130 gm each, 4 Qty",h:"14049060",g:"5"},
@@ -3879,35 +3879,35 @@ var IBI_HSN_MASTER = [
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 15 Qty",h:"14049060",g:"0"},
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 30 Qty",h:"14049060",g:"0"},
   {n:"Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 75 Qty",h:"14049060",g:"0"},
-  {n:"Natural Organic Coconut Husk, 22 x 10 x 8 , 138 g, 1 Kg",h:"53050040",g:"0"},
-  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm, 1 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 2 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 4 Qty",h:"96031000",g:"5"},
-  {n:"Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 6 Qty",h:"96031000",g:"5"},
-  {n:"Floor Brush Palmyrah, 45x7x11 cm, 570 gm, 1 Qty",h:"96031000",g:"5"},
-  {n:"Floor Brush Palmyrah, 30x7x11 cm, 520 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Natural Organic Coconut Husk, 1 Kg",h:"53050040",g:"0"},
+  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 2 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 4 Qty",h:"96031000",g:"5"},
+  {n:"Palmyrah Brush, 22x6x5 cm, 165 gm each, 6 Qty",h:"96031000",g:"5"},
+  {n:"Floor Brush Palmyrah, 45x7x10.5 cm, 725 gm, 1 Qty",h:"96031000",g:"5"},
+  {n:"Floor Brush Palmyrah, 31x7x10.5 cm, 420 gm, 1 Qty",h:"96031000",g:"5"},
   {n:"Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm, 1Qty",h:"46021919",g:"0"},
   {n:"Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 2 Qty",h:"46021919",g:"0"},
   {n:"Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 10 Qty",h:"46021919",g:"0"},
-  {n:"Koram Pai, 6 x 2.5 Feet, 1120 gm, 1 Qty",h:"46012900",g:"0"},
+  {n:"Koram Pai, 5.5 x 2.11 Feet, 992 gm, 1 Qty",h:"46012900",g:"0"},
   {n:"Koram Pai, 6 x 2.5 Feet, 1120 gm each, 2 Qty",h:"46012900",g:"0"},
   {n:"Palm Leaf Sulavu, 48x42x7 cm, 349 gm, 1 Qty",h:"46012900",g:"0"},
   {n:"Palm Jaggery, 11.5x11.5x6 cm, 500 gm, 1 Qty",h:"17019990",g:"5"},
   {n:"Palm Jaggery, 15x15x6 cm, 1 kg, 1 Qty",h:"17019990",g:"5"},
   {n:"Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm each, 2 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Bucket 11.5 Liters, BIS, 37x32.5x26.5 cm, 580 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Bucket 11.5 Liters, BIS, 37x32.5x26.5 cm, 580 gm each, 2 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Bucket 7.5 Liters, BIS, 32.5x28x23.5 cm, 450 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Bucket 7.5 Liters, BIS, 32.5x28x23.5 cm, 450 gm each, 2 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Bucket 11.5 Liters, BIS, 37x32.5x25 cm, 580 gm, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Bucket 11.5 Liters, BIS, 37x32.5x25 cm, 580 gm each, 2 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Bucket 7.5 Liters, BIS, 32.5x28x22 cm, 450 gm, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Bucket 7.5 Liters, BIS, 32.5x28x22 cm, 450 gm each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Bucket 18 No.Size, 39.5x35x29 cm, 720 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Tea Mug, BIS, 17x10.5x17 cm, 175 gm, 800 ml, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Tea Mug, BIS, 17x10.5x17 cm, 175 gm, 800 ml each, 2 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Tea Mug, BIS, 16x10.5x15 cm, 175 gm, 800 ml, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Tea Mug, BIS, 16x10.5x15 cm, 175 gm, 800 ml each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters each, 2 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Rice Pot with Lid, 11 No Size, 16x16x14 cm, 272 gm, 1.9 Liters, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Rice Pot with Lid, 11 No Size, 18.5x18.5x13.5 cm, 407 gm, 1.9 Liters, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rice Pot with Lid, BIS, 18 No Size, 24x24x18.5 cm, 5.6 Liters, 630 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 850 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium 11 Idli Maker, Light Weight, 26x26x18 cm, 650 gm, 1 Qty",h:"76151030",g:"5"},
@@ -3915,18 +3915,18 @@ var IBI_HSN_MASTER = [
   {n:"Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 700 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm each, 2 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Non-stick Dosa Tawa, BIS, 47x29.5x1.5 cm, 543 gm, 1 Qty",h:"76151012",g:"5"},
+  {n:"Aluminium Non-stick Dosa Tawa, BIS, 44x26.5x5 cm, 552 gm, 1 Qty",h:"76151012",g:"5"},
   {n:"Aluminium Dust Pan, 26x24x3 cm, 243 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Dust Pan, 26x24x3 cm, 243 gm each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Saucepan with Lid and Handle, BIS, 35.5x20.5x13.5 cm, 2.5 Liters, 576 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Saucepan with Lid and Handle, 37.5x21x16.5 cm, 466 gm, 2.5 Liters, 1 Qty.",h:"76151030",g:"5"},
-  {n:"Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm each, 2 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Kadhai with Lid, BIS, 32.5x27x13.5 cm, 3 Liters, 674 gm, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium Kadhai with Lid, BIS, 32.5x27x13.5 cm, 3 Liters, 674gm each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Kadhai With Lid, 26.5 x 26.5 x 14 cm, 3 Liters, 469 gm,1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Tope Set of 6, 29x29x18 cm, 1.97 Kg, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm each, 1 Qty",h:"76151030",g:"5"},
-  {n:"Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 540 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm each, 2 Qty",h:"76151030",g:"5"},
+  {n:"Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 550 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Saucepan, 35x18.5x15.5 cm, 2 Liters, 523 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Grater, 28.5x11 cm, 145 gm,1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Grater, 28.5x11 cm, 145 gm each, 2 Qty",h:"73239390",g:"5"},
@@ -3935,22 +3935,22 @@ var IBI_HSN_MASTER = [
   {n:"Stainless Steel Oil Jug, 15.5 x 11.5 x 15 cm, 437 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Idiyappam Maker, 20 x 12 x 6.5 cm, 518 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Storage Container with Lid, 20x20x15 cm, 2 Liters, 680 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Storage Container with Lid, 21x21x16 cm, 5 Liters, 680 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Storage Container with Lid, 20x20x15 cm, 5 Liters, 680 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Chembu, 700ml, 10 x 9.5 x 11 cm, 157 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Storage Container, 17x17x21 cm, 650 gm, 6.5 Liters, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Storage Container, 17x17x13 cm, 650 gm, 6.5 Liters, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Storage Container, 20x20x24 cm, 766 gm, 6.5 Liters, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Storage Container, 16x16x21 cm, 766 gm, 6.5 Liters, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Storage Container, 15x15x19cm, 766 gm, 6.5 Liters, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Strainer Bowl, 30x30x11.5 cm, 560 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Tiffin Box, 650ml, 14x14x5.5 cm, 352 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Tiffin Box, 650ml, 15x14.5x7 cm, 352 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Puttu Maker, 27x13.5x13.5 cm, 415 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Deep Dabba Canister Set of 3 with Lid, 18.5 x 18.5 x 23.5 cm, 5.5 L, 672 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Plates,  29x29x3.5 cm, 350 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Plates,  29x29x3.5 cm, 350 gm each, 2 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Plates, 29x29x3.5 cm, 350 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Plates, 29x29x3.5 cm, 350 gm each, 2 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Food Storage Container with Lid, 500 ml, 9x9x11 cm, 182 gm, 1 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Mug with Handle, 500 ml, 9x9.5 cm, 115 gm, 1 Qty",h:"73239390",g:"5"},
+  {n:"Stainless Steel Mug with Handle, 500 ml, 13x9x9.5 cm, 115 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm each, 2 Qty",h:"73239390",g:"5"},
-  {n:"Stainless Steel Tiffin Box Set of 2, 650 ml Large & 450 ml  Small, 15.5x13x6 cm, 343 gm",h:"73239390",g:"5"},
+  {n:"Stainless Steel Tiffin Box Set of 2, 650 ml Large & 450 ml Small, 15.5x13x6 cm, 343 gm",h:"73239390",g:"5"},
   {n:"Stainless Steel Kalash Pot, 350 ml, 8.5x8.5x8.5 cm, 118 gm, 1 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Tope Set of 5, 23x23x22 cm, 1.84 Kg, 5 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Spoon 16x3.5x2.5 cm, 18 gm, 1 Qty",h:"73239390",g:"5"},
@@ -3961,11 +3961,11 @@ var IBI_HSN_MASTER = [
   {n:"Stainless Steel Bowl, 10x10x5 cm, 300 ml, 238 gm each, 2 Qty",h:"73239390",g:"5"},
   {n:"Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 1",h:"73239390",g:"5"},
   {n:"Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 4",h:"73239390",g:"5"},
-  {n:"Clay Curry Pot with Lid and Handle, 9 Inch Dia,  27x24x15 cm, 2.3 Liters, 1.94 Kg, 1 Qty",h:"69120010",g:"5"},
+  {n:"Clay Curry Pot with Lid and Handle, 9 Inch Dia, 27x24x15 cm, 2.3 Liters, 1.94 Kg, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Appam Maker with Lid, 29.5x23.5x10 cm, 1.8 Kg, 1.5 Liters, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Sambrani Holder, 20x15x7 cm, 635 gm, 1 Qty",h:"69120040",g:"0"},
   {n:"Clay Uruli Pot with Lid and Handle, 7 Inch, 23x19x13 cm, 1 Liters, 1.2 Kg, 1 Qty",h:"69120010",g:"5"},
-  {n:"Clay Uruli with Lid, 23x23x15 cm, 2.5 Liters, 2.43 Kg, 1 Qty",h:"69120010",g:"5"},
+  {n:"Clay Uruli with Lid, 23.5x23.5x15.5 cm, 2.5 Liters, 2.43 Kg, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Plates, 28x28x3.5 cm, 1 Kg, 11 Inch Dia each, 2 Qty",h:"69120010",g:"5"},
   {n:"Clay Kadhai 2.5 Liters, 33x29x13 cm, 1.85 Kg, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Pongal Pot | Paanai, 22x22x22 cm, 1.6 Kg, 2.5 Liters, 1 Qty",h:"69120010",g:"5"},
@@ -4003,14 +4003,14 @@ var IBI_HSN_MASTER = [
   {n:"Stone Diya, 7x6x4 cm, 190 gm each, 2 Qty",h:"68029900",g:"5"},
   {n:"Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty",h:"73269090",g:"18"},
   {n:"Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty",h:"73269090",g:"18"},
-  {n:"Rat Trap - Iron, SpringLess Type, 35x16x14.5 cm, 561 gm, 1 Qty",h:"73269090",g:"18"},
+  {n:"Rat Trap - Iron, SpringLess Type, 32x16.5x15 cm, 826 gm, 1 Qty",h:"73269090",g:"18"},
   {n:"Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm, 1 Qty",h:"82059000",g:"18"},
   {n:"Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm each, 2 Qty",h:"82059000",g:"18"},
   {n:"Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 2 Qty",h:"82159900",g:"18"},
   {n:"Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 4 Qty",h:"82159900",g:"18"},
   {n:"Hand Garden Cultivator with Wooden Handle, 37.5x12x4 cm, 453 gm, 1 Qty",h:"82013000",g:"0"},
-  {n:"Dog Chain, 170x2x2 cm, 400 gm, 1 Qty",h:"73158900",g:"18"},
-  {n:"Dog Chain, 170x2x2 cm, 400 gm each, 2 Qty",h:"73158900",g:"18"},
+  {n:"Dog Chain, 170x2x 2 cm, 400 gm, 1 Qty",h:"73158900",g:"18"},
+  {n:"Dog Chain, 170x2x 2 cm, 400 gm each, 2 Qty",h:"73158900",g:"18"},
   {n:"Aari Work Stand - Iron, 48.5x48.5x34 cm, 1353 gm, 1 Qty",h:"73269099",g:"18"},
   {n:"Teak Wood Trowel, 30x15x8 cm, 1.37 kg, 1 Qty",h:"82013000",g:"0"},
   {n:"Sack Needle, 20x0.5,0.5 cm, 16 gm each, 2 Qty",h:"73191020",g:"18"},
@@ -4106,13 +4106,13 @@ var IBI_HSN_MASTER = [
   {n:"Cotton Floor Mat Black and Grey, 65x40 cm, 459 gm, 1 Qty",h:"57050029",g:"5"},
   {n:"Hand Towel, 45x30 cm, 50 gm, 1 Qty",h:"63026000",g:"5"},
   {n:"Hair Scrunchies, 10 x 10 x 3 cm, 10 gm, 1 Qty",h:"96159000",g:"18"},
-  {n:"Lunch Bag, 22 x 12 x 26 cm, 220 gm, 1 Qty.",h:"42029900",g:"18"},
+  {n:"Lunch Bag, 22 x 14 x 26 cm, 220 gm, 1 Qty.",h:"42029900",g:"18"},
   {n:"Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty",h:"48201010",g:"0"},
   {n:"Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty",h:"48201010",g:"0"},
   {n:"Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty",h:"48201010",g:"0"},
   {n:"Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty",h:"48201010",g:"0"},
   {n:"Rectangular Grow Bag, 88×28×28 cm, 213 gm, 1 Qty",h:"39232990",g:"18"},
-  {n:"Round Grow Bag, 66x66x44 cm, 170 gm, 1 Qty",h:"39232990",g:"18"},
+  {n:"Round Grow Bag, 40x40x41cm, 170 gm, 1 Qty",h:"39232990",g:"18"},
   {n:"Round Grow Bag, 58x58x17 cm, 160 gm, 1 Qty",h:"39232990",g:"18"},
   {n:"White Kolam Powder, 15x10x5 cm, 1 Kg",h:"25199040",g:"5"},
   {n:"Kolam Powder 10 Colours, 15x10x5 cm, 810 gm",h:"25199040",g:"5"},
@@ -13861,37 +13861,6 @@ init();
                   <input id="ap_gen_name" type="text" list="ibiCatalogList" placeholder="e.g. Coconut Shell Spatula (a short plain name — not the full SEO title)" class="sc-input" style="font-size:13px;"/>
                   <!-- IBI master catalogue (267 names, "List of Product Names (updated 10 July 2026).xlsx") — same list as the standalone Listing Generator; type to filter -->
                   <datalist id="ibiCatalogList">
-                    <option value="Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm, 1 Qty"></option>
-                    <option value="Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm each, 2 Qty"></option>
-                    <option value="Aluminium Bucket 11.5 Liters, BIS, 37x32.5x26.5 cm, 580 gm, 1 Qty"></option>
-                    <option value="Aluminium Bucket 11.5 Liters, BIS, 37x32.5x26.5 cm, 580 gm each, 2 Qty"></option>
-                    <option value="Aluminium Bucket 7.5 Liters, BIS, 32.5x28x23.5 cm, 450 gm, 1 Qty"></option>
-                    <option value="Aluminium Bucket 7.5 Liters, BIS, 32.5x28x23.5 cm, 450 gm each, 2 Qty"></option>
-                    <option value="Aluminium Bucket 18 No.Size, 39.5x35x29 cm, 720 gm, 1 Qty"></option>
-                    <option value="Aluminium Tea Mug, BIS, 17x10.5x17 cm, 175 gm, 800 ml, 1 Qty"></option>
-                    <option value="Aluminium Tea Mug, BIS, 17x10.5x17 cm, 175 gm, 800 ml each, 2 Qty"></option>
-                    <option value="Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm, 1 Qty"></option>
-                    <option value="Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm each, 2 Qty"></option>
-                    <option value="Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters, 1 Qty"></option>
-                    <option value="Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters each, 2 Qty"></option>
-                    <option value="Aluminium Rice Pot with Lid, 11 No Size, 16x16x14 cm, 272 gm, 1.9 Liters, 1 Qty"></option>
-                    <option value="Aluminium Rice Pot with Lid, BIS, 18 No Size, 24x24x18.5 cm, 5.6 Liters, 630 gm, 1 Qty"></option>
-                    <option value="Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 850 gm, 1 Qty"></option>
-                    <option value="Aluminium 11 Idli Maker, Light Weight, 26x26x18 cm, 650 gm, 1 Qty"></option>
-                    <option value="Aluminium Uruli With Lid, BIS, 17 No Size, 29.5x29.5x10.5 cm, 722 gm, 1 Qty"></option>
-                    <option value="Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 700 gm, 1 Qty"></option>
-                    <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm, 1 Qty"></option>
-                    <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm each, 2 Qty"></option>
-                    <option value="Aluminium Non-stick Dosa Tawa, BIS, 47x29.5x1.5 cm, 543 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 540 gm, 1 Qty"></option>
-                    <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm, 1 Qty"></option>
-                    <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm each, 2 Qty"></option>
-                    <option value="Aluminium Saucepan with Lid and Handle, BIS, 35.5x20.5x13.5 cm, 2.5 Liters, 576 gm, 1 Qty"></option>
-                    <option value="Aluminium Saucepan with Lid and Handle, 37.5x21x16.5 cm, 466 gm, 2.5 Liters, 1 Qty."></option>
-                    <option value="Stainless Steel Saucepan, 35x18.5x15.5 cm, 2 Liters, 523 gm, 1 Qty"></option>
-                    <option value="Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm, 1 Qty"></option>
-                    <option value="Aluminium Kadhai with Lid, BIS, 31.5x27x13 cm, 3 Liters, 424 gm each, 2 Qty"></option>
-                    <option value="Aluminium Kadhai With Lid, 26.5 x 26.5 x 14 cm, 3 Liters, 469 gm,1 Qty"></option>
                     <option value="Coir Brush, 37.5x11x4 cm, 275 gm, 1 Qty"></option>
                     <option value="Coir Brush, 37.5x11x4 cm, 275 gm each, 2 Qty"></option>
                     <option value="Coir Brush, 37.5x11x4 cm, 275 gm each, 4 Qty"></option>
@@ -13908,8 +13877,8 @@ init();
                     <option value="Coconut Broom Sticks 80x5.5x5.5 cm, 430 gm each, 6 Qty"></option>
                     <option value="Coconut Shell Charcoal 500 gm, 15x13x7 cm, 1 Qty"></option>
                     <option value="Coconut Shell Charcoal 22x14x8 cm, 1 Kg"></option>
-                    <option value="Coconut Shell Charcoal Powder 500 gm, 15x14x5 cm, 1 Qty"></option>
-                    <option value="Traditional Coconuts Fresh 11.5 x 10 .5 x 10.5 ,600g, 2 Qty"></option>
+                    <option value="Coconut Shell Charcoal Powder 500 gm, 14x14x4 cm, 1 Qty"></option>
+                    <option value="Traditional Coconuts Fresh 2 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm, 1 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm each, 2 Qty"></option>
                     <option value="Coconut Shell Spatula 60x9x8 cm, 130 gm each, 4 Qty"></option>
@@ -13917,24 +13886,93 @@ init();
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 15 Qty"></option>
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 30 Qty"></option>
                     <option value="Coconut Shell - Raw Unpolished, 10x10x6.5 cm, 50 gm each, 75 Qty"></option>
-                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm, 1 Qty"></option>
-                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 2 Qty"></option>
-                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 4 Qty"></option>
-                    <option value="Palmyrah Brush, 22.5x6x5 cm, 195 gm each, 6 Qty"></option>
-                    <option value="Floor Brush Palmyrah, 45x7x11 cm, 570 gm, 1 Qty"></option>
-                    <option value="Floor Brush Palmyrah, 30x7x11 cm, 520 gm, 1 Qty"></option>
-                    <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty"></option>
-                    <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty"></option>
-                    <option value="Rat Trap - Iron, SpringLess Type, 35x16x14.5 cm, 561 gm, 1 Qty"></option>
-                    <option value="Rat Trap - Wooden, 25x11x26 cm, 758 gm, 1 Qty"></option>
+                    <option value="Natural Organic Coconut Husk, 1 Kg"></option>
+                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm, 1 Qty"></option>
+                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 2 Qty"></option>
+                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 4 Qty"></option>
+                    <option value="Palmyrah Brush, 22x6x5 cm, 165 gm each, 6 Qty"></option>
+                    <option value="Floor Brush Palmyrah, 45x7x10.5 cm, 725 gm, 1 Qty"></option>
+                    <option value="Floor Brush Palmyrah, 31x7x10.5 cm, 420 gm, 1 Qty"></option>
                     <option value="Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm, 1Qty"></option>
                     <option value="Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 2 Qty"></option>
                     <option value="Palm Leaf Basket | Petti, 34x24x16 cm, 150 gm each, 10 Qty"></option>
-                    <option value="Clay Curry Pot with Lid and Handle, 9 Inch Dia,  27x24x15 cm, 2.3 Liters, 1.94 Kg, 1 Qty"></option>
+                    <option value="Koram Pai, 5.5 x 2.11 Feet, 992 gm, 1 Qty"></option>
+                    <option value="Koram Pai, 6 x 2.5 Feet, 1120 gm each, 2 Qty"></option>
+                    <option value="Palm Leaf Sulavu, 48x42x7 cm, 349 gm, 1 Qty"></option>
+                    <option value="Palm Jaggery, 11.5x11.5x6 cm, 500 gm, 1 Qty"></option>
+                    <option value="Palm Jaggery, 15x15x6 cm, 1 kg, 1 Qty"></option>
+                    <option value="Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm, 1 Qty"></option>
+                    <option value="Aluminium Achu Murukku Mould, 37×8×5 cm, 112 gm each, 2 Qty"></option>
+                    <option value="Aluminium Bucket 11.5 Liters, BIS, 37x32.5x25 cm, 580 gm, 1 Qty"></option>
+                    <option value="Aluminium Bucket 11.5 Liters, BIS, 37x32.5x25 cm, 580 gm each, 2 Qty"></option>
+                    <option value="Aluminium Bucket 7.5 Liters, BIS, 32.5x28x22 cm, 450 gm, 1 Qty"></option>
+                    <option value="Aluminium Bucket 7.5 Liters, BIS, 32.5x28x22 cm, 450 gm each, 2 Qty"></option>
+                    <option value="Aluminium Bucket 18 No.Size, 39.5x35x29 cm, 720 gm, 1 Qty"></option>
+                    <option value="Aluminium Tea Mug, BIS, 16x10.5x15 cm, 175 gm, 800 ml, 1 Qty"></option>
+                    <option value="Aluminium Tea Mug, BIS, 16x10.5x15 cm, 175 gm, 800 ml each, 2 Qty"></option>
+                    <option value="Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm, 1 Qty"></option>
+                    <option value="Aluminium Food Strainer, BIS, 29.5 x 29.5 x 8 cm, 200 gm each, 2 Qty"></option>
+                    <option value="Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters, 1 Qty"></option>
+                    <option value="Aluminium Square Tray, BIS, 26x26x5 cm, 518 gm, 3 Liters each, 2 Qty"></option>
+                    <option value="Aluminium Rice Pot with Lid, 11 No Size, 18.5x18.5x13.5 cm, 407 gm, 1.9 Liters, 1 Qty"></option>
+                    <option value="Aluminium Rice Pot with Lid, BIS, 18 No Size, 24x24x18.5 cm, 5.6 Liters, 630 gm, 1 Qty"></option>
+                    <option value="Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 850 gm, 1 Qty"></option>
+                    <option value="Aluminium 11 Idli Maker, Light Weight, 26x26x18 cm, 650 gm, 1 Qty"></option>
+                    <option value="Aluminium Uruli With Lid, BIS, 17 No Size, 29.5x29.5x10.5 cm, 722 gm, 1 Qty"></option>
+                    <option value="Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 700 gm, 1 Qty"></option>
+                    <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm, 1 Qty"></option>
+                    <option value="Aluminium Rectangular Tray, BIS, 31x21x5 cm, 2 Liters, 713 gm each, 2 Qty"></option>
+                    <option value="Aluminium Non-stick Dosa Tawa, BIS, 44x26.5x5 cm, 552 gm, 1 Qty"></option>
+                    <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm, 1 Qty"></option>
+                    <option value="Aluminium Dust Pan, 26x24x3 cm, 243 gm each, 2 Qty"></option>
+                    <option value="Aluminium Saucepan with Lid and Handle, BIS, 35.5x20.5x13.5 cm, 2.5 Liters, 576 gm, 1 Qty"></option>
+                    <option value="Aluminium Saucepan with Lid and Handle, 37.5x21x16.5 cm, 466 gm, 2.5 Liters, 1 Qty."></option>
+                    <option value="Aluminium Kadhai with Lid, BIS, 32.5x27x13.5 cm, 3 Liters, 674 gm, 1 Qty"></option>
+                    <option value="Aluminium Kadhai with Lid, BIS, 32.5x27x13.5 cm, 3 Liters, 674gm each, 2 Qty"></option>
+                    <option value="Aluminium Kadhai With Lid, 26.5 x 26.5 x 14 cm, 3 Liters, 469 gm,1 Qty"></option>
+                    <option value="Aluminium Tope Set of 6, 29x29x18 cm, 1.97 Kg, 1 Qty"></option>
+                    <option value="Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm, 1 Qty"></option>
+                    <option value="Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Non-Stick Fry Pan, BIS, 44x26.5x4 cm, 550 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Saucepan, 35x18.5x15.5 cm, 2 Liters, 523 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Grater, 28.5x11 cm, 145 gm,1 Qty"></option>
+                    <option value="Stainless Steel Grater, 28.5x11 cm, 145 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Manual Lemon Squeezer, 20 x 6.5 x 3.3 cm, 100 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Manual Lemon Squeezer, 20 x 6.5 x 3.3 cm, 100 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Oil Jug, 15.5 x 11.5 x 15 cm, 437 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Idiyappam Maker, 20 x 12 x 6.5 cm, 518 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Storage Container with Lid, 20x20x15 cm, 2 Liters, 680 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Storage Container with Lid, 20x20x15 cm, 5 Liters, 680 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Chembu, 700ml, 10 x 9.5 x 11 cm, 157 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Storage Container, 17x17x13 cm, 650 gm, 6.5 Liters, 1 Qty"></option>
+                    <option value="Stainless Steel Storage Container, 20x20x24 cm, 766 gm, 6.5 Liters, 1 Qty"></option>
+                    <option value="Stainless Steel Storage Container, 15x15x19cm, 766 gm, 6.5 Liters, 1 Qty"></option>
+                    <option value="Stainless Steel Strainer Bowl, 30x30x11.5 cm, 560 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Tiffin Box, 650ml, 15x14.5x7 cm, 352 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Puttu Maker, 27x13.5x13.5 cm, 415 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Deep Dabba Canister Set of 3 with Lid, 18.5 x 18.5 x 23.5 cm, 5.5 L, 672 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Plates, 29x29x3.5 cm, 350 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Plates, 29x29x3.5 cm, 350 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Food Storage Container with Lid, 500 ml, 9x9x11 cm, 182 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Mug with Handle, 500 ml, 13x9x9.5 cm, 115 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Tiffin Box Set of 2, 650 ml Large &amp; 450 ml Small, 15.5x13x6 cm, 343 gm"></option>
+                    <option value="Stainless Steel Kalash Pot, 350 ml, 8.5x8.5x8.5 cm, 118 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Tope Set of 5, 23x23x22 cm, 1.84 Kg, 5 Qty"></option>
+                    <option value="Stainless Steel Spoon 16x3.5x2.5 cm, 18 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Spoon 16x3.5x2.5 cm, 18 gm each, 3 Qty"></option>
+                    <option value="Stainless Steel Trivet Stand 16.5x16.5x2 cm, 100 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Tea Filter, 12x5.5x27.5 cm, 94 gm, 1 Qty"></option>
+                    <option value="Stainless Steel Tea Filter, 12x5.5x27.5 cm, 94 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Bowl, 10x10x5 cm, 300 ml, 238 gm each, 2 Qty"></option>
+                    <option value="Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 1"></option>
+                    <option value="Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 4"></option>
+                    <option value="Clay Curry Pot with Lid and Handle, 9 Inch Dia, 27x24x15 cm, 2.3 Liters, 1.94 Kg, 1 Qty"></option>
                     <option value="Clay Appam Maker with Lid, 29.5x23.5x10 cm, 1.8 Kg, 1.5 Liters, 1 Qty"></option>
                     <option value="Clay Sambrani Holder, 20x15x7 cm, 635 gm, 1 Qty"></option>
                     <option value="Clay Uruli Pot with Lid and Handle, 7 Inch, 23x19x13 cm, 1 Liters, 1.2 Kg, 1 Qty"></option>
-                    <option value="Clay Uruli with Lid, 23x23x15 cm, 2.5 Liters, 2.43 Kg, 1 Qty"></option>
+                    <option value="Clay Uruli with Lid, 23.5x23.5x15.5 cm, 2.5 Liters, 2.43 Kg, 1 Qty"></option>
                     <option value="Clay Plates, 28x28x3.5 cm, 1 Kg, 11 Inch Dia each, 2 Qty"></option>
                     <option value="Clay Kadhai 2.5 Liters, 33x29x13 cm, 1.85 Kg, 1 Qty"></option>
                     <option value="Clay Pongal Pot | Paanai, 22x22x22 cm, 1.6 Kg, 2.5 Liters, 1 Qty"></option>
@@ -13950,96 +13988,42 @@ init();
                     <option value="Clay Bowl with Lid, 12.5x12.5x9 cm, 325 ml, 495 gm, 1 Qty"></option>
                     <option value="Clay Bowl with Lid, 14.5x14.5x11 cm, 600 ml, 715 gm, 1 Qty"></option>
                     <option value="Clay Bowl with Lid, 18x18x13.5 cm, 1000 ml, 1122 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Grater, 28.5x11 cm, 145 gm,1 Qty"></option>
-                    <option value="Stainless Steel Grater, 28.5x11 cm, 145 gm each, 2 Qty"></option>
-                    <option value="Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm, 1 Qty"></option>
-                    <option value="Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Manual Lemon Squeezer, 20 x 6.5 x 3.3 cm, 100 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Manual Lemon Squeezer, 20 x 6.5 x 3.3 cm, 100 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Oil Jug, 15.5 x 11.5 x 15 cm, 437 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Idiyappam Maker, 20 x 12 x 6.5 cm, 518 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Storage Container with Lid, 20x20x15 cm, 2 Liters, 680 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Storage Container with Lid, 21x21x16 cm, 5 Liters, 680 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Chembu, 700ml, 10 x 9.5 x 11 cm, 157 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Storage Container, 17x17x21 cm, 650 gm, 6.5 Liters, 1 Qty"></option>
-                    <option value="Stainless Steel Storage Container, 20x20x24 cm, 766 gm, 6.5 Liters, 1 Qty"></option>
-                    <option value="Stainless Steel Storage Container, 16x16x21 cm, 766 gm, 6.5 Liters, 1 Qty"></option>
-                    <option value="Stainless Steel Strainer Bowl, 30x30x11.5 cm, 560 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Tiffin Box, 650ml, 14x14x5.5 cm, 352 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Puttu Maker, 27x13.5x13.5 cm, 415 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Deep Dabba Canister Set of 3 with Lid, 18.5 x 18.5 x 23.5 cm, 5.5 L, 672 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Plates,  29x29x3.5 cm, 350 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Plates,  29x29x3.5 cm, 350 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Food Storage Container with Lid, 500 ml, 9x9x11 cm, 182 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Mug with Handle, 500 ml, 9x9.5 cm, 115 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Coffee Cup, 150 ml, 7.5x7.5x7.5 cm, 94 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Tiffin Box Set of 2, 650 ml Large &amp; 450 ml  Small, 15.5x13x6 cm, 343 gm"></option>
-                    <option value="Stainless Steel Kalash Pot, 350 ml, 8.5x8.5x8.5 cm, 118 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Tope Set of 5, 23x23x22 cm, 1.84 Kg, 5 Qty"></option>
-                    <option value="Stainless Steel Spoon 16x3.5x2.5 cm, 18 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Spoon 16x3.5x2.5 cm, 18 gm each, 3 Qty"></option>
-                    <option value="Stainless Steel Trivet Stand 16.5x16.5x2 cm, 100 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Tea Filter, 12x5.5x27.5 cm, 94 gm, 1 Qty"></option>
-                    <option value="Stainless Steel Tea Filter, 12x5.5x27.5 cm, 94 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Bowl, 10x10x5 cm, 300 ml, 238 gm each, 2 Qty"></option>
-                    <option value="Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 1"></option>
-                    <option value="Stainless Steel Thooku Vaali with Lid and Handle, 13x13x12.5 cm, 700 ml, 208 gm, 1 Qty, Model - 4"></option>
-                    <option value="Matti Banana Live Plant, GI Tag, 650 gm, 1 Qty"></option>
-                    <option value="Nendran Banana Live Plant, 650 gm, 1 Qty"></option>
-                    <option value="Rasa Kathali Banana Live Plant, 650 gm, 1 Qty"></option>
-                    <option value="Red Banana Live Plant, 650 gm, 1 Qty"></option>
-                    <option value="Banana Leaves Round-Cut, 9 Inch Dia, 10 Qty Pack"></option>
-                    <option value="Tapioca Cassava Stem Cuttings Live Plant, 20x2x2 cm, 70 gm each, 4 Qty"></option>
-                    <option value="Karuveppilai Plant, 15 cm Height, 1 Qty"></option>
-                    <option value="White Kolam Powder, 15x10x5 cm, 1 Kg"></option>
-                    <option value="Kolam Powder 10 Colours, 15x10x5 cm, 810 gm"></option>
-                    <option value="Kolam Powder White 1 Kg &amp; 10 Colours,15x10x15 cm 1.8 Kg"></option>
-                    <option value="Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 2 Qty"></option>
-                    <option value="Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 4 Qty"></option>
-                    <option value="Hand Garden Cultivator with Wooden Handle, 37.5x12x4 cm, 453 gm, 1 Qty"></option>
-                    <option value="Koram Pai, 6 x 2.5 Feet, 1120 gm, 1 Qty"></option>
-                    <option value="Koram Pai, 6 x 2.5 Feet, 1120 gm each, 2 Qty"></option>
-                    <option value="Wooden Half Stool, 25x25x25 cm,1235 gm, 1 Qty"></option>
-                    <option value="Dog Chain, 170x2x2 cm, 400 gm, 1 Qty"></option>
-                    <option value="Dog Chain, 170x2x2 cm, 400 gm each, 2 Qty"></option>
-                    <option value="Aari Work Stand - Iron, 48.5x48.5x34 cm, 1353 gm, 1 Qty"></option>
+                    <option value="Clay Uthupathi Stand Round, 10x10x2.5 cm, 98 gm, 1 Qty"></option>
+                    <option value="Clay Uthupathi Stand Round, 10x10x2.5 cm, 98 gm each, 2 Qty"></option>
+                    <option value="Diyas, Incense Holders, and Sambrani Holders, 9x9x12 cm, 287 gm, 1 Qty"></option>
+                    <option value="Clay Sambrani Holder with Lid, 9x9x9 cm, 229, 1 Qty"></option>
+                    <option value="Clay Lotus Diya Oil Lamp, 10x10x5 cm, 203, 1 Qty"></option>
+                    <option value="Clay Lotus Diya Sambrani Holder, 10x10x5 cm, 192, 1 Qty"></option>
+                    <option value="Clay Diyas Model-1 very Small, 5.5x5x2 cm, 24 gm, 1 Qty"></option>
+                    <option value="Clay Diyas Model-2, 6.5x5.5x2.5 cm, 37 gm, 1 Qty"></option>
+                    <option value="Clay Diyas Model-3, 8.5x7.3x3 cm, 64 gm, 1 Qty"></option>
+                    <option value="Clay Diyas Model-4, 9.7x8.5x3.5 cm, 101 gm, 1 Qty"></option>
+                    <option value="Clay Diyas Model-5, 12x10.8x4 cm, 131, 1 Qty"></option>
+                    <option value="Clay Diyas Model-6, 14x12.8x4.5 cm, 231 gm, 1 Qty"></option>
                     <option value="Stone Diyas Big, 10x9x4.5 cm, 407 gm, 1 Qty"></option>
                     <option value="Stone Diyas Big, 10x9x4.5 cm, 407 gm each, 2 Qty"></option>
                     <option value="Stone Diyas Small, 7x6x4 cm, 109 gm, 1 Qty"></option>
                     <option value="Stone Diyas Small, 7x6x4 cm, 109 gm each, 2 Qty"></option>
                     <option value="Stone Diyas,Drop Model, 8x6x2 cm, 160 gm each, 2 Qty"></option>
                     <option value="Stone Grinder Mortar and Pestle Set, 10x10x20 cm, 2.58 Kg, 1 Qty"></option>
-                    <option value="Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty"></option>
-                    <option value="Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty"></option>
-                    <option value="Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty"></option>
-                    <option value="Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty"></option>
-                    <option value="Rectangular Grow Bag, 88×28×28 cm, 213 gm, 1 Qty"></option>
-                    <option value="Round Grow Bag, 66x66x44 cm, 170 gm, 1 Qty"></option>
-                    <option value="Round Grow Bag, 58x58x17 cm, 160 gm, 1 Qty"></option>
+                    <option value="Stone Diya, 7x6x4 cm, 190 gm, 1 Qty"></option>
+                    <option value="Stone Diya, 7x6x4 cm, 190 gm each, 2 Qty"></option>
+                    <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm, 1 Qty"></option>
+                    <option value="Rat Trap - Iron, Spring Type, 39x16x12 cm, 445 gm each, 2 Qty"></option>
+                    <option value="Rat Trap - Iron, SpringLess Type, 32x16.5x15 cm, 826 gm, 1 Qty"></option>
+                    <option value="Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm, 1 Qty"></option>
+                    <option value="Chappal Stitching Tool | Cobbler Awl, 13.5x2x2 cm, 12 gm each, 2 Qty"></option>
+                    <option value="Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 2 Qty"></option>
+                    <option value="Tamarind Seed Remover, 11.5 x 2 x 2 cm, 17 gm each, 4 Qty"></option>
+                    <option value="Hand Garden Cultivator with Wooden Handle, 37.5x12x4 cm, 453 gm, 1 Qty"></option>
+                    <option value="Dog Chain, 170x2x 2 cm, 400 gm, 1 Qty"></option>
+                    <option value="Dog Chain, 170x2x 2 cm, 400 gm each, 2 Qty"></option>
+                    <option value="Aari Work Stand - Iron, 48.5x48.5x34 cm, 1353 gm, 1 Qty"></option>
                     <option value="Teak Wood Trowel, 30x15x8 cm, 1.37 kg, 1 Qty"></option>
-                    <option value="Lunch Bag, 22x12x26 Cm, 225 gm, 1 Qty."></option>
-                    <option value="Tamarind Seedless Dry 1 kg, 15x15x23 cm"></option>
-                    <option value="Spices Combo Pack Family, All of 11 in Jar with Spoons, 35x17x22 cm, 3.2 kg"></option>
-                    <option value="Spices Combo Pack of 4 with spoon, Red Chilli Kashmiri-Chilli Coriander Turmeric Powder, 20x10x25 cm, 1.33 kg,"></option>
-                    <option value="Spices Combo Pack of 3 with spoon, Coriander Red Chilli Turmeric Masala Powder, 20x10x21 cm, 1.35 kg"></option>
-                    <option value="Spices Combo Pack of 6 Pepper, Cumin, Fenugreek, Fennel Seed, Garam Masala Powder &amp; Mustard, 18.5x10.5x9.5 cm, 726 gm"></option>
-                    <option value="Spices Combo Pack of 2 Red Chilli, Coriander Powder, 20x10x14 cm, 950 gm"></option>
-                    <option value="Spices Kashmiri Chilli Powder, 7.5x7.5x11 cm, 175 gm"></option>
-                    <option value="Spices Coriander Powder, 10x10x14 cm, 500 gm"></option>
-                    <option value="Spices Red Chilli Powder, 10x10x14 cm, 450 gm"></option>
-                    <option value="Men's Cotton Polo T-Shirt with Pocket, XL, Black, 74x56x74 cm, 275 gm, 1 Qty"></option>
-                    <option value="Men's Cotton Polo T-Shirt with Pocket, XL, Mustard Yellow, 74x56x74 cm, 275 gm, 1 Qty"></option>
-                    <option value="Men's Cotton Polo T-Shirt with Pocket, XL, White, 74x56x74 cm, 275 gm, 1 Qty"></option>
-                    <option value="Mars Polo T-Shirt for Men, Black, M Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, Black, L Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, Black, XL Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, Navy Blue, M Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, Navy Blue, L Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, Navy Blue, XL Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, White, M Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, White, L Size, 71x45x71 cm, 275 gm"></option>
-                    <option value="Mars Polo T-Shirt for Men, White, XL Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Sack Needle, 20x0.5,0.5 cm, 16 gm each, 2 Qty"></option>
+                    <option value="Cast Iron Dosai, 12 inch, 2.16 kg, 1 Qty"></option>
+                    <option value="Rat Trap - Wooden, 25x11x26 cm, 758 gm, 1 Qty"></option>
+                    <option value="Wooden Half Stool, 25x25x25 cm,1235 gm, 1 Qty"></option>
                     <option value="Glass Beads Chain, Light Blue, Medium Blue Glass Beads, 26x1.5x0.8 cm, 60 gm"></option>
                     <option value="Glass Beads Chain, Light Blue, Dark Green Glass Beads, 26x1.5x0.8 cm, 60 gm"></option>
                     <option value="Glass Beads Chain, Red Glass Beads, 26x1.5x0.8 cm, 60 gm"></option>
@@ -14051,6 +14035,16 @@ init();
                     <option value="Invisible Chain - Double Layer, 21x12.5x0.5 cm, 30 gm, 1 Qty"></option>
                     <option value="Invisible Chain - Double Layer, 21x12.5x0.5 cm, 30 gm each, 2 Qty"></option>
                     <option value="Invisible Chain - 3 Layer, 21x13x0.5 cm, 35 gm, 1 Qty"></option>
+                    <option value="Matti Banana Live Plant, GI Tag, 650 gm, 1 Qty"></option>
+                    <option value="Nendran Banana Live Plant, 650 gm, 1 Qty"></option>
+                    <option value="Rasa Kathali Banana Live Plant, 650 gm, 1 Qty"></option>
+                    <option value="Red Banana Live Plant, 650 gm, 1 Qty"></option>
+                    <option value="Tapioca Cassava Stem Cuttings Live Plant, 20x2x2 cm, 70 gm each, 4 Qty"></option>
+                    <option value="Karuveppilai Plant, 15 cm Height, 1 Qty"></option>
+                    <option value="Pineapple Live Plant, 10 x 10 x 20 cm, 150 gm, 1 Qty"></option>
+                    <option value="Pineapple Live Plant, 10 x 10 x 20 cm, 150 gm each, 2 Qty"></option>
+                    <option value="Hibiscus Stem Cuttings Live Plant Pack of 4, 20 x 2 x 2 cm, 41 gm each"></option>
+                    <option value="Banana Leaves Round-Cut, 9 Inch Dia, 10 Qty Pack"></option>
                     <option value="Biriyani | Rambai | Pandan Leaves, 10 Qty Pack, 1 Qty"></option>
                     <option value="Karuveppilai Leaves, 250 gm Pack, 1 Qty"></option>
                     <option value="Eucalyptus Leaves, 10 Qty Pack, 1 Qty"></option>
@@ -14066,21 +14060,30 @@ init();
                     <option value="Therali Leaves, 50 Qty Pack, 1 Qty"></option>
                     <option value="Therali Leaves, 100 Qty Pack, 1 Qty"></option>
                     <option value="Thulasi Leaves, 50 Qty Pack, 1 Qty"></option>
-                    <option value="Clay Uthupathi Stand Round, 10x10x2.5 cm, 98 gm, 1 Qty"></option>
-                    <option value="Clay Uthupathi Stand Round, 10x10x2.5 cm, 98 gm each, 2 Qty"></option>
-                    <option value="Diyas, Incense Holders, and Sambrani Holders, 9x9x12 cm, 287 gm, 1 Qty"></option>
-                    <option value="Clay Sambrani Holder with Lid, 9x9x9 cm, 229, 1 Qty"></option>
-                    <option value="Clay Lotus Diya Oil Lamp, 10x10x5 cm, 203, 1 Qty"></option>
-                    <option value="Clay Lotus Diya Sambrani Holder, 10x10x5 cm, 192, 1 Qty"></option>
-                    <option value="Clay Diyas Model-1 very Small, 5.5x5x2 cm, 24 gm, 1 Qty"></option>
-                    <option value="Clay Diyas Model-2, 6.5x5.5x2.5 cm, 37 gm, 1 Qty"></option>
-                    <option value="Clay Diyas Model-3, 8.5x7.3x3 cm, 64 gm, 1 Qty"></option>
-                    <option value="Clay Diyas Model-4, 9.7x8.5x3.5 cm, 101 gm, 1 Qty"></option>
-                    <option value="Clay Diyas Model-5, 12x10.8x4 cm, 131, 1 Qty"></option>
-                    <option value="Clay Diyas Model-6, 14x12.8x4.5 cm, 231 gm, 1 Qty"></option>
-                    <option value="Aluminium Tope Set of 6, 29x29x18 cm, 1.97 Kg, 1 Qty"></option>
-                    <option value="Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm, 1 Qty"></option>
-                    <option value="Aluminum Flat Tray, 43.5x33.5x7.5 cm, 6 Liters, 499 gm each, 1 Qty"></option>
+                    <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm, 1 Qty"></option>
+                    <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm each, 2 Qty"></option>
+                    <option value="Spices Combo Pack Family, All of 11 in Jar with Spoons, 35x17x22 cm, 3.2 kg"></option>
+                    <option value="Spices Combo Pack of 4 with spoon, Red Chilli Kashmiri-Chilli Coriander Turmeric Powder, 20x10x25 cm, 1.33 kg,"></option>
+                    <option value="Spices Combo Pack of 3 with spoon, Coriander Red Chilli Turmeric Masala Powder, 20x10x21 cm, 1.35 kg"></option>
+                    <option value="Spices Combo Pack of 6 Pepper, Cumin, Fenugreek, Fennel Seed, Garam Masala Powder &amp; Mustard, 18.5x10.5x9.5 cm, 726 gm"></option>
+                    <option value="Spices Combo Pack of 2 Red Chilli, Coriander Powder, 20x10x14 cm, 950 gm"></option>
+                    <option value="Spices Kashmiri Chilli Powder, 7.5x7.5x11 cm, 175 gm"></option>
+                    <option value="Spices Coriander Powder, 10x10x14 cm, 500 gm"></option>
+                    <option value="Spices Red Chilli Powder, 10x10x14 cm, 450 gm"></option>
+                    <option value="Tamarind Seedless Dry 1 kg, 15x15x23 cm"></option>
+                    <option value="Lunch Bag, 22x12x26 Cm, 225 gm, 1 Qty."></option>
+                    <option value="Men&#x27;s Cotton Polo T-Shirt with Pocket, XL, Black, 74x56x74 cm, 275 gm, 1 Qty"></option>
+                    <option value="Men&#x27;s Cotton Polo T-Shirt with Pocket, XL, Mustard Yellow, 74x56x74 cm, 275 gm, 1 Qty"></option>
+                    <option value="Men&#x27;s Cotton Polo T-Shirt with Pocket, XL, White, 74x56x74 cm, 275 gm, 1 Qty"></option>
+                    <option value="Mars Polo T-Shirt for Men, Black, M Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, Black, L Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, Black, XL Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, Navy Blue, M Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, Navy Blue, L Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, Navy Blue, XL Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, White, M Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, White, L Size, 71x45x71 cm, 275 gm"></option>
+                    <option value="Mars Polo T-Shirt for Men, White, XL Size, 71x45x71 cm, 275 gm"></option>
                     <option value="Cotton Pillow Covers Bright Pink, 68x48.5 cm, 175 gm each, 2 Qty"></option>
                     <option value="Cotton Pillow Covers Burgundy, Crimson Red, 66x42 cm, 175 gm each, 2 Qty"></option>
                     <option value="Cotton Pillow Covers Burnt Orange, Golden Yellow, 64.5x40 cm, 175 gm each, 2 Qty"></option>
@@ -14109,26 +14112,23 @@ init();
                     <option value="Cotton Floor Mat Maroon &amp; Off-White, 52x37 cm, 400 gm, 1 Qty"></option>
                     <option value="Cotton Floor Mat Black and Grey, 65x40 cm, 459 gm, 1 Qty"></option>
                     <option value="Hand Towel, 45x30 cm, 50 gm, 1 Qty"></option>
+                    <option value="Hair Scrunchies, 10 x 10 x 3 cm, 10 gm, 1 Qty"></option>
+                    <option value="Lunch Bag, 22 x 14 x 26 cm, 220 gm, 1 Qty."></option>
+                    <option value="Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty"></option>
+                    <option value="Long Plain Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty"></option>
+                    <option value="Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages, 1 Qty"></option>
+                    <option value="Long Ruled Note Book, 31x18.5x0.5 cm, 286 gm, 160 Pages each, 3 Qty"></option>
+                    <option value="Rectangular Grow Bag, 88×28×28 cm, 213 gm, 1 Qty"></option>
+                    <option value="Round Grow Bag, 40x40x41cm, 170 gm, 1 Qty"></option>
+                    <option value="Round Grow Bag, 58x58x17 cm, 160 gm, 1 Qty"></option>
+                    <option value="White Kolam Powder, 15x10x5 cm, 1 Kg"></option>
+                    <option value="Kolam Powder 10 Colours, 15x10x5 cm, 810 gm"></option>
+                    <option value="Kolam Powder White 1 Kg &amp; 10 Colours,15x10x15 cm 1.8 Kg"></option>
+                    <option value="Sacred Conch Shell, 11 x 6 x 6 cm, 140 gm, 1 Qty"></option>
                     <option value="Cow Dung 500 gm Pack, 19 x 16 x 9 , 512 gm, 1 Qty"></option>
                     <option value="Cow Dung 1 Kg Pack, 17 x 13 x 14 cm , 1010 gm, 1 Qty"></option>
                     <option value="Cow Dung 2 kg Pack, 17 x 14 x 21 , 2 kg , 1 Qty"></option>
                     <option value="Cow Dung 3 kg Pack, 19 x 18 x 24 , 3 kg , 1 Qty"></option>
-                    <option value="Hair Scrunchies, 10 x 10 x 3 cm, 10 gm, 1 Qty"></option>
-                    <option value="Sack Needle, 20x0.5,0.5 cm, 16 gm each, 2 Qty"></option>
-                    <option value="Pineapple Live Plant, 10 x 10 x 20 cm, 150 gm, 1 Qty"></option>
-                    <option value="Pineapple Live Plant, 10 x 10 x 20 cm, 150 gm each, 2 Qty"></option>
-                    <option value="Palm Leaf Sulavu, 48x42x7 cm, 349 gm, 1 Qty"></option>
-                    <option value="Palm Jaggery, 11.5x11.5x6 cm, 500 gm, 1 Qty"></option>
-                    <option value="Palm Jaggery, 15x15x6 cm, 1 kg, 1 Qty"></option>
-                    <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm, 1 Qty"></option>
-                    <option value="Original Mango Leaves Thoranam, 91.44x15x2 cm, 55 gm each, 2 Qty"></option>
-                    <option value="Lunch Bag, 22 x 12 x 26 cm, 220 gm, 1 Qty."></option>
-                    <option value="Natural Organic Coconut Husk, 22 x 10 x 8 , 138 g, 1 Kg"></option>
-                    <option value="Cast Iron Dosai, 12 inch, 2.16 kg, 1 Qty"></option>
-                    <option value="Sacred Conch Shell, 11 x 6 x 6 cm, 140 gm, 1 Qty"></option>
-                    <option value="Stone Diya, 7x6x4 cm, 190 gm, 1 Qty"></option>
-                    <option value="Stone Diya, 7x6x4 cm, 190 gm each, 2 Qty"></option>
-                    <option value="Hibiscus Stem Cuttings Live Plant Pack of 4, 20 x 2 x 2 cm, 41 gm each"></option>
                   </datalist>
                   <div id="aiNameSrcHint" style="font-size:11.5px;color:#6b7280;margin-top:3px;">💡 Suggestions: IBI master catalogue — upload your own list in the 📋 Catalogue tab, or type any name manually.</div>
                 </div>
