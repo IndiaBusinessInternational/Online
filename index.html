@@ -2551,8 +2551,8 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.15';
-window.IBI_VERSION_DATE = '5 Aug 2026';
+window.IBI_VERSION      = 'v12.16';
+window.IBI_VERSION_DATE = '6 Aug 2026';
 window.IBI_VERSION_NOTE      = 'v12.15 — 🔑 SELLER LOGIN AND “MY PRODUCTS” NOW WAIT LONG ENOUGH FOR THE SHEET TO ANSWER. Signing in to Seller Central often failed and said the server could not be reached, and the product list either sat on “Loading…” or quietly showed an older copy. The account and the PIN were never the problem. Every Seller Central request was giving the Google sheet between six and ten seconds to reply and then throwing the answer away, with no second try. Timed on the live system this morning, the same sign-in request came back in 9 seconds, then 22, then 77, then 6, then 3 — so the reply was usually still on its way when we stopped listening. Sign-in, the product list, opening a listing to edit, orders and earnings now wait up to 25 seconds and try three times before giving up, which is what the shop front was already doing for customers. While it waits it tells you what is happening instead of sitting silent, and if it truly cannot get through it now says the sheet is busy rather than blaming your connection. Three related things were put right at the same time. A warning that the list was a saved copy rather than the live one had been written into a box that did not exist on the page, so nobody ever saw it — the box is now there, and it also says when a retry is under way. A failed load can no longer overwrite your saved copy with an empty list, which is what could make the next visit open on an empty shop. And the orders page no longer reports “no orders yet” when what actually happened is that the sheet did not answer. Pausing and deleting a listing also wait longer, but they are still sent only once, because a request that timed out may already have been carried out and must not be repeated.';
 window.IBI_VERSION_NOTE_PREV = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
 window.IBI_VERSION_NOTE_PREV2 = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
@@ -5218,9 +5218,31 @@ function _updateProdStats(prods) {
 // staff have no visibility of the option. Real enforcement needs per-staff logins
 // and a server-side permission check.
 // ══════════════════════════════════════════════════════════
-const IBI_CEO_PIN    = '8899';
+/* The CEO PIN is NOT in this file, and must never be put back.
+   This storefront is public, so a PIN compared here is readable by anyone —
+   it was, until 6 Aug 2026. The check now happens on the IBI CEO
+   Auth Apps Script, which keeps the PIN in Script Properties and hands back
+   only a signed token. Change the PIN there, in one Script Property.
+   (This still only HIDES controls — see the note above. Moving the PIN
+   server-side stops the PIN leaking; it does not by itself make the hidden
+   actions enforced.) */
+const IBI_CEO_AUTH_URL = "";   // ← paste the IBI CEO Auth /exec URL here
 const IBI_CEO_WINDOW = 15 * 60 * 1000;   // unlock expires after 15 minutes
 const IBI_CEO_KEY    = 'ibi_ceo_unlock';
+
+/* text/plain keeps this a "simple" request, so the browser skips the CORS
+   preflight that Apps Script will not answer. */
+function ibiVerifyCeoPin(pin) {
+  if (!IBI_CEO_AUTH_URL) {
+    return Promise.resolve({ ok: false, error: 'CEO verification is not set up yet.' });
+  }
+  return fetch(IBI_CEO_AUTH_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'verifyCeo', pin: pin })
+  }).then(function (r) { return r.json(); })
+    .catch(function () { return { ok: false, error: 'Could not reach the verification service.' }; });
+}
 
 function ibiCeoUnlocked() {
   try {
@@ -5275,10 +5297,16 @@ function ibiCeoPrompt() {
   if (ibiCeoUnlocked()) { ibiCeoLock(); showToast('🔒 Owner controls hidden again'); return; }
   ibiAskPin(function (pin) {            // the box says nothing about what it unlocks
     if (!pin) return;                   // cancelled / empty — stay silent
-    if (pin !== IBI_CEO_PIN) { showToast('Incorrect'); return; }
-    try { sessionStorage.setItem(IBI_CEO_KEY, String(Date.now())); } catch (e) {}
-    ibiCeoApply();
-    showToast('🔓 Owner controls unlocked for 15 minutes', 'success');
+    ibiVerifyCeoPin(pin).then(function (res) {
+      if (!res || !res.ok) {
+        // Distinguish a lockout or an outage from a wrong PIN.
+        showToast((res && res.code && res.code !== 'incorrect' && res.error) ? res.error : 'Incorrect');
+        return;
+      }
+      try { sessionStorage.setItem(IBI_CEO_KEY, String(Date.now())); } catch (e) {}
+      ibiCeoApply();
+      showToast('🔓 Owner controls unlocked for 15 minutes', 'success');
+    });
   });
 }
 /** Show/hide every CEO-only control to match the current lock state. */
