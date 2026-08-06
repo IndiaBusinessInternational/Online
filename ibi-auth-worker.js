@@ -1,20 +1,38 @@
 // =============================================================
 //  IBI AUTH WORKER  —  Cloudflare Worker (ES Module)
-//  Version : 1.1  |  India Business International
+//  Version : 1.2  |  India Business International
 // -------------------------------------------------------------
 //  Protects: finance / gstr / erp / settlement subdomains
 //            (actual routes are set in the Cloudflare dashboard)
-//  Auth    : One master password  (SHA-256 hash in env var)
+//  Auth    : Master password, optionally overridden per tool
 //  Session : Session cookie  (clears when browser closes)
-//  Scope   : Shared across all .indiabusinessinternational.online
 //  v1.1    : og-banner.png served WITHOUT auth (social-link
 //            scrapers need it) + OG/Twitter meta tags on the
 //            login page so shared links show a rich preview.
+//  v1.2    : per-tool USERNAME on the login page, so a browser
+//            password manager files each tool separately instead
+//            of saving them all under one shared username; plus
+//            OPTIONAL per-tool passwords (see below).
 // =============================================================
 //
 //  Required Environment Variables (set in Cloudflare dashboard):
 //    IBI_PASSWORD_HASH  — SHA-256 hex hash of your master password
 //    IBI_SECRET_KEY     — Random 64-char string for signing tokens
+//
+//  Optional, one per tool — set any of these to give that tool its
+//  OWN password (hash it with ibi-password-generator.html):
+//    IBI_PASSWORD_HASH_ERP
+//    IBI_PASSWORD_HASH_FINANCE
+//    IBI_PASSWORD_HASH_SETTLEMENT
+//    IBI_PASSWORD_HASH_GSTR
+//
+//  ⚠ Nothing changes until you set one. A tool with no override
+//  keeps using the master password AND keeps the shared session,
+//  exactly as before — so this update cannot lock anyone out.
+//  A tool WITH an override gets its own login and its own session:
+//  its cookie is bound to that subdomain, so signing in to ERP no
+//  longer also opens Finance. That is the point of separate
+//  passwords, but it does mean signing in per tool.
 //
 // =============================================================
 
@@ -29,12 +47,35 @@ const PUBLIC_PATHS  = ['/og-banner.png'];
 
 // Per-subdomain names/descriptions for the login page's social
 // preview tags (fallback below covers any other routed host).
+//   user — the username shown on the login page. Its ONLY job is to
+//          give the browser's password manager something unique to
+//          file this tool under; without it every tool is saved
+//          under one shared username and the entries collide.
+//   env  — suffix of the optional per-tool password-hash variable.
 const TOOL_META = {
-  erp:        { title: 'IBI ERP',                desc: 'All-in-one business ERP for India Business International — internal staff access.' },
-  finance:    { title: 'IBI Finance Tracker',    desc: 'Business finance tracker for India Business International — internal staff access.' },
-  settlement: { title: 'IBI Settlement Tracker', desc: 'Marketplace settlement & payout reconciliation — internal staff access.' },
-  gstr:       { title: 'IBI GST Reports',        desc: 'GST reporting for India Business International — internal staff access.' }
+  erp:        { user: 'IBI-ERP',        env: 'ERP',        title: 'IBI ERP',                desc: 'All-in-one business ERP for India Business International — internal staff access.' },
+  finance:    { user: 'IBI-Finance',    env: 'FINANCE',    title: 'IBI Finance Tracker',    desc: 'Business finance tracker for India Business International — internal staff access.' },
+  settlement: { user: 'IBI-Settlement', env: 'SETTLEMENT', title: 'IBI Settlement Tracker', desc: 'Marketplace settlement & payout reconciliation — internal staff access.' },
+  gstr:       { user: 'IBI-GSTR',       env: 'GSTR',       title: 'IBI GST Reports',        desc: 'GST reporting for India Business International — internal staff access.' }
 };
+
+// Which password guards this host, and is it tool-specific?
+// Falls back to the shared master password when no override is set,
+// which is what keeps this change safe to deploy as-is.
+function passwordFor(env, sub) {
+  const meta = TOOL_META[sub];
+  const own  = meta && env['IBI_PASSWORD_HASH_' + meta.env];
+  return own
+    ? { hash: own, scope: sub }     // own password  → session bound to this tool
+    : { hash: env.IBI_PASSWORD_HASH, scope: '' };  // shared password → shared session
+}
+
+function subOf(url) { return new URL(url).hostname.split('.')[0]; }
+
+// A tool with its own password also needs its own cookie. There is only
+// one cookie name, so if a scoped tool reused it, signing in to ERP would
+// overwrite the shared session and silently sign you out of the others.
+function cookieNameFor(scope) { return scope ? COOKIE_NAME + '_' + scope : COOKIE_NAME; }
 
 // ── Main fetch handler ────────────────────────────────────────
 export default {
@@ -63,11 +104,17 @@ export default {
     }
 
     // ── Check for a valid session cookie ──
+    // Prefer this tool's own cookie; fall back to the shared one for
+    // tools still on the master password.
     const cookieHeader = request.headers.get('Cookie') || '';
-    const token = parseCookie(cookieHeader, COOKIE_NAME);
+    const thisSub = subOf(request.url);
+    const token = parseCookie(cookieHeader, cookieNameFor(thisSub))
+               || parseCookie(cookieHeader, COOKIE_NAME);
 
     if (token) {
-      const valid = await verifyToken(token, env.IBI_SECRET_KEY);
+      // Scope matters: a token minted for a tool that has its own
+      // password must not unlock a different tool.
+      const valid = await verifyToken(token, env.IBI_SECRET_KEY, thisSub);
       if (valid) {
         // Authenticated — pass request straight through to origin
         return fetch(request);
@@ -93,16 +140,19 @@ async function handleLogin(request, env) {
   const redirectTo = formData.get('redirect') || '/';
   const origin     = new URL(request.url).origin;
 
+  // This tool's own password if one is configured, else the master.
+  const expected = passwordFor(env, subOf(request.url));
+
   // Hash the submitted password and compare to stored hash
   const submittedHash = await sha256(password);
 
-  if (submittedHash !== env.IBI_PASSWORD_HASH) {
+  if (submittedHash !== expected.hash) {
     // Wrong password — show login page with error message
     return serveLoginPage(origin, redirectTo, true);
   }
 
   // ── Correct password: generate a signed session token ──
-  const token = await generateToken(env.IBI_SECRET_KEY);
+  const token = await generateToken(env.IBI_SECRET_KEY, expected.scope);
 
   // Session cookie:
   //   - No Expires / Max-Age  =>  clears when browser is closed
@@ -110,10 +160,13 @@ async function handleLogin(request, env) {
   //   - HttpOnly  =>  not accessible from JavaScript (XSS protection)
   //   - SameSite=Strict  =>  CSRF protection
   //   - Secure  =>  HTTPS only
+  // A scoped session stays host-only (no Domain attribute) so it never
+  // travels to the other subdomains; the shared one keeps the wide Domain
+  // it has always had.
   const setCookie = [
-    `${COOKIE_NAME}=${token}`,
+    `${cookieNameFor(expected.scope)}=${token}`,
     `Path=/`,
-    `Domain=${COOKIE_DOMAIN}`,
+    ...(expected.scope ? [] : [`Domain=${COOKIE_DOMAIN}`]),
     `HttpOnly`,
     `SameSite=Strict`,
     `Secure`
@@ -129,16 +182,19 @@ async function handleLogin(request, env) {
 }
 
 // ── Token: generate ──────────────────────────────────────────
-async function generateToken(secretKey) {
+// scope '' = issued by the shared master password, valid on any
+// protected host (the long-standing behaviour). A non-empty scope
+// names the one tool the token is good for.
+async function generateToken(secretKey, scope) {
   const timestamp = Date.now().toString();
-  const payload   = `ibi:${timestamp}`;
+  const payload   = `ibi:${timestamp}:${scope || ''}`;
   const sig       = await hmacSign(payload, secretKey);
   // Token format:  base64(payload) . hex(hmac-signature)
   return btoa(payload) + '.' + sig;
 }
 
 // ── Token: verify ────────────────────────────────────────────
-async function verifyToken(token, secretKey) {
+async function verifyToken(token, secretKey, sub) {
   try {
     const dotIdx = token.indexOf('.');
     if (dotIdx === -1) return false;
@@ -155,7 +211,14 @@ async function verifyToken(token, secretKey) {
     for (let i = 0; i < sig.length; i++) {
       diff |= sig.charCodeAt(i) ^ expectedSig.charCodeAt(i);
     }
-    return diff === 0;
+    if (diff !== 0) return false;
+
+    // Signature is good — now check the scope. A token from before
+    // this version has only two parts and counts as unscoped, so
+    // nobody is signed out by the upgrade.
+    const parts = payload.split(':');
+    const scope = parts.length > 2 ? parts[2] : '';
+    return !scope || scope === sub;
   } catch {
     return false;
   }
@@ -205,6 +268,7 @@ function serveLoginPage(origin, redirectTo, wrongPassword) {
   // publicly reachable via PUBLIC_PATHS, so scrapers can fetch it)
   const sub  = new URL(origin).hostname.split('.')[0];
   const meta = TOOL_META[sub] || {
+    user : 'IBI-Access',
     title: 'IBI Secure Access',
     desc : 'Internal business tools by India Business International — authorized access only.'
   };
@@ -306,7 +370,11 @@ label{
   color:rgba(0,197,255,.5);
   margin-bottom:8px;
 }
-.input-wrap{position:relative;}
+/* margin-bottom separates the username group from the password group;
+   the submit button and error block carry their own margin-top. */
+.input-wrap{position:relative;margin-bottom:18px;}
+.input-wrap:last-of-type{margin-bottom:0;}
+#usr{color:#9fb4c9;padding-right:14px;}
 input[type=password],input[type=text]{
   width:100%;
   padding:13px 46px 13px 14px;
@@ -382,10 +450,20 @@ input:focus{
   <div class="card-body">
     <form method="POST" action="${origin}${AUTH_PATH}">
       <input type="hidden" name="redirect" value="${redirectTo}">
-      <label for="pwd">Master Password</label>
+      <!-- Per-tool username. The worker does not check it — its only job
+           is to give the browser's password manager something unique to
+           file this tool under, so the four tools stop sharing one saved
+           entry and each offers its own password on its own site. -->
+      <label for="usr">Username</label>
+      <div class="input-wrap">
+        <input type="text" id="usr" name="username" value="${meta.user}"
+               autocomplete="username" autocapitalize="off"
+               autocorrect="off" spellcheck="false">
+      </div>
+      <label for="pwd">Password</label>
       <div class="input-wrap">
         <input type="password" id="pwd" name="password"
-               placeholder="Enter master password"
+               placeholder="Enter password"
                autofocus autocomplete="current-password" required>
         <button type="button" class="toggle-btn" id="toggleBtn"
                 onclick="toggleVisibility()" title="Show / hide password" aria-label="Toggle password visibility">
