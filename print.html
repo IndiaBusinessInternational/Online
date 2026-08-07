@@ -321,8 +321,14 @@ if (!orderId) {
   if (cached && loadAndRender(cached)) {
     // done!
   } else {
-    // Step 2: Try Google Sheets
-    ibi_fetch({ action:'getAdminOrders', adminKey:'IBI_ADMIN_2026' }, function(res) {
+    // Step 2: Try Google Sheets. Uses the CEO Auth token from this session —
+    // there is deliberately no admin key here; this page is served publicly,
+    // so anything embedded in it is readable by anyone. Without an unlocked
+    // session the backend refuses and we fall through to the error below.
+    ibi_fetch({ action:'getAdminOrders', ceoToken: (function(){
+      try { return sessionStorage.getItem('ibi_admin_token') || sessionStorage.getItem('ibi_ceo_token') || ''; }
+      catch (e) { return ''; }
+    })() }, function(res) {
       if (res && res.success) {
         const order = (res.orders||[]).find(o => o.orderId === orderId);
         if (order && loadAndRender(order)) return;
