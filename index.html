@@ -2557,9 +2557,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.17';
-window.IBI_VERSION_DATE = '6 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.15 — 🔑 SELLER LOGIN AND “MY PRODUCTS” NOW WAIT LONG ENOUGH FOR THE SHEET TO ANSWER. Signing in to Seller Central often failed and said the server could not be reached, and the product list either sat on “Loading…” or quietly showed an older copy. The account and the PIN were never the problem. Every Seller Central request was giving the Google sheet between six and ten seconds to reply and then throwing the answer away, with no second try. Timed on the live system this morning, the same sign-in request came back in 9 seconds, then 22, then 77, then 6, then 3 — so the reply was usually still on its way when we stopped listening. Sign-in, the product list, opening a listing to edit, orders and earnings now wait up to 25 seconds and try three times before giving up, which is what the shop front was already doing for customers. While it waits it tells you what is happening instead of sitting silent, and if it truly cannot get through it now says the sheet is busy rather than blaming your connection. Three related things were put right at the same time. A warning that the list was a saved copy rather than the live one had been written into a box that did not exist on the page, so nobody ever saw it — the box is now there, and it also says when a retry is under way. A failed load can no longer overwrite your saved copy with an empty list, which is what could make the next visit open on an empty shop. And the orders page no longer reports “no orders yet” when what actually happened is that the sheet did not answer. Pausing and deleting a listing also wait longer, but they are still sent only once, because a request that timed out may already have been carried out and must not be repeated.';
+window.IBI_VERSION      = 'v12.18';
+window.IBI_VERSION_DATE = '7 Aug 2026';
+window.IBI_VERSION_NOTE      = 'v12.18 — 🔒 THE ADMIN PASSWORD AND ADMIN KEY ARE NO LONGER PRINTED IN THE PAGE. The admin dashboard used to carry its own username and password inside the page it sends to the browser, together with the key the backend accepted as proof of being an administrator. Because that page is served publicly, anyone who opened it could read both — no guessing needed — and the sign-in itself was only a check made inside the browser, so it could be stepped around entirely. The customer list, seller records and order controls sat behind that. From today the password is checked by the IBI CEO Auth service and exists nowhere else. Signing in returns a short-lived signed token; every administrative request carries that token and the backend asks CEO Auth whether it is genuine before doing anything, so the page no longer holds anything worth stealing and a stolen token stops working on its own. If the check cannot be reached, access is refused rather than allowed. The old admin key has been retired and the sign-in box now has a proper username field so the browser can save the password against this app instead of muddling it with the other IBI tools. Nothing about the shop front, seller area or checkout changes.';
+window.IBI_VERSION_NOTE_OLD  = 'v12.15 — 🔑 SELLER LOGIN AND “MY PRODUCTS” NOW WAIT LONG ENOUGH FOR THE SHEET TO ANSWER. Signing in to Seller Central often failed and said the server could not be reached, and the product list either sat on “Loading…” or quietly showed an older copy. The account and the PIN were never the problem. Every Seller Central request was giving the Google sheet between six and ten seconds to reply and then throwing the answer away, with no second try. Timed on the live system this morning, the same sign-in request came back in 9 seconds, then 22, then 77, then 6, then 3 — so the reply was usually still on its way when we stopped listening. Sign-in, the product list, opening a listing to edit, orders and earnings now wait up to 25 seconds and try three times before giving up, which is what the shop front was already doing for customers. While it waits it tells you what is happening instead of sitting silent, and if it truly cannot get through it now says the sheet is busy rather than blaming your connection. Three related things were put right at the same time. A warning that the list was a saved copy rather than the live one had been written into a box that did not exist on the page, so nobody ever saw it — the box is now there, and it also says when a retry is under way. A failed load can no longer overwrite your saved copy with an empty list, which is what could make the next visit open on an empty shop. And the orders page no longer reports “no orders yet” when what actually happened is that the sheet did not answer. Pausing and deleting a listing also wait longer, but they are still sent only once, because a request that timed out may already have been carried out and must not be repeated.';
 window.IBI_VERSION_NOTE_PREV = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
 window.IBI_VERSION_NOTE_PREV2 = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
 window.IBI_VERSION_NOTE_PREV3 = 'v12.10 — ✈️ TELEGRAM ADDED, COMPLETING THE SET. The public channel link came through, so Follow Us now carries all nine: Facebook, Instagram, YouTube, LinkedIn, Threads, Pinterest, X, Telegram and WhatsApp. Before publishing it the address was opened the way a stranger would see it, signed out, and it does load the real channel — "India Business International eStore", offering to view and join. That is the check the earlier address failed: the one first supplied pointed at the Telegram Web app with a channel number after the #, which only ever opens the reader\'s own Telegram. Telegram was added to the search-engine "sameAs" list too, so all nine accounts are now declared as belonging to this business.';
@@ -5235,6 +5236,15 @@ function _updateProdStats(prods) {
 const IBI_CEO_AUTH_URL = "https://script.google.com/macros/s/AKfycbxIW4j7m51JjX6yt38-a1X6XrDRyZp3czMYN8eXECfP9H2twjfrgLaozWCCl843AgWo0g/exec";   // ← paste the IBI CEO Auth /exec URL here
 const IBI_CEO_WINDOW = 15 * 60 * 1000;   // unlock expires after 15 minutes
 const IBI_CEO_KEY    = 'ibi_ceo_unlock';
+const IBI_CEO_TOKEN_KEY = 'ibi_ceo_token';
+
+/* The signed token handed back by CEO Auth. Admin actions send this instead of
+   a shared key, so the backend verifies the caller rather than trusting page
+   code. Returns '' when locked — the server then refuses, which is correct. */
+function ceoToken() {
+  try { return ibiCeoUnlocked() ? (sessionStorage.getItem(IBI_CEO_TOKEN_KEY) || '') : ''; }
+  catch (e) { return ''; }
+}
 
 /* text/plain keeps this a "simple" request, so the browser skips the CORS
    preflight that Apps Script will not answer. */
@@ -5253,12 +5263,19 @@ function ibiVerifyCeoPin(pin) {
 function ibiCeoUnlocked() {
   try {
     var t = parseInt(sessionStorage.getItem(IBI_CEO_KEY) || '0', 10);
-    if (!t || Date.now() - t > IBI_CEO_WINDOW) { sessionStorage.removeItem(IBI_CEO_KEY); return false; }
+    if (!t || Date.now() - t > IBI_CEO_WINDOW) {
+      sessionStorage.removeItem(IBI_CEO_KEY);
+      sessionStorage.removeItem(IBI_CEO_TOKEN_KEY);
+      return false;
+    }
     return true;
   } catch (e) { return false; }
 }
 function ibiCeoLock() {
-  try { sessionStorage.removeItem(IBI_CEO_KEY); } catch (e) {}
+  try {
+    sessionStorage.removeItem(IBI_CEO_KEY);
+    sessionStorage.removeItem(IBI_CEO_TOKEN_KEY);
+  } catch (e) {}
   ibiCeoApply();
 }
 /**
@@ -5309,7 +5326,13 @@ function ibiCeoPrompt() {
         showToast((res && res.code && res.code !== 'incorrect' && res.error) ? res.error : 'Incorrect');
         return;
       }
-      try { sessionStorage.setItem(IBI_CEO_KEY, String(Date.now())); } catch (e) {}
+      try {
+        sessionStorage.setItem(IBI_CEO_KEY, String(Date.now()));
+        // Keep the signed token too — admin backend calls send it so the server
+        // can verify the caller itself, instead of trusting a key baked into
+        // this page (which every visitor could read).
+        if (res.token) sessionStorage.setItem(IBI_CEO_TOKEN_KEY, res.token);
+      } catch (e) {}
       ibiCeoApply();
       showToast('🔓 Owner controls unlocked for 15 minutes', 'success');
     });
@@ -8951,7 +8974,7 @@ function addAnotherFamilyVariation() {
 // LOAD LIVE SELLERS FROM GOOGLE SHEETS
 // ══════════════════════════════════════════════════════════
 function loadLiveSellers() {
-  ibi_fetch_simple({ action:'adminGetSellers', adminKey:'IBI_ADMIN_2026' },
+  ibi_fetch_simple({ action:'adminGetSellers', ceoToken: ceoToken() },
     function(res) {
       if (!res || !res.success || !res.sellers) return;
       const colors = ['#0098c9','#0098c9','#0ea5e9','#16a34a','#ec4899','#f59e0b','#06b6d4','#84cc16'];
@@ -9039,7 +9062,7 @@ function reduceStockOnOrder(orderItems) {
       // Update sheet product stock via Apps Script
       ibi_fetch_simple({
         action:    'adminUpdateProduct',
-        adminKey:  'IBI_ADMIN_2026',
+        ceoToken:  ceoToken(),
         productId: prod.productId,
         field:     'stock',
         value:     Math.max(0, (parseInt(prod.stock) || 0) - (item.qty || 1))
@@ -9094,7 +9117,7 @@ function saveOrderToSheet(orderId, customer, orderItems, total, address) {
   const commission = calculateOrderCommission(orderItems);
   const params = {
     action:    'saveOrder',
-    adminKey:  'IBI_ADMIN_2026',
+    ceoToken:  ceoToken(),
     orderId,
     customerName:  customer.name,
     customerMobile: customer.mobile,
@@ -9918,7 +9941,7 @@ function saveSellerProfile() {
   // Save to Google Sheet
   ibi_fetch_simple({
     action:    'adminEditSeller',
-    adminKey:  'IBI_ADMIN_2026',
+    ceoToken:  ceoToken(),
     sellerId:  session.sellerId,
     bizName, category, city
   }, function(res) {

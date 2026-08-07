@@ -171,14 +171,13 @@
     <div class="login-logo">🏢</div>
     <div class="login-title">IBI Admin Dashboard</div>
     <div class="login-sub">India Business International · Restricted Access</div>
-    <input class="login-input" type="text" id="adminUser" placeholder="Admin Username" autocomplete="off"/>
-    <div style="position:relative;margin-bottom:12px;"><input class="login-input" type="password" id="adminPass" placeholder="Admin Password" onkeydown="if(event.key==='Enter')doAdminLogin()" style="margin-bottom:0;padding-right:48px;"/><button type="button" onclick="var i=document.getElementById('adminPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁️':'🙈'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:0;line-height:1;">👁️</button></div>
-    <button class="login-btn" onclick="doAdminLogin()">Login to Admin Panel →</button>
+    <form onsubmit="event.preventDefault();doAdminLogin();">
+      <input class="login-input" type="text" id="adminUser" name="username" value="IBI-Admin" placeholder="Admin Username" autocomplete="username"/>
+      <div style="position:relative;margin-bottom:12px;"><input class="login-input" type="password" id="adminPass" name="password" placeholder="Admin Password" autocomplete="current-password" style="margin-bottom:0;padding-right:48px;"/><button type="button" onclick="var i=document.getElementById('adminPass');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁️':'🙈'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:0;line-height:1;">👁️</button></div>
+      <button class="login-btn" type="submit">Login to Admin Panel →</button>
+    </form>
     <div class="login-error" id="loginError">❌ Invalid username or password</div>
     <div style="font-size:11px;color:#aaa;margin-top:16px;">Authorised access only · All actions are logged</div>
-    <div style="margin-top:12px;">
-      <button type="button" onclick="localStorage.removeItem('ibi_admin_creds');document.getElementById('adminUser').value='ibi_admin';document.getElementById('adminPass').value='';document.getElementById('loginError').style.display='none';alert('Cleared! Now login with: ibi_admin / LordMurugha@13579');" style="background:none;border:1px solid #ddd;border-radius:6px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer;">🔄 Reset to Default Credentials</button>
-    </div>
   </div>
 </div>
 
@@ -531,8 +530,19 @@
 // ══════════════════════════════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec';
 
-// Default credentials (change in Settings after first login)
-const DEFAULT_CREDS = { user:'ibi_admin', pass:'LordMurugha@13579' };
+// ── Admin sign-in — verified SERVER-SIDE by IBI CEO Auth ──
+// 🔴 There is deliberately NO password in this file. This page is served
+// publicly, so anything here is readable by anyone; the previous build
+// carried the admin password and the backend admin key in plain sight.
+// The password now lives only in the CEO Auth Script Properties, and this
+// page holds nothing more useful than a short-lived session token.
+const CEO_AUTH_URL  = 'https://script.google.com/macros/s/AKfycbxIW4j7m51JjX6yt38-a1X6XrDRyZp3czMYN8eXECfP9H2twjfrgLaozWCCl843AgWo0g/exec';
+const ADMIN_USER    = 'IBI-Admin';        // per-app username, for the password manager
+const CEO_TOKEN_KEY = 'ibi_admin_token';
+
+function ceoToken() {
+  try { return sessionStorage.getItem(CEO_TOKEN_KEY) || ''; } catch (e) { return ''; }
+}
 
 // Data cache
 let _sellers = [], _products = [], _customers = [];
@@ -542,40 +552,54 @@ let _editingId = null, _editingType = null;
 // ══════════════════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════════════════
-function doAdminLogin() {
-  const u = document.getElementById('adminUser').value.trim();
-  const p = document.getElementById('adminPass').value.trim();
+async function doAdminLogin() {
+  const u   = document.getElementById('adminUser').value.trim();
+  const p   = document.getElementById('adminPass').value.trim();
+  const err = document.getElementById('loginError');
+  const btn = document.querySelector('.login-btn');
 
   if (!u || !p) {
-    document.getElementById('loginError').textContent = '❌ Please enter username and password';
-    document.getElementById('loginError').style.display = 'block';
+    err.textContent = '❌ Please enter username and password';
+    err.style.display = 'block';
     return;
   }
 
-  // Check saved creds first, then fall back to defaults
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('ibi_admin_creds') || 'null'); } catch(e) { saved = null; }
-  if (!saved) saved = DEFAULT_CREDS;
+  err.style.display = 'none';
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
 
-  // Accept login
-  const validUser = (u === saved.user || u === DEFAULT_CREDS.user);
-  const validPass = (p === saved.pass || p === DEFAULT_CREDS.pass);
+  // The password is checked by IBI CEO Auth, never here. We only ever receive
+  // a yes/no plus a short-lived token — there is nothing in this page to steal.
+  let res;
+  try {
+    const r = await fetch(CEO_AUTH_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'verifyCeo', pin: p })
+    });
+    res = await r.json();
+  } catch (e) {
+    res = { ok: false, error: 'Could not reach the verification service.' };
+  }
 
-  if (validUser && validPass) {
+  if (btn) { btn.disabled = false; btn.textContent = 'Login to Admin Panel →'; }
+
+  if (!res || !res.ok || !res.token) {
+    // Navigate nowhere on failure, so the browser never mistakes a bad
+    // attempt for a successful sign-in and offers to save the wrong password.
+    err.textContent = res && res.error ? ('❌ ' + res.error) : '❌ Invalid username or password';
+    err.style.display = 'block';
+    return;
+  }
+
+  try {
+    sessionStorage.setItem(CEO_TOKEN_KEY, res.token);
     sessionStorage.setItem('ibi_admin', '1');
     sessionStorage.setItem('ibi_admin_user', u);
-    // Clear any corrupted localStorage
-    if (p === DEFAULT_CREDS.pass && u === DEFAULT_CREDS.user) {
-      localStorage.removeItem('ibi_admin_creds');
-    }
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    startClock();
-    loadAll();
-  } else {
-    document.getElementById('loginError').textContent = '❌ Invalid username or password. Default: ibi_admin / LordMurugha@13579';
-    document.getElementById('loginError').style.display = 'block';
-  }
+  } catch (e) {}
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  startClock();
+  loadAll();
 }
 // keydown wired in DOMContentLoaded below
 
@@ -664,7 +688,7 @@ function loadAll() {
 }
 
 function loadSellersData() {
-  sheetFetch({ action:'adminGetSellers', adminKey:'IBI_ADMIN_2026' }, (res) => {
+  sheetFetch({ action:'adminGetSellers', ceoToken: ceoToken() }, (res) => {
     if (res && res.success) { _sellers = res.sellers || []; updateDashStats(); }
   });
 }
@@ -681,7 +705,7 @@ function ibiNormalizeImgUrl(url){
 }
 
 function loadProductsData() {
-  sheetFetch({ action:'adminGetProducts', adminKey:'IBI_ADMIN_2026' }, (res) => {
+  sheetFetch({ action:'adminGetProducts', ceoToken: ceoToken() }, (res) => {
     if (res && res.success) {
       // Repair legacy broken Google-Drive image links so the admin sees product photos.
       _products = (res.products || []).map(function(p){ if (p && p.img) p.img = ibiNormalizeImgUrl(p.img); return p; });
@@ -691,7 +715,7 @@ function loadProductsData() {
 }
 
 function loadOrdersData() {
-  sheetFetch({ action:'getAdminOrders', adminKey:'IBI_ADMIN_2026' }, (res) => {
+  sheetFetch({ action:'getAdminOrders', ceoToken: ceoToken() }, (res) => {
     if (!res || !res.success) return;
     const orders = res.orders || [];
     // Update summary stats
@@ -737,7 +761,7 @@ function loadOrdersData() {
 
 function markPayoutPaid(orderId) {
   if (!confirm('Mark payout as PAID for order ' + orderId + '?')) return;
-  sheetFetch({ action:'adminUpdateOrderPayout', adminKey:'IBI_ADMIN_2026', orderId, payoutStatus:'Paid', payoutDate: new Date().toLocaleDateString('en-IN') }, res => {
+  sheetFetch({ action:'adminUpdateOrderPayout', ceoToken: ceoToken(), orderId, payoutStatus:'Paid', payoutDate: new Date().toLocaleDateString('en-IN') }, res => {
     if(res&&res.success) { toast('✅ Payout marked as Paid!'); loadOrdersData(); }
     else toast('❌ ' + (res?.message||'Failed'));
   });
@@ -746,7 +770,7 @@ function markPayoutPaid(orderId) {
 function updateOrderStatus(orderId) {
   const status = prompt('New status:\nPlaced / Confirmed / Packed / Shipped / Delivered / Cancelled');
   if (!status) return;
-  sheetFetch({ action:'adminUpdateOrderStatus', adminKey:'IBI_ADMIN_2026', orderId, status }, res => {
+  sheetFetch({ action:'adminUpdateOrderStatus', ceoToken: ceoToken(), orderId, status }, res => {
     if(res&&res.success) { toast('✅ Status updated!'); loadOrdersData(); }
     else toast('❌ ' + (res?.message||'Failed'));
   });
@@ -754,7 +778,7 @@ function updateOrderStatus(orderId) {
 
 function loadCustomersData() {
   // Customers are stored in localStorage of the website — fetch via sheet if saved
-  sheetFetch({ action:'adminGetCustomers', adminKey:'IBI_ADMIN_2026' }, (res) => {
+  sheetFetch({ action:'adminGetCustomers', ceoToken: ceoToken() }, (res) => {
     if (res && res.success) { _customers = res.customers || []; }
     updateDashStats(); renderCustomers();
   });
@@ -885,7 +909,7 @@ function saveInlineEdit(input, field, productId, origDisplay) {
   if (!val || isNaN(val)) { el.textContent = origDisplay; return; }
   el.innerHTML = '<span class="spinner"></span>';
 
-  sheetFetch({ action:'adminUpdateProduct', adminKey:'IBI_ADMIN_2026', productId, field, value:val },
+  sheetFetch({ action:'adminUpdateProduct', ceoToken: ceoToken(), productId, field, value:val },
     (res) => {
       if (res && res.success) {
         const prod = _products.find(p => p.productId === productId);
@@ -936,7 +960,7 @@ function field(label, id, val, type) {
 function saveEditModal() {
   if (_editingType === 'product') {
     const data = {
-      action:'adminEditProduct', adminKey:'IBI_ADMIN_2026',
+      action:'adminEditProduct', ceoToken: ceoToken(),
       productId:_editingId,
       title:     document.getElementById('em_title').value,
       category:  document.getElementById('em_cat').value,
@@ -958,7 +982,7 @@ function saveEditModal() {
     });
   } else if (_editingType === 'seller') {
     const data = {
-      action:'adminEditSeller', adminKey:'IBI_ADMIN_2026',
+      action:'adminEditSeller', ceoToken: ceoToken(),
       sellerId:_editingId,
       status: document.getElementById('em_sel_status').value,
       pin:    document.getElementById('em_sel_pin').value,
@@ -1085,7 +1109,7 @@ function loadApprovals() {
 function quickApprove(type, id) {
   const action = type==='seller' ? 'adminUpdateSellerStatus' : 'adminUpdateProductStatus';
   const idKey  = type==='seller' ? 'sellerId' : 'productId';
-  sheetFetch({ action, adminKey:'IBI_ADMIN_2026', [idKey]:id, status:'Approved' }, res => {
+  sheetFetch({ action, ceoToken: ceoToken(), [idKey]:id, status:'Approved' }, res => {
     if(res&&res.success) {
       if(type==='seller') { const s=_sellers.find(x=>x.sellerId===id); if(s) s.status='Approved'; }
       else                { const p=_products.find(x=>x.productId===id); if(p) p.status='Approved'; }
@@ -1099,7 +1123,7 @@ function quickReject(type, id) {
   const reason = prompt('Enter rejection reason (optional):') || 'Does not meet IBI standards';
   const action = type==='seller' ? 'adminUpdateSellerStatus' : 'adminUpdateProductStatus';
   const idKey  = type==='seller' ? 'sellerId' : 'productId';
-  sheetFetch({ action, adminKey:'IBI_ADMIN_2026', [idKey]:id, status:'Rejected', rejectReason:reason }, res => {
+  sheetFetch({ action, ceoToken: ceoToken(), [idKey]:id, status:'Rejected', rejectReason:reason }, res => {
     if(res&&res.success) {
       if(type==='seller') { const s=_sellers.find(x=>x.sellerId===id); if(s){s.status='Rejected';s.rejectReason=reason;} }
       else                { const p=_products.find(x=>x.productId===id); if(p){p.status='Rejected';p.rejectReason=reason;} }
@@ -1110,7 +1134,7 @@ function quickReject(type, id) {
 }
 
 function updateProductStatus(productId, status) {
-  sheetFetch({ action:'adminUpdateProductStatus', adminKey:'IBI_ADMIN_2026', productId, status }, res => {
+  sheetFetch({ action:'adminUpdateProductStatus', ceoToken: ceoToken(), productId, status }, res => {
     if(res&&res.success) { const p=_products.find(x=>x.productId===productId); if(p) p.status=status; toast('✅ Status updated!'); renderProducts(); }
     else toast('❌ ' + (res?.message||'Failed'));
   });
@@ -1271,12 +1295,10 @@ function exportFullReport() {
 // SETTINGS
 // ══════════════════════════════════════════════════════════
 function saveSettings() {
-  const u = document.getElementById('settingsUser').value.trim();
-  const p = document.getElementById('settingsPass').value.trim();
-  if (!u) { toast('⚠️ Username cannot be empty'); return; }
-  const saved = JSON.parse(localStorage.getItem('ibi_admin_creds') || 'null') || DEFAULT_CREDS;
-  localStorage.setItem('ibi_admin_creds', JSON.stringify({ user:u, pass:p||saved.pass }));
-  toast('✅ Settings saved!');
+  // The admin password is no longer stored by this page — it lives only in the
+  // IBI CEO Auth Script Properties, so it cannot be changed from a browser.
+  // (Storing it here was what put the credentials in public page source.)
+  toast('ℹ️ To change the admin password, edit CEO_PIN in the IBI CEO Auth script.');
 }
 
 // ══════════════════════════════════════════════════════════
