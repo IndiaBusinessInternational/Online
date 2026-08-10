@@ -2573,9 +2573,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.18';
-window.IBI_VERSION_DATE = '7 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.18 — 🔒 THE ADMIN PASSWORD AND ADMIN KEY ARE NO LONGER PRINTED IN THE PAGE. The admin dashboard used to carry its own username and password inside the page it sends to the browser, together with the key the backend accepted as proof of being an administrator. Because that page is served publicly, anyone who opened it could read both — no guessing needed — and the sign-in itself was only a check made inside the browser, so it could be stepped around entirely. The customer list, seller records and order controls sat behind that. From today the password is checked by the IBI CEO Auth service and exists nowhere else. Signing in returns a short-lived signed token; every administrative request carries that token and the backend asks CEO Auth whether it is genuine before doing anything, so the page no longer holds anything worth stealing and a stolen token stops working on its own. If the check cannot be reached, access is refused rather than allowed. The old admin key has been retired and the sign-in box now has a proper username field so the browser can save the password against this app instead of muddling it with the other IBI tools. Nothing about the shop front, seller area or checkout changes.';
+window.IBI_VERSION      = 'v12.19';
+window.IBI_VERSION_DATE = '10 Aug 2026';
+window.IBI_VERSION_NOTE      = 'v12.19 — 💾 AN UPDATE BUTTON THAT STAYS WITH YOU WHILE YOU EDIT. The listing form is long, and the buttons that save it sat only at the very top and the very bottom — after changing a price halfway down, you had to scroll to reach one. When you are EDITING an existing product, a green 💾 Update button now floats at the middle of the left edge of the screen and stays there as you scroll, so one press saves the listing from wherever you are. It is the same save as the other buttons — nothing different happens to the listing — and while a save is running it shows an hourglass and refuses a second press, so it cannot save twice. It appears only when editing an existing listing; adding a NEW product keeps the form exactly as it was.';
+window.IBI_VERSION_NOTE_OLD0 = 'v12.18 — 🔒 THE ADMIN PASSWORD AND ADMIN KEY ARE NO LONGER PRINTED IN THE PAGE. The admin dashboard used to carry its own username and password inside the page it sends to the browser, together with the key the backend accepted as proof of being an administrator. Because that page is served publicly, anyone who opened it could read both — no guessing needed — and the sign-in itself was only a check made inside the browser, so it could be stepped around entirely. The customer list, seller records and order controls sat behind that. From today the password is checked by the IBI CEO Auth service and exists nowhere else. Signing in returns a short-lived signed token; every administrative request carries that token and the backend asks CEO Auth whether it is genuine before doing anything, so the page no longer holds anything worth stealing and a stolen token stops working on its own. If the check cannot be reached, access is refused rather than allowed. The old admin key has been retired and the sign-in box now has a proper username field so the browser can save the password against this app instead of muddling it with the other IBI tools. Nothing about the shop front, seller area or checkout changes.';
 window.IBI_VERSION_NOTE_OLD  = 'v12.15 — 🔑 SELLER LOGIN AND “MY PRODUCTS” NOW WAIT LONG ENOUGH FOR THE SHEET TO ANSWER. Signing in to Seller Central often failed and said the server could not be reached, and the product list either sat on “Loading…” or quietly showed an older copy. The account and the PIN were never the problem. Every Seller Central request was giving the Google sheet between six and ten seconds to reply and then throwing the answer away, with no second try. Timed on the live system this morning, the same sign-in request came back in 9 seconds, then 22, then 77, then 6, then 3 — so the reply was usually still on its way when we stopped listening. Sign-in, the product list, opening a listing to edit, orders and earnings now wait up to 25 seconds and try three times before giving up, which is what the shop front was already doing for customers. While it waits it tells you what is happening instead of sitting silent, and if it truly cannot get through it now says the sheet is busy rather than blaming your connection. Three related things were put right at the same time. A warning that the list was a saved copy rather than the live one had been written into a box that did not exist on the page, so nobody ever saw it — the box is now there, and it also says when a retry is under way. A failed load can no longer overwrite your saved copy with an empty list, which is what could make the next visit open on an empty shop. And the orders page no longer reports “no orders yet” when what actually happened is that the sheet did not answer. Pausing and deleting a listing also wait longer, but they are still sent only once, because a request that timed out may already have been carried out and must not be repeated.';
 window.IBI_VERSION_NOTE_PREV = 'v12.13 — 📦 THE PRODUCT NAME LIST NOW LOOKS AFTER ITSELF. Until today the 268 product names built into this shop — the ones that suggest a name in the seller\'s Add Product box, and that the HSN code and GST rate are matched against — were a copy typed into the page. Correcting a name in the master spreadsheet did nothing here until someone edited the file by hand and published it again, in this shop and in six other IBI apps carrying the same copy, which is exactly how they drifted apart: yesterday the shop still called a product 233 gm when the spreadsheet had said 275 gm for some time. From now on the shop reads the list from the master spreadsheet itself. Edit a name in IBI_Complete_Product_Master_HSN_GST.xlsx in Google Drive and it appears here within a few minutes, along with its HSN code, its GST rate and its category — no file to edit, nothing to publish. The built-in copy has NOT been thrown away: it is what the page falls back on when there is no internet, and it is a floor, because a reply that arrives empty or damaged is ignored rather than used — a broken feed can never empty the catalogue or blank an HSN code. A seller who has uploaded their own 📋 Catalogue list still sees theirs first, exactly as before. The reading is done only in the seller area, so a shopper browsing the shop never waits for it.';
 window.IBI_VERSION_NOTE_PREV2 = 'v12.11 — ✈️ THE TELEGRAM LINK NOW OPENS ON YOUR OWN NETWORK. The address published yesterday was the usual t.me one, and it is a perfectly good address — but clicking it here gave "This site can\'t be reached". The cause was measured rather than guessed: the internet connection in the office cannot look t.me up at all (it answers "no such name"), while the public directories run by Google and Cloudflare find it immediately, at Telegram\'s own server. In other words the block is in the connection, not in the link — and any customer whose internet provider does the same thing would have hit exactly the same dead end. The footer now uses telegram.me instead. That is Telegram\'s own second address for the very same thing: it points at the identical server, opens the identical channel, and — unlike t.me — it is found by this connection. Nothing else about the channel changes. The t.me form is still listed in the page\'s invisible information for search engines, which are not affected by the block.';
@@ -5781,7 +5782,32 @@ function _syncCancelBtns() {
   if (bottom) bottom.textContent = editing ? '✖ Cancel Edit — Discard Changes' : '✖ Cancel & Go Back';
   const top = document.getElementById('ap_cancel_btn_top');
   if (top) top.textContent = editing ? '✖ Cancel Edit' : '✖ Cancel';
+  // v12.19: the floating middle-left 💾 Update is an EDIT-mode-only shortcut.
+  const float = document.getElementById('ap_float_update');
+  if (float) float.style.display = editing ? 'block' : 'none';
 }
+
+// v12.19: floating middle-left 💾 Update (see #ap_float_update). Delegates to the SAME
+// submitAddProduct() as the top/bottom buttons; #ap_submit_btn's disabled state is the
+// single source of truth for "a save is running" (see _ibiFillBusyPaint), so this
+// button refuses re-entry while it is disabled and mirrors its busy state below.
+function ibiFloatUpdateClick() {
+  const main = document.getElementById('ap_submit_btn');
+  if (main && main.disabled) { showToast('⏳ Already saving — one moment…'); return; }
+  submitAddProduct();
+}
+window.addEventListener('load', function () {
+  const main = document.getElementById('ap_submit_btn');
+  if (!main || !window.MutationObserver) return;
+  new MutationObserver(function () {
+    const f = document.getElementById('ap_float_update');
+    if (!f) return;
+    f.disabled = main.disabled;
+    f.style.opacity = main.disabled ? '.65' : '1';
+    f.textContent = !main.disabled ? '💾 Update'
+                  : (/Read/i.test(main.textContent || '') ? '⏳ Reading…' : '⏳ Saving…');
+  }).observe(main, { attributes: true, attributeFilter: ['disabled'], childList: true, characterData: true, subtree: true });
+});
 
 function cancelProductForm() {
   const editing = _apIsEditing();
@@ -13986,6 +14012,13 @@ init();
 
       <!-- TAB: Add / Edit Product -->
       <div id="dashTab_add" style="display:none;">
+        <!-- v12.19: floating quick-save for EDIT mode. Lives INSIDE #dashTab_add so hiding
+             the tab (or the whole seller overlay) hides it too; position:fixed pins it to
+             the middle of the LEFT screen edge while the seller scrolls the long form.
+             Shown only when editing an existing product (ap_editing_id set) — visibility
+             is synced by _syncCancelBtns(); busy state mirrors #ap_submit_btn. -->
+        <button type="button" id="ap_float_update" onclick="ibiFloatUpdateClick()" title="Save your changes to this listing now"
+                style="display:none;position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:10005;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:0 12px 12px 0;padding:16px 9px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:2px 3px 12px rgba(0,0,0,.35);letter-spacing:.5px;writing-mode:vertical-rl;text-orientation:mixed;line-height:1;">💾 Update</button>
         <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;">
           <!-- Draft Restore Banner -->
           <div id="draftRestoreBanner" style="display:none;background:#fef9c3;border-bottom:1.5px solid #fde047;padding:10px 16px;align-items:center;justify-content:space-between;gap:10px;">
