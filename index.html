@@ -2580,9 +2580,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.22';
+window.IBI_VERSION      = 'v12.23';
 window.IBI_VERSION_DATE = '12 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.22 — 📱 THE SHOP WORKS AGAIN WHEN THE PHONE LOSES SIGNAL. The small helper file that lets the shop be installed like an app, and lets it still open when the signal drops, was accidentally emptied on 27 July during an unrelated change. Nothing showed an error, because an empty helper still loads — it simply does nothing. For the past two weeks the shop has had no offline support and could not be installed as an app. It has been restored and improved. Opening a product page with no signal now shows the shop instead of the browser error page. Two safeguards were added at the same time. The shop always asks the internet first and only falls back to the saved copy when there is genuinely no connection, so a customer can never be shown an old price or see a sold-out item as available. And the helper itself is now always fetched fresh, which fixes an old problem where a customer could stay stuck on a previous version of the shop for up to a day after an update.';
+window.IBI_VERSION_NOTE      = 'v12.23 — ⚡ THE SHOP NO LONGER WAITS FOR GOOGLE. Until today every visit asked our Google Sheet for the product list before showing anything, and when Google was busy that answer took up to 45 seconds or never came — which is why the shop has felt dead slow. The shop now loads its products from a copy kept on the worldwide delivery network instead. Measured with Google deliberately unreachable, products appeared in 0.6 seconds instead of never. The Google Sheet is still consulted quietly in the background to correct prices and stock, but nobody waits for it, and if it fails there is no longer a scary warning on a shop that is working perfectly well. Nothing changes about ordering, checkout or the seller area.';
+window.IBI_VERSION_NOTE_OLD3 = 'v12.22 — 📱 THE SHOP WORKS AGAIN WHEN THE PHONE LOSES SIGNAL. The small helper file that lets the shop be installed like an app, and lets it still open when the signal drops, was accidentally emptied on 27 July during an unrelated change. Nothing showed an error, because an empty helper still loads — it simply does nothing. For the past two weeks the shop has had no offline support and could not be installed as an app. It has been restored and improved. Opening a product page with no signal now shows the shop instead of the browser error page. Two safeguards were added at the same time. The shop always asks the internet first and only falls back to the saved copy when there is genuinely no connection, so a customer can never be shown an old price or see a sold-out item as available. And the helper itself is now always fetched fresh, which fixes an old problem where a customer could stay stuck on a previous version of the shop for up to a day after an update.';
 window.IBI_VERSION_NOTE_OLD2 = 'v12.21 — 📌 THE SHOP NOW PROVES TO PINTEREST THAT IT IS OURS. A single hidden line was added to the page header carrying the code Pinterest issued for this website. Nothing on the shop looks or behaves any differently — the line is invisible to customers and does not touch the storefront, the seller area or checkout. What it does is let Pinterest confirm that indiabusinessinternational.online really belongs to the India Business International account. That matters because Pinterest can now create Pins automatically from our Instagram posts, and only a confirmed website gets a "Visit site" button on those Pins. Without it, anyone who liked a Pin would be sent back to Instagram instead of to the shop, and the visit would be lost.';
 window.IBI_VERSION_NOTE_OLD1 = 'v12.20 — 💾 AN UPDATE BUTTON THAT STAYS WITH YOU WHILE YOU EDIT. The listing form is long, and the buttons that save it sat only at the very top and the very bottom — after changing a price halfway down, you had to scroll to reach one. When you are EDITING an existing product, a green 💾 Update button now floats at the middle of the left edge of the screen and stays there as you scroll, so one press saves the listing from wherever you are. It is the same save as the other buttons — nothing different happens to the listing — and while a save is running it shows an hourglass and refuses a second press, so it cannot save twice. It appears only when editing an existing listing; adding a NEW product keeps the form exactly as it was.';
 window.IBI_VERSION_NOTE_OLD0 = 'v12.18 — 🔒 THE ADMIN PASSWORD AND ADMIN KEY ARE NO LONGER PRINTED IN THE PAGE. The admin dashboard used to carry its own username and password inside the page it sends to the browser, together with the key the backend accepted as proof of being an administrator. Because that page is served publicly, anyone who opened it could read both — no guessing needed — and the sign-in itself was only a check made inside the browser, so it could be stepped around entirely. The customer list, seller records and order controls sat behind that. From today the password is checked by the IBI CEO Auth service and exists nowhere else. Signing in returns a short-lived signed token; every administrative request carries that token and the backend asks CEO Auth whether it is genuine before doing anything, so the page no longer holds anything worth stealing and a stolen token stops working on its own. If the check cannot be reached, access is refused rather than allowed. The old admin key has been retired and the sign-in box now has a proper username field so the browser can save the password against this app instead of muddling it with the other IBI tools. Nothing about the shop front, seller area or checkout changes.';
@@ -6935,38 +6936,85 @@ function _ibiIngestCatalogue(list) {
 // catalogue saved on this device is drawn IMMEDIATELY (products in view as soon as the page
 // parses) and the sheet copy quietly replaces it when it lands. First-ever visit still waits
 // — there is nothing saved yet — but every visit after that is instant.
+/* How fresh products.json has to be before we skip the sheet entirely.
+   ⚠ Checked against the real commit history, the snapshot Action is roughly
+   hourly but NOT dependable — 11 Aug ran at 04:49, 05:50, then not again until
+   15:53. So this window is deliberately short: inside it the file is genuinely
+   the newest there is and a sheet call would only spend runtime, but once past
+   it we go and ask, because the snapshot may be hours behind on stock. */
+var SNAPSHOT_TRUSTED_MS = 35 * 60 * 1000;
+
+/**
+ * Load the catalogue, CDN first.
+ *
+ * ⚠ 12 Aug 2026 — why this no longer waits on Apps Script.
+ * Google caps a consumer account at 90 minutes of total script runtime a day and
+ * the whole IBI estate shares one pool. When it runs out, EVERY call is refused
+ * with an HTML error page: measured that afternoon, 7 of 8 calls to
+ * getApprovedProducts failed after 14–43 s each. Three retries at 15 s meant a
+ * shopper could sit for the better part of a minute and still see nothing.
+ *
+ * products.json is the same catalogue, same fields, committed to the repo by the
+ * snapshot Action and served from the CDN — measured 445 KB in 0.71 s, and it
+ * cannot be rate-limited because no script runs to serve it. So it is now the
+ * primary source: paint from it immediately, and only consult the sheet when the
+ * snapshot is genuinely old. Nobody waits on Apps Script to see the shop.
+ */
 function loadLiveProducts(attempt) {
   attempt = attempt || 1;
 
   if (attempt === 1) {
+    // 1. Whatever this device already has, on screen at once.
     const seed = _ibiCatalogCache();
     if (seed && seed.length) { try { _ibiIngestCatalogue(seed); window._ibiCatalogPainted = true; } catch (e) {} }
-    else if (typeof fetch === 'function') {
-      // First-ever visit on this device: no saved copy yet, but products.json — the
-      // snapshot the catalogue-snapshot Action commits every half hour — is served from
-      // the CDN in ~50ms, while Apps Script takes 2–11s. Paint it while we wait; the
-      // live answer still wins the moment it lands (guarded by _ibiLiveLanded).
-      fetch('/products.json').then(function (r) { return r.json(); }).then(function (j) {
-        if (window._ibiLiveLanded || window._ibiCatalogPainted) return;
-        if (j && j.products && j.products.length) {
-          _ibiIngestCatalogue(j.products);
-          window._ibiCatalogPainted = true;
-        }
-      }).catch(function () {});
+
+    // 2. The CDN snapshot — always, not just on a first visit. It is newer than
+    //    this device's cache and arrives in well under a second.
+    if (typeof fetch === 'function') {
+      fetch('/products.json', { cache: 'no-cache' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (!j || !j.products || !j.products.length) { loadLiveProducts._snapshot = 'missing'; return; }
+          // The live sheet answer, if one ever lands, still wins over this.
+          if (!window._ibiLiveLanded) {
+            _ibiIngestCatalogue(j.products);
+            window._ibiCatalogPainted = true;
+          }
+          var age = j.generatedAt ? (Date.now() - new Date(j.generatedAt).getTime()) : Infinity;
+          loadLiveProducts._snapshot = (age >= 0 && age < SNAPSHOT_TRUSTED_MS) ? 'fresh' : 'stale';
+        })
+        .catch(function () { loadLiveProducts._snapshot = 'missing'; })
+        .then(function () { _ibiRefreshFromSheet(1); });
+      return;               // the sheet call is made from there, never before
     }
   }
+
+  _ibiRefreshFromSheet(attempt);
+}
+
+/* The sheet pass. Nothing on screen depends on it — it only corrects price and
+   stock behind an already-painted shop, so it is allowed to fail quietly. */
+function _ibiRefreshFromSheet(attempt) {
+  // A snapshot this fresh cannot be improved on; spending a call would just take
+  // runtime away from checkout and Seller Central.
+  if (attempt === 1 && loadLiveProducts._snapshot === 'fresh' && window._ibiCatalogPainted) return;
 
   ibi_fetch_simple({ action:'getApprovedProducts' },
     function(res) {
       // A reply we can trust — even one that legitimately carries no products.
       const answered = !!(res && res.success && res.products);
       if (!answered) {
-        // ibi_fetch_simple hands back null on a timeout or a script error, and the Apps
-        // Script endpoint drops a call now and then. Retry before giving up.
-        if (attempt < 3) { setTimeout(function () { loadLiveProducts(attempt + 1); }, attempt * 1500); return; }
-        // Out of attempts: whatever is showing — the cached paint OR the pre-rendered
-        // cards baked into the page by the snapshot Action — stays, with an honest note.
-        // The full "could not load" card only appears when there is truly nothing.
+        // Two tries, not three. This pass is a background correction on top of an
+        // already-painted shop, and every extra call spends runtime the account is
+        // short of — the thing that broke the sheet in the first place.
+        if (attempt < 2) { setTimeout(function () { _ibiRefreshFromSheet(attempt + 1); }, 1500); return; }
+
+        // The shop is fine and the shopper must not be told otherwise. A recent CDN
+        // snapshot IS the catalogue; failing to also reach the sheet changed nothing
+        // they can see, so warning them would be false alarm and lost sales.
+        if (loadLiveProducts._snapshot === 'fresh') return;
+
+        // Genuinely old or missing snapshot: now the notice is honest.
         var _g = document.getElementById('allProductsGrid');
         if (window._ibiCatalogPainted || (_g && _g.querySelector('.ibi-ssr-card'))) _ibiCatalogNotice('stale');
         else _ibiCatalogNotice('error');
