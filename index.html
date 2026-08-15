@@ -2118,7 +2118,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
         <option>Home</option>
         <option>Books</option>
         <option>Grocery</option>
-        <option>Jewellery</option>
+        <option>Fashion Jewellery</option>
       </select>
       <input class="search-input" type="text" id="searchInput" placeholder="Search products, brands and more..." oninput="showSearchSuggestions(this.value)" onblur="setTimeout(()=>closeSuggestions(),200)" onkeydown="if(event.key==='Enter')doSearch()">
       <button class="search-btn" onclick="doSearch()">
@@ -2585,9 +2585,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.24';
+window.IBI_VERSION      = 'v13.0';
 window.IBI_VERSION_DATE = '15 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.24 — 📦 STOCK ON THE SHOP NOW FOLLOWS THE WAREHOUSE WITHIN THE MINUTE. A product could be counted in and still read "Out of Stock" to every customer. Two separate things caused it. First, the shop keeps a copy of the product list on the delivery network so pages appear instantly, and it was treating that copy as good enough for up to 35 minutes before asking the live sheet. That is fine for a price, which rarely moves, but stock changes all day: on 15 August the count was corrected at 1:41 pm, the sheet held the new figure seconds later, and the shop went on showing Out of Stock because the copy it had drawn from was 22 minutes old. The shop now re-checks after 5 minutes, and a product page — the page where Add to Cart is pressed — always asks for today\'s figure before letting anyone act on it, then quietly corrects itself if a number has moved, without disturbing the option the customer has selected. Second, and larger: the overnight job that copies counts from the Stock Availability app into the shop was matching products by their written name, and it insisted the rarest word on the stock sheet appear in the listing. For nearly every product that rarest word was the measurement — so a broom recorded as 88x5.5x5.5 cm in one app and 80x5.5x5.5 cm in the other counted as two different products, no count was found, and the rule that nothing may be sold unless the warehouse confirms it can be shipped took the listing off sale. Measurements are now compared as numbers with a sensible tolerance, so half a centimetre no longer means a different product, while genuinely different sizes, capacities and pack quantities still keep their own counts. Checked against the whole live catalogue, 47 product options that were showing Out of Stock with goods on the shelf come back on sale, and 17 more were quietly drawing on the wrong product\'s count — a Puttu Maker reading an Idiyappam Maker\'s figure, a 500 gm Cow Dung pack reading the 1 kg pack, three shirt colours all reading the white one — and now read their own.';
+window.IBI_VERSION_NOTE      = 'v13.0 — 💍 THE JEWELLERY IS NOW CALLED FASHION JEWELLERY, SITS TOGETHER, AND COUNTS ITSELF FROM THE JEWELLERY REGISTER. Three things, all about the same four listings. First the name: the department was headed "Imitation Jewellery" and now reads "Fashion Jewellery" everywhere it appears — the shop heading, the department bar, the category menus and the admin panel. Second, they are together at last: only one of the four was appearing under that heading, because the shop decides which family a product belongs to by reading its title, and these titles say "Crystal Stone Pendant" — so three chokers were being filed under Stone Products, in a different part of the page from the one they belonged to. A listing\'s own category is now trusted ahead of the wording of its title, so all four sit in one place, and any jewellery listed in future joins them automatically. Third, and the reason they all read Out of Stock: fashion jewellery is not counted in the Stock Availability app at all — it has its own register, the IBI Fashion Jewellery app on the office laptop — so the nightly job could find no count for any of them and the rule that nothing may be sold unless it can be shipped took every one off sale, while about thirty-four pieces sat on the shelf. The shop now asks the jewellery register for those listings and the Stock Availability app for everything else, and the jewellery app tells the shop the moment a piece is added or sold, so the two agree within the minute. Colour is treated as part of the product\'s identity here, because in this department one piece differs from the next by nothing else: a chain recorded as Red & Black can no longer hand its count to the plain Black variant, and where two variants of one listing both point at the same shelf neither is allowed to claim it — that is a warning to fix the listing, not a number to guess at. If the laptop is off, the jewellery listings are left exactly as they are rather than emptied.';
+window.IBI_VERSION_NOTE_PREV0 = 'v12.24 — 📦 STOCK ON THE SHOP NOW FOLLOWS THE WAREHOUSE WITHIN THE MINUTE. A product could be counted in and still read "Out of Stock" to every customer. Two separate things caused it. First, the shop keeps a copy of the product list on the delivery network so pages appear instantly, and it was treating that copy as good enough for up to 35 minutes before asking the live sheet. That is fine for a price, which rarely moves, but stock changes all day: on 15 August the count was corrected at 1:41 pm, the sheet held the new figure seconds later, and the shop went on showing Out of Stock because the copy it had drawn from was 22 minutes old. The shop now re-checks after 5 minutes, and a product page — the page where Add to Cart is pressed — always asks for today\'s figure before letting anyone act on it, then quietly corrects itself if a number has moved, without disturbing the option the customer has selected. Second, and larger: the overnight job that copies counts from the Stock Availability app into the shop was matching products by their written name, and it insisted the rarest word on the stock sheet appear in the listing. For nearly every product that rarest word was the measurement — so a broom recorded as 88x5.5x5.5 cm in one app and 80x5.5x5.5 cm in the other counted as two different products, no count was found, and the rule that nothing may be sold unless the warehouse confirms it can be shipped took the listing off sale. Measurements are now compared as numbers with a sensible tolerance, so half a centimetre no longer means a different product, while genuinely different sizes, capacities and pack quantities still keep their own counts. Checked against the whole live catalogue, 47 product options that were showing Out of Stock with goods on the shelf come back on sale, and 17 more were quietly drawing on the wrong product\'s count — a Puttu Maker reading an Idiyappam Maker\'s figure, a 500 gm Cow Dung pack reading the 1 kg pack, three shirt colours all reading the white one — and now read their own.';
 window.IBI_VERSION_NOTE_OLD4 = 'v12.23 — ⚡ THE SHOP NO LONGER WAITS FOR GOOGLE. Until today every visit asked our Google Sheet for the product list before showing anything, and when Google was busy that answer took up to 45 seconds or never came — which is why the shop has felt dead slow. The shop now loads its products from a copy kept on the worldwide delivery network instead. Measured with Google deliberately unreachable, products appeared in 0.6 seconds instead of never. The Google Sheet is still consulted quietly in the background to correct prices and stock, but nobody waits for it, and if it fails there is no longer a scary warning on a shop that is working perfectly well. Nothing changes about ordering, checkout or the seller area.';
 window.IBI_VERSION_NOTE_OLD3 = 'v12.22 — 📱 THE SHOP WORKS AGAIN WHEN THE PHONE LOSES SIGNAL. The small helper file that lets the shop be installed like an app, and lets it still open when the signal drops, was accidentally emptied on 27 July during an unrelated change. Nothing showed an error, because an empty helper still loads — it simply does nothing. For the past two weeks the shop has had no offline support and could not be installed as an app. It has been restored and improved. Opening a product page with no signal now shows the shop instead of the browser error page. Two safeguards were added at the same time. The shop always asks the internet first and only falls back to the saved copy when there is genuinely no connection, so a customer can never be shown an old price or see a sold-out item as available. And the helper itself is now always fetched fresh, which fixes an old problem where a customer could stay stuck on a previous version of the shop for up to a day after an update.';
 window.IBI_VERSION_NOTE_OLD2 = 'v12.21 — 📌 THE SHOP NOW PROVES TO PINTEREST THAT IT IS OURS. A single hidden line was added to the page header carrying the code Pinterest issued for this website. Nothing on the shop looks or behaves any differently — the line is invisible to customers and does not touch the storefront, the seller area or checkout. What it does is let Pinterest confirm that indiabusinessinternational.online really belongs to the India Business International account. That matters because Pinterest can now create Pins automatically from our Instagram posts, and only a confirmed website gets a "Visit site" button on those Pins. Without it, anyone who liked a Pin would be sent back to Instagram instead of to the shop, and the visit would be lost.';
@@ -2690,7 +2691,7 @@ const IBI_CATEGORIES = [
     { id:'personal',  icon:'🪥', name:'Personal Care' },
     { id:'health',    icon:'💊', name:'Health & Nutrition' },
   ]},
-  { id:'jewellery', icon:'💍', name:'Jewellery', color:'#FFF8E1', subs:[
+  { id:'jewellery', icon:'💍', name:'Fashion Jewellery', color:'#FFF8E1', subs:[
     { id:'anklets',   icon:'🦶', name:'Anklets' },
     { id:'bracelets', icon:'📿', name:'Bracelets' },
     { id:'chains',    icon:'⛓️', name:'Chains' },
@@ -3734,7 +3735,7 @@ function renderSellerDashboard(res) {
             <select id="prof_category" class="sc-input">
               <option value="">— Select —</option>
               <option value="Home & Kitchen" ${(sessData.category||res.category)==='Home & Kitchen'?'selected':''}>🏠 Home & Kitchen</option>
-              <option value="Jewellery" ${(sessData.category||res.category)==='Jewellery'?'selected':''}>💍 Jewellery</option>
+              <option value="Jewellery" ${(sessData.category||res.category)==='Jewellery'?'selected':''}>💍 Fashion Jewellery</option>
               <option value="Clothing" ${(sessData.category||res.category)==='Clothing'?'selected':''}>👗 Clothing</option>
               <option value="Electronics" ${(sessData.category||res.category)==='Electronics'?'selected':''}>📱 Electronics</option>
               <option value="Grocery" ${(sessData.category||res.category)==='Grocery'?'selected':''}>🛒 Grocery</option>
@@ -11920,7 +11921,7 @@ const IBI_PRODUCT_GROUPS = [
   { id: 'stone',      icon: '🪨', label: 'Stone Products' },
   { id: 'irontools',  icon: '🔧', label: 'Iron & Steel Tools' },
   { id: 'wood',       icon: '🪵', label: 'Wooden Products' },
-  { id: 'jewellery',  icon: '💍', label: 'Imitation Jewellery' },
+  { id: 'jewellery',  icon: '💍', label: 'Fashion Jewellery' },
   { id: 'plants',     icon: '🪴', label: 'Live Plants' },
   { id: 'leaves',     icon: '🍃', label: 'Fresh Leaves' },
   { id: 'spices',     icon: '🌶️', label: 'Spices' },
@@ -11948,8 +11949,12 @@ const IBI_GROUP_RULES = [
   ['aluminium',  /\b(alumini?um)\b/],
   ['steel',      /\bstainless\b/],
   ['clay',       /\b(clay|terracotta|terra\s*cotta|earthen)\b/],
+  // ⚠ BEFORE 'stone' (15 Aug 2026). A choker's SEO title says "Crystal Stone
+  // Pendant Collar", so three of the four jewellery listings were filed under
+  // Stone Products and only one appeared under Jewellery — one family split
+  // across two places on the page.
+  ['jewellery',  /\b(jewellery|jewelry|choker|invisible\s*chain|beads\s*chain|bangle|anklet|necklace|earring)\b/],
   ['stone',      /\b(stone|granite|mortar\s*and\s*pestle|ammikkal)\b/],
-  ['jewellery',  /\b(jewellery|jewelry|invisible\s*chain|beads\s*chain|bangle|anklet|necklace|earring)\b/],
   ['plants',     /\b(live\s*plant|stem\s*cuttings|sapling|seedling)\b/],
   ['spices',     /\b(spices|chilli\s*powder|coriander\s*powder|turmeric\s*powder|pepper\s*powder|masala)\b/],
   ['agri',       /\b(cow\s*dung|manure|vermicompost|fertiliz|fertilis)\b/],
@@ -11967,13 +11972,25 @@ IBI_PRODUCT_GROUPS.forEach((g, i) => _IBI_GRP_POS[g.id] = i);
 
 // Cached on the product — a title never changes inside one page session, and
 // this runs for every card on every filter/sort pass.
+// Where a listing's own Category already names one of these families outright,
+// it is the better answer than any word in a title written for search engines —
+// the title is a sales pitch, the category is a filing decision someone made.
+// Only families that ARE a department are listed; a coir doormat is filed under
+// Home & Cleaning and must still group with Coconut & Coir, so everything else
+// goes on being read from the title.
+const IBI_CATEGORY_GROUP = { jewellery: 'jewellery' };
+
 function ibiProductGroup(p) {
   if (!p) return 'other';
   if (p._grpId) return p._grpId;
-  const t = ' ' + String((p._familyDisplayName || p.title || '')).toLowerCase() + ' ';
-  let id = 'other';
-  for (let i = 0; i < IBI_GROUP_RULES.length; i++) {
-    if (IBI_GROUP_RULES[i][1].test(t)) { id = IBI_GROUP_RULES[i][0]; break; }
+  const catRoot = String(p.category || '').toLowerCase().split('-')[0].trim();
+  let id = IBI_CATEGORY_GROUP[catRoot] || '';
+  if (!id) {
+    const t = ' ' + String((p._familyDisplayName || p.title || '')).toLowerCase() + ' ';
+    id = 'other';
+    for (let i = 0; i < IBI_GROUP_RULES.length; i++) {
+      if (IBI_GROUP_RULES[i][1].test(t)) { id = IBI_GROUP_RULES[i][0]; break; }
+    }
   }
   try { p._grpId = id; } catch (e) {}
   return id;
@@ -15043,7 +15060,7 @@ init();
                 <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>🏋️ Sports</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
                 <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>💄 Beauty</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
                 <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>👗 Clothing</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
-                <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>💍 Jewellery</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
+                <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>💍 Fashion Jewellery</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
                 <div style="display:flex;justify-content:space-between;padding:5px 8px;background:#fff;border-radius:6px;"><span>📱 Electronics</span><span style="font-weight:700;color:#16a34a;">5%</span></div>
               </div>
             </div>

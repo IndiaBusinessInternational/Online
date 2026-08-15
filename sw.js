@@ -15,7 +15,7 @@
 
 // Bump on EVERY deploy that changes cached files. Activate deletes every cache
 // whose name is not this one, so a bump is what purges the old copies.
-const CACHE_NAME  = 'ibi-marketplace-v12-22';
+const CACHE_NAME  = 'ibi-marketplace-v13-0';
 
 // Only the shell. index.html is here so a navigation still resolves offline;
 // because fetch is network-first it is never PREFERRED over the live copy.
@@ -54,7 +54,11 @@ self.addEventListener('install', function (event) {
         // whole install and leave the site with no worker at all.
         return Promise.allSettled(
           CACHE_FILES.map(function (url) {
-            return cache.add(url).catch(function () {
+            // ⚠ `cache.add(url)` fetches through the ordinary HTTP cache, so a
+            // browser holding a still-fresh index.html will happily precache
+            // YESTERDAY'S file under today's CACHE_NAME — a version bump that
+            // ships the previous build. {cache:'reload'} forces the network.
+            return cache.add(new Request(url, { cache: 'reload' })).catch(function () {
               console.warn('[SW] could not precache:', url);
             });
           })
