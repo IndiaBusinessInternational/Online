@@ -2583,9 +2583,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v12.23';
-window.IBI_VERSION_DATE = '12 Aug 2026';
-window.IBI_VERSION_NOTE      = 'v12.23 — ⚡ THE SHOP NO LONGER WAITS FOR GOOGLE. Until today every visit asked our Google Sheet for the product list before showing anything, and when Google was busy that answer took up to 45 seconds or never came — which is why the shop has felt dead slow. The shop now loads its products from a copy kept on the worldwide delivery network instead. Measured with Google deliberately unreachable, products appeared in 0.6 seconds instead of never. The Google Sheet is still consulted quietly in the background to correct prices and stock, but nobody waits for it, and if it fails there is no longer a scary warning on a shop that is working perfectly well. Nothing changes about ordering, checkout or the seller area.';
+window.IBI_VERSION      = 'v12.24';
+window.IBI_VERSION_DATE = '15 Aug 2026';
+window.IBI_VERSION_NOTE      = 'v12.24 — 📦 STOCK ON THE SHOP NOW FOLLOWS THE WAREHOUSE WITHIN THE MINUTE. A product could be counted in and still read "Out of Stock" to every customer. Two separate things caused it. First, the shop keeps a copy of the product list on the delivery network so pages appear instantly, and it was treating that copy as good enough for up to 35 minutes before asking the live sheet. That is fine for a price, which rarely moves, but stock changes all day: on 15 August the count was corrected at 1:41 pm, the sheet held the new figure seconds later, and the shop went on showing Out of Stock because the copy it had drawn from was 22 minutes old. The shop now re-checks after 5 minutes, and a product page — the page where Add to Cart is pressed — always asks for today\'s figure before letting anyone act on it, then quietly corrects itself if a number has moved, without disturbing the option the customer has selected. Second, and larger: the overnight job that copies counts from the Stock Availability app into the shop was matching products by their written name, and it insisted the rarest word on the stock sheet appear in the listing. For nearly every product that rarest word was the measurement — so a broom recorded as 88x5.5x5.5 cm in one app and 80x5.5x5.5 cm in the other counted as two different products, no count was found, and the rule that nothing may be sold unless the warehouse confirms it can be shipped took the listing off sale. Measurements are now compared as numbers with a sensible tolerance, so half a centimetre no longer means a different product, while genuinely different sizes, capacities and pack quantities still keep their own counts. Checked against the whole live catalogue, 47 product options that were showing Out of Stock with goods on the shelf come back on sale, and 17 more were quietly drawing on the wrong product\'s count — a Puttu Maker reading an Idiyappam Maker\'s figure, a 500 gm Cow Dung pack reading the 1 kg pack, three shirt colours all reading the white one — and now read their own.';
+window.IBI_VERSION_NOTE_OLD4 = 'v12.23 — ⚡ THE SHOP NO LONGER WAITS FOR GOOGLE. Until today every visit asked our Google Sheet for the product list before showing anything, and when Google was busy that answer took up to 45 seconds or never came — which is why the shop has felt dead slow. The shop now loads its products from a copy kept on the worldwide delivery network instead. Measured with Google deliberately unreachable, products appeared in 0.6 seconds instead of never. The Google Sheet is still consulted quietly in the background to correct prices and stock, but nobody waits for it, and if it fails there is no longer a scary warning on a shop that is working perfectly well. Nothing changes about ordering, checkout or the seller area.';
 window.IBI_VERSION_NOTE_OLD3 = 'v12.22 — 📱 THE SHOP WORKS AGAIN WHEN THE PHONE LOSES SIGNAL. The small helper file that lets the shop be installed like an app, and lets it still open when the signal drops, was accidentally emptied on 27 July during an unrelated change. Nothing showed an error, because an empty helper still loads — it simply does nothing. For the past two weeks the shop has had no offline support and could not be installed as an app. It has been restored and improved. Opening a product page with no signal now shows the shop instead of the browser error page. Two safeguards were added at the same time. The shop always asks the internet first and only falls back to the saved copy when there is genuinely no connection, so a customer can never be shown an old price or see a sold-out item as available. And the helper itself is now always fetched fresh, which fixes an old problem where a customer could stay stuck on a previous version of the shop for up to a day after an update.';
 window.IBI_VERSION_NOTE_OLD2 = 'v12.21 — 📌 THE SHOP NOW PROVES TO PINTEREST THAT IT IS OURS. A single hidden line was added to the page header carrying the code Pinterest issued for this website. Nothing on the shop looks or behaves any differently — the line is invisible to customers and does not touch the storefront, the seller area or checkout. What it does is let Pinterest confirm that indiabusinessinternational.online really belongs to the India Business International account. That matters because Pinterest can now create Pins automatically from our Instagram posts, and only a confirmed website gets a "Visit site" button on those Pins. Without it, anyone who liked a Pin would be sent back to Instagram instead of to the shop, and the visit would be lost.';
 window.IBI_VERSION_NOTE_OLD1 = 'v12.20 — 💾 AN UPDATE BUTTON THAT STAYS WITH YOU WHILE YOU EDIT. The listing form is long, and the buttons that save it sat only at the very top and the very bottom — after changing a price halfway down, you had to scroll to reach one. When you are EDITING an existing product, a green 💾 Update button now floats at the middle of the left edge of the screen and stays there as you scroll, so one press saves the listing from wherever you are. It is the same save as the other buttons — nothing different happens to the listing — and while a save is running it shows an hourglass and refuses a second press, so it cannot save twice. It appears only when editing an existing listing; adding a NEW product keeps the form exactly as it was.';
@@ -5643,6 +5644,19 @@ function previewSellerProduct(idOrTitle) {
   }, 200);
 }
 
+/* The search box itself: show the ✕ only when there is something to clear, then filter. */
+function scSearchInput(el) {
+  var btn = document.getElementById('scProdSearchClear');
+  if (btn) btn.style.display = (el && el.value) ? 'block' : 'none';
+  filterScProducts(el ? el.value : '');
+}
+function clearScSearch() {
+  var el = document.getElementById('scProdSearch');
+  if (!el) return;
+  el.value = '';
+  scSearchInput(el);
+  el.focus();
+}
 function filterScProducts(q) {
   if (!window._scAllProds) return;
   q = (q||'').trim().toLowerCase();
@@ -6944,8 +6958,23 @@ function _ibiIngestCatalogue(list) {
    hourly but NOT dependable — 11 Aug ran at 04:49, 05:50, then not again until
    15:53. So this window is deliberately short: inside it the file is genuinely
    the newest there is and a sheet call would only spend runtime, but once past
-   it we go and ask, because the snapshot may be hours behind on stock. */
-var SNAPSHOT_TRUSTED_MS = 35 * 60 * 1000;
+   it we go and ask, because the snapshot may be hours behind on stock.
+
+   ⚠ 15 Aug 2026 — 35 MINUTES WAS TOO LONG, and stock was the proof. The Stock
+   Availability app was updated at 13:41 and the sheet carried the new figures
+   within seconds, but the storefront went on showing "Out of Stock" because the
+   snapshot it had painted from was 22 minutes old — inside the window, so the
+   sheet was never asked. A snapshot can be trusted about a PRICE for half an
+   hour; it cannot be trusted about stock, which is the one figure that moves
+   minute to minute and the one a shopper acts on. Cut to 5 minutes, which is
+   affordable now that the backend caches getApprovedProducts for 120 s (v13.2):
+   most of these calls are answered from that cache and cost almost no runtime. */
+var SNAPSHOT_TRUSTED_MS = 5 * 60 * 1000;
+
+/* How stale the live figures may be when a shopper opens a PRODUCT page. The grid
+   can live with the snapshot; the product page is where Add to Cart is pressed, so
+   it always re-checks unless the sheet answered moments ago. */
+var PRODUCT_PAGE_MAX_AGE_MS = 90 * 1000;
 
 /**
  * Load the catalogue, CDN first.
@@ -6997,20 +7026,24 @@ function loadLiveProducts(attempt) {
 
 /* The sheet pass. Nothing on screen depends on it — it only corrects price and
    stock behind an already-painted shop, so it is allowed to fail quietly. */
-function _ibiRefreshFromSheet(attempt) {
+function _ibiRefreshFromSheet(attempt, force) {
   // A snapshot this fresh cannot be improved on; spending a call would just take
-  // runtime away from checkout and Seller Central.
-  if (attempt === 1 && loadLiveProducts._snapshot === 'fresh' && window._ibiCatalogPainted) return;
+  // runtime away from checkout and Seller Central. `force` is the product page
+  // saying it needs today's stock figure whatever the snapshot claims.
+  if (!force && attempt === 1 && loadLiveProducts._snapshot === 'fresh' && window._ibiCatalogPainted) return;
+  if (window._ibiSheetInFlight) return;         // one shopper, one call
+  window._ibiSheetInFlight = true;
 
   ibi_fetch_simple({ action:'getApprovedProducts' },
     function(res) {
       // A reply we can trust — even one that legitimately carries no products.
       const answered = !!(res && res.success && res.products);
+      window._ibiSheetInFlight = false;
       if (!answered) {
         // Two tries, not three. This pass is a background correction on top of an
         // already-painted shop, and every extra call spends runtime the account is
         // short of — the thing that broke the sheet in the first place.
-        if (attempt < 2) { setTimeout(function () { _ibiRefreshFromSheet(attempt + 1); }, 1500); return; }
+        if (attempt < 2) { setTimeout(function () { _ibiRefreshFromSheet(attempt + 1, force); }, 1500); return; }
 
         // The shop is fine and the shopper must not be told otherwise. A recent CDN
         // snapshot IS the catalogue; failing to also reach the sheet changed nothing
@@ -7026,9 +7059,12 @@ function _ibiRefreshFromSheet(attempt) {
       // An empty answer is REAL — the shop genuinely has no products. Show that, and clear
       // the cache so the next visit cannot paint the deleted listings back (the v10.3 trap).
       window._ibiLiveLanded = true;              // stops a late products.json overwriting this
+      window._ibiLiveAt     = Date.now();        // when the SHEET last answered (not the snapshot)
       if (!res.products.length) { _ibiCatalogCache([]); products = []; _ibiCatalogNotice('error'); return; }
       _ibiCatalogCache(res.products);            // remember a good copy for next time
+      var _before = _ppStockSignature();         // what the open product page is currently promising
       _ibiIngestCatalogue(res.products);         // fresh copy wins over anything painted above
+      _ppRepaintIfStockMoved(_before);
     }, 15000  // MEASURED on the live storefront, 5 calls back to back: 2.2s, 2.4s, 2.6s, 5.7s
                // and 11.0s. Apps Script cold-starts are that variable, so the old 10s cap timed
                // out about one call in five — and the callback then just `return`ed, which is
@@ -7037,6 +7073,50 @@ function _ibiRefreshFromSheet(attempt) {
   );
 }
 
+
+/* ── KEEPING AN OPEN PRODUCT PAGE HONEST ABOUT STOCK ────────────────────────────
+   The grid is painted from the CDN snapshot and corrected later; a product page is
+   rendered ONCE, from whatever products[] held at the moment it opened. So a sheet
+   answer landing a second later used to change nothing the shopper could see — the
+   page went on saying "Out of Stock" over a figure that had already been corrected.
+
+   Re-rendering blindly is not the answer either: it would throw away the combination
+   the shopper had just selected. So the page is re-drawn ONLY when the figures it is
+   showing actually moved. */
+function _ppOpenProduct() {
+  var m = /^#product-(.+)$/.exec(location.hash || '');
+  if (!m) return null;
+  var want = String(m[1]);
+  for (var i = 0; i < products.length; i++) {
+    if (String(products[i].id) === want) return products[i];
+  }
+  return null;
+}
+function _ppStockSignature() {
+  var p = _ppOpenProduct();
+  if (!p) return null;
+  var sig = [p.price, p.mrp, p.inStock ? 1 : 0];
+  var combos = (p.variations && p.variations._matrix) ? (p.variations.combos || []) : [];
+  for (var i = 0; i < combos.length; i++) {
+    var c = combos[i] || {};
+    sig.push((c.opts || []).join('/') + ':' + c.stock + ':' + (c.on !== 0 ? 1 : 0));
+  }
+  return { id: p.id, sig: sig.join('|') };
+}
+function _ppRepaintIfStockMoved(before) {
+  if (!before) return;
+  var after = _ppStockSignature();
+  if (!after || String(after.id) !== String(before.id) || after.sig === before.sig) return;
+  // true = replaceState, so correcting the page does not add a step to the Back button.
+  try { openProductPage(after.id, true); } catch (e) {}
+}
+/* Called as a product page opens. The snapshot is fine for browsing the grid, but this
+   is where Add to Cart lives, so unless the sheet answered moments ago, go and ask. */
+function _ppEnsureFreshStock() {
+  var age = Date.now() - (window._ibiLiveAt || 0);
+  if (age < PRODUCT_PAGE_MAX_AGE_MS) return;
+  _ibiRefreshFromSheet(1, true);
+}
 
 // ══════════════════════════════════════════════════════════
 // CONTACT US
@@ -7405,6 +7485,10 @@ function openProductPage(idOrProd, _isVarSwitch) {
   // so ppResolveMatrixCombo needs this to fall back to its 📐 / ⑧ dimensions.
   window._ppProductObj = p;
   window._ppMatrix = null;   // cleared per open; renderMatrixSelector() re-sets it for matrix products
+
+  // Stock is the one figure a shopper acts on, so this page never shows it on trust.
+  // The answer lands behind the page and re-draws it only if a figure actually moved.
+  if (!p._preview) _ppEnsureFreshStock();
 
   const disc       = Math.round((1 - p.price / p.mrp) * 100);
   const saving     = p.mrp - p.price;
@@ -14045,9 +14129,19 @@ init();
             <button onclick="switchDashTab('add')" style="padding:7px 14px;background:#0098c9;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700;">➕ Add New</button>
           </div>
         </div>
-        <!-- Full-width search row — gives a comfortable click target (issue 5) and matches name / brand / category -->
-        <input id="scProdSearch" type="text" placeholder="🔍 Search your products by name, brand or category…" oninput="filterScProducts(this.value)" autocomplete="off"
-               style="width:100%;box-sizing:border-box;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:14px;"/>
+        <!-- Full-width search row — gives a comfortable click target (issue 5) and matches name / brand / category.
+             ⚠ The magnifier used to live in the PLACEHOLDER, which means it disappeared the
+             moment anything was typed — exactly when the box most needs to look like a search
+             box. It is a fixed icon inside the field now, with a ✕ to clear, as every other
+             search box the seller uses works. -->
+        <div style="position:relative;margin-bottom:14px;">
+          <span aria-hidden="true" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;line-height:1;color:#888;pointer-events:none;">🔍</span>
+          <input id="scProdSearch" type="text" placeholder="Search your products by name, brand or category…"
+                 oninput="scSearchInput(this)" onkeydown="if(event.key==='Escape')clearScSearch()" autocomplete="off"
+                 style="width:100%;box-sizing:border-box;padding:10px 40px 10px 40px;border:1px solid #ddd;border-radius:8px;font-size:14px;"/>
+          <button id="scProdSearchClear" type="button" onclick="clearScSearch()" title="Clear search" aria-label="Clear search"
+                  style="display:none;position:absolute;right:9px;top:50%;transform:translateY(-50%);width:26px;height:26px;padding:0;border:none;background:#ececec;color:#555;border-radius:50%;font-size:13px;line-height:1;cursor:pointer;">✕</button>
+        </div>
         <!-- Arrange-mode toolbar (hidden until 🔀 Arrange order is pressed) -->
         <div id="scArrangeBar" style="display:none;background:#f5f3ff;border:1.5px solid #c4b5fd;border-radius:10px;padding:12px 14px;margin-bottom:14px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
