@@ -2610,9 +2610,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v13.4';
+window.IBI_VERSION      = 'v13.5';
 window.IBI_VERSION_DATE = '17 Aug 2026';
-window.IBI_VERSION_NOTE = 'v13.4 — 💍 FASHION JEWELLERY NAMES NOW COME FROM THE JEWELLERY REGISTER. The shared product catalogue that fills the seller-side product pickers no longer carries the 11 old imitation-jewellery rows from the master spreadsheet. Instead, the IBI Fashion Jewellery stock register on the office laptop publishes its own live product names — all 25 of them — and the catalogue merges those in automatically, so a chain added to the register appears here without anyone re-typing it. The built-in fallback list was refreshed to the full 287 names (262 from the 5 Aug master + 25 jewellery). Nothing else changed.';
+window.IBI_VERSION_NOTE = 'v13.5 — 🧾 PROPER 8-DIGIT HSN CODES FOR EVERY JEWELLERY PRODUCT. The 25 fashion-jewellery products now carry their full GST classification codes instead of the bare 7117 heading: beaded Hydro Crystal chains are 71179010 (imitation jewellery studded with imitation or synthetic stones) and Invisible Chains are 71171990 (other imitation jewellery of base metal) — the same codes the master price list has always used for these kinds of pieces. Two spelling slips in product names were also corrected from the master sheet (an idli maker's weight and a clay plate's unit). Nothing changes for shoppers; sellers see the right code pre-filled on invoices and GST reports.';
 window.IBI_VERSION_NOTE_PREV02 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
 window.IBI_VERSION_NOTE_PREV01 = 'v13.1 — 🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.';
 window.IBI_VERSION_NOTE_PREV00 = 'v13.0 — 💍 THE JEWELLERY IS NOW CALLED FASHION JEWELLERY, SITS TOGETHER, AND COUNTS ITSELF FROM THE JEWELLERY REGISTER. Three things, all about the same four listings. First the name: the department was headed "Imitation Jewellery" and now reads "Fashion Jewellery" everywhere it appears — the shop heading, the department bar, the category menus and the admin panel. Second, they are together at last: only one of the four was appearing under that heading, because the shop decides which family a product belongs to by reading its title, and these titles say "Crystal Stone Pendant" — so three chokers were being filed under Stone Products, in a different part of the page from the one they belonged to. A listing\'s own category is now trusted ahead of the wording of its title, so all four sit in one place, and any jewellery listed in future joins them automatically. Third, and the reason they all read Out of Stock: fashion jewellery is not counted in the Stock Availability app at all — it has its own register, the IBI Fashion Jewellery app on the office laptop — so the nightly job could find no count for any of them and the rule that nothing may be sold unless it can be shipped took every one off sale, while about thirty-four pieces sat on the shelf. The shop now asks the jewellery register for those listings and the Stock Availability app for everything else, and the jewellery app tells the shop the moment a piece is added or sold, so the two agree within the minute. Colour is treated as part of the product\'s identity here, because in this department one piece differs from the next by nothing else: a chain recorded as Red & Black can no longer hand its count to the plain Black variant, and where two variants of one listing both point at the same shelf neither is allowed to claim it — that is a warning to fix the listing, not a number to guess at. If the laptop is off, the jewellery listings are left exactly as they are rather than emptied.';
@@ -4119,7 +4119,7 @@ var IBI_HSN_MASTER = [
   {n:"Aluminium Square Tray, BIS, 26x26x5.5 cm, 531gm, 3 Liters each, 2 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rice Pot with Lid, 11 No Size, 18.5x18.5x13.5 cm, 407 gm, 1.9 Liters, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Rice Pot with Lid, BIS, 18 No Size, 24x24x13.5 cm, 5.6 Liters, 635 gm, 1 Qty",h:"76151030",g:"5"},
-  {n:"Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 8 g93m, 1 Qty",h:"76151030",g:"5"},
+  {n:"Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 893 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium 11 Idli Maker, Light Weight, 26x26x18 cm, 650 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Uruli With Lid, BIS, 17 No Size, 29.5x29.5x9.5cm, 653 gm, 1 Qty",h:"76151030",g:"5"},
   {n:"Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 471 g, 1 Qty",h:"76151030",g:"5"},
@@ -4177,7 +4177,7 @@ var IBI_HSN_MASTER = [
   {n:"Clay Sambrani Holder, 20x15x7 cm, 635 gm, 1 Qty",h:"69120040",g:"0"},
   {n:"Clay Uruli Pot with Lid and Handle, 7 Inch, 23x19x13 cm, 1 Liters, 1.2 Kg, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Uruli with Lid, 23.5x23.5x15.5 cm, 2.5 Liters, 2.43 Kg, 1 Qty",h:"69120010",g:"5"},
-  {n:"Clay Plates, 28x28x3.5 cm, 965 Kg, 11 Inch Dia each, 2 Qty",h:"69120010",g:"5"},
+  {n:"Clay Plates, 28x28x3.5 cm, 965 gm, 11 Inch Dia each, 2 Qty",h:"69120010",g:"5"},
   {n:"Clay Kadhai 2.5 Liters, 31x26.5x16 cm, 1.590 Kg, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Pongal Pot | Paanai, 22x22x22 cm, 1.6 Kg, 2.5 Liters, 1 Qty",h:"69120010",g:"5"},
   {n:"Clay Kadhai with Lid and Handle, 29.5 x 23.5 x 10 cm, 2.242 Liters, 1.8 kg, 1 Qty",h:"69120010",g:"5"},
@@ -4232,31 +4232,31 @@ var IBI_HSN_MASTER = [
   {n:"Cast Iron Dosai, 12 inch, 2.16 kg, 1 Qty",h:"73239100",g:"5"},
   {n:"Rat Trap - Wooden, 31x11x13 cm, 870 gm, 1 Qty",h:"44219990",g:"18"},
   {n:"Wooden Half Stool, 25x25x25 cm,1247 gm, 1 Qty",h:"94036000",g:"18"},
-  {n:"Hydro Crystal Beads Chain Triple Color Indian TriColor",h:"7117",g:"3"},
+  {n:"Hydro Crystal Beads Chain Triple Color Indian TriColor",h:"71179010",g:"3"},
   {n:"Hydro Crystal Beads Chain - Red & Black",h:"71179010",g:"3"},
-  {n:"Hydro Crystal Beads Chain Double Color Black & Transparent Crystal Clear",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Royal Blue",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Deep Teal Blue",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Navy Blue",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Purple",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Black",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Dark Olive Green",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Bright Red",h:"7117",g:"3"},
-  {n:"Hydro Crystal Beads Chain Single Color Deep Ruby Red",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer with Golden Kasu Dollar",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Deep Red Beads Lotus Pendant with Loreals",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Deep Red Beads Lotus Pendant without Loreals",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Green Beaded Lotus Pendant without Loreals",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Grey Double Lotus Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Green Beaded Lotus Pendant with Loreals",h:"7117",g:"3"},
-  {n:"Invisible Chain Double Layer Red Double Lotus Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Green Beads Floral Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Blue Beaded Heart Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Blue Lotus Beaded Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Pearl Lotus Pendant with Loreals",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Yellow Beaded Moon Pendant Gold Tone",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Green Beaded Heart Pendant",h:"7117",g:"3"},
-  {n:"Invisible Chain Single Layer Green Beaded Gold Tone",h:"7117",g:"3"},
+  {n:"Hydro Crystal Beads Chain Double Color Black & Transparent Crystal Clear",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Royal Blue",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Deep Teal Blue",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Navy Blue",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Purple",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Black",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Dark Olive Green",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Bright Red",h:"71179010",g:"3"},
+  {n:"Hydro Crystal Beads Chain Single Color Deep Ruby Red",h:"71179010",g:"3"},
+  {n:"Invisible Chain Single Layer with Golden Kasu Dollar",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Deep Red Beads Lotus Pendant with Loreals",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Deep Red Beads Lotus Pendant without Loreals",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Green Beaded Lotus Pendant without Loreals",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Grey Double Lotus Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Green Beaded Lotus Pendant with Loreals",h:"71171990",g:"3"},
+  {n:"Invisible Chain Double Layer Red Double Lotus Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Green Beads Floral Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Blue Beaded Heart Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Blue Lotus Beaded Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Pearl Lotus Pendant with Loreals",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Yellow Beaded Moon Pendant Gold Tone",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Green Beaded Heart Pendant",h:"71171990",g:"3"},
+  {n:"Invisible Chain Single Layer Green Beaded Gold Tone",h:"71171990",g:"3"},
   {n:"Matti Banana Live Plant, GI Tag, 650 gm, 1 Qty",h:"06022010",g:"0"},
   {n:"Nendran Banana Live Plant, 650 gm, 1 Qty",h:"06022010",g:"0"},
   {n:"Rasa Kathali Banana Live Plant, 650 gm, 1 Qty",h:"06022010",g:"0"},
@@ -14432,7 +14432,7 @@ init();
                     <option value="Aluminium Square Tray, BIS, 26x26x5.5 cm, 531gm, 3 Liters each, 2 Qty"></option>
                     <option value="Aluminium Rice Pot with Lid, 11 No Size, 18.5x18.5x13.5 cm, 407 gm, 1.9 Liters, 1 Qty"></option>
                     <option value="Aluminium Rice Pot with Lid, BIS, 18 No Size, 24x24x13.5 cm, 5.6 Liters, 635 gm, 1 Qty"></option>
-                    <option value="Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 8 g93m, 1 Qty"></option>
+                    <option value="Aluminium 11 Idli Maker, Heavy Weight, 26x26x18 cm, 893 gm, 1 Qty"></option>
                     <option value="Aluminium 11 Idli Maker, Light Weight, 26x26x18 cm, 650 gm, 1 Qty"></option>
                     <option value="Aluminium Uruli With Lid, BIS, 17 No Size, 29.5x29.5x9.5cm, 653 gm, 1 Qty"></option>
                     <option value="Aluminium Uruli Without Lid, BIS, 17 No Size, 29.5x29.5x9.5 cm, 471 g, 1 Qty"></option>
@@ -14490,7 +14490,7 @@ init();
                     <option value="Clay Sambrani Holder, 20x15x7 cm, 635 gm, 1 Qty"></option>
                     <option value="Clay Uruli Pot with Lid and Handle, 7 Inch, 23x19x13 cm, 1 Liters, 1.2 Kg, 1 Qty"></option>
                     <option value="Clay Uruli with Lid, 23.5x23.5x15.5 cm, 2.5 Liters, 2.43 Kg, 1 Qty"></option>
-                    <option value="Clay Plates, 28x28x3.5 cm, 965 Kg, 11 Inch Dia each, 2 Qty"></option>
+                    <option value="Clay Plates, 28x28x3.5 cm, 965 gm, 11 Inch Dia each, 2 Qty"></option>
                     <option value="Clay Kadhai 2.5 Liters, 31x26.5x16 cm, 1.590 Kg, 1 Qty"></option>
                     <option value="Clay Pongal Pot | Paanai, 22x22x22 cm, 1.6 Kg, 2.5 Liters, 1 Qty"></option>
                     <option value="Clay Kadhai with Lid and Handle, 29.5 x 23.5 x 10 cm, 2.242 Liters, 1.8 kg, 1 Qty"></option>
