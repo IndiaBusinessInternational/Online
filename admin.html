@@ -1396,5 +1396,30 @@ function adminCloseReturn(returnId) {
   sheetFetch({ action:'adminUpdateReturn', ceoToken: ceoToken(), returnId, status:'Closed', note: note || '' }, res => { if (res && res.success) { toast('✅ Closed'); loadReturnsData(); } else toast('❌ ' + (res?.message || 'Failed')); });
 }
 </script>
+
+<!-- v17.0: reviews moderation desk (hide / unhide) under the orders page -->
+<script>
+const _loadReturnsData_v16 = loadReturnsData;
+loadReturnsData = function () { _loadReturnsData_v16(); loadReviewsDesk(); };
+function loadReviewsDesk() {
+  let host = document.getElementById('reviewsDesk');
+  if (!host) { const rd = document.getElementById('returnsDesk'); if (!rd) return; host = document.createElement('div'); host.id = 'reviewsDesk'; host.style.marginTop = '18px'; rd.insertAdjacentElement('afterend', host); }
+  host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">⭐ Reviews desk</div><div style="color:var(--muted);font-size:12px;">Loading…</div>';
+  sheetFetch({ action:'adminGetReviews', ceoToken: ceoToken() }, res => {
+    const rows = (res && res.success) ? (res.reviews || []) : []; const e = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    if (!rows.length) { host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">⭐ Reviews desk</div><div style="color:var(--muted);font-size:12px;">No reviews yet.</div>'; return; }
+    host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">⭐ Reviews desk <span style="font-weight:500;color:var(--muted);font-size:12px;">' + rows.length + ' · hide only what breaks the guidelines (abuse, personal data, off-topic, incentivised)</span></div>' +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px;"><thead><tr style="background:#f3f4f6;text-align:left;"><th style="padding:6px 8px;">When</th><th style="padding:6px 8px;">Type · Order · Seller</th><th style="padding:6px 8px;">Customer</th><th style="padding:6px 8px;">Rating · review</th><th style="padding:6px 8px;">Reply</th><th style="padding:6px 8px;">Status</th><th style="padding:6px 8px;">Action</th></tr></thead><tbody>' +
+      rows.map(r => '<tr style="border-top:1px solid #eee;vertical-align:top;' + (r.status === 'Hidden' ? 'opacity:.6;' : '') + '"><td style="padding:6px 8px;white-space:nowrap;">' + e(r.timestamp) + '</td><td style="padding:6px 8px;">' + e(r.type) + '<br>' + e(r.orderId) + '<br><span style="color:var(--muted);">' + e(r.sellerId) + '</span></td><td style="padding:6px 8px;">' + e(r.name) + '<br>+91' + e(r.mobile) + '</td>' +
+        '<td style="padding:6px 8px;max-width:360px;"><span style="color:#f0a500;">' + '★'.repeat(r.rating) + '</span>' + (r.productTitle ? ' <span style="color:#555;">' + e(r.productTitle) + '</span>' : '') + (r.title ? '<br><b>' + e(r.title) + '</b>' : '') + (r.text ? '<br>' + e(r.text) : '') + (r.photos && r.photos.length ? '<br>' + r.photos.map((u, i) => '<a href="' + e(u) + '" target="_blank" rel="noopener" style="color:#007185;">photo ' + (i + 1) + '</a>').join(' · ') : '') + '</td>' +
+        '<td style="padding:6px 8px;max-width:220px;">' + (r.reply ? e(r.reply) + '<br><span style="color:var(--muted);">' + e(r.replyOn) + '</span>' : '—') + '</td><td style="padding:6px 8px;font-weight:800;color:' + (r.status === 'Hidden' ? '#b91c1c' : '#15803d') + ';">' + e(r.status) + '</td>' +
+        '<td style="padding:6px 8px;white-space:nowrap;">' + (r.status === 'Hidden' ? '<button class="btn btn-approve" onclick="adminSetReview(\'' + e(r.reviewId) + '\',\'Published\')">Unhide</button>' : '<button class="btn btn-reject" onclick="adminSetReview(\'' + e(r.reviewId) + '\',\'Hidden\')">Hide</button>') + '</td></tr>').join('') + '</tbody></table></div>';
+  });
+}
+function adminSetReview(reviewId, status) {
+  if (status === 'Hidden' && !confirm('Hide review ' + reviewId + ' from the storefront?')) return;
+  sheetFetch({ action:'adminUpdateReview', ceoToken: ceoToken(), reviewId, status }, res => { if (res && res.success) { toast('✅ Review ' + status.toLowerCase()); loadReviewsDesk(); } else toast('❌ ' + (res?.message || 'Failed')); });
+}
+</script>
 </body>
 </html>
