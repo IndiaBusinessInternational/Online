@@ -2618,9 +2618,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v15.0';
+window.IBI_VERSION      = 'v16.0';
 window.IBI_VERSION_DATE = '3 Sep 2026';
-window.IBI_VERSION_NOTE = 'v15.0 — 🪪 SELLER ONBOARDING NOW MEETS THE MARKETPLACE STANDARD: AGREEMENT, BANK, ADDRESS AND KYC. Becoming a seller is a four-step form, the same sequence Amazon, Flipkart and Meesho use. Step one takes the business details with PAN made mandatory and GSTIN optional for the unregistered; step two the registered address with state and pincode, and the pickup address; step three the payout bank account, typed twice and checked against the IFSC format; step four the KYC documents — PAN card, GST certificate, cancelled cheque and address proof — uploaded to a private folder that is never publicly shared, and a tick to accept the new Seller Agreement & Policies, a public page linked from the footer that sets out the 5% commission, weekly payouts, shipping and return terms, prohibited items, and the grievance officer the E-Commerce Rules require. The form cross-checks the PAN against the PAN embedded in the GSTIN and the GSTIN\'s state code against the state chosen, so a mistyped number is caught before it reaches us. The Profile tab now shows all of this — the bank account masked to its last four digits, each document\'s status, and the KYC verdict — and lets the seller correct it; changing the bank account or a document puts KYC back to Pending for re-verification. The admin panel shows every detail, the documents, and a KYC status the team sets to Verified or Rejected with a note the seller sees. Backend: eighteen new columns on the Sellers sheet, added automatically, and a profile-update call that needs the seller\'s own PIN, so a seller can finally save their profile without a CEO token.';
+window.IBI_VERSION_NOTE = 'v16.0 — 🚚 SELLERS NOW RUN THEIR OWN ORDERS, RETURNS AND PAYMENTS — THE AMAZON SELLER CENTRAL WAY. Manage Orders replaces the read-only order list: every order shows a Ship-by date, and the seller confirms it, marks it packed, confirms the shipment with the carrier and tracking ID, marks it delivered, or cancels it with a reason — each step emails the customer, and the customer\'s Track My Order page (now order ID plus mobile number, read live from the sheet instead of a demo timeline) shows the carrier and tracking number the moment they are entered. Packing slip and shipping label print from the order card. Manage Returns: a customer requests a return from Track My Order with Amazon\'s reason list and photos; the seller authorizes, declines with a reason, or marks the item received; IBI records the refund, and it lands as an adjustment on the seller\'s statement. Payments: settlement periods — the Monday after the 7-day return window — with item total, 5% commission, 18% GST on the commission, refunds and net, printable and downloadable as a spreadsheet. Registration verifies the email with a 6-digit code before the PIN can ever be sent to it; Forgot PIN emails a fresh PIN to the registered address; Change PIN sits in Profile. Seller Central opens with Complete-your-setup — agreement, identity, bank, KYC, first listing, first approval — and an Account Health strip with late-shipment, cancellation and return rates against Amazon\'s targets. Bulk Upload gains an IBI template download and a processing report. Also fixed: customer orders were never reaching the Orders sheet (the save demanded a CEO token a shopper does not have); orders now save for everyone, with prices re-checked against the catalogue.';
+window.IBI_VERSION_NOTE_PREV05 = 'v15.0 — 🪪 SELLER ONBOARDING NOW MEETS THE MARKETPLACE STANDARD: AGREEMENT, BANK, ADDRESS AND KYC. Becoming a seller is a four-step form, the same sequence Amazon, Flipkart and Meesho use. Step one takes the business details with PAN made mandatory and GSTIN optional for the unregistered; step two the registered address with state and pincode, and the pickup address; step three the payout bank account, typed twice and checked against the IFSC format; step four the KYC documents — PAN card, GST certificate, cancelled cheque and address proof — uploaded to a private folder that is never publicly shared, and a tick to accept the new Seller Agreement & Policies, a public page linked from the footer that sets out the 5% commission, weekly payouts, shipping and return terms, prohibited items, and the grievance officer the E-Commerce Rules require. The form cross-checks the PAN against the PAN embedded in the GSTIN and the GSTIN\'s state code against the state chosen, so a mistyped number is caught before it reaches us. The Profile tab now shows all of this — the bank account masked to its last four digits, each document\'s status, and the KYC verdict — and lets the seller correct it; changing the bank account or a document puts KYC back to Pending for re-verification. The admin panel shows every detail, the documents, and a KYC status the team sets to Verified or Rejected with a note the seller sees. Backend: eighteen new columns on the Sellers sheet, added automatically, and a profile-update call that needs the seller\'s own PIN, so a seller can finally save their profile without a CEO token.';
 window.IBI_VERSION_NOTE_PREV04 = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
 window.IBI_VERSION_NOTE_PREV03 = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
 window.IBI_VERSION_NOTE_PREV02 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
@@ -3762,6 +3763,7 @@ function renderSellerDashboard(res) {
           <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;font-size:11px;">City / Location</div><div style="font-weight:700;">${sessData.city||res.city||'—'}</div></div>
           <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;font-size:11px;">Member Since</div><div style="font-weight:700;">${_ibiMemberSince(res.approvedOn)}</div></div>
           ${ibiProfileExtraCards(res)}
+          ${typeof ibiPinCard === 'function' ? ibiPinCard() : ''}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <button onclick="showProfileEditMode()" style="padding:10px;background:#0079a3;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Edit Profile</button>
@@ -3899,9 +3901,10 @@ function switchDashTab(tab) {
   }
   if (tab === 'products') loadSellerProducts();
   if (tab === 'bulk' && typeof ibiBulkOpen === 'function') ibiBulkOpen();   // v14.0 bulk catalogue upload
+  if (typeof ibiRenderOnboarding === 'function') setTimeout(ibiRenderOnboarding, 50);   // v16.0 complete-your-setup + account health
   ibiCeoApply();                        // owner-only controls stay hidden unless unlocked
   if (tab === 'add')      { setupAddForm(); _ibiRefreshAINameList(); _ibiSyncStockBtns(); if (!window._scAllProds || !window._scAllProds.length) loadSellerProducts(); }
-  if (tab === 'earnings') loadSellerEarnings();
+  if (tab === 'earnings') { loadSellerEarnings(); if (typeof ibiLoadStatements === 'function') ibiLoadStatements(); }   // v16.0 statements
   if (tab === 'orders')   loadSellerOrders();
   if (tab === 'catalog')  ibiCatalogOpen();
   _toggleFloatDraft(tab);
@@ -9424,10 +9427,10 @@ function saveOrderToSheet(orderId, customer, orderItems, total, address) {
     orderDate: new Date().toLocaleString('en-IN'),
     status:    'Placed'
   };
-  ibi_fetch_simple(params, function(res) {
+  ibi_fetch_post(params, function(res) {   // v16.0: POST — a big cart no longer overflows the URL; the backend no longer needs a CEO token
     if (res && res.success) console.log('✅ Order saved to sheet:', orderId);
     else console.warn('⚠️ Order sheet save failed:', res);
-  }, 8000);
+  }, 20000);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -15157,6 +15160,7 @@ init();
             <h3 style="margin:0;color:#131921;">⬆️ Bulk Upload</h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <button onclick="document.getElementById('bulk_file').click()" style="padding:8px 16px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">📄 Choose Excel file(s)</button>
+              <button onclick="ibiBulkTemplate()" style="padding:8px 12px;background:#fff;color:#0098c9;border:1.5px solid #0098c9;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">📥 IBI template</button>
               <button onclick="ibiBulkClear()" id="bulk_clear_btn" style="display:none;padding:8px 12px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">Clear</button>
             </div>
           </div>
@@ -15176,6 +15180,7 @@ init();
               <div id="bulk_progress_txt" style="font-size:12px;color:#555;margin-top:6px;"></div>
             </div>
             <button id="bulk_upload_btn" onclick="ibiBulkUpload()" style="padding:12px 28px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 2px 10px rgba(0,152,201,.3);">⬆️ Upload to IBI</button>
+            <button onclick="ibiBulkReport()" style="margin-left:8px;padding:12px 18px;background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">📄 Processing report</button>
             <div style="font-size:11.5px;color:#888;margin-top:8px;">Rows marked ○ are left out until fixed. “min” under Transfer price is that price ÷ 0.95 — the least you can list at and still receive your full transfer price after IBI's 5% commission.</div>
           </div>
         </div>
@@ -15205,7 +15210,7 @@ init();
       <div id="dashTab_earnings" style="display:none;">
         <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;margin-bottom:16px;">
           <div style="background:linear-gradient(135deg,#16a34a,#15803d);padding:20px;color:#fff;">
-            <div style="font-size:16px;font-weight:800;margin-bottom:4px;">💰 My Earnings & Payouts</div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:4px;">💰 Payments</div>
             <div style="font-size:13px;opacity:.8;">Your earnings summary from IBI Marketplace</div>
           </div>
           <div style="padding:16px;">
@@ -15264,6 +15269,7 @@ init();
               </div>
             </div>
 
+            <div id="sc_statements" style="margin-top:18px;"></div>
             <!-- Request payout button -->
             <button onclick="requestPayout()" style="width:100%;margin-top:14px;padding:12px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;">
               💰 Request Payout via WhatsApp
@@ -15277,8 +15283,8 @@ init();
         <div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow:hidden;">
           <div style="background:#232F3E;padding:16px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
             <div>
-              <div style="font-size:16px;font-weight:800;">🛒 My Product Orders</div>
-              <div style="font-size:12px;opacity:.75;">Orders placed for your listed products</div>
+              <div style="font-size:16px;font-weight:800;">🛒 Manage Orders</div>
+              <div style="font-size:12px;opacity:.75;">Confirm, ship and track orders for your listings · dispatch within 2 working days</div>
             </div>
             <div style="display:flex;align-items:center;gap:10px;">
               <span id="sellerOrdersStats" style="background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;"></span>
@@ -16765,6 +16771,432 @@ function saveSellerProfile() {
   };
 })();
 </script>
+
+<!-- ═══ v16.0 — SELLER OPERATIONS, Amazon Seller Central conventions:
+     Manage Orders (Pending / Unshipped / Shipped / Delivered / Cancelled, Ship-by date, Confirm shipment
+     with carrier + tracking ID, packing slip + label), Manage Returns (Authorize / Decline / Received),
+     Payments (settlement periods, transaction view, downloadable report), public order tracking + customer
+     return requests, email OTP at registration, Forgot PIN / Change PIN, Complete-your-setup + Account Health. ═══ -->
+<script>
+(function () {
+  'use strict';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function inr(n) { var v = Math.round((parseFloat(n) || 0) * 100) / 100; return '₹' + v.toLocaleString('en-IN', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
+  function session() { return JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); }
+  function post(params, cb, ms) { ibi_fetch_post(params, cb, ms || 45000); }
+  function parseIN(s) { var m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; }
+  function addWorkingDays(d, n) { var x = new Date(d); var added = 0; while (added < n) { x.setDate(x.getDate() + 1); if (x.getDay() !== 0) added++; } return x; }
+  function fmtD(d) { return d ? d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; }
+  var CARRIERS = ['Delhivery', 'Blue Dart', 'DTDC', 'India Post / Speed Post', 'Ecom Express', 'Xpressbees', 'Ekart', 'Shadowfax', 'Amazon Shipping', 'Professional Couriers', 'Other'];
+  var CANCEL_REASONS = ['Out of stock', 'Pricing error on the listing', 'Customer requested cancellation', 'Address is undeliverable', 'Other'];
+  var RETURN_REASONS = ['Item defective or does not work', 'Item arrived damaged', 'Wrong item was sent', 'Missing parts or accessories', 'Item is different from the listing', 'Size or fit issue', 'Item arrived too late', 'Bought by mistake / no longer needed'];
+  // Sheet status → what the seller sees (Amazon wording)
+  var LABEL = { Placed: 'Pending', Confirmed: 'Unshipped', Packed: 'Unshipped', Shipped: 'Shipped', Delivered: 'Delivered', Cancelled: 'Cancelled', Returned: 'Returned' };
+  var COLOR = { Pending: '#b45309', Unshipped: '#1d4ed8', Shipped: '#7c3aed', Delivered: '#15803d', Cancelled: '#b91c1c', Returned: '#b91c1c' };
+
+  // ═══════════════ MANAGE ORDERS ═══════════════
+  var O = { orders: [], filter: 'all', loaded: false };
+  window._ibiOrders = O;
+  window.loadSellerOrders = function () {
+    var s = session(); if (!s) return;
+    var box = $('sellerOrdersList'); if (!box) return;
+    box.innerHTML = '<div style="text-align:center;padding:30px;color:#888;">⏳ Loading your orders…</div>';
+    ibi_fetch_retry({ action: 'getSellerOrders', sellerId: s.sellerId, pin: s.pin }, function (res) {
+      if (!res) { box.innerHTML = '<div style="text-align:center;padding:30px;color:#92400e;">⚠️ The sheet did not answer after 3 tries. <button onclick="loadSellerOrders()" style="margin-left:8px;padding:6px 14px;background:#131921;color:#fff;border:none;border-radius:7px;cursor:pointer;">Retry</button></div>'; return; }
+      O.orders = (res.success && res.orders) ? res.orders : []; O.loaded = true;
+      renderOrders(); ibiRenderOnboarding();
+    }, 25000, 3);
+  };
+  function shipBy(o) { var d = parseIN(o.date); return d ? addWorkingDays(d, 2) : null; }
+  function stateOf(o) { return LABEL[(o.shipment && o.shipment.status) || o.orderStatus || 'Placed'] || 'Pending'; }
+  function counts() { var c = { all: 0, Pending: 0, Unshipped: 0, Shipped: 0, Delivered: 0, Cancelled: 0, Returns: 0 }; O.orders.forEach(function (o) { c.all++; c[stateOf(o)] = (c[stateOf(o)] || 0) + 1; if ((o.returns || []).some(function (r) { return r.status === 'Requested' || r.status === 'Approved'; })) c.Returns++; }); return c; }
+  window.ibiOrdersFilter = function (f) { O.filter = f; renderOrders(); };
+  function renderOrders() {
+    var box = $('sellerOrdersList'); if (!box) return;
+    var c = counts(); var stats = $('sellerOrdersStats'); if (stats) stats.textContent = c.all + ' order' + (c.all === 1 ? '' : 's');
+    var tabs = [['all', 'All'], ['Pending', 'Pending'], ['Unshipped', 'Unshipped'], ['Shipped', 'Shipped'], ['Delivered', 'Delivered'], ['Cancelled', 'Cancelled'], ['Returns', 'Returns']];
+    var h = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">' + tabs.map(function (t) {
+      var on = O.filter === t[0]; var n = c[t[0]] || 0; var hot = (t[0] === 'Pending' || t[0] === 'Returns') && n > 0;
+      return '<button onclick="ibiOrdersFilter(\'' + t[0] + '\')" style="padding:6px 12px;border-radius:20px;border:1.5px solid ' + (on ? '#131921' : '#e5e7eb') + ';background:' + (on ? '#131921' : '#fff') + ';color:' + (on ? '#fff' : (hot ? '#b45309' : '#374151')) + ';font-size:12px;font-weight:700;cursor:pointer;">' + t[1] + ' <span style="opacity:.8;">' + n + '</span></button>';
+    }).join('') + '</div>';
+    var list = O.orders.filter(function (o) { if (O.filter === 'all') return true; if (O.filter === 'Returns') return (o.returns || []).length > 0; return stateOf(o) === O.filter; });
+    if (!O.orders.length) h += '<div style="text-align:center;padding:40px;"><div style="font-size:48px;margin-bottom:12px;">📦</div><div style="font-size:16px;font-weight:700;color:#444;">No orders yet</div><div style="font-size:13px;color:#888;margin-top:6px;">Orders for your listings appear here the moment a customer places them.</div></div>';
+    else if (!list.length) h += '<div style="text-align:center;padding:30px;color:#888;">Nothing under this filter.</div>';
+    else h += list.map(orderCard).join('');
+    box.innerHTML = h;
+  }
+  function orderCard(o) {
+    var st = stateOf(o); var sh = o.shipment || {}; var sb = shipBy(o); var late = sb && (st === 'Pending' || st === 'Unshipped') && new Date() > sb;
+    var items = (o.items || []).map(function (it) { return '<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px dashed #f1f5f9;"><span>' + esc(it.title) + ' <span style="color:#6b7280;">× ' + (it.qty || 1) + '</span></span><span style="white-space:nowrap;font-weight:700;">' + inr(it.total) + '</span></div>'; }).join('');
+    var timeline = [['Ordered', o.date], ['Confirmed', sh.acceptedOn], ['Packed', sh.packedOn], ['Shipped', sh.shippedOn], ['Delivered', sh.deliveredOn], ['Cancelled', sh.cancelledOn]].filter(function (x) { return x[1]; })
+      .map(function (x) { return '<span style="font-size:11px;color:#6b7280;">' + x[0] + ' ' + esc(x[1]) + '</span>'; }).join(' · ');
+    var actions = '';
+    var id = "'" + esc(o.orderId) + "'";
+    if (st === 'Pending') actions += btn('✅ Confirm order', 'ibiOrderAct(' + id + ',\'accept\')', '#16a34a') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
+    if (st === 'Unshipped') actions += btn('🚚 Confirm shipment', 'ibiOrderShipForm(' + id + ')', '#131921') + (sh.status === 'Confirmed' ? btn('📦 Mark packed', 'ibiOrderAct(' + id + ',\'pack\')', '#fff', '#374151') : '') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
+    if (st === 'Shipped') actions += btn('🎉 Mark delivered', 'ibiOrderAct(' + id + ',\'deliver\')', '#15803d');
+    if (st !== 'Cancelled') actions += btn('🧾 Packing slip / invoice', 'ibiSellerPrint(' + id + ',\'invoice\')', '#fff', '#374151') + btn('🏷️ Shipping label', 'ibiSellerPrint(' + id + ',\'shipping\')', '#fff', '#374151');
+    var ship = sh.awb ? '<div style="margin-top:6px;font-size:12px;"><b>Carrier:</b> ' + esc(sh.courier) + ' · <b>Tracking ID:</b> ' + esc(sh.awb) + (sh.trackUrl ? ' · <a href="' + esc(sh.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;">track</a>' : '') + '</div>' : '';
+    var cancel = sh.cancelReason ? '<div style="margin-top:6px;font-size:12px;color:#b91c1c;"><b>Cancelled:</b> ' + esc(sh.cancelReason) + '</div>' : '';
+    var rets = (o.returns || []).map(function (r) { return returnBlock(o, r); }).join('');
+    return '<div id="ord_' + esc(o.orderId) + '" style="background:#fff;border:1px solid ' + (late ? '#fca5a5' : '#e5e7eb') + ';border-radius:12px;padding:14px 16px;margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">' +
+        '<div><div style="font-size:14px;font-weight:900;color:#131921;">' + esc(o.orderId) + '</div><div style="font-size:11.5px;color:#6b7280;margin-top:2px;">Ordered ' + esc(o.date) + (sb && (st === 'Pending' || st === 'Unshipped') ? ' · <span style="font-weight:700;color:' + (late ? '#b91c1c' : '#b45309') + ';">Ship by ' + fmtD(sb) + (late ? ' — LATE' : '') + '</span>' : '') + '</div></div>' +
+        '<div style="text-align:right;"><span style="background:' + (COLOR[st] || '#6b7280') + ';color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;">' + st + '</span><div style="font-size:11px;color:#6b7280;margin-top:4px;">Payout ' + esc(o.payoutStatus) + (o.payoutDate ? ' · ' + esc(o.payoutDate) : '') + '</div></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;font-size:12.5px;">' +
+        '<div><div style="font-weight:800;color:#374151;margin-bottom:4px;">Ship to</div><div>' + esc(o.customer) + '</div><div style="color:#4b5563;">' + esc(o.address) + '</div><div style="margin-top:3px;"><a href="tel:+91' + esc(o.mobile) + '" style="color:#0098c9;">+91 ' + esc(o.mobile) + '</a>' + (o.email ? ' · <a href="mailto:' + esc(o.email) + '" style="color:#0098c9;">' + esc(o.email) + '</a>' : '') + '</div></div>' +
+        '<div><div style="font-weight:800;color:#374151;margin-bottom:4px;">Your items</div>' + items + '<div style="display:flex;justify-content:space-between;margin-top:6px;"><span>Item total</span><b>' + inr(o.gross) + '</b></div><div style="display:flex;justify-content:space-between;color:#6b7280;"><span>IBI commission 5%</span><span>− ' + inr(o.commission) + '</span></div><div style="display:flex;justify-content:space-between;color:#15803d;font-weight:800;"><span>Your payout</span><span>' + inr(o.net) + '</span></div></div>' +
+      '</div>' + ship + cancel +
+      (timeline ? '<div style="margin-top:8px;">' + timeline + '</div>' : '') +
+      '<div id="ordform_' + esc(o.orderId) + '"></div>' +
+      (actions ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">' + actions + '</div>' : '') +
+      rets + '</div>';
+  }
+  function btn(label, onclick, bg, color) { return '<button onclick="' + onclick + '" style="padding:8px 14px;border-radius:8px;border:1.5px solid ' + (bg === '#fff' ? '#d1d5db' : bg) + ';background:' + bg + ';color:' + (color || '#fff') + ';font-size:12.5px;font-weight:700;cursor:pointer;">' + label + '</button>'; }
+  window.ibiOrderAct = function (orderId, act, extra) {
+    var s = session(); if (!s) return;
+    var params = Object.assign({ action: 'sellerUpdateOrder', sellerId: s.sellerId, pin: s.pin, orderId: orderId, act: act }, extra || {});
+    showToast('⏳ Updating ' + orderId + '…');
+    post(params, function (res) {
+      if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
+      var o = O.orders.find(function (x) { return x.orderId === orderId; }); if (o) { o.shipment = res.shipment; o.orderStatus = res.orderStatus; }
+      showToast('✅ ' + orderId + ' is now ' + (LABEL[res.shipment.status] || res.shipment.status), 'success'); renderOrders(); ibiRenderOnboarding();
+    });
+  };
+  window.ibiOrderShipForm = function (orderId) {
+    var host = $('ordform_' + orderId); if (!host) return;
+    host.innerHTML = '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-top:10px;display:grid;gap:8px;">' +
+      '<div style="font-weight:800;font-size:13px;">Confirm shipment</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div><label class="sc-label" style="font-size:11px;">Carrier</label><select id="shp_c_' + esc(orderId) + '" class="sc-input">' + CARRIERS.map(function (c) { return '<option>' + c + '</option>'; }).join('') + '</select></div>' +
+      '<div><label class="sc-label" style="font-size:11px;">Tracking ID / AWB</label><input id="shp_a_' + esc(orderId) + '" class="sc-input" placeholder="e.g. 1234567890123" autocomplete="off"></div></div>' +
+      '<div><label class="sc-label" style="font-size:11px;">Tracking link (optional)</label><input id="shp_u_' + esc(orderId) + '" class="sc-input" placeholder="https://…"></div>' +
+      '<div style="display:flex;gap:8px;">' + btn('🚚 Confirm shipment', 'ibiOrderShipSubmit(\'' + esc(orderId) + '\')', '#131921') + btn('Cancel', 'document.getElementById(\'ordform_' + esc(orderId) + '\').innerHTML=\'\'', '#fff', '#374151') + '</div></div>';
+    host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  window.ibiOrderShipSubmit = function (orderId) {
+    var c = ($('shp_c_' + orderId) || {}).value, a = (($('shp_a_' + orderId) || {}).value || '').trim(), u = (($('shp_u_' + orderId) || {}).value || '').trim();
+    if (!a) { showToast('⚠️ Enter the tracking ID from the courier'); return; }
+    ibiOrderAct(orderId, 'ship', { courier: c, awb: a, trackUrl: u });
+  };
+  window.ibiOrderCancel = function (orderId) {
+    var host = $('ordform_' + orderId); if (!host) return;
+    host.innerHTML = '<div style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:12px;margin-top:10px;display:grid;gap:8px;">' +
+      '<div style="font-weight:800;font-size:13px;color:#b91c1c;">Cancel this order</div><div style="font-size:11.5px;color:#7f1d1d;">Cancellations count against your account health. Cancel only when you truly cannot fulfil.</div>' +
+      '<select id="cnl_r_' + esc(orderId) + '" class="sc-input">' + CANCEL_REASONS.map(function (r) { return '<option>' + r + '</option>'; }).join('') + '</select>' +
+      '<input id="cnl_n_' + esc(orderId) + '" class="sc-input" placeholder="Note to the customer (optional)">' +
+      '<div style="display:flex;gap:8px;">' + btn('✖ Cancel order', 'ibiOrderCancelSubmit(\'' + esc(orderId) + '\')', '#b91c1c') + btn('Keep order', 'document.getElementById(\'ordform_' + esc(orderId) + '\').innerHTML=\'\'', '#fff', '#374151') + '</div></div>';
+  };
+  window.ibiOrderCancelSubmit = function (orderId) {
+    var r = ($('cnl_r_' + orderId) || {}).value || 'Other', n = (($('cnl_n_' + orderId) || {}).value || '').trim();
+    if (!confirm('Cancel order ' + orderId + '?')) return;
+    ibiOrderAct(orderId, 'cancel', { reason: r + (n ? ' — ' + n : '') });
+  };
+  // Packing slip / label: print.html reads the order from localStorage (same origin), so hand it this seller's part only.
+  window.ibiSellerPrint = function (orderId, type) {
+    var o = O.orders.find(function (x) { return x.orderId === orderId; }); if (!o) return;
+    try { var cache = JSON.parse(localStorage.getItem('ibi_order_cache') || '{}');
+      cache[orderId] = { orderId: orderId, orderDate: o.date, customerName: o.customer, customerMobile: o.mobile, customerEmail: o.email || '', address: o.address, total: o.gross, items: JSON.stringify((o.items || []).map(function (it) { return { title: it.title, qty: it.qty, price: it.price, total: it.total }; })), status: o.orderStatus, seller: session() ? session().bizName : '' };
+      localStorage.setItem('ibi_order_cache', JSON.stringify(cache)); } catch (e) {}
+    window.open('/print.html?type=' + type + '&order=' + encodeURIComponent(orderId), '_blank');
+  };
+
+  // ═══════════════ MANAGE RETURNS (inside each order card) ═══════════════
+  function returnBlock(o, r) {
+    var col = r.status === 'Requested' ? '#b45309' : r.status === 'Approved' || r.status === 'Received' ? '#1d4ed8' : r.status === 'Refunded' ? '#15803d' : '#6b7280';
+    var items = (r.items || []).map(function (it) { return esc(it.title) + ' × ' + (it.qty || 1); }).join(', ');
+    var act = '';
+    if (r.status === 'Requested') act = btn('✅ Authorize return', 'ibiReturnAct(\'' + esc(r.returnId) + '\',\'approve\')', '#16a34a') + btn('✖ Decline', 'ibiReturnDecline(\'' + esc(r.returnId) + '\')', '#fff', '#b91c1c');
+    if (r.status === 'Approved') act = btn('📥 Mark item received', 'ibiReturnAct(\'' + esc(r.returnId) + '\',\'received\')', '#131921');
+    var photos = (r.photos || []).map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" style="width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb;margin-right:4px;"></a>'; }).join('');
+    return '<div style="margin-top:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;font-size:12.5px;">' +
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;"><b>↩️ Return ' + esc(r.returnId) + '</b><span style="color:' + col + ';font-weight:800;">' + esc(r.status) + '</span></div>' +
+      '<div style="margin-top:4px;">' + items + '</div><div style="margin-top:2px;"><b>Reason:</b> ' + esc(r.reason) + (r.details ? ' — ' + esc(r.details) : '') + '</div>' + (photos ? '<div style="margin-top:6px;">' + photos + '</div>' : '') +
+      (r.sellerNote ? '<div style="margin-top:2px;color:#4b5563;"><b>Your note:</b> ' + esc(r.sellerNote) + '</div>' : '') + (r.refundAmount ? '<div style="margin-top:2px;color:#15803d;"><b>Refunded by IBI:</b> ' + inr(r.refundAmount) + ' on ' + esc(r.refundDate) + ' (adjusted in your payout)</div>' : '') +
+      '<div id="retform_' + esc(r.returnId) + '"></div>' + (act ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">' + act + '</div>' : '') + '</div>';
+  }
+  window.ibiReturnAct = function (returnId, act, note) {
+    var s = session(); if (!s) return;
+    post({ action: 'sellerUpdateReturn', sellerId: s.sellerId, pin: s.pin, returnId: returnId, act: act, note: note || '' }, function (res) {
+      if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
+      O.orders.forEach(function (o) { (o.returns || []).forEach(function (r) { if (r.returnId === returnId) { r.status = res.status; if (note) r.sellerNote = note; } }); });
+      showToast('✅ Return ' + returnId + ' ' + res.status.toLowerCase() + ' — the customer has been emailed', 'success'); renderOrders();
+    });
+  };
+  window.ibiReturnDecline = function (returnId) {
+    var host = $('retform_' + returnId); if (!host) return;
+    host.innerHTML = '<div style="margin-top:8px;display:grid;gap:6px;"><input id="retn_' + esc(returnId) + '" class="sc-input" placeholder="Reason the customer will see (required)"><div style="display:flex;gap:8px;">' + btn('Decline return', 'ibiReturnDeclineSubmit(\'' + esc(returnId) + '\')', '#b91c1c') + btn('Back', 'document.getElementById(\'retform_' + esc(returnId) + '\').innerHTML=\'\'', '#fff', '#374151') + '</div></div>';
+  };
+  window.ibiReturnDeclineSubmit = function (returnId) { var n = (($('retn_' + returnId) || {}).value || '').trim(); if (!n) { showToast('⚠️ Give the customer a reason'); return; } ibiReturnAct(returnId, 'reject', n); };
+
+  // ═══════════════ PAYMENTS — settlement statements ═══════════════
+  var P = { rows: null };
+  window.ibiLoadStatements = function () {
+    var s = session(); var host = $('sc_statements'); if (!s || !host) return;
+    host.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">⏳ Building your statements…</div>';
+    ibi_fetch_retry({ action: 'getSellerStatements', sellerId: s.sellerId, pin: s.pin }, function (res) {
+      if (!res || !res.success) { host.innerHTML = '<div style="text-align:center;padding:20px;color:#92400e;">⚠️ Could not load statements. <button onclick="ibiLoadStatements()" style="padding:6px 12px;border:none;background:#131921;color:#fff;border-radius:6px;cursor:pointer;">Retry</button></div>'; return; }
+      P.rows = res.rows || []; renderStatements();
+    }, 25000, 3);
+  };
+  function cyclesOf(rows) {
+    var by = {}; rows.forEach(function (r) { var key = r.eligible ? (r.cycle || 'Pending delivery date') : 'Not yet eligible'; (by[key] = by[key] || []).push(r); });
+    var keys = Object.keys(by).filter(function (k) { return k !== 'Not yet eligible'; }).sort(function (a, b) { var da = parseIN(a), db = parseIN(b); return (db ? db.getTime() : 0) - (da ? da.getTime() : 0); });
+    if (by['Not yet eligible']) keys.push('Not yet eligible');
+    return keys.map(function (k) { var rs = by[k]; var t = { gross: 0, commission: 0, gst: 0, refunds: 0, net: 0 }; rs.forEach(function (r) { t.gross += r.gross; t.commission += r.commission; t.gst += r.gst; t.refunds += r.refunds; t.net += r.net; });
+      var paid = rs.length && rs.every(function (r) { return r.payoutStatus === 'Paid'; }); var today = new Date(); var cd = parseIN(k);
+      var status = k === 'Not yet eligible' ? 'Awaiting delivery' : paid ? 'Paid' : (cd && cd <= today ? (t.net >= 500 ? 'Due' : 'Carried forward (below ₹500)') : 'Scheduled');
+      return { key: k, rows: rs, totals: t, status: status }; });
+  }
+  function renderStatements() {
+    var host = $('sc_statements'); if (!host) return;
+    if (!P.rows.length) { host.innerHTML = '<div style="text-align:center;padding:20px;color:#888;font-size:13px;">No transactions yet. Each delivered order appears here in its settlement period.</div>'; return; }
+    var cyc = cyclesOf(P.rows);
+    var h = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><div style="font-size:13px;font-weight:800;color:#131921;">📑 Settlement statements</div><div style="display:flex;gap:8px;">' + btn('📥 Download report (.xlsx)', 'ibiStatementDownload()', '#fff', '#374151') + btn('🖨️ Print', 'ibiStatementPrint()', '#fff', '#374151') + '</div></div>' +
+      '<div style="font-size:11.5px;color:#6b7280;margin-bottom:10px;">Payouts every Monday for orders delivered at least 7 days earlier · IBI commission 5% + 18% GST on the commission · refunds adjusted · minimum payout ₹500, smaller balances carry forward.</div>';
+    h += cyc.map(function (c, i) {
+      var sc = c.status === 'Paid' ? '#15803d' : c.status === 'Due' ? '#b45309' : '#6b7280';
+      return '<details style="border:1px solid #e5e7eb;border-radius:10px;margin-bottom:8px;background:#fff;"' + (i === 0 ? ' open' : '') + '><summary style="cursor:pointer;padding:10px 12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;list-style:none;">' +
+        '<span><b>' + (c.key === 'Not yet eligible' ? 'Not yet eligible' : 'Settlement ' + esc(c.key)) + '</b> <span style="color:#6b7280;">· ' + c.rows.length + ' order' + (c.rows.length === 1 ? '' : 's') + '</span></span><span><b style="color:#131921;">' + inr(c.totals.net) + '</b> <span style="color:' + sc + ';font-weight:800;margin-left:8px;">' + c.status + '</span></span></summary>' +
+        '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:720px;"><thead><tr style="background:#f3f4f6;color:#374151;text-align:left;"><th style="padding:6px 10px;">Order</th><th style="padding:6px 10px;">Date</th><th style="padding:6px 10px;">Status</th><th style="padding:6px 10px;text-align:right;">Item total</th><th style="padding:6px 10px;text-align:right;">Commission</th><th style="padding:6px 10px;text-align:right;">GST</th><th style="padding:6px 10px;text-align:right;">Refunds</th><th style="padding:6px 10px;text-align:right;">Net</th><th style="padding:6px 10px;">Payout</th></tr></thead><tbody>' +
+        c.rows.map(function (r) { return '<tr style="border-top:1px solid #f1f5f9;"><td style="padding:6px 10px;font-weight:700;">' + esc(r.orderId) + '</td><td style="padding:6px 10px;">' + esc(r.orderDate) + '</td><td style="padding:6px 10px;">' + esc(LABEL[r.status] || r.status) + (r.deliveredOn ? '<br><span style="color:#6b7280;">delivered ' + esc(r.deliveredOn) + '</span>' : '') + '</td><td style="padding:6px 10px;text-align:right;">' + inr(r.gross) + '</td><td style="padding:6px 10px;text-align:right;">− ' + inr(r.commission) + '</td><td style="padding:6px 10px;text-align:right;">− ' + inr(r.gst) + '</td><td style="padding:6px 10px;text-align:right;">' + (r.refunds ? '− ' + inr(r.refunds) : '—') + '</td><td style="padding:6px 10px;text-align:right;font-weight:800;">' + inr(r.net) + '</td><td style="padding:6px 10px;">' + esc(r.payoutStatus) + (r.payoutDate ? ' ' + esc(r.payoutDate) : '') + '</td></tr>'; }).join('') +
+        '<tr style="border-top:2px solid #e5e7eb;font-weight:800;background:#fafafa;"><td style="padding:6px 10px;" colspan="3">Total</td><td style="padding:6px 10px;text-align:right;">' + inr(c.totals.gross) + '</td><td style="padding:6px 10px;text-align:right;">− ' + inr(c.totals.commission) + '</td><td style="padding:6px 10px;text-align:right;">− ' + inr(c.totals.gst) + '</td><td style="padding:6px 10px;text-align:right;">' + (c.totals.refunds ? '− ' + inr(c.totals.refunds) : '—') + '</td><td style="padding:6px 10px;text-align:right;">' + inr(c.totals.net) + '</td><td></td></tr></tbody></table></div></details>';
+    }).join('');
+    host.innerHTML = h;
+  }
+  window.ibiStatementDownload = function () {
+    if (!P.rows || !P.rows.length) { showToast('⚠️ Nothing to download yet'); return; }
+    _catLoadLib(function () {
+      var s = session() || {}; var cyc = cyclesOf(P.rows);
+      var rows = [['Settlement period', 'Order ID', 'Order date', 'Status', 'Delivered on', 'Items', 'Item total', 'IBI commission (5%)', 'GST on commission (18%)', 'Refunds', 'Net payout', 'Payout status', 'Payout date']];
+      cyc.forEach(function (c) { c.rows.forEach(function (r) { rows.push([c.key, r.orderId, r.orderDate, LABEL[r.status] || r.status, r.deliveredOn, r.items, r.gross, r.commission, r.gst, r.refunds, r.net, r.payoutStatus, r.payoutDate]); });
+        rows.push([c.key + ' TOTAL', '', '', c.status, '', '', c.totals.gross, c.totals.commission, c.totals.gst, c.totals.refunds, c.totals.net, '', '']); rows.push([]); });
+      var wb = XLSX.utils.book_new(); var ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols'] = [{ wch: 20 }, { wch: 18 }, { wch: 20 }, { wch: 11 }, { wch: 20 }, { wch: 50 }, { wch: 11 }, { wch: 18 }, { wch: 20 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+      XLSX.utils.book_append_sheet(wb, ws, 'Statement');
+      XLSX.writeFile(wb, 'IBI Payout Statement - ' + (s.bizName || s.sellerId || 'seller') + ' - ' + new Date().toLocaleDateString('en-IN').replace(/\//g, '-') + '.xlsx');
+    });
+  };
+  window.ibiStatementPrint = function () {
+    var host = $('sc_statements'); if (!host) return; var s = session() || {};
+    var w = window.open('', '_blank'); if (!w) { showToast('⚠️ Allow pop-ups to print'); return; }
+    w.document.write('<html><head><title>IBI Payout Statement — ' + esc(s.bizName || '') + '</title><style>body{font-family:Arial,sans-serif;font-size:12px;padding:20px;color:#111}details{display:block}summary{font-weight:800;margin:14px 0 6px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:5px 8px;text-align:left}button{display:none}</style></head><body><h2>India Business International — Payout Statement</h2><div>' + esc(s.bizName || '') + ' (' + esc(s.sellerId || '') + ') · generated ' + new Date().toLocaleString('en-IN') + '</div>' + host.innerHTML.replace(/<details/g, '<details open') + '</body></html>');
+    w.document.close(); setTimeout(function () { w.print(); }, 500);
+  };
+
+  // ═══════════════ CUSTOMER: TRACK MY ORDER + RETURN REQUEST ═══════════════
+  var T = { last: null };
+  window.trackOrder = function () {
+    var oid = (($('trackInput') || {}).value || '').trim();
+    var mobEl = $('trackMobile');
+    if (!mobEl) { var inp = $('trackInput'); if (inp) { mobEl = document.createElement('input'); mobEl.id = 'trackMobile'; mobEl.type = 'tel'; mobEl.maxLength = 10; mobEl.placeholder = 'Mobile number used on the order'; mobEl.style.cssText = inp.style.cssText || 'width:100%;padding:12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;margin-top:8px;'; mobEl.className = inp.className; mobEl.style.marginTop = '8px'; inp.insertAdjacentElement('afterend', mobEl); mobEl.focus(); showToast('Enter the mobile number used on the order, then track again'); return; } }
+    var mob = (mobEl.value || '').replace(/\D/g, '');
+    if (!oid) { showToast('⚠️ Enter your Order ID'); return; }
+    if (!/^\d{10}$/.test(mob)) { showToast('⚠️ Enter the 10-digit mobile number used on the order'); mobEl.focus(); return; }
+    var result = $('trackResult'); var sb = $('trackSearchBox');
+    result.style.display = 'block'; result.innerHTML = '<div style="text-align:center;padding:24px;color:#888;">⏳ Looking up ' + esc(oid) + '…</div>';
+    ibi_fetch_retry({ action: 'trackOrder', orderId: oid, mobile: mob }, function (res) {
+      if (!res || !res.success) { result.innerHTML = '<div style="text-align:center;padding:24px;"><div style="font-size:40px;">🔍</div><div style="font-weight:800;margin:8px 0;">' + esc(res && res.message ? res.message : 'Could not reach the server — try again') + '</div><button onclick="document.getElementById(\'trackResult\').style.display=\'none\'" style="padding:9px 20px;background:#0079a3;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Try again</button></div>'; return; }
+      T.last = { order: res.order, mobile: mob }; if (sb) sb.style.display = 'none'; result.innerHTML = trackHtml(res.order, mob);
+    }, 20000, 2);
+  };
+  function trackHtml(o, mob) {
+    var h = '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;"><div><div style="font-size:11px;color:#888;">Order</div><div style="font-size:16px;font-weight:900;">' + esc(o.orderId) + '</div><div style="font-size:12px;color:#666;">' + esc(o.date) + ' · ' + inr(o.total) + '</div></div><button onclick="document.getElementById(\'trackResult\').style.display=\'none\';document.getElementById(\'trackSearchBox\').style.display=\'block\'" style="padding:8px 14px;background:#f3f4f6;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Track another</button></div>';
+    (o.parts || []).forEach(function (p) {
+      var st = LABEL[p.status] || p.status; var steps = [['Order placed', true, o.date], ['Confirmed by seller', !!p.acceptedOn || ['Packed', 'Shipped', 'Delivered'].indexOf(p.status) !== -1, p.acceptedOn], ['Shipped', !!p.shippedOn || p.status === 'Delivered', p.shippedOn], ['Delivered', !!p.deliveredOn, p.deliveredOn]];
+      h += '<div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin-bottom:12px;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;"><div style="font-weight:800;">Sold by ' + esc(p.seller) + '</div><span style="background:' + (p.status === 'Cancelled' ? '#b91c1c' : COLOR[st] || '#6b7280') + ';color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;">' + esc(p.status === 'Cancelled' ? 'Cancelled' : st) + '</span></div>' +
+        '<div style="font-size:12.5px;color:#444;margin:6px 0;">' + (p.items || []).map(function (it) { return esc(it.title) + ' × ' + (it.qty || 1); }).join('<br>') + '</div>';
+      if (p.status === 'Cancelled') h += '<div style="color:#b91c1c;font-size:12.5px;">Cancelled by the seller: ' + esc(p.cancelReason) + '. Any payment is refunded within 5–7 working days.</div>';
+      else h += '<div style="display:grid;gap:6px;margin-top:8px;">' + steps.map(function (s) { return '<div style="display:flex;gap:10px;align-items:center;font-size:12.5px;' + (s[1] ? '' : 'opacity:.45;') + '"><span style="width:22px;height:22px;border-radius:50%;background:' + (s[1] ? '#16a34a' : '#e5e7eb') + ';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;">' + (s[1] ? '✓' : '') + '</span><span style="font-weight:700;">' + s[0] + '</span><span style="color:#888;">' + esc(s[2] || '') + '</span></div>'; }).join('') + '</div>';
+      if (p.awb) h += '<div style="margin-top:8px;font-size:12.5px;background:#f0fbff;border-radius:8px;padding:8px 10px;"><b>Carrier:</b> ' + esc(p.courier) + ' · <b>Tracking ID:</b> ' + esc(p.awb) + (p.trackUrl ? ' · <a href="' + esc(p.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;font-weight:700;">Track with courier →</a>' : '') + '</div>';
+      var myRet = (o.returns || []).filter(function (r) { return String(r.sellerId).toUpperCase() === String(p.sellerId).toUpperCase(); });
+      myRet.forEach(function (r) { h += '<div style="margin-top:8px;font-size:12.5px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 10px;"><b>↩️ Return ' + esc(r.returnId) + '</b> — <b>' + esc(r.status) + '</b><div>' + esc(r.reason) + '</div>' + (r.sellerNote ? '<div style="color:#4b5563;">Seller: ' + esc(r.sellerNote) + '</div>' : '') + (r.refundAmount ? '<div style="color:#15803d;">Refunded ' + inr(r.refundAmount) + ' on ' + esc(r.refundDate) + '</div>' : '') + '</div>'; });
+      var open = myRet.some(function (r) { return ['Requested', 'Approved', 'Received'].indexOf(r.status) !== -1; });
+      if ((p.status === 'Delivered' || p.status === 'Shipped') && !open) h += '<div style="margin-top:10px;"><button onclick="ibiReturnForm(\'' + esc(o.orderId) + '\',\'' + esc(p.sellerId) + '\')" style="padding:8px 14px;background:#fff;border:1.5px solid #d1d5db;border-radius:8px;font-weight:700;cursor:pointer;">↩️ Request a return</button><span style="font-size:11px;color:#888;margin-left:8px;">within 7 days of delivery</span></div>';
+      h += '<div id="retreq_' + esc(p.sellerId) + '"></div></div>';
+    });
+    return h;
+  }
+  window.ibiReturnForm = function (orderId, sellerId) {
+    var o = T.last && T.last.order; var host = $('retreq_' + sellerId); if (!o || !host) return;
+    var part = (o.parts || []).find(function (p) { return String(p.sellerId).toUpperCase() === String(sellerId).toUpperCase(); }) || { items: [] };
+    host.innerHTML = '<div style="margin-top:10px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px;display:grid;gap:8px;font-size:12.5px;">' +
+      '<div style="font-weight:800;">Request a return</div>' +
+      '<div>' + (part.items || []).map(function (it, i) { return '<label style="display:flex;gap:8px;align-items:center;"><input type="checkbox" class="retitem" data-i="' + i + '" checked> ' + esc(it.title) + ' × ' + (it.qty || 1) + '</label>'; }).join('') + '</div>' +
+      '<select id="ret_reason" class="sc-input"><option value="">— Reason —</option>' + RETURN_REASONS.map(function (r) { return '<option>' + r + '</option>'; }).join('') + '</select>' +
+      '<textarea id="ret_details" class="sc-input" rows="2" placeholder="Tell the seller what happened (optional)"></textarea>' +
+      '<div style="display:flex;gap:8px;align-items:center;"><button type="button" onclick="document.getElementById(\'ret_photo\').click()" style="padding:6px 12px;background:#fff;border:1px solid #0098c9;color:#0098c9;border-radius:6px;font-weight:700;cursor:pointer;">📷 Add photo</button><span id="ret_photo_st" style="color:#888;">Optional — helps the seller decide faster</span><input type="file" id="ret_photo" accept="image/*" multiple style="display:none" onchange="ibiReturnPhotos(this)"></div>' +
+      '<div style="display:flex;gap:8px;"><button onclick="ibiReturnSubmit(\'' + esc(orderId) + '\',\'' + esc(sellerId) + '\')" style="padding:9px 16px;background:#131921;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">Submit return request</button><button onclick="document.getElementById(\'retreq_' + esc(sellerId) + '\').innerHTML=\'\'" style="padding:9px 14px;background:#fff;border:1.5px solid #d1d5db;border-radius:8px;font-weight:700;cursor:pointer;">Cancel</button></div></div>';
+    window._ibiRetPhotos = [];
+  };
+  window.ibiReturnPhotos = function (inp) {
+    var files = Array.prototype.slice.call(inp.files || []).slice(0, 3); inp.value = ''; if (!files.length) return; var st = $('ret_photo_st');
+    st.textContent = '⏳ Uploading ' + files.length + ' photo(s)…';
+    Promise.all(files.map(ibiCompressFileToDataUrl)).then(function (urls) { return ibiHostImages(urls.filter(Boolean)); }).then(function (out) {
+      window._ibiRetPhotos = (window._ibiRetPhotos || []).concat(out.urls || []); st.textContent = '✅ ' + window._ibiRetPhotos.length + ' photo(s) attached'; st.style.color = '#15803d';
+    }).catch(function () { st.textContent = '❌ Upload failed — you can still submit without photos'; });
+  };
+  window.ibiReturnSubmit = function (orderId, sellerId) {
+    var o = T.last && T.last.order; if (!o) return;
+    var part = (o.parts || []).find(function (p) { return String(p.sellerId).toUpperCase() === String(sellerId).toUpperCase(); }) || { items: [] };
+    var chosen = []; document.querySelectorAll('.retitem:checked').forEach(function (cb) { var it = part.items[+cb.getAttribute('data-i')]; if (it) chosen.push({ title: it.title, qty: it.qty }); });
+    var reason = ($('ret_reason') || {}).value; if (!reason) { showToast('⚠️ Choose a reason'); return; } if (!chosen.length) { showToast('⚠️ Tick at least one item'); return; }
+    post({ action: 'requestReturn', orderId: orderId, mobile: T.last.mobile, sellerId: sellerId, items: JSON.stringify(chosen), reason: reason, details: (($('ret_details') || {}).value || '').trim(), photos: (window._ibiRetPhotos || []).join('|') }, function (res) {
+      if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
+      showToast('✅ Return ' + res.returnId + ' requested. The seller replies within 2 working days; we have emailed you a copy.', 'success'); trackOrder();
+    });
+  };
+  // deep link from the shipping label QR: #track-<orderId>
+  try { var mh = location.hash.match(/^#track-(.+)$/); if (mh && typeof openOrderTracking === 'function') setTimeout(function () { openOrderTracking(); var i = $('trackInput'); if (i) i.value = decodeURIComponent(mh[1]); }, 800); } catch (e) {}
+
+  // ═══════════════ REGISTRATION: EMAIL OTP ═══════════════
+  var OTP = { verifiedEmail: '', code: '' };
+  function otpRow() {
+    var em = $('sr_email'); if (!em || $('sr_otp_row')) return;
+    var row = document.createElement('div'); row.id = 'sr_otp_row'; row.style.cssText = 'display:grid;gap:6px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:10px;';
+    row.innerHTML = '<div style="font-size:11.5px;color:#374151;"><b>Verify your email</b> — we send your PIN and order alerts there.</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button type="button" id="sr_otp_send" onclick="ibiOtpSend()" style="padding:8px 12px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;">Send code</button><input id="sr_otp" inputmode="numeric" maxlength="6" placeholder="6-digit code" class="sr-in" style="width:130px;"><button type="button" onclick="ibiOtpVerify()" style="padding:8px 12px;background:#fff;border:1.5px solid #0098c9;color:#0098c9;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;">Verify</button></div><div id="sr_otp_st" style="font-size:11.5px;color:#888;">Mobile OTP by SMS is added when an SMS gateway is connected.</div>';
+    em.closest('div').parentElement.insertAdjacentElement('afterend', row);
+  }
+  var _origOpenReg = window.openSellerRegistration;
+  window.openSellerRegistration = function () { if (_origOpenReg) _origOpenReg(); setTimeout(otpRow, 50); };
+  window.ibiOtpSend = function () {
+    var email = (($('sr_email') || {}).value || '').trim().toLowerCase(); var st = $('sr_otp_st');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('⚠️ Enter a valid email first'); return; }
+    st.textContent = '⏳ Sending code to ' + email + '…';
+    post({ action: 'sendOtp', email: email }, function (res) { st.textContent = res && res.success ? '📧 Code sent to ' + email + ' — check Spam if it does not arrive in a minute.' : ('❌ ' + (res && res.message ? res.message : 'Could not send — try again')); }, 30000);
+  };
+  window.ibiOtpVerify = function () {
+    var email = (($('sr_email') || {}).value || '').trim().toLowerCase(); var code = (($('sr_otp') || {}).value || '').trim(); var st = $('sr_otp_st');
+    if (!/^\d{6}$/.test(code)) { showToast('⚠️ Enter the 6-digit code from the email'); return; }
+    post({ action: 'verifyOtp', email: email, otp: code }, function (res) {
+      if (res && res.success) { OTP.verifiedEmail = email; OTP.code = code; st.textContent = '✅ Email verified'; st.style.color = '#15803d'; }
+      else { st.textContent = '❌ ' + (res && res.message ? res.message : 'Incorrect code'); st.style.color = '#b91c1c'; }
+    }, 30000);
+  };
+  var _step = window.ibiRegStep;
+  window.ibiRegStep = function (dir) {
+    var p1 = $('sr_page_1'); var onPage1 = p1 && getComputedStyle(p1).display !== 'none';
+    if (dir > 0 && onPage1) { var email = (($('sr_email') || {}).value || '').trim().toLowerCase(); if (!OTP.verifiedEmail || OTP.verifiedEmail !== email) { otpRow(); showToast('⚠️ Verify your email first — tap Send code, then enter the code'); return; } }
+    _step(dir);
+  };
+  var _payload = window.ibiRegPayload;
+  window.ibiRegPayload = function () { var d = _payload(); d.otp = OTP.code; return d; };
+
+  // ═══════════════ PIN: forgot + change ═══════════════
+  window.showPinHelper = function () {
+    var sid = (($('sd_seller_id') || {}).value || '').trim().toUpperCase();
+    var ov = document.createElement('div'); ov.id = 'forgotPinOverlay'; ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
+    ov.innerHTML = '<div style="background:#fff;border-radius:16px;max-width:420px;width:100%;overflow:hidden;"><div style="background:#131921;padding:14px 18px;color:#fff;font-weight:800;display:flex;justify-content:space-between;">Forgot PIN<button onclick="document.getElementById(\'forgotPinOverlay\').remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;">✕</button></div>' +
+      '<div style="padding:18px;display:grid;gap:10px;font-size:13px;"><div style="color:#555;">Enter your Seller ID and the email you registered with. A new PIN is emailed to that address.</div>' +
+      '<input id="fp_sid" class="sc-input" placeholder="Seller ID, e.g. IBI788622" value="' + esc(sid) + '" style="text-transform:uppercase;"><input id="fp_email" type="email" class="sc-input" placeholder="Registered email">' +
+      '<button onclick="ibiForgotPin()" style="padding:11px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-weight:800;cursor:pointer;">Email me a new PIN</button><div id="fp_st" style="color:#888;font-size:12px;"></div></div></div>';
+    document.body.appendChild(ov);
+  };
+  window.ibiForgotPin = function () {
+    var sid = (($('fp_sid') || {}).value || '').trim().toUpperCase(), email = (($('fp_email') || {}).value || '').trim().toLowerCase(); var st = $('fp_st');
+    if (!sid || !email) { showToast('⚠️ Enter both Seller ID and email'); return; }
+    st.textContent = '⏳ Sending…';
+    post({ action: 'forgotPin', sellerId: sid, email: email }, function (res) { st.textContent = res ? (res.message || '') : 'No reply — try again'; if (res && res.success) st.style.color = '#15803d'; }, 30000);
+  };
+  window.ibiPinCard = function () {
+    return '<div style="background:#f9f9f9;border-radius:8px;padding:12px;grid-column:1/-1;"><div style="color:#888;margin-bottom:6px;font-size:11px;">Sign-in PIN</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;" class="ibi-pin-grid"><div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">Current PIN</label><input id="cp_old" type="password" class="sc-input" autocomplete="current-password"></div><div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">New PIN</label><input id="cp_new" type="password" class="sc-input" autocomplete="new-password" placeholder="6–24 characters"></div><div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">Confirm</label><input id="cp_new2" type="password" class="sc-input" autocomplete="new-password"></div><button onclick="ibiChangePin()" style="padding:10px 14px;background:#131921;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;">Change PIN</button></div>' +
+      '<style>@media(max-width:600px){.ibi-pin-grid{grid-template-columns:1fr 1fr!important}}</style></div>';
+  };
+  window.ibiChangePin = function () {
+    var s = session(); if (!s) return; var o = ($('cp_old') || {}).value || '', n = ($('cp_new') || {}).value || '', n2 = ($('cp_new2') || {}).value || '';
+    if (o !== s.pin) { showToast('⚠️ Current PIN is incorrect'); return; } if (n.length < 6) { showToast('⚠️ New PIN must be at least 6 characters'); return; } if (n !== n2) { showToast('⚠️ The two new PINs do not match'); return; }
+    post({ action: 'changePin', sellerId: s.sellerId, pin: o, newPin: n }, function (res) {
+      if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
+      s.pin = n; sessionStorage.setItem('ibi_seller', JSON.stringify(s)); ['cp_old', 'cp_new', 'cp_new2'].forEach(function (id) { if ($(id)) $(id).value = ''; }); showToast('✅ PIN changed — use the new PIN from your next sign-in', 'success');
+    });
+  };
+
+  // ═══════════════ COMPLETE YOUR SETUP + ACCOUNT HEALTH ═══════════════
+  window.ibiRenderOnboarding = function () {
+    var s = session(); if (!s) return;
+    var tabBtn = $('tab_products'); if (!tabBtn) return;
+    var bar = tabBtn.parentElement.parentElement; var host = $('sc_onboarding');
+    if (!host) { host = document.createElement('div'); host.id = 'sc_onboarding'; bar.parentElement.insertBefore(host, bar); }
+    var prodCount = parseInt(($('sd_prod_count') || {}).textContent, 10) || 0, approved = parseInt(($('sd_approved_count') || {}).textContent, 10) || 0;
+    var docsNeeded = s.gstin ? 4 : 3; var docs = [s.docPan, s.docBank, s.docAddr].filter(Boolean).length + (s.gstin && s.docGst ? 1 : 0);
+    var steps = [
+      ['Accept the Seller Agreement', !!s.agreement, 'profile', 'Open Profile → Edit and save once to record your acceptance, or read it at /seller-agreement.html'],
+      ['Business identity & address', !!(s.pan && s.addr1 && s.pincode), 'profile', 'PAN, registered address and pickup address'],
+      ['Payout bank account', !!(s.acctNo && s.ifsc), 'profile', 'Where your weekly payouts go'],
+      ['Upload KYC documents', docs >= docsNeeded, 'profile', docs + ' of ' + docsNeeded + ' uploaded'],
+      ['KYC verified by IBI', (s.kycStatus || '') === 'Verified', 'profile', 'Status: ' + (s.kycStatus || 'Pending') + (s.kycNote ? ' — ' + s.kycNote : '')],
+      ['List your first product', prodCount > 0, 'add', 'Add Product, or Bulk Upload your whole catalogue'],
+      ['First listing approved', approved > 0, 'products', 'IBI reviews listings within 24–48 hours']
+    ];
+    var done = steps.filter(function (x) { return x[1]; }).length; var pct = Math.round(done / steps.length * 100);
+    // Account health from the orders already loaded (Amazon-style: late shipment, cancellation, return rates)
+    var health = '';
+    if (O.loaded && O.orders.length) {
+      var n = O.orders.length, late = 0, cancelled = 0, returned = 0;
+      O.orders.forEach(function (o) { var st = stateOf(o); var sb = shipBy(o); var sh = o.shipment || {}; var shippedOn = parseIN(sh.shippedOn); if ((st === 'Pending' || st === 'Unshipped') && sb && new Date() > sb) late++; if (shippedOn && sb && shippedOn > sb) late++; if (st === 'Cancelled') cancelled++; if ((o.returns || []).length) returned++; });
+      var pctOf = function (x) { return Math.round(x / n * 100); };
+      var m = function (label, v, limit) { var bad = v > limit; return '<div style="flex:1;min-width:120px;background:' + (bad ? '#fff1f2' : '#f0fdf4') + ';border:1px solid ' + (bad ? '#fecdd3' : '#bbf7d0') + ';border-radius:8px;padding:8px 10px;"><div style="font-size:11px;color:#6b7280;">' + label + '</div><div style="font-size:16px;font-weight:900;color:' + (bad ? '#b91c1c' : '#15803d') + ';">' + v + '%</div><div style="font-size:10px;color:#9ca3af;">target ≤ ' + limit + '%</div></div>'; };
+      health = '<div style="margin-top:10px;"><div style="font-size:12px;font-weight:800;color:#131921;margin-bottom:6px;">Account health · last ' + n + ' order' + (n === 1 ? '' : 's') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;">' + m('Late shipment rate', pctOf(late), 4) + m('Cancellation rate', pctOf(cancelled), 2.5) + m('Return rate', pctOf(returned), 10) + '</div></div>';
+    }
+    if (done === steps.length) { host.innerHTML = health ? '<div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:12px 16px;margin-bottom:16px;">' + health + '</div>' : ''; return; }
+    host.innerHTML = '<div style="background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:14px 16px;margin-bottom:16px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;"><div style="font-size:14px;font-weight:900;color:#131921;">🚀 Complete your setup</div><div style="font-size:12px;color:#6b7280;">' + done + ' of ' + steps.length + ' done</div></div>' +
+      '<div style="height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin:8px 0 10px;"><div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#0098c9,#16a34a);"></div></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;">' + steps.map(function (x) { return '<div onclick="switchDashTab(\'' + x[2] + '\')" style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:8px;border:1px solid ' + (x[1] ? '#bbf7d0' : '#e5e7eb') + ';background:' + (x[1] ? '#f0fdf4' : '#fff') + ';cursor:pointer;"><span style="font-size:15px;">' + (x[1] ? '✅' : '○') + '</span><div><div style="font-size:12.5px;font-weight:700;color:#131921;">' + x[0] + '</div><div style="font-size:11px;color:#6b7280;">' + esc(x[3]) + '</div></div></div>'; }).join('') + '</div>' + health + '</div>';
+  };
+
+  // ═══════════════ BULK UPLOAD: IBI template + processing report ═══════════════
+  var TEMPLATE_HEADERS = ['Product Title', 'Brand', 'Category', 'Description', 'Key Features', 'Search Keywords', 'HSN', 'GST %', 'SKU', 'Colour', 'Size', 'MRP', 'Selling Price', 'Stock', 'Weight (g)', 'Package Length (cm)', 'Package Breadth (cm)', 'Package Height (cm)', 'Image URL 1', 'Image URL 2', 'Image URL 3', 'Image URL 4', 'Image URL 5'];
+  window.ibiBulkTemplate = function () {
+    _catLoadLib(function () {
+      var wb = XLSX.utils.book_new();
+      var sample = ['Men Faux Leather Formal Shoes | Lace-Up Office Shoes', 'WUGO', 'Shoes & Footwear', 'Classic lace-up formal shoes with a cushioned insole and anti-slip Airmix sole. Faux leather upper, soft lining.', 'Upper: Faux leather | Sole: Airmix, anti-slip | Closure: Lace-up | Toe: Round | Occasion: Formal, office', 'formal shoes men office lace up black derby', '640399', 5, 'WUGO-FORM-BLK-6', 'Black', '6', 999, 499, 10, 500, 29, 14, 6, 'https://drive.google.com/file/d/…/view', '', '', '', ''];
+      var sample2 = sample.slice(); sample2[8] = 'WUGO-FORM-BLK-7'; sample2[10] = '7';
+      var sample3 = sample.slice(); sample3[8] = 'WUGO-FORM-BRN-6'; sample3[9] = 'Brown'; sample3[18] = 'https://drive.google.com/file/d/…/view';
+      var ws = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADERS, sample, sample2, sample3]); ws['!cols'] = TEMPLATE_HEADERS.map(function (h) { return { wch: Math.max(14, Math.min(40, h.length + 6)) }; });
+      XLSX.utils.book_append_sheet(wb, ws, 'Products');
+      var instr = [['IBI Marketplace — Bulk Upload template'], [''], ['One row per colour + size combination. Rows with the SAME Product Title become ONE listing with a Colour × Size matrix.'], ['Required: Product Title, Selling Price, at least one Image URL, HSN, Category (or we will map it from the title).'], ['Image URLs: public links (Google Drive "anyone with link" file links work). The first image is the main photo.'], ['Key Features: separate with | (pipe). Search Keywords: words customers type, separated by spaces or commas.'], ['GST %: 0, 5, 12, 18 or 28. HSN: 4, 6 or 8 digits. Stock: units per size. Weight in grams; package size in cm.'], ['MRP must be the price printed on the product; Selling Price must not exceed MRP.'], ['Delete the sample rows before uploading. Save as .xlsx and choose it in Seller Central → Bulk Upload.']];
+      var wi = XLSX.utils.aoa_to_sheet(instr); wi['!cols'] = [{ wch: 120 }]; XLSX.utils.book_append_sheet(wb, wi, 'Instructions');
+      XLSX.writeFile(wb, 'IBI Bulk Upload Template.xlsx');
+    });
+  };
+  window.ibiBulkReport = function () {
+    var B = window._ibiBulk; if (!B || !B.listings.length) { showToast('⚠️ Nothing to report yet'); return; }
+    _catLoadLib(function () {
+      var rows = [['#', 'Product Title', 'Result', 'Product ID', 'Reason / note', 'Colours', 'Sizes', 'Variations', 'Selling price', 'MRP', 'Photos', 'Source file']];
+      B.listings.forEach(function (L, i) {
+        var result = L.status === 'ok' ? 'Submitted for review' : L.status === 'dup' ? 'Already listed — not created' : L.status === 'err' ? 'Failed' : 'Not submitted';
+        var reason = L.status === 'err' ? (L.msg || '') : L.status ? '' : (function () { var p = []; if (!(parseFloat(L.sell) > 0)) p.push('needs a selling price'); if (!L.imgs.length) p.push('no photo link'); if (!L.category) p.push('no category'); if (!L.hsn) p.push('no HSN'); return p.join('; '); })();
+        var mrp = 0; L.combos.forEach(function (c) { if (c.mrp > mrp) mrp = c.mrp; });
+        rows.push([i + 1, L.title, result, L.productId || '', reason, L.colours.join(', '), L.sizes.join(', '), L.combos.length, L.sell || '', mrp || '', L.imgs.length, L.src]);
+      });
+      var wb = XLSX.utils.book_new(); var ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols'] = [{ wch: 4 }, { wch: 60 }, { wch: 24 }, { wch: 26 }, { wch: 40 }, { wch: 20 }, { wch: 16 }, { wch: 10 }, { wch: 12 }, { wch: 8 }, { wch: 7 }, { wch: 30 }];
+      XLSX.utils.book_append_sheet(wb, ws, 'Processing report'); XLSX.writeFile(wb, 'IBI Bulk Upload Processing Report ' + new Date().toLocaleDateString('en-IN').replace(/\//g, '-') + '.xlsx');
+    });
+  };
+})();
+</script>
+
+<!-- ═══ TRACK MY ORDER (v16.0) — order ID + mobile, answered live by the backend; also hosts the return request ═══ -->
+<div id="orderTrackOverlay" onclick="closeOrderTracking(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10002;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;margin:24px auto;overflow:hidden;">
+    <div style="background:#131921;padding:14px 18px;color:#fff;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:16px;font-weight:800;">📦 Track My Order</div>
+      <button onclick="document.getElementById('orderTrackOverlay').style.display='none';document.body.style.overflow='';" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;">✕</button>
+    </div>
+    <div style="padding:18px;">
+      <div id="trackSearchBox" style="display:grid;gap:10px;">
+        <div style="font-size:13px;color:#555;">Enter the Order ID from your WhatsApp or email confirmation and the mobile number used on the order.</div>
+        <input id="trackInput" type="text" placeholder="Order ID, e.g. IBI-240903-1001" style="width:100%;padding:12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')trackOrder()">
+        <input id="trackMobile" type="tel" maxlength="10" inputmode="numeric" placeholder="Mobile number used on the order" style="width:100%;padding:12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;box-sizing:border-box;" onkeydown="if(event.key==='Enter')trackOrder()">
+        <button onclick="trackOrder()" style="padding:12px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">Track order</button>
+        <div style="font-size:11.5px;color:#888;">Delivered and something wrong? You can request a return here within 7 days of delivery.</div>
+      </div>
+      <div id="trackResult" style="display:none;"></div>
+    </div>
+  </div>
+</div>
 
 <!-- Floating Support Button -->
 <button id="supportFab" onclick="openSupportTicket()"

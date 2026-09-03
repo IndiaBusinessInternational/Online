@@ -746,7 +746,7 @@ function loadOrdersData() {
         <td style="color:#7C3AED;font-weight:700;">₹${comm.toLocaleString('en-IN')}</td>
         <td style="color:#16a34a;font-weight:700;">₹${net.toLocaleString('en-IN')}</td>
         <td style="font-size:12px;">${o.orderDate||o.timestamp||'-'}</td>
-        <td><span class="badge" style="background:${statusColors[o.status]||'#f5f5f5'};color:#333;">${o.status||'Placed'}</span></td>
+        <td><span class="badge" style="background:${statusColors[o.status]||'#f5f5f5'};color:#333;">${o.status||'Placed'}</span>${adminShipSummary(o)}</td>
         <td><span class="badge" style="background:${payoutColors[o.payoutStatus]||'#fef9c3'};color:#333;">${o.payoutStatus||'Pending'}</span></td>
         <td>
           <div style="display:flex;gap:4px;">
@@ -1358,6 +1358,42 @@ function adminSellerDetailsHtml(s){
       ${doc('PAN card',p.docPan)} &nbsp; ${doc('GST certificate',p.docGst)} &nbsp; ${doc('Bank proof',p.docBank)} &nbsp; ${doc('Address proof',p.docAddr)}</div>
     <div><b>Agreement</b> ${e(p.agreement) || '<span style="color:#b45309;">not accepted (registered before v15.0)</span>'}</div>
   </div>`;
+}
+</script>
+
+<!-- v16.0: per-seller fulfilment in the orders table + Returns desk -->
+<script>
+function adminShipSummary(o){
+  const sh = o.shipments || {}; const keys = Object.keys(sh); if (!keys.length) return '';
+  return '<div style="font-size:10px;color:#555;margin-top:4px;line-height:1.5;">' + keys.map(k => { const s = sh[k] || {}; return '<b>' + String(k).toUpperCase() + '</b> ' + (s.status || 'Placed') + (s.awb ? ' · ' + (s.courier || '') + ' ' + s.awb : '') + (s.cancelReason ? ' · ' + s.cancelReason : ''); }).join('<br>') + '</div>';
+}
+const _loadOrdersData_v15 = loadOrdersData;
+loadOrdersData = function () { _loadOrdersData_v15(); loadReturnsData(); };
+function loadReturnsData() {
+  let host = document.getElementById('returnsDesk');
+  if (!host) { const tb = document.getElementById('ordersTbody'); if (!tb) return; let card = tb.closest('.card') || tb.closest('table').parentElement; host = document.createElement('div'); host.id = 'returnsDesk'; host.style.marginTop = '18px'; card.insertAdjacentElement('afterend', host); }
+  host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">↩️ Returns desk</div><div style="color:var(--muted);font-size:12px;">Loading…</div>';
+  sheetFetch({ action:'adminGetReturns', ceoToken: ceoToken() }, res => {
+    const rows = (res && res.success) ? (res.returns || []) : [];
+    const e = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    if (!rows.length) { host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">↩️ Returns desk</div><div style="color:var(--muted);font-size:12px;">No return requests yet.</div>'; return; }
+    host.innerHTML = '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">↩️ Returns desk <span style="font-weight:500;color:var(--muted);font-size:12px;">' + rows.length + ' request(s) · refund only after the seller marks the item Received</span></div>' +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px;"><thead><tr style="background:#f3f4f6;text-align:left;"><th style="padding:6px 8px;">Return</th><th style="padding:6px 8px;">Order · Seller</th><th style="padding:6px 8px;">Customer</th><th style="padding:6px 8px;">Items · reason</th><th style="padding:6px 8px;">Status</th><th style="padding:6px 8px;">Refund</th><th style="padding:6px 8px;">Actions</th></tr></thead><tbody>' +
+      rows.map(r => { const col = r.status === 'Requested' ? '#b45309' : (r.status === 'Approved' || r.status === 'Received') ? '#1d4ed8' : r.status === 'Refunded' ? '#15803d' : '#6b7280';
+        return '<tr style="border-top:1px solid #eee;vertical-align:top;"><td style="padding:6px 8px;font-family:monospace;font-weight:700;">' + e(r.returnId) + '<br><span style="font-weight:400;color:var(--muted);">' + e(r.timestamp) + '</span></td>' +
+          '<td style="padding:6px 8px;">' + e(r.orderId) + '<br><span style="color:var(--muted);">' + e(r.sellerId) + '</span></td><td style="padding:6px 8px;">+91' + e(r.mobile) + '</td>' +
+          '<td style="padding:6px 8px;max-width:320px;">' + (r.items || []).map(it => e(it.title) + ' × ' + (it.qty || 1)).join('<br>') + '<br><b>' + e(r.reason) + '</b>' + (r.details ? ' — ' + e(r.details) : '') + (r.photos && r.photos.length ? '<br>' + r.photos.map((u, i) => '<a href="' + e(u) + '" target="_blank" rel="noopener" style="color:#007185;">photo ' + (i + 1) + '</a>').join(' · ') : '') + (r.sellerNote ? '<br><span style="color:#555;">Seller: ' + e(r.sellerNote) + '</span>' : '') + '</td>' +
+          '<td style="padding:6px 8px;color:' + col + ';font-weight:800;">' + e(r.status) + '</td><td style="padding:6px 8px;">' + (r.refundAmount ? '₹' + r.refundAmount + '<br><span style="color:var(--muted);">' + e(r.refundDate) + '</span>' : '—') + '</td>' +
+          '<td style="padding:6px 8px;white-space:nowrap;">' + (r.status === 'Received' || r.status === 'Approved' ? '<button class="btn btn-approve" onclick="adminRefundReturn(\'' + e(r.returnId) + '\')">💸 Refund</button> ' : '') + (r.status !== 'Closed' && r.status !== 'Refunded' ? '<button class="btn btn-edit" onclick="adminCloseReturn(\'' + e(r.returnId) + '\')">Close</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  });
+}
+function adminRefundReturn(returnId) {
+  const amt = prompt('Refund amount (₹) paid to the customer for ' + returnId + ':'); if (!amt) return; const n = parseFloat(amt); if (!(n > 0)) { toast('❌ Enter a valid amount'); return; }
+  sheetFetch({ action:'adminUpdateReturn', ceoToken: ceoToken(), returnId, status:'Refunded', refundAmount: n, refundDate: new Date().toLocaleDateString('en-IN') }, res => { if (res && res.success) { toast('✅ Refund recorded — customer and seller emailed'); loadReturnsData(); } else toast('❌ ' + (res?.message || 'Failed')); });
+}
+function adminCloseReturn(returnId) {
+  const note = prompt('Close ' + returnId + ' — note for the record (optional):') ; if (note === null) return;
+  sheetFetch({ action:'adminUpdateReturn', ceoToken: ceoToken(), returnId, status:'Closed', note: note || '' }, res => { if (res && res.success) { toast('✅ Closed'); loadReturnsData(); } else toast('❌ ' + (res?.message || 'Failed')); });
 }
 </script>
 </body>
