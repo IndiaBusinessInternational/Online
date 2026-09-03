@@ -986,12 +986,15 @@ function saveEditModal() {
       sellerId:_editingId,
       status: document.getElementById('em_sel_status').value,
       pin:    document.getElementById('em_sel_pin').value,
-      rejectReason: document.getElementById('em_sel_reason').value
+      rejectReason: document.getElementById('em_sel_reason').value,
+      kycStatus: document.getElementById('em_sel_kyc').value,
+      kycNote:   document.getElementById('em_sel_kycnote').value
     };
     sheetFetch(data, res => {
       if (res && res.success) {
         const s = _sellers.find(x=>x.sellerId===_editingId);
         if(s) Object.assign(s, data);
+        if(s){ s.profile = s.profile || {}; s.profile.kycStatus = data.kycStatus; s.profile.kycNote = data.kycNote; }
         toast('✅ Seller updated!');
         closeEditModal(); renderSellers();
       } else { toast('❌ ' + (res?.message||'Update failed')); }
@@ -1030,7 +1033,7 @@ function renderSellerRows(list) {
       <td style="font-size:12px;"><a href="tel:+91${s.mobile||''}" style="color:#007185;">+91${s.mobile||''}</a></td>
       <td style="font-size:12px;">${s.category||'-'}</td>
       <td style="font-size:12px;">${s.city||'-'}</td>
-      <td><span class="badge badge-${(s.status||'pending').toLowerCase()}">${s.status||'Pending'}</span></td>
+      <td><span class="badge badge-${(s.status||'pending').toLowerCase()}">${s.status||'Pending'}</span><div style="font-size:10px;font-weight:700;margin-top:3px;color:${(s.profile&&s.profile.kycStatus)==='Verified'?'#15803d':(s.profile&&s.profile.kycStatus)==='Rejected'?'#b91c1c':'#b45309'};">KYC ${(s.profile&&s.profile.kycStatus)||'—'}</div></td>
       <td style="font-size:12px;font-family:monospace;">${s.pin||'-'}</td>
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap;">
@@ -1052,6 +1055,7 @@ function openEditSellerModal(sellerId) {
       <strong>${s.bizName}</strong> (${s.sellerId})<br>
       <span style="color:var(--muted);">${s.email} · +91${s.mobile}</span>
     </div>
+    ${adminSellerDetailsHtml(s)}
     <div><label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Status</label>
     <select id="em_sel_status" class="filter-input" style="width:100%;">
       <option ${s.status==='Approved'?'selected':''}>Approved</option>
@@ -1062,6 +1066,14 @@ function openEditSellerModal(sellerId) {
     <input type="text" id="em_sel_pin" class="filter-input" style="width:100%;" value="${s.pin||''}"></div>
     <div><label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Reject Reason</label>
     <input type="text" id="em_sel_reason" class="filter-input" style="width:100%;" value="${s.rejectReason||''}"></div>
+    <div><label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">KYC Status</label>
+    <select id="em_sel_kyc" class="filter-input" style="width:100%;">
+      <option ${!(s.profile&&s.profile.kycStatus)||(s.profile.kycStatus==='Pending')?'selected':''}>Pending</option>
+      <option ${(s.profile&&s.profile.kycStatus)==='Verified'?'selected':''}>Verified</option>
+      <option ${(s.profile&&s.profile.kycStatus)==='Rejected'?'selected':''}>Rejected</option>
+    </select></div>
+    <div><label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">KYC Note (the seller sees this)</label>
+    <input type="text" id="em_sel_kycnote" class="filter-input" style="width:100%;" value="${(s.profile&&s.profile.kycNote)||''}"></div>
   `;
   document.getElementById('editModal').style.display='flex';
 }
@@ -1082,6 +1094,7 @@ function loadApprovals() {
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">${s.sellerId} · ${s.email} · +91${s.mobile}</div>
       <div style="font-size:12px;margin-bottom:8px;"><strong>Category:</strong> ${s.category} &nbsp;|&nbsp; <strong>City:</strong> ${s.city}</div>
       <div style="font-size:12px;color:#555;margin-bottom:10px;">${s.about||''}</div>
+      ${adminSellerDetailsHtml(s)}
       <div style="display:flex;gap:8px;">
         <button class="btn btn-approve" style="flex:1;padding:9px;" onclick="quickApprove('seller','${s.sellerId}')">✅ Approve</button>
         <button class="btn btn-reject"  style="flex:1;padding:9px;" onclick="quickReject('seller','${s.sellerId}')">❌ Reject</button>
@@ -1326,6 +1339,26 @@ window.addEventListener('DOMContentLoaded', function() {
     setTimeout(loadAll, 100);
   }
 });
+</script>
+
+<!-- v15.0: seller onboarding details (PAN, address, bank, KYC documents, agreement) for the Sellers table modal and Approvals -->
+<script>
+function adminSellerDetailsHtml(s){
+  const p = s.profile || {};
+  const e = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const addr = [p.addr1, p.area, s.city, p.state, p.pincode].filter(Boolean).join(', ');
+  const doc = (l,u) => u ? `<a href="${e(u)}" target="_blank" rel="noopener" style="color:#007185;font-weight:700;">📄 ${l}</a>` : `<span style="color:#b45309;">○ ${l}</span>`;
+  const kc = p.kycStatus==='Verified' ? '#15803d' : p.kycStatus==='Rejected' ? '#b91c1c' : '#b45309';
+  return `<div style="background:#f9fafb;border-radius:8px;padding:12px;font-size:12px;line-height:1.7;margin-top:8px;">
+    <div><b>PAN</b> ${e(p.pan)||'—'} &nbsp;·&nbsp; <b>GSTIN</b> ${e(s.gstin)||'—'} &nbsp;·&nbsp; <b>Type</b> ${e(p.bizType)||'—'}</div>
+    <div><b>Address</b> ${e(addr)||'—'}</div>
+    <div><b>Pickup</b> ${e(p.pickup)||'—'}</div>
+    <div><b>Bank</b> ${p.acctNo ? `${e(p.acctName)} · ${e(p.acctNo)} · ${e(p.ifsc)} · ${e(p.bank)}` : '—'}</div>
+    <div><b>KYC</b> <span style="color:${kc};font-weight:800;">${e(p.kycStatus||'Pending')}</span> ${p.kycNote ? '— '+e(p.kycNote) : ''}<br>
+      ${doc('PAN card',p.docPan)} &nbsp; ${doc('GST certificate',p.docGst)} &nbsp; ${doc('Bank proof',p.docBank)} &nbsp; ${doc('Address proof',p.docAddr)}</div>
+    <div><b>Agreement</b> ${e(p.agreement) || '<span style="color:#b45309;">not accepted (registered before v15.0)</span>'}</div>
+  </div>`;
+}
 </script>
 </body>
 </html>

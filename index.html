@@ -2473,6 +2473,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
         <li><a href="#" onclick="openSellOnIBI()">Sell on IBI</a></li>
         <li><a href="#" onclick="openSellerRegistration()">Become a Seller</a></li>
         <li><a href="#" onclick="openSellerDashboard()">Seller Central Login</a></li>
+        <li><a href="/seller-agreement.html">Seller Agreement &amp; Policies</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -2617,9 +2618,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v14.0';
+window.IBI_VERSION      = 'v15.0';
 window.IBI_VERSION_DATE = '3 Sep 2026';
-window.IBI_VERSION_NOTE = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
+window.IBI_VERSION_NOTE = 'v15.0 — 🪪 SELLER ONBOARDING NOW MEETS THE MARKETPLACE STANDARD: AGREEMENT, BANK, ADDRESS AND KYC. Becoming a seller is a four-step form, the same sequence Amazon, Flipkart and Meesho use. Step one takes the business details with PAN made mandatory and GSTIN optional for the unregistered; step two the registered address with state and pincode, and the pickup address; step three the payout bank account, typed twice and checked against the IFSC format; step four the KYC documents — PAN card, GST certificate, cancelled cheque and address proof — uploaded to a private folder that is never publicly shared, and a tick to accept the new Seller Agreement & Policies, a public page linked from the footer that sets out the 5% commission, weekly payouts, shipping and return terms, prohibited items, and the grievance officer the E-Commerce Rules require. The form cross-checks the PAN against the PAN embedded in the GSTIN and the GSTIN\'s state code against the state chosen, so a mistyped number is caught before it reaches us. The Profile tab now shows all of this — the bank account masked to its last four digits, each document\'s status, and the KYC verdict — and lets the seller correct it; changing the bank account or a document puts KYC back to Pending for re-verification. The admin panel shows every detail, the documents, and a KYC status the team sets to Verified or Rejected with a note the seller sees. Backend: eighteen new columns on the Sellers sheet, added automatically, and a profile-update call that needs the seller\'s own PIN, so a seller can finally save their profile without a CEO token.';
+window.IBI_VERSION_NOTE_PREV04 = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
 window.IBI_VERSION_NOTE_PREV03 = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
 window.IBI_VERSION_NOTE_PREV02 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
 window.IBI_VERSION_NOTE_PREV01 = 'v13.1 — 🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.';
@@ -3088,91 +3090,7 @@ function closeSellerRegistration() {
   document.body.style.overflow = '';
 }
 
-function submitSellerRegistration() {
-  const fields = {
-    sr_biz:'Business Name', sr_owner:'Owner Name', sr_mobile:'Mobile Number',
-    sr_email:'Email Address', sr_gstin:'GSTIN / PAN', sr_cat:'Product Category',
-    sr_city:'City / Location', sr_about:'About Your Business'
-  };
-  for (const [id, label] of Object.entries(fields)) {
-    const el = document.getElementById(id);
-    if (el && !el.value.trim()) { showToast('⚠️ Please fill: ' + label); return; }
-  }
-  if (!/^\d{10}$/.test(document.getElementById('sr_mobile').value.trim())) {
-    showToast('⚠️ Enter valid 10-digit mobile'); return;
-  }
-
-  const data = {
-    action:    'register',
-    bizName:   document.getElementById('sr_biz').value.trim(),
-    ownerName: document.getElementById('sr_owner').value.trim(),
-    mobile:    document.getElementById('sr_mobile').value.trim(),
-    email:     document.getElementById('sr_email').value.trim(),
-    gstin:     document.getElementById('sr_gstin').value.trim(),
-    category:  document.getElementById('sr_cat').value.trim(),
-    city:      document.getElementById('sr_city').value.trim(),
-    about:     document.getElementById('sr_about').value.trim()
-  };
-
-  // Show loading state
-  const btn = document.querySelector('#sellerRegOverlay button[onclick="submitSellerRegistration()"]');
-  const origText = btn ? btn.textContent : '';
-  if (btn) { btn.textContent = '⏳ Submitting...'; btn.disabled = true; }
-
-  // Use GET with URL params — avoids CORS issues with Google Apps Script
-  const params = new URLSearchParams({
-    action:    'register',
-    bizName:   data.bizName,
-    ownerName: data.ownerName,
-    mobile:    data.mobile,
-    email:     data.email,
-    gstin:     data.gstin,
-    category:  data.category,
-    city:      data.city,
-    about:     data.about
-  });
-
-  ibi_fetch(Object.fromEntries(params),
-    function(res) {
-      if (btn) { btn.textContent = origText; btn.disabled = false; }
-    if (res.alreadyExists) {
-      showToast('⚠️ Email already registered. Status: ' + res.status);
-      return;
-    }
-    if (res.success) {
-      closeSellerRegistration();
-      // Show success modal
-      showSellerRegSuccess(res.sellerId, data.bizName);
-      // Also send WhatsApp notification to IBI
-      const msg = encodeURIComponent(
-        '🏪 *NEW SELLER REGISTRATION — IBI Marketplace*\n' +
-        '━━━━━━━━━━━━━━━━━\n' +
-        '*Seller ID:* ' + res.sellerId + '\n' +
-        '*Business:* ' + data.bizName + '\n' +
-        '*Owner:* ' + data.ownerName + '\n' +
-        '*Mobile:* +91' + data.mobile + '\n' +
-        '*Email:* ' + data.email + '\n' +
-        '*Category:* ' + data.category + '\n' +
-        '*City:* ' + data.city + '\n' +
-        '━━━━━━━━━━━━━━━━━\n' +
-        '📋 Please review in Google Sheet and Approve / Reject.'
-      );
-      setTimeout(() => window.open('https://wa.me/918939414799?text=' + msg, '_blank'), 500);
-    } else {
-      showToast('❌ ' + (res.message || 'Registration failed. Try again.'));
-    }
-  })
-  .catch(err => {
-    if (btn) { btn.textContent = origText; btn.disabled = false; }
-    console.error(err);
-    // Fallback: WhatsApp only
-    closeSellerRegistration();
-    showToast('✅ Sent via WhatsApp! IBI will contact you soon.', 'success');
-    const msg = encodeURIComponent('🏪 *NEW SELLER REG*\nBiz: '+data.bizName+'\nOwner: '+data.ownerName+'\nMobile: +91'+data.mobile+'\nEmail: '+data.email);
-    window.open('https://wa.me/918939414799?text=' + msg, '_blank');
-  }
-  );
-}
+// submitSellerRegistration() — v15.0: defined in the SELLER ONBOARDING block near the end of the file.
 
 function showSellerRegSuccess(sellerId, bizName) {
   const d = document.createElement('div');
@@ -3777,7 +3695,7 @@ function handleSellerLoginResponse(res, sellerId, pin) {
     return;
   }
   if (res.success && res.status === 'Approved') {
-    sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId: res.sellerId||sellerId, pin, bizName: res.bizName, ownerName: res.ownerName, category: res.category, city: res.city, approvedOn: res.approvedOn }));
+    sessionStorage.setItem('ibi_seller', JSON.stringify(Object.assign({}, res, { sellerId: res.sellerId||sellerId, pin: pin })));   // v15.0: PAN/address/bank/KYC ride along for the Profile tab
     document.getElementById('scSellerName').textContent = res.bizName || sellerId;
     renderSellerDashboard(res);
     return;
@@ -3843,6 +3761,7 @@ function renderSellerDashboard(res) {
           <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;font-size:11px;">Category</div><div style="font-weight:700;">${sessData.category||res.category||'—'}</div></div>
           <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;font-size:11px;">City / Location</div><div style="font-weight:700;">${sessData.city||res.city||'—'}</div></div>
           <div style="background:#f9f9f9;border-radius:8px;padding:12px;"><div style="color:#888;margin-bottom:3px;font-size:11px;">Member Since</div><div style="font-weight:700;">${_ibiMemberSince(res.approvedOn)}</div></div>
+          ${ibiProfileExtraCards(res)}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <button onclick="showProfileEditMode()" style="padding:10px;background:#0079a3;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Edit Profile</button>
@@ -3878,6 +3797,7 @@ function renderSellerDashboard(res) {
             <label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">WhatsApp Number</label>
             <input id="prof_phone" type="tel" value="${sessData.phone||''}" placeholder="10-digit mobile" class="sc-input">
           </div>
+          ${ibiProfileExtraEdit(res)}
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <button onclick="saveSellerProfile()" style="padding:10px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">💾 Save Changes</button>
@@ -7546,7 +7466,7 @@ function renderFAQ() {
     ['How do I list my products?', 'After registration, use the Seller Dashboard to submit product details. Our team will create professional listings within 48 hours.'],
     ['Can I upload my whole catalogue at once?', 'Yes. Seller Central has a Bulk Upload tab: drop in the product sheets you already use on Meesho, Flipkart or Amazon (.xlsx / .xls / .csv) and every product becomes a listing with its colours, sizes and photos. Set your selling prices, upload, and edit anything later from My Products.'],
     ['How and when do I get paid?', 'Payments are processed weekly via NEFT/IMPS to your registered bank account after order delivery confirmation.'],
-    ['What documents do I need?', 'You need a GSTIN or PAN, business address, bank account details, and product photos/descriptions.'],
+    ['What documents do I need?', 'PAN (mandatory), GSTIN if you are GST-registered, your registered and pickup address, a bank account for payouts, and KYC uploads: PAN card, GST certificate (if registered), a cancelled cheque or passbook page, and an address proof. You also accept the IBI Seller Agreement & Policies at registration.'],
     ['Can I sell from anywhere in India?', 'Yes! Any registered Indian business or individual can sell on IBI Marketplace from any city or town.'],
   ];
   const el = document.getElementById('faqList');
@@ -10288,64 +10208,8 @@ function showProfileEditMode() {
   document.getElementById('profileEditMode').style.display = 'block';
 }
 
-function saveSellerProfile() {
-  const session = JSON.parse(sessionStorage.getItem('ibi_seller') || '{}');
-  const bizName = document.getElementById('prof_bizname').value.trim();
-  const category = document.getElementById('prof_category').value;
-  const city     = document.getElementById('prof_city').value.trim();
-  const phone    = document.getElementById('prof_phone').value.trim();
+// saveSellerProfile() — v15.0: defined in the SELLER ONBOARDING block near the end of the file (updateSellerProfile, sellerId+pin).
 
-  if (!bizName) { showToast('⚠️ Business name required'); return; }
-
-  // Update session
-  session.bizName  = bizName;
-  session.category = category;
-  session.city     = city;
-  session.phone    = phone;
-  sessionStorage.setItem('ibi_seller', JSON.stringify(session));
-
-  // Update display name in header
-  const nameEl = document.getElementById('scSellerName');
-  if (nameEl) nameEl.textContent = bizName;
-  const sdNameEl = document.getElementById('sd_seller_name');
-  if (sdNameEl) sdNameEl.textContent = bizName;
-
-  // Save to Google Sheet
-  ibi_fetch_simple({
-    action:    'adminEditSeller',
-    ceoToken:  ceoToken(),
-    sellerId:  session.sellerId,
-    bizName, category, city
-  }, function(res) {
-    if (res && res.success) showToast('✅ Profile updated successfully!', 'success');
-    else showToast('✅ Profile saved locally!', 'success');
-  }, 8000);
-
-  // Switch back to view mode and update displayed values
-  var viewMode = document.getElementById('profileViewMode');
-  var editMode = document.getElementById('profileEditMode');
-  if (editMode) editMode.style.display = 'none';
-  if (viewMode) {
-    viewMode.style.display = 'block';
-    // Update the displayed values in view mode
-    var cells = viewMode.querySelectorAll ? viewMode.querySelectorAll('div[style*="font-weight:700"]') : [];
-    // Simpler: re-render the view mode cards
-    var cards = viewMode.querySelector ? viewMode.querySelector('div[style*="grid-template-columns"]') : null;
-    if (cards) {
-      var items = cards.children;
-      if (items[0]) items[0].querySelector && (items[0].querySelectorAll('div')[1] || {}).textContent && (items[0].querySelectorAll('div')[1].textContent = bizName);
-      if (items[1]) items[1].querySelector && (items[1].querySelectorAll('div')[1] || {}).textContent !== undefined && (items[1].querySelectorAll('div')[1].textContent = category || '—');
-      if (items[2]) items[2].querySelector && (items[2].querySelectorAll('div')[1] || {}).textContent !== undefined && (items[2].querySelectorAll('div')[1].textContent = city || '—');
-    }
-  }
-  showToast('✅ Profile saved!', 'success');
-}
-
-
-
-// ══════════════════════════════════════════════════════════════════
-// SELLER ORDER DASHBOARD
-// ══════════════════════════════════════════════════════════════════
 function loadSellerOrders() {
   var session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
   if (!session) return;
@@ -14120,54 +13984,100 @@ init();
       <div style="flex:1;text-align:center;padding:12px 8px;font-size:11px;color:#555;border-right:1px solid #eee;">🚀<br><strong>Go Live in 48hrs</strong></div>
       <div style="flex:1;text-align:center;padding:12px 8px;font-size:11px;color:#555;">💰<br><strong>Best Commission</strong></div>
     </div>
-    <!-- Form -->
+    <!-- Form — v15.0: 4-step onboarding (Business → Address → Bank → KYC & Agreement), the
+         same sequence Amazon / Flipkart / Meesho use. Fields are validated per step. -->
+    <style>
+      .sr-in { width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;font-family:inherit; }
+      .sr-lb { font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px; }
+      .sr-step { flex:1;text-align:center;padding:6px 2px;border-bottom:3px solid #e5e7eb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+      .sr-step-on { color:#0098c9;border-bottom-color:#0098c9; }
+      .sr-step-done { color:#16a34a;border-bottom-color:#16a34a; }
+      .sr-doc { display:flex;align-items:center;gap:8px;border:1.5px dashed #d1d5db;border-radius:8px;padding:8px 10px;font-size:12.5px; }
+      .sr-doc button { padding:6px 10px;background:#f0fbff;border:1px solid #0098c9;color:#0098c9;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap; }
+      .sr-doc .st { color:#888;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+      .sr-2 { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+      @media (max-width:430px){ .sr-2 { grid-template-columns:1fr; } }
+    </style>
     <div style="padding:20px;display:grid;gap:12px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Business Name *</label>
-          <input id="sr_biz" type="text" placeholder="Your business name" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+      <div id="sr_steps" style="display:flex;gap:4px;font-size:11px;font-weight:700;color:#9ca3af;">
+        <span class="sr-step sr-step-on">1 Business</span><span class="sr-step">2 Address</span><span class="sr-step">3 Bank</span><span class="sr-step">4 KYC &amp; Agreement</span>
+      </div>
+
+      <!-- Step 1: Business -->
+      <div id="sr_page_1" class="sr-page" style="display:grid;gap:12px;">
+        <div class="sr-2">
+          <div><label class="sr-lb">Business Name *</label><input id="sr_biz" type="text" placeholder="Legal / trade name" class="sr-in" /></div>
+          <div><label class="sr-lb">Owner Name *</label><input id="sr_owner" type="text" placeholder="Your full name" class="sr-in" /></div>
         </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Owner Name *</label>
-          <input id="sr_owner" type="text" placeholder="Your full name" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
+        <div class="sr-2">
+          <div><label class="sr-lb">Mobile Number *</label><input id="sr_mobile" type="tel" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" class="sr-in" /></div>
+          <div><label class="sr-lb">Email Address *</label><input id="sr_email" type="email" placeholder="business@email.com" class="sr-in" /></div>
+        </div>
+        <div class="sr-2">
+          <div><label class="sr-lb">Business Type *</label>
+            <select id="sr_biztype" class="sr-in"><option value="">-- Select --</option><option>Individual</option><option>Sole Proprietorship</option><option>Partnership / LLP</option><option>Private Limited</option><option>Other</option></select></div>
+          <div><label class="sr-lb">Product Category *</label>
+            <select id="sr_cat" class="sr-in">
+              <option value="">-- Select Category --</option>
+              <option>Electronics</option><option>Clothing & Fashion</option><option>Home & Kitchen</option>
+              <option>Grocery & Food</option><option>Beauty & Health</option><option>Books & Media</option>
+              <option>Jewellery</option><option>Sports & Fitness</option><option>Other</option>
+            </select></div>
+        </div>
+        <div class="sr-2">
+          <div><label class="sr-lb">PAN *</label><input id="sr_pan" type="text" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase;" class="sr-in" /></div>
+          <div><label class="sr-lb">GSTIN <span style="font-weight:400;color:#888;">(if registered)</span></label><input id="sr_gstin" type="text" placeholder="15-character GSTIN" maxlength="15" style="text-transform:uppercase;" class="sr-in" /></div>
+        </div>
+        <div><label class="sr-lb">About Your Business *</label><textarea id="sr_about" rows="2" placeholder="What you make or sell, and since when" class="sr-in" style="resize:vertical;"></textarea></div>
+      </div>
+
+      <!-- Step 2: Address -->
+      <div id="sr_page_2" class="sr-page" style="display:none;gap:12px;">
+        <div style="font-size:12px;color:#666;">Registered business address — printed on invoices and used for GST place of supply.</div>
+        <div><label class="sr-lb">Building / Street *</label><input id="sr_addr1" type="text" placeholder="Door no., building, street" class="sr-in" /></div>
+        <div class="sr-2">
+          <div><label class="sr-lb">Area / Locality *</label><input id="sr_area" type="text" placeholder="Area, landmark" class="sr-in" /></div>
+          <div><label class="sr-lb">City *</label><input id="sr_city" type="text" placeholder="City / Town" class="sr-in" /></div>
+        </div>
+        <div class="sr-2">
+          <div><label class="sr-lb">State *</label><select id="sr_state" class="sr-in"><option value="">-- Select State --</option></select></div>
+          <div><label class="sr-lb">Pincode *</label><input id="sr_pincode" type="text" placeholder="6 digits" maxlength="6" inputmode="numeric" class="sr-in" /></div>
+        </div>
+        <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer;"><input id="sr_pickup_same" type="checkbox" checked onchange="document.getElementById('sr_pickup_wrap').style.display=this.checked?'none':'block'"> Pickup address is the same as above</label>
+        <div id="sr_pickup_wrap" style="display:none;"><label class="sr-lb">Pickup Address *</label><textarea id="sr_pickup" rows="2" placeholder="Full pickup address with pincode" class="sr-in" style="resize:vertical;"></textarea></div>
+      </div>
+
+      <!-- Step 3: Bank -->
+      <div id="sr_page_3" class="sr-page" style="display:none;gap:12px;">
+        <div style="font-size:12px;color:#666;">Weekly payouts go to this account by NEFT/IMPS. It must be in the business or owner's name and match the cancelled cheque you upload next.</div>
+        <div><label class="sr-lb">Account Holder Name *</label><input id="sr_acct_name" type="text" placeholder="As printed by the bank" class="sr-in" /></div>
+        <div class="sr-2">
+          <div><label class="sr-lb">Account Number *</label><input id="sr_acct_no" type="text" placeholder="9–18 digits" inputmode="numeric" autocomplete="off" class="sr-in" /></div>
+          <div><label class="sr-lb">Re-enter Account Number *</label><input id="sr_acct_no2" type="text" placeholder="Type it again" inputmode="numeric" autocomplete="off" class="sr-in" /></div>
+        </div>
+        <div class="sr-2">
+          <div><label class="sr-lb">IFSC *</label><input id="sr_ifsc" type="text" placeholder="e.g. SBIN0001234" maxlength="11" style="text-transform:uppercase;" class="sr-in" /></div>
+          <div><label class="sr-lb">Bank Name *</label><input id="sr_bank" type="text" placeholder="e.g. State Bank of India" class="sr-in" /></div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Mobile Number *</label>
-          <input id="sr_mobile" type="tel" placeholder="10-digit mobile" maxlength="10" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-        </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Email Address *</label>
-          <input id="sr_email" type="email" placeholder="business@email.com" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-        </div>
+
+      <!-- Step 4: KYC documents + agreement -->
+      <div id="sr_page_4" class="sr-page" style="display:none;gap:10px;">
+        <div style="font-size:12px;color:#666;">Upload a clear photo or PDF of each document (max 6 MB). Documents are stored privately and seen only by IBI's verification team.</div>
+        <div class="sr-doc"><button type="button" onclick="document.getElementById('sr_doc_pan').click()">📄 PAN card *</button><span class="st" id="sr_doc_pan_st">Not uploaded</span><input type="file" id="sr_doc_pan" accept="image/*,.pdf" style="display:none" onchange="ibiKycPick(this,'docPan','sr_doc_pan_st')"></div>
+        <div class="sr-doc"><button type="button" onclick="document.getElementById('sr_doc_gst').click()">📄 GST certificate</button><span class="st" id="sr_doc_gst_st">Required if GSTIN given</span><input type="file" id="sr_doc_gst" accept="image/*,.pdf" style="display:none" onchange="ibiKycPick(this,'docGst','sr_doc_gst_st')"></div>
+        <div class="sr-doc"><button type="button" onclick="document.getElementById('sr_doc_bank').click()">📄 Cancelled cheque / passbook *</button><span class="st" id="sr_doc_bank_st">Not uploaded</span><input type="file" id="sr_doc_bank" accept="image/*,.pdf" style="display:none" onchange="ibiKycPick(this,'docBank','sr_doc_bank_st')"></div>
+        <div class="sr-doc"><button type="button" onclick="document.getElementById('sr_doc_addr').click()">📄 Address proof *</button><span class="st" id="sr_doc_addr_st">Not uploaded</span><input type="file" id="sr_doc_addr" accept="image/*,.pdf" style="display:none" onchange="ibiKycPick(this,'docAddr','sr_doc_addr_st')"></div>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;cursor:pointer;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:10px;margin-top:4px;">
+          <input id="sr_agree" type="checkbox" style="margin-top:3px;">
+          <span>I have read and agree to the <a href="/seller-agreement.html" target="_blank" rel="noopener" style="color:#0098c9;font-weight:700;">IBI Seller Agreement &amp; Policies (v1.0)</a>, including the 5% commission, weekly payouts, shipping and return terms, and I confirm the details and documents given are true and belong to my business.</span>
+        </label>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">GSTIN / PAN *</label>
-          <input id="sr_gstin" type="text" placeholder="GSTIN or PAN number" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-        </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">City / Location *</label>
-          <input id="sr_city" type="text" placeholder="City, State" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;" />
-        </div>
+
+      <div style="display:flex;gap:10px;">
+        <button id="sr_back" type="button" onclick="ibiRegStep(-1)" style="display:none;flex:1;padding:13px;background:#f0f0f0;color:#333;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">← Back</button>
+        <button id="sr_next" type="button" onclick="ibiRegStep(1)" style="flex:2;padding:13px;background:linear-gradient(135deg,#0098c9,#0079a3);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;">Next →</button>
       </div>
-      <div>
-        <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">Product Category *</label>
-        <select id="sr_cat" style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;">
-          <option value="">-- Select Category --</option>
-          <option>Electronics</option><option>Clothing & Fashion</option><option>Home & Kitchen</option>
-          <option>Grocery & Food</option><option>Beauty & Health</option><option>Books & Media</option>
-          <option>Jewellery</option><option>Sports & Fitness</option><option>Other</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:11px;font-weight:700;color:#555;display:block;margin-bottom:4px;">About Your Business *</label>
-        <textarea id="sr_about" rows="3" placeholder="Tell us about your products and business..." style="width:100%;padding:9px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
-      </div>
-      <button onclick="submitSellerRegistration()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0098c9,#0079a3);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;">
-        📲 Submit via WhatsApp — Get Approved in 24hrs
-      </button>
       <p style="text-align:center;font-size:11px;color:#888;margin:0;">Already a seller? <a href="#" onclick="closeSellerRegistration();openSellerDashboard();return false;" style="color:#0098c9;font-weight:700;">Login to Dashboard →</a></p>
     </div>
   </div>
@@ -16092,6 +16002,276 @@ window.addEventListener('appinstalled', function() {
     </div>
   </div>
 </div>
+
+<!-- ═══ SELLER ONBOARDING v15.0 — 4-step registration wizard, KYC document upload,
+     bank + address in Profile, Seller Agreement acceptance. Backend: registerSeller stores
+     cols 15–32 of the Sellers sheet; updateSellerProfile (POST, sellerId+pin) edits them. ═══ -->
+<script>
+(function () {
+  'use strict';
+  // GST state codes — the first two GSTIN digits must match the chosen state.
+  var STATES = [['01','Jammu & Kashmir'],['02','Himachal Pradesh'],['03','Punjab'],['04','Chandigarh'],['05','Uttarakhand'],['06','Haryana'],['07','Delhi'],['08','Rajasthan'],['09','Uttar Pradesh'],['10','Bihar'],['11','Sikkim'],['12','Arunachal Pradesh'],['13','Nagaland'],['14','Manipur'],['15','Mizoram'],['16','Tripura'],['17','Meghalaya'],['18','Assam'],['19','West Bengal'],['20','Jharkhand'],['21','Odisha'],['22','Chhattisgarh'],['23','Madhya Pradesh'],['24','Gujarat'],['26','Dadra & Nagar Haveli and Daman & Diu'],['27','Maharashtra'],['29','Karnataka'],['30','Goa'],['31','Lakshadweep'],['32','Kerala'],['33','Tamil Nadu'],['34','Puducherry'],['35','Andaman & Nicobar Islands'],['36','Telangana'],['37','Andhra Pradesh'],['38','Ladakh']];
+  window.IBI_STATES = STATES;
+  window.IBI_AGREEMENT_VERSION = 'v1.0';
+
+  function $(id) { return document.getElementById(id); }
+  function val(id) { var el = $(id); return el ? String(el.value || '').trim() : ''; }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+  window.ibiValidPAN     = function (s) { return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(String(s || '').toUpperCase()); };
+  window.ibiValidGSTIN   = function (s) { return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(String(s || '').toUpperCase()); };
+  window.ibiValidIFSC    = function (s) { return /^[A-Z]{4}0[A-Z0-9]{6}$/.test(String(s || '').toUpperCase()); };
+  window.ibiValidPincode = function (s) { return /^[1-9][0-9]{5}$/.test(String(s || '')); };
+  window.ibiStateName    = function (code) { for (var i = 0; i < STATES.length; i++) if (STATES[i][0] === code) return STATES[i][1]; return ''; };
+  window.ibiStateOptions = function (selected) {
+    var h = '<option value="">-- Select State --</option>';
+    STATES.forEach(function (s) { h += '<option value="' + s[1] + '"' + (s[1] === selected ? ' selected' : '') + '>' + esc(s[1]) + '</option>'; });
+    return h;
+  };
+  function stateCodeOf(name) { for (var i = 0; i < STATES.length; i++) if (STATES[i][1] === name) return STATES[i][0]; return ''; }
+  window.ibiMaskAcct = function (n) { n = String(n || ''); return n.length > 4 ? '••••' + n.slice(-4) : (n ? '••••' : ''); };
+
+  // ── KYC / PAN / GSTIN cross-checks shared by registration and profile ──
+  //    Returns '' when fine, else the message to show.
+  window.ibiCheckIdentity = function (pan, gstin, stateName) {
+    pan = pan.toUpperCase(); gstin = gstin.toUpperCase();
+    if (!ibiValidPAN(pan)) return 'Enter a valid 10-character PAN (e.g. ABCDE1234F)';
+    if (gstin) {
+      if (!ibiValidGSTIN(gstin)) return 'GSTIN must be 15 characters, e.g. 33ABCDE1234F1Z5';
+      if (gstin.slice(2, 12) !== pan) return 'The PAN inside your GSTIN (characters 3–12) does not match the PAN entered';
+      var sc = stateCodeOf(stateName);
+      if (sc && gstin.slice(0, 2) !== sc) return 'GSTIN starts with state code ' + gstin.slice(0, 2) + ' but the state chosen is ' + stateName + ' (' + sc + ')';
+    }
+    return '';
+  };
+
+  // ── Document upload (private Drive folder, never publicly shared) ──
+  window._ibiKyc = window._ibiKyc || {};
+  window.ibiKycPick = function (inp, key, statusId) {
+    var file = inp.files && inp.files[0]; inp.value = '';
+    var st = $(statusId);
+    if (!file) return;
+    if (file.size > 6 * 1024 * 1024) { showToast('⚠️ File is over 6 MB — take a smaller photo or compress the PDF'); return; }
+    var isPdf = /pdf$/i.test(file.type) || /\.pdf$/i.test(file.name);
+    if (st) st.textContent = '⏳ Uploading ' + file.name + '…';
+    var read = isPdf
+      ? new Promise(function (res) { var fr = new FileReader(); fr.onload = function (e) { res(e.target.result); }; fr.onerror = function () { res(null); }; fr.readAsDataURL(file); })
+      : ibiCompressFileToDataUrl(file);
+    read.then(function (dataUrl) {
+      if (!dataUrl) throw new Error('unreadable');
+      var m = dataUrl.match(/^data:([a-zA-Z0-9.+\/-]+);base64,(.+)$/);
+      if (!m) throw new Error('not base64');
+      var who = (val('sr_biz') || (JSON.parse(sessionStorage.getItem('ibi_seller') || '{}').bizName) || 'seller').replace(/[\\\/:*?"<>|]+/g, ' ').slice(0, 40);
+      var ext = isPdf ? '.pdf' : '.jpg';
+      return ibiFetchTimeout(window.IBI_SHEET_URL, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow',
+        body: JSON.stringify({ action: 'uploadImage', mimeType: m[1], data: m[2], filename: who + ' - ' + key + ext, folder: 'kyc', private: 1 })
+      }, 60000).then(function (r) { return r.json(); });
+    }).then(function (res) {
+      if (!res || !res.success || !res.url) throw new Error('upload failed');
+      window._ibiKyc[key] = res.url;
+      if (st) { st.textContent = '✅ Uploaded — ' + file.name; st.style.color = '#15803d'; }
+    }).catch(function (err) {
+      console.error(err);
+      if (st) { st.textContent = '❌ Upload failed — tap the button to try again'; st.style.color = '#b91c1c'; }
+      showToast('⚠️ Could not upload ' + file.name + '. Check your connection and try again.');
+    });
+  };
+
+  // ── Registration wizard ──
+  var page = 1, PAGES = 4;
+  function showPage(n) {
+    page = n;
+    for (var i = 1; i <= PAGES; i++) { var p = $('sr_page_' + i); if (p) p.style.display = (i === n) ? 'grid' : 'none'; }
+    var steps = document.querySelectorAll('#sr_steps .sr-step');
+    steps.forEach(function (s, i) { s.className = 'sr-step' + (i + 1 === n ? ' sr-step-on' : (i + 1 < n ? ' sr-step-done' : '')); });
+    var back = $('sr_back'), next = $('sr_next');
+    if (back) back.style.display = n > 1 ? 'block' : 'none';
+    if (next) next.textContent = n < PAGES ? 'Next →' : '✅ Submit Application';
+    var ov = $('sellerRegOverlay'); if (ov) ov.scrollTop = 0;
+    if (n === 2) { var ss = $('sr_state'); if (ss && ss.options.length <= 1) ss.innerHTML = ibiStateOptions(''); }
+  }
+  function validatePage(n) {
+    var need = function (id, label) { if (!val(id)) return 'Please fill: ' + label; return ''; };
+    var e = '';
+    if (n === 1) {
+      e = need('sr_biz', 'Business Name') || need('sr_owner', 'Owner Name') || need('sr_mobile', 'Mobile Number') || need('sr_email', 'Email Address') ||
+          need('sr_biztype', 'Business Type') || need('sr_cat', 'Product Category') || need('sr_pan', 'PAN') || need('sr_about', 'About Your Business');
+      if (e) return e;
+      if (!/^\d{10}$/.test(val('sr_mobile'))) return 'Enter a valid 10-digit mobile number';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('sr_email'))) return 'Enter a valid email address';
+      return ibiCheckIdentity(val('sr_pan'), val('sr_gstin'), '');
+    }
+    if (n === 2) {
+      e = need('sr_addr1', 'Building / Street') || need('sr_area', 'Area / Locality') || need('sr_city', 'City') || need('sr_state', 'State') || need('sr_pincode', 'Pincode');
+      if (e) return e;
+      if (!ibiValidPincode(val('sr_pincode'))) return 'Pincode must be 6 digits';
+      if (!$('sr_pickup_same').checked && !val('sr_pickup')) return 'Enter the pickup address, or tick "same as above"';
+      return ibiCheckIdentity(val('sr_pan'), val('sr_gstin'), val('sr_state'));
+    }
+    if (n === 3) {
+      e = need('sr_acct_name', 'Account Holder Name') || need('sr_acct_no', 'Account Number') || need('sr_acct_no2', 'Re-enter Account Number') || need('sr_ifsc', 'IFSC') || need('sr_bank', 'Bank Name');
+      if (e) return e;
+      if (!/^\d{9,18}$/.test(val('sr_acct_no'))) return 'Account number must be 9 to 18 digits';
+      if (val('sr_acct_no') !== val('sr_acct_no2')) return 'The two account numbers do not match';
+      if (!ibiValidIFSC(val('sr_ifsc'))) return 'IFSC must be 11 characters, e.g. SBIN0001234';
+      return '';
+    }
+    if (n === 4) {
+      var k = window._ibiKyc;
+      if (!k.docPan)  return 'Upload your PAN card';
+      if (val('sr_gstin') && !k.docGst) return 'Upload your GST certificate (a GSTIN was entered)';
+      if (!k.docBank) return 'Upload a cancelled cheque or passbook page';
+      if (!k.docAddr) return 'Upload an address proof';
+      if (!$('sr_agree').checked) return 'Please read and tick the Seller Agreement to continue';
+      return '';
+    }
+    return '';
+  }
+  window.ibiRegStep = function (dir) {
+    if (dir < 0) { if (page > 1) showPage(page - 1); return; }
+    var err = validatePage(page);
+    if (err) { showToast('⚠️ ' + err); return; }
+    if (page < PAGES) showPage(page + 1); else submitSellerRegistration();
+  };
+  window.ibiRegReset = function () { window._ibiKyc = {}; showPage(1); };
+  // open the wizard at step 1 every time the modal opens
+  var _open = window.openSellerRegistration;
+  window.openSellerRegistration = function () { if (_open) _open(); showPage(1); };
+
+  // Payload shared by registration; the profile save builds its own subset.
+  window.ibiRegPayload = function () {
+    var same = $('sr_pickup_same').checked;
+    var addr = val('sr_addr1') + ', ' + val('sr_area') + ', ' + val('sr_city') + ', ' + val('sr_state') + ' - ' + val('sr_pincode');
+    var k = window._ibiKyc || {};
+    return {
+      action: 'register',
+      bizName: val('sr_biz'), ownerName: val('sr_owner'), mobile: val('sr_mobile'), email: val('sr_email'),
+      gstin: val('sr_gstin').toUpperCase(), category: val('sr_cat'), city: val('sr_city'), about: val('sr_about'),
+      bizType: val('sr_biztype'), pan: val('sr_pan').toUpperCase(),
+      addr1: val('sr_addr1'), area: val('sr_area'), state: val('sr_state'), pincode: val('sr_pincode'),
+      pickup: same ? addr : val('sr_pickup'),
+      acctName: val('sr_acct_name'), acctNo: val('sr_acct_no'), ifsc: val('sr_ifsc').toUpperCase(), bank: val('sr_bank'),
+      docPan: k.docPan || '', docGst: k.docGst || '', docBank: k.docBank || '', docAddr: k.docAddr || '',
+      agreement: window.IBI_AGREEMENT_VERSION + ' accepted ' + new Date().toLocaleString('en-IN')
+    };
+  };
+
+  // ── Profile tab: extra view cards + edit fields (bank masked, docs re-uploadable) ──
+  function card(label, value, wide) {
+    return '<div style="background:#f9f9f9;border-radius:8px;padding:12px;' + (wide ? 'grid-column:1/-1;' : '') + '"><div style="color:#888;margin-bottom:3px;font-size:11px;">' + label + '</div><div style="font-weight:700;word-break:break-word;">' + (value || '<span style="color:#b45309;font-weight:600;">Not provided</span>') + '</div></div>';
+  }
+  window.ibiProfileExtraCards = function (r) {
+    var s = Object.assign({}, JSON.parse(sessionStorage.getItem('ibi_seller') || '{}'), r || {});
+    var kyc = s.kycStatus || 'Pending';
+    var kycCol = kyc === 'Verified' ? '#16a34a' : kyc === 'Rejected' ? '#dc2626' : '#b45309';
+    var addr = [s.addr1, s.area, s.city, s.state, s.pincode].filter(Boolean).join(', ');
+    var docs = [['PAN card', s.docPan], ['GST certificate', s.docGst], ['Bank proof', s.docBank], ['Address proof', s.docAddr]]
+      .map(function (d) { return d[1] ? '✅ ' + d[0] : '<span style="color:#b45309;">○ ' + d[0] + '</span>'; }).join(' &nbsp;·&nbsp; ');
+    return card('PAN', esc(s.pan)) + card('GSTIN', esc(s.gstin) || '<span style="color:#666;font-weight:600;">Not registered</span>') +
+      card('Business Type', esc(s.bizType)) + card('WhatsApp / Mobile', esc(s.mobile || s.phone)) +
+      card('Registered Address', esc(addr), true) + card('Pickup Address', esc(s.pickup), true) +
+      card('Payout Bank Account', s.acctNo ? esc(s.acctName) + ' · ' + esc(ibiMaskAcct(s.acctNo)) + ' · ' + esc(s.ifsc) + ' · ' + esc(s.bank) : '', true) +
+      '<div style="background:#f9f9f9;border-radius:8px;padding:12px;grid-column:1/-1;"><div style="color:#888;margin-bottom:3px;font-size:11px;">KYC Verification</div>' +
+      '<div style="font-weight:800;color:' + kycCol + ';">' + esc(kyc) + (s.kycNote ? ' <span style="font-weight:500;color:#555;">— ' + esc(s.kycNote) + '</span>' : '') + '</div>' +
+      '<div style="font-size:12px;margin-top:4px;">' + docs + '</div></div>' +
+      card('Seller Agreement', s.agreement ? esc(s.agreement) + ' · <a href="/seller-agreement.html" target="_blank" rel="noopener" style="color:#0098c9;">read</a>' : '<a href="/seller-agreement.html" target="_blank" rel="noopener" style="color:#0098c9;">Read the Seller Agreement</a>', true);
+  };
+  window.ibiProfileExtraEdit = function (r) {
+    var s = Object.assign({}, JSON.parse(sessionStorage.getItem('ibi_seller') || '{}'), r || {});
+    var f = function (id, label, value, ph, extra) { return '<div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">' + label + '</label><input id="' + id + '" type="text" value="' + esc(value) + '" placeholder="' + esc(ph || '') + '" class="sc-input" ' + (extra || '') + '></div>'; };
+    var doc = function (key, label, id) { return '<div class="sr-doc" style="display:flex;align-items:center;gap:8px;border:1.5px dashed #d1d5db;border-radius:8px;padding:8px 10px;font-size:12.5px;"><button type="button" onclick="document.getElementById(\'' + id + '\').click()" style="padding:6px 10px;background:#f0fbff;border:1px solid #0098c9;color:#0098c9;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;">📄 ' + label + '</button><span id="' + id + '_st" style="color:#888;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s[key] ? '✅ On file — upload to replace' : 'Not uploaded') + '</span><input type="file" id="' + id + '" accept="image/*,.pdf" style="display:none" onchange="ibiKycPick(this,\'' + key + '\',\'' + id + '_st\')"></div>'; };
+    return '<div style="font-size:12px;font-weight:800;color:#131921;margin-top:6px;">Identity</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' + f('prof_pan', 'PAN', s.pan, 'ABCDE1234F', 'maxlength="10" style="text-transform:uppercase;"') + f('prof_gstin', 'GSTIN (if registered)', s.gstin, '15 characters', 'maxlength="15" style="text-transform:uppercase;"') + '</div>' +
+      '<div style="font-size:12px;font-weight:800;color:#131921;margin-top:6px;">Registered address</div>' +
+      f('prof_addr1', 'Building / Street', s.addr1, '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' + f('prof_area', 'Area / Locality', s.area, '') +
+      '<div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">State</label><select id="prof_state" class="sc-input">' + ibiStateOptions(s.state || '') + '</select></div>' +
+      f('prof_pincode', 'Pincode', s.pincode, '6 digits', 'maxlength="6" inputmode="numeric"') + '</div>' +
+      '<div><label style="font-size:11px;color:#555;font-weight:700;display:block;margin-bottom:4px;">Pickup Address</label><textarea id="prof_pickup" rows="2" class="sc-input" placeholder="Leave blank if same as registered address">' + esc(s.pickup) + '</textarea></div>' +
+      '<div style="font-size:12px;font-weight:800;color:#131921;margin-top:6px;">Payout bank account <span style="font-weight:500;color:#888;">(changing it puts KYC back to Pending)</span></div>' +
+      f('prof_acct_name', 'Account Holder Name', s.acctName, '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' + f('prof_acct_no', 'Account Number', '', s.acctNo ? 'On file: ' + ibiMaskAcct(s.acctNo) + ' — type to change' : '9–18 digits', 'inputmode="numeric" autocomplete="off"') + f('prof_ifsc', 'IFSC', s.ifsc, 'SBIN0001234', 'maxlength="11" style="text-transform:uppercase;"') + '</div>' +
+      f('prof_bank', 'Bank Name', s.bank, '') +
+      '<div style="font-size:12px;font-weight:800;color:#131921;margin-top:6px;">KYC documents</div>' +
+      doc('docPan', 'PAN card', 'prof_doc_pan') + doc('docGst', 'GST certificate', 'prof_doc_gst') + doc('docBank', 'Cancelled cheque / passbook', 'prof_doc_bank') + doc('docAddr', 'Address proof', 'prof_doc_addr');
+  };
+})();
+
+// ── Registration submit (replaces the v1 single-page submit; called by the wizard's last step) ──
+function submitSellerRegistration() {
+  var data = ibiRegPayload();
+  var btn = document.getElementById('sr_next');
+  var origText = btn ? btn.textContent : '';
+  if (btn) { btn.textContent = '⏳ Submitting…'; btn.disabled = true; }
+  var restore = function () { if (btn) { btn.textContent = origText; btn.disabled = false; } };
+  ibi_fetch_post(data, function (res) {
+    restore();
+    if (!res) { showToast('⚠️ No reply from the server — please try Submit again.'); return; }
+    if (res.alreadyExists) { showToast('⚠️ This email is already registered. Status: ' + res.status + '. Use Seller Central Login.'); return; }
+    if (res.success) {
+      closeSellerRegistration();
+      showSellerRegSuccess(res.sellerId, data.bizName);
+      var msg = encodeURIComponent(
+        '🏪 *NEW SELLER REGISTRATION — IBI Marketplace*\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        '*Seller ID:* ' + res.sellerId + '\n' +
+        '*Business:* ' + data.bizName + ' (' + data.bizType + ')\n' +
+        '*Owner:* ' + data.ownerName + '\n' +
+        '*Mobile:* +91' + data.mobile + '\n' +
+        '*Email:* ' + data.email + '\n' +
+        '*PAN / GSTIN:* ' + data.pan + (data.gstin ? ' / ' + data.gstin : '') + '\n' +
+        '*Category:* ' + data.category + '\n' +
+        '*City / State:* ' + data.city + ', ' + data.state + ' ' + data.pincode + '\n' +
+        '*KYC docs:* ' + [data.docPan, data.docGst, data.docBank, data.docAddr].filter(Boolean).length + ' uploaded\n' +
+        '━━━━━━━━━━━━━━━━━\n' +
+        '📋 Please verify KYC in the Admin panel and Approve / Reject.'
+      );
+      setTimeout(function () { window.open('https://wa.me/918939414799?text=' + msg, '_blank'); }, 500);
+      ibiRegReset();
+    } else {
+      showToast('❌ ' + (res.message || res.error || 'Registration failed. Try again.'));
+    }
+  }, 45000);
+}
+
+// ── Profile save (replaces the v1 save that could only reach the sheet with a CEO token) ──
+function saveSellerProfile() {
+  var session = JSON.parse(sessionStorage.getItem('ibi_seller') || '{}');
+  var g = function (id) { var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
+  var bizName = g('prof_bizname');
+  if (!bizName) { showToast('⚠️ Business name required'); return; }
+  var pan = g('prof_pan').toUpperCase(), gstin = g('prof_gstin').toUpperCase(), state = g('prof_state');
+  if (pan || gstin) { var e1 = ibiCheckIdentity(pan, gstin, state); if (e1) { showToast('⚠️ ' + e1); return; } }
+  if (g('prof_pincode') && !ibiValidPincode(g('prof_pincode'))) { showToast('⚠️ Pincode must be 6 digits'); return; }
+  var acctNo = g('prof_acct_no');
+  if (acctNo && !/^\d{9,18}$/.test(acctNo)) { showToast('⚠️ Account number must be 9 to 18 digits'); return; }
+  if (g('prof_ifsc') && !ibiValidIFSC(g('prof_ifsc').toUpperCase())) { showToast('⚠️ IFSC must be 11 characters, e.g. SBIN0001234'); return; }
+  if (g('prof_phone') && !/^\d{10}$/.test(g('prof_phone'))) { showToast('⚠️ Enter a valid 10-digit mobile number'); return; }
+  var k = window._ibiKyc || {};
+  var data = {
+    action: 'updateSellerProfile', sellerId: session.sellerId, pin: session.pin,
+    bizName: bizName, category: g('prof_category'), city: g('prof_city'), mobile: g('prof_phone'),
+    pan: pan, gstin: gstin, addr1: g('prof_addr1'), area: g('prof_area'), state: state, pincode: g('prof_pincode'), pickup: g('prof_pickup'),
+    acctName: g('prof_acct_name'), acctNo: acctNo, ifsc: g('prof_ifsc').toUpperCase(), bank: g('prof_bank'),
+    docPan: k.docPan || '', docGst: k.docGst || '', docBank: k.docBank || '', docAddr: k.docAddr || ''
+  };
+  var btn = document.querySelector('#profileEditMode button[onclick="saveSellerProfile()"]');
+  if (btn) { btn.textContent = '⏳ Saving…'; btn.disabled = true; }
+  ibi_fetch_post(data, function (res) {
+    if (btn) { btn.textContent = '💾 Save Changes'; btn.disabled = false; }
+    if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'Could not save — check your connection and try again')); return; }
+    Object.assign(session, res.seller || {});
+    session.bizName = bizName; session.phone = data.mobile || session.phone;
+    sessionStorage.setItem('ibi_seller', JSON.stringify(session));
+    window._ibiKyc = {};
+    var nameEl = document.getElementById('scSellerName'); if (nameEl) nameEl.textContent = bizName;
+    showToast('✅ Profile saved' + (res.seller && res.seller.kycStatus === 'Pending' && data.acctNo ? ' — bank details changed, KYC is back to Pending for re-verification' : ''), 'success');
+    renderSellerDashboard(session);
+    switchDashTab('profile');
+  }, 45000);
+}
+</script>
 
 <!-- ═══ BULK CATALOGUE UPLOAD (v14.0) — Seller Central ⬆️ Bulk Upload tab.
      Reads the seller's own marketplace flat-files (Meesho / Flipkart / Amazon-style
