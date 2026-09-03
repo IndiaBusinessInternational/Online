@@ -2617,9 +2617,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v13.6';
-window.IBI_VERSION_DATE = '22 Aug 2026';
-window.IBI_VERSION_NOTE = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
+window.IBI_VERSION      = 'v14.0';
+window.IBI_VERSION_DATE = '3 Sep 2026';
+window.IBI_VERSION_NOTE = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
+window.IBI_VERSION_NOTE_PREV03 = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
 window.IBI_VERSION_NOTE_PREV02 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
 window.IBI_VERSION_NOTE_PREV01 = 'v13.1 — 🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.';
 window.IBI_VERSION_NOTE_PREV00 = 'v13.0 — 💍 THE JEWELLERY IS NOW CALLED FASHION JEWELLERY, SITS TOGETHER, AND COUNTS ITSELF FROM THE JEWELLERY REGISTER. Three things, all about the same four listings. First the name: the department was headed "Imitation Jewellery" and now reads "Fashion Jewellery" everywhere it appears — the shop heading, the department bar, the category menus and the admin panel. Second, they are together at last: only one of the four was appearing under that heading, because the shop decides which family a product belongs to by reading its title, and these titles say "Crystal Stone Pendant" — so three chokers were being filed under Stone Products, in a different part of the page from the one they belonged to. A listing\'s own category is now trusted ahead of the wording of its title, so all four sit in one place, and any jewellery listed in future joins them automatically. Third, and the reason they all read Out of Stock: fashion jewellery is not counted in the Stock Availability app at all — it has its own register, the IBI Fashion Jewellery app on the office laptop — so the nightly job could find no count for any of them and the rule that nothing may be sold unless it can be shipped took every one off sale, while about thirty-four pieces sat on the shelf. The shop now asks the jewellery register for those listings and the Stock Availability app for everything else, and the jewellery app tells the shop the moment a piece is added or sold, so the two agree within the minute. Colour is treated as part of the product\'s identity here, because in this department one piece differs from the next by nothing else: a chain recorded as Red & Black can no longer hand its count to the plain Black variant, and where two variants of one listing both point at the same shelf neither is allowed to claim it — that is a warning to fix the listing, not a number to guess at. If the laptop is off, the jewellery listings are left exactly as they are rather than emptied.';
@@ -3962,7 +3963,7 @@ function ibiRestoreBackup(input){
 }
 
 function switchDashTab(tab) {
-  ['products','add','orders','earnings','profile','catalog'].forEach(t => {
+  ['products','add','orders','earnings','profile','catalog','bulk'].forEach(t => {
     const el  = document.getElementById('dashTab_' + t);
     const btn = document.getElementById('tab_' + t);
     if (el)  el.style.display  = (t === tab) ? 'block' : 'none';
@@ -3977,6 +3978,7 @@ function switchDashTab(tab) {
     }, 100);
   }
   if (tab === 'products') loadSellerProducts();
+  if (tab === 'bulk' && typeof ibiBulkOpen === 'function') ibiBulkOpen();   // v14.0 bulk catalogue upload
   ibiCeoApply();                        // owner-only controls stay hidden unless unlocked
   if (tab === 'add')      { setupAddForm(); _ibiRefreshAINameList(); _ibiSyncStockBtns(); if (!window._scAllProds || !window._scAllProds.length) loadSellerProducts(); }
   if (tab === 'earnings') loadSellerEarnings();
@@ -7542,6 +7544,7 @@ function renderFAQ() {
     ['How do I register as a seller?', 'Click "Register as a Seller" and fill the form. Your WhatsApp will receive a confirmation within 24 hours. Our team will guide you through the onboarding process.'],
     ['Is there any registration fee?', 'No! Registration is completely FREE. You only pay a small commission (3–15%) on successful sales.'],
     ['How do I list my products?', 'After registration, use the Seller Dashboard to submit product details. Our team will create professional listings within 48 hours.'],
+    ['Can I upload my whole catalogue at once?', 'Yes. Seller Central has a Bulk Upload tab: drop in the product sheets you already use on Meesho, Flipkart or Amazon (.xlsx / .xls / .csv) and every product becomes a listing with its colours, sizes and photos. Set your selling prices, upload, and edit anything later from My Products.'],
     ['How and when do I get paid?', 'Payments are processed weekly via NEFT/IMPS to your registered bank account after order delivery confirmation.'],
     ['What documents do I need?', 'You need a GSTIN or PAN, business address, bank account details, and product photos/descriptions.'],
     ['Can I sell from anywhere in India?', 'Yes! Any registered Indian business or individual can sell on IBI Marketplace from any city or town.'],
@@ -14313,6 +14316,7 @@ init();
           <button onclick="switchDashTab('earnings')" id="tab_earnings" class="sc-tab">💰 Earnings</button>
           <button onclick="switchDashTab('profile')"  id="tab_profile"  class="sc-tab">👤 Profile</button>
           <button onclick="switchDashTab('catalog')"  id="tab_catalog"  class="sc-tab">📋 Catalogue</button>
+          <button onclick="switchDashTab('bulk')"     id="tab_bulk"     class="sc-tab">⬆️ Bulk Upload</button>
         </div>
       </div>
 
@@ -15236,6 +15240,37 @@ init();
         </div>
       </div>
 
+      <!-- ═══ BULK UPLOAD — list a whole catalogue from the seller's own Excel flat-files (v14.0) ═══ -->
+      <div id="dashTab_bulk" style="display:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+            <h3 style="margin:0;color:#131921;">⬆️ Bulk Upload</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="document.getElementById('bulk_file').click()" style="padding:8px 16px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">📄 Choose Excel file(s)</button>
+              <button onclick="ibiBulkClear()" id="bulk_clear_btn" style="display:none;padding:8px 12px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">Clear</button>
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:#666;margin:0 0 10px;">Upload the product sheets you already use on Meesho, Flipkart or Amazon (<b>.xlsx / .xls / .csv</b> — several files at once). Each product becomes one listing with its colours and sizes; photos are taken from the image-link columns. Set the selling price, check the category, then upload. Every listing goes to IBI for review, and you can edit anything afterwards from <b>My Products</b>.</p>
+          <input type="file" id="bulk_file" accept=".xlsx,.xls,.csv" multiple style="display:none;" onchange="ibiBulkFiles(this)"/>
+          <div id="bulk_meta" style="font-size:12px;color:#888;margin:4px 0 10px;"></div>
+          <div id="bulk_tools" style="display:none;gap:14px;flex-wrap:wrap;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:#374151;">
+            <span style="font-weight:700;">Fill all rows:</span>
+            <span style="white-space:nowrap;">Selling price = MRP − <input id="bulk_pct" type="number" min="0" max="90" value="40" inputmode="numeric" class="sc-input" style="width:64px;padding:5px 6px;display:inline-block;font-size:13px;"> % <button onclick="ibiBulkApplyPrice()" style="padding:5px 10px;background:#fff;border:1px solid #0098c9;color:#0098c9;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">Apply</button></span>
+            <span style="white-space:nowrap;">Stock per size <input id="bulk_stock" type="number" min="0" value="10" inputmode="numeric" class="sc-input" style="width:64px;padding:5px 6px;display:inline-block;font-size:13px;"> <button onclick="ibiBulkApplyStock()" style="padding:5px 10px;background:#fff;border:1px solid #0098c9;color:#0098c9;border-radius:6px;font-weight:700;cursor:pointer;font-size:12px;">Apply</button></span>
+            <span style="white-space:nowrap;">Category <select id="bulk_cat_all" onchange="ibiBulkApplyCat(this.value)" class="sc-input" style="display:inline-block;width:auto;padding:5px 6px;font-size:12px;"></select></span>
+          </div>
+          <div id="bulk_review"></div>
+          <div id="bulk_upload_wrap" style="display:none;margin-top:14px;">
+            <div id="bulk_progress" style="display:none;margin-bottom:10px;">
+              <div style="height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;"><div id="bulk_progress_fill" style="height:100%;width:0;background:#0098c9;transition:width .3s;"></div></div>
+              <div id="bulk_progress_txt" style="font-size:12px;color:#555;margin-top:6px;"></div>
+            </div>
+            <button id="bulk_upload_btn" onclick="ibiBulkUpload()" style="padding:12px 28px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 2px 10px rgba(0,152,201,.3);">⬆️ Upload to IBI</button>
+            <div style="font-size:11.5px;color:#888;margin-top:8px;">Rows marked ○ are left out until fixed. “min” under Transfer price is that price ÷ 0.95 — the least you can list at and still receive your full transfer price after IBI's 5% commission.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- TAB: Earnings & Payouts -->
       <!-- ═══ CATALOGUE TRACKER — upload a product-name Excel, see Completed vs Pending ═══ -->
       <div id="dashTab_catalog" style="display:none;">
@@ -16057,6 +16092,499 @@ window.addEventListener('appinstalled', function() {
     </div>
   </div>
 </div>
+
+<!-- ═══ BULK CATALOGUE UPLOAD (v14.0) — Seller Central ⬆️ Bulk Upload tab.
+     Reads the seller's own marketplace flat-files (Meesho / Flipkart / Amazon-style
+     .xlsx, .xls or .csv), groups the rows into listings with a Colour × Size matrix,
+     takes photos from the sheet's image-link columns, and submits each listing through
+     the SAME addProduct call the Add Product form uses (born Pending for IBI review).
+     The seller then edits prices, stock, photos and sizes from My Products as usual. ═══ -->
+<script>
+(function () {
+  'use strict';
+  var B = { listings: [], files: [], busy: false };
+  window._ibiBulk = B;
+
+  function norm(s)  { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9%]+/g, ' ').trim(); }
+  function clean(s) { return String(s == null ? '' : s).replace(/�/g, "'").replace(/\s+/g, ' ').trim(); }
+  function num(v)   { var n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, '')); return isNaN(n) ? 0 : n; }
+  function isUrl(v) { return /^https?:\/\//i.test(String(v || '').trim()); }
+  function esc(s)   { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function inr(n)   { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  // ── Column recognisers (first match wins; order matters) ──
+  var FIELDS = [
+    ['skip',   /^(us|euro|brand) size$|^super category$|to fit|product link|video|policy|disclaimer|status|\bean\b|manufacturer|packer|importer|notification|min(imum)? order|processing|returnable|is return|return days|ships in|made to order|prepaid|net qty|net quantity|pack contents|package includes|in the box|items included|^pack of$|^set$|shipping|^variant$|serial number|\bqc\b|reason|group id|parent variant|ful+filment|procurement|handling fee|luxury cess|article number|style code|measuring unit|label size|print size|care instruction|supplier image|color shade|pattern placement/],
+    ['title',  /^product (name|title)( title)?$|^product name en$|^title$|^item name$|^model name$/],
+    ['sku',    /\bsku\b|vendor product id|model number/],
+    ['brand',  /^brand( name)?$/],
+    ['sdesc',  /short description/],
+    ['desc',   /description/],
+    ['bullets',/key features|highlights|bullet points?/],
+    ['tags',   /search keywords|^keywords?$|search terms/],
+    ['mrp',    /^mrp/],
+    ['tp',     /\btp\b|settlement price|transfer price|supplier price|product cost|cost price/],
+    ['sell',   /selling price|sale price|your price|standard price|offer price/],
+    ['gst',    /^gst|tax ?%|^tax code$|tax rate/],
+    ['hsn',    /hsn/],
+    ['pkgWt',  /package.*weight/],
+    ['wt',     /weight/],
+    ['pkgL',   /package.*length|length of outer|^length( cm)?$/],
+    ['pkgW',   /package.*(breadth|width)|breadth of outer|width of outer|^(breadth|width)( cm)?$/],
+    ['pkgH',   /package.*height|height of outer|^height( cm)?$/],
+    ['dims',   /dimension/],
+    ['colour', /colou?r$/],
+    ['size',   /^(uk |uk india |variation )?size$/],
+    ['stock',  /quantity in stock|^stock|inventory|^qty$/],
+    ['subcat', /sub ?category|shoes? type/],
+    ['cat',    /category|^product type$/],
+    ['img',    /image|img|photo|picture|angle|look shot|thumbnail/]
+  ];
+  var LEGEND_RE = /^(single|multi) ?-|^to be filled|^text ?-|^url$|^dropdown$|^please provide|^check summary/i;
+  function fieldFor(header) {
+    var h = norm(header);
+    if (!h) return 'skip';
+    for (var i = 0; i < FIELDS.length; i++) if (FIELDS[i][1].test(h)) return FIELDS[i][0];
+    return 'attr';
+  }
+  // The header row is the one whose cells look most like column names.
+  function findHeaderRow(rows) {
+    var best = -1, bestScore = 0;
+    for (var r = 0; r < Math.min(rows.length, 10); r++) {
+      var score = 0;
+      for (var c = 0; c < rows[r].length; c++) {
+        var f = fieldFor(rows[r][c]);
+        if (f !== 'skip' && f !== 'attr') score++;
+      }
+      if (score > bestScore) { bestScore = score; best = r; }
+    }
+    return bestScore >= 4 ? best : -1;
+  }
+
+  var COLOUR_ABBR = { blk:'Black', black:'Black', wht:'White', white:'White', nvy:'Navy', navy:'Navy', brn:'Brown', brown:'Brown',
+    gry:'Grey', grey:'Grey', gray:'Grey', grn:'Green', green:'Green', ylw:'Yellow', yellow:'Yellow', pnk:'Pink', pink:'Pink',
+    gol:'Gold', gold:'Gold', slv:'Silver', silver:'Silver', bge:'Beige', beige:'Beige', mrn:'Maroon', maroon:'Maroon', wine:'Wine',
+    org:'Orange', orange:'Orange', prp:'Purple', purple:'Purple', blu:'Blue', blue:'Blue', red:'Red', tan:'Tan', cream:'Cream',
+    olive:'Olive', khaki:'Khaki', peach:'Peach', teal:'Teal', mustard:'Mustard', coffee:'Coffee', cherry:'Cherry', multi:'Multicolour' };
+  var SIZE_RE = /^(\d+(\.\d+)?|xs|s|m|l|xl|xxl|xxxl|\dxl|free( size)?|os)$/i;
+  var SIZE_ORDER = ['xxs','xs','s','m','l','xl','xxl','2xl','xxxl','3xl','4xl','5xl','6xl','free','free size','os'];
+
+  function titleCase(s) { return s.replace(/\w\S*/g, function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }); }
+  function colourFromText(s) {
+    var toks = norm(String(s).replace(/\d+/g, ' ')).split(' ').filter(Boolean);
+    var out = [];
+    toks.forEach(function (t) { if (COLOUR_ABBR[t] && out.indexOf(COLOUR_ABBR[t]) === -1) out.push(COLOUR_ABBR[t]); });
+    if (out.length) return out.join(' & ');
+    var raw = clean(String(s).replace(/\d+/g, ' ')).replace(/[+_]/g, ' & ');
+    return raw ? titleCase(raw) : '';
+  }
+  // "Sports Tight-BLK & WHITE-S" → { colour:'Black & White', size:'S' }; "STITCH-1001BLK-6" → Black / 6
+  function fromSku(sku) {
+    var parts = String(sku || '').split(/\s*-\s*/).map(function (p) { return p.trim(); }).filter(Boolean);
+    var out = { colour: '', size: '' };
+    if (parts.length >= 2 && SIZE_RE.test(parts[parts.length - 1])) { out.size = parts.pop().toUpperCase(); }
+    if (parts.length >= 2) out.colour = colourFromText(parts.slice(1).join(' '));
+    else if (parts.length === 1 && /[a-z]{3}/i.test(parts[0])) out.colour = colourFromText(parts[0].replace(/^[A-Za-z]+\d+/, ''));
+    return out;
+  }
+  function normSize(s) {
+    s = clean(s).replace(/\.0$/, '').toUpperCase();
+    return s;
+  }
+  function sizeSort(a, b) {
+    var NUM = /^\d+(\.\d+)?$/;
+    var na = NUM.test(a) ? parseFloat(a) : NaN, nb = NUM.test(b) ? parseFloat(b) : NaN;
+    if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    if (!isNaN(na)) return -1; if (!isNaN(nb)) return 1;
+    var ia = SIZE_ORDER.indexOf(a.toLowerCase()), ib = SIZE_ORDER.indexOf(b.toLowerCase());
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1; if (ib === -1) return -1;
+    return ia - ib;
+  }
+  function grams(v, header) {
+    var s = String(v == null ? '' : v).toLowerCase(), n = num(s);
+    if (!n) return 0;
+    var kg = /\bkg\b|kilo/.test(s) || /\bkg\b|kilo/.test(norm(header));
+    return (kg && n < 20) ? Math.round(n * 1000) : Math.round(n);
+  }
+  function stripBrandPrefix(t) { return clean(t).replace(/^[A-Za-z0-9 &.'-]{1,24}::\s*/, '').replace(/^\|+|\|+$/g, '').trim(); }
+  function catFor(text) {
+    var t = ' ' + norm(text) + ' ';
+    if (/shoe|footwear|foot wear|loafer|boot|sandal|slipper|sneaker|heel|flip flop|chappal/.test(t)) return 'clothing-shoes';
+    if (/\bbags?\b|backpack|handbag|purse|tote|luggage|wallet|sling/.test(t)) return 'clothing-bags';
+    if (/watch/.test(t)) return 'clothing-watches';
+    if (/jewel|earring|bangle|necklace|anklet|bracelet|choker/.test(t)) return 'jewellery';
+    if (/\bkids?\b|children|infant|toddler/.test(t)) return 'clothing-kids';
+    if (/legging|tight|yoga|women|ladies|girl|kurti|saree|dress|gown|bra\b|blouse/.test(t)) return 'clothing-women';
+    if (/\bmen|shirt|trouser|jeans|kurta|vest|brief/.test(t)) return 'clothing-men';
+    if (/electronic|mobile|phone|laptop|charger|earphone|headphone|cable|speaker/.test(t)) return 'electronics';
+    if (/kitchen|cookware|home|decor|storage|furniture|bedding|bed sheet|cleaning|garden|tool/.test(t)) return 'home';
+    if (/grocery|food|snack|spice|masala|tea|coffee|rice|dal/.test(t)) return 'grocery';
+    if (/beauty|skin|hair|makeup|fragrance|perfume|cosmetic|health|nutrition/.test(t)) return 'beauty';
+    if (/\bpet\b|dog|cat food/.test(t)) return 'pets';
+    if (/baby|diaper/.test(t)) return 'baby';
+    if (/cloth|apparel|fashion|wear/.test(t)) return 'clothing';
+    return '';
+  }
+  function categorySelectHtml(id, value) {
+    var html = '<select id="' + id + '" onchange="ibiBulkSetCat(\'' + id + '\', this.value)" class="sc-input" style="padding:6px 8px;font-size:12px;min-width:170px;">';
+    html += '<option value="">— Select —</option>';
+    (typeof IBI_CATEGORIES !== 'undefined' ? IBI_CATEGORIES : []).forEach(function (c) {   // a top-level const, so not on window
+      html += '<optgroup label="' + esc(c.icon + ' ' + c.name) + '">';
+      html += '<option value="' + c.id + '"' + (value === c.id ? ' selected' : '') + '>' + esc(c.icon + ' ' + c.name) + ' — all</option>';
+      (c.subs || []).forEach(function (s) {
+        var v = c.id + '-' + s.id;
+        html += '<option value="' + v + '"' + (value === v ? ' selected' : '') + '>' + esc('  ' + s.icon + ' ' + s.name) + '</option>';
+      });
+      html += '</optgroup>';
+    });
+    return html + '</select>';
+  }
+
+  // ── Parse one sheet (array-of-arrays) into listings, merging into B.listings ──
+  function parseSheet(rows, fileName, sheetName) {
+    var hr = findHeaderRow(rows);
+    if (hr < 0) return 0;
+    var head = rows[hr], cols = {}, imgCols = [], attrCols = [];
+    head.forEach(function (h, i) {
+      var f = fieldFor(h);
+      if (f === 'skip') return;
+      if (f === 'img')  { imgCols.push(i); return; }
+      if (f === 'attr') { attrCols.push(i); return; }
+      if (cols[f] === undefined) cols[f] = i;              // first column wins…
+      else if (f === 'size' && /\buk\b/.test(norm(h))) cols.size = i;   // …except a UK size beats an EU "Size"
+      else if (f === 'cat' && norm(h) === 'category') cols.cat = i;     // …and plain "Category" beats "Product Type"
+    });
+    if (cols.title === undefined) return 0;
+    var get = function (row, f) { return cols[f] === undefined ? '' : clean(row[cols[f]]); };
+    var added = 0;
+    for (var r = hr + 1; r < rows.length; r++) {
+      var row = rows[r]; if (!row) continue;
+      var rawTitle = get(row, 'title');
+      if (!rawTitle || /^[a-z0-9_]+$/.test(rawTitle) || LEGEND_RE.test(rawTitle)) continue;   // blank or template legend row
+      if (cols.mrp !== undefined && get(row, 'mrp') && !num(get(row, 'mrp'))) continue;          // legend row ("Single - Positive_integer")
+      var title = stripBrandPrefix(rawTitle);
+      if (title.length < 4) continue;
+      var key = title.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      var L = null;
+      for (var k = 0; k < B.listings.length; k++) if (B.listings[k].key === key) { L = B.listings[k]; break; }
+      var brandCell = get(row, 'brand');
+      var pm = rawTitle.match(/^([A-Za-z0-9 &.'-]{1,24})::/);
+      var brand = brandCell || (pm ? clean(pm[1]) : '');
+      if (!L) {
+        L = { key: key, title: title, brand: brand, catText: '', category: '', desc: '', bullets: [], hsn: '', gst: 0,
+              sell: '', tags: '', combos: [], imgs: [], colours: [], sizes: [], stock: '', src: fileName + (sheetName ? ' › ' + sheetName : ''),
+              status: '', msg: '', productId: '' };
+        B.listings.push(L);
+        added++;
+      }
+      if (!L.brand && brand) L.brand = brand;
+      var catText = [get(row, 'cat'), get(row, 'subcat'), title].join(' ');
+      if (!L.catText) { L.catText = catText; L.category = catFor(catText); }
+      var d = get(row, 'desc'), sd = get(row, 'sdesc');
+      d = stripBrandPrefix(d); sd = stripBrandPrefix(sd);
+      if (d.length > L.desc.length) L.desc = d;
+      if (!L.desc && sd.length >= 20) L.desc = sd;
+      if (!L.hsn) { var hs = String(row[cols.hsn] == null ? '' : row[cols.hsn]).trim().replace(/\.0+$/, ''); if (/^\d{4,8}$/.test(hs)) L.hsn = hs; }
+      if (!L.gst) { var g = num(get(row, 'gst')); if (g && g < 1) g = g * 100; L.gst = g; }
+      if (!L.bullets.length) {
+        var kf = get(row, 'bullets');
+        if (kf) kf.split(/\s*(?:\|\||\||::|;|\n|•|,)\s*/).forEach(function (b) { b = clean(b); if (b.length >= 4 && L.bullets.length < 8) L.bullets.push(b); });
+      }
+      if (!L.bullets.length) {
+        attrCols.forEach(function (ci) {
+          var v = clean(row[ci]); var h = clean(head[ci]).replace(/\s*\(.*?\)\s*/g, ' ').replace(/[_]+/g, ' ').trim();
+          h = h.charAt(0).toUpperCase() + h.slice(1);
+          if (v && v.length <= 40 && !isUrl(v) && !/^\d+(\.\d+)?$/.test(v) && !/^(na|n\/a|nil|none|-)$/i.test(v) && L.bullets.length < 8) L.bullets.push(h + ': ' + v);
+        });
+      }
+      if (!L.tags) {
+        var kw = get(row, 'tags');
+        if (kw) L.tags = kw.split(/\s*(?:::|\||,|;|\n)\s*/).map(clean).filter(Boolean).join(' ').toLowerCase().slice(0, 200);
+      }
+      // ── variation row ──
+      var sku = get(row, 'sku'), fs = fromSku(sku);
+      var colour = get(row, 'colour'); colour = colour ? colourFromText(colour) || titleCase(colour) : fs.colour;
+      var size = get(row, 'size'); size = size ? normSize(size) : fs.size;
+      var imgs = [];
+      imgCols.forEach(function (ci) { var u = clean(row[ci]); if (isUrl(u)) { u = ibiNormalizeImgUrl(u); if (imgs.indexOf(u) === -1) imgs.push(u); } });
+      var wtHeader = cols.wt === undefined ? '' : head[cols.wt];
+      var pkgWtHeader = cols.pkgWt === undefined ? '' : head[cols.pkgWt];
+      var dims = get(row, 'dims').match(/(\d+(?:\.\d+)?)\s*[x*×]\s*(\d+(?:\.\d+)?)\s*[x*×]\s*(\d+(?:\.\d+)?)/i);
+      var combo = {
+        colour: colour, size: size, sku: sku,
+        mrp: num(get(row, 'mrp')), tp: num(get(row, 'tp')), sell: num(get(row, 'sell')),
+        stock: get(row, 'stock') === '' ? '' : String(parseInt(get(row, 'stock'), 10) || 0),
+        imgs: imgs,
+        wt: grams(get(row, 'wt'), wtHeader),
+        pkgL: num(get(row, 'pkgL')), pkgW: num(get(row, 'pkgW')), pkgH: num(get(row, 'pkgH')), pkgWt: grams(get(row, 'pkgWt'), pkgWtHeader),
+        prodL: dims ? dims[1] : '', prodW: dims ? dims[2] : '', prodH: dims ? dims[3] : ''
+      };
+      // same colour+size twice (two sheets of the same product) → keep the first
+      var dupe = L.combos.some(function (c) { return c.colour === combo.colour && c.size === combo.size; });
+      if (!dupe) L.combos.push(combo);
+      if (colour && L.colours.indexOf(colour) === -1) L.colours.push(colour);
+      if (size && L.sizes.indexOf(size) === -1) L.sizes.push(size);
+      imgs.forEach(function (u) { if (L.imgs.indexOf(u) === -1) L.imgs.push(u); });
+      if (!L.sell && combo.sell) L.sell = String(combo.sell);
+    }
+    B.listings.forEach(function (L) { L.sizes.sort(sizeSort); });
+    return added;
+  }
+
+  // ── File picker → SheetJS (lazy-loaded by the Catalogue tab's helper) ──
+  window.ibiBulkFiles = function (inp) {
+    var files = Array.prototype.slice.call(inp.files || []);
+    inp.value = '';
+    if (!files.length) return;
+    _catLoadLib(function () {
+      var pending = files.length, before = B.listings.length, readErr = 0;
+      files.forEach(function (file) {
+        var fr = new FileReader();
+        fr.onload = function (e) {
+          try {
+            var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+            wb.SheetNames.forEach(function (sn) {
+              if (/summary|index|dropdown|faq|guideline|attributes|parent variant|instruction|example/i.test(sn)) return;   // marketplace template helper sheets
+              var rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header: 1, defval: '' });
+              if (rows.length > 1) parseSheet(rows, file.name, wb.SheetNames.length > 1 ? sn : '');
+            });
+            if (B.files.indexOf(file.name) === -1) B.files.push(file.name);
+          } catch (err) { console.error(err); readErr++; }
+          if (--pending === 0) done();
+        };
+        fr.onerror = function () { readErr++; if (--pending === 0) done(); };
+        fr.readAsArrayBuffer(file);
+      });
+      function done() {
+        var n = B.listings.length - before;
+        if (readErr) showToast('⚠️ ' + readErr + ' file(s) could not be read — save them as .xlsx and try again.');
+        if (!n && !readErr) showToast('⚠️ No product rows found. The sheet needs a header row with at least a Product Name column.');
+        else if (n) showToast('✅ ' + n + ' listing' + (n === 1 ? '' : 's') + ' read from ' + files.length + ' file' + (files.length === 1 ? '' : 's'), 'success');
+        saveDraft(); render();
+      }
+    });
+  };
+
+  // ── Draft survives a refresh (per seller, this browser) ──
+  function draftKey() { var s = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); return 'ibi_bulk_' + (s ? s.sellerId : 'anon'); }
+  function saveDraft() { try { localStorage.setItem(draftKey(), JSON.stringify({ listings: B.listings, files: B.files })); } catch (e) {} }
+  function loadDraft() {
+    if (B.listings.length) return;
+    try { var d = JSON.parse(localStorage.getItem(draftKey()) || 'null'); if (d && d.listings) { B.listings = d.listings; B.files = d.files || []; } } catch (e) {}
+  }
+  window.ibiBulkClear = function () {
+    if (B.busy) return;
+    if (B.listings.length && !confirm('Remove all ' + B.listings.length + ' listings from this review? Nothing already submitted is affected.')) return;
+    B.listings = []; B.files = [];
+    try { localStorage.removeItem(draftKey()); } catch (e) {}
+    render();
+  };
+  window.ibiBulkRemove = function (i) { if (B.busy) return; B.listings.splice(i, 1); saveDraft(); render(); };
+
+  // ── Review-table edits ──
+  window.ibiBulkSetCat   = function (id, v) { var i = parseInt(id.split('_').pop(), 10); if (B.listings[i]) { B.listings[i].category = v; saveDraft(); } };
+  window.ibiBulkSetSell  = function (i, v) { if (B.listings[i]) { B.listings[i].sell = v.replace(/[^0-9.]/g, ''); saveDraft(); refreshRow(i); } };
+  window.ibiBulkSetStock = function (i, v) { if (B.listings[i]) { B.listings[i].stock = v.replace(/[^0-9]/g, ''); saveDraft(); } };
+  window.ibiBulkApplyPrice = function () {
+    var pct = num((document.getElementById('bulk_pct') || {}).value);
+    var n = 0;
+    B.listings.forEach(function (L) {
+      var mrp = listingMrp(L); if (!mrp) return;
+      L.sell = String(Math.max(1, Math.round(mrp * (100 - pct) / 100))); n++;
+    });
+    saveDraft(); render();
+    showToast(n ? ('✅ Selling price set on ' + n + ' listings (MRP − ' + pct + '%). Edit any row to fine-tune.') : '⚠️ No listing carries an MRP — type the selling prices in the table.', n ? 'success' : '');
+  };
+  window.ibiBulkApplyStock = function () {
+    var v = (document.getElementById('bulk_stock') || {}).value || '';
+    v = v.replace(/[^0-9]/g, '');
+    B.listings.forEach(function (L) { L.stock = v; });
+    saveDraft(); render();
+  };
+  window.ibiBulkApplyCat = function (v) {
+    if (!v) return;
+    B.listings.forEach(function (L) { L.category = v; });
+    saveDraft(); render();
+  };
+  function listingMrp(L) { var m = 0; L.combos.forEach(function (c) { if (c.mrp > m) m = c.mrp; }); return m; }
+  function listingTp(L)  { var t = 0; L.combos.forEach(function (c) { if (c.tp && (!t || c.tp < t)) t = c.tp; }); return t; }
+  function floorPrice(L) { var t = listingTp(L); return t ? Math.ceil(t / 0.95) : 0; }   // covers IBI's 5% commission
+
+  function problems(L) {
+    var p = [];
+    if (!num(L.sell)) p.push('needs a selling price');
+    else if (floorPrice(L) && num(L.sell) < floorPrice(L)) p.push('below your transfer price + 5% commission');
+    if (!L.imgs.length) p.push('no photo link in the sheet');
+    if (!L.category) p.push('pick a category');
+    if (!L.hsn) p.push('no HSN code');
+    return p;
+  }
+
+  // ── Render ──
+  function render() {
+    var host = document.getElementById('bulk_review'); if (!host) return;
+    var meta = document.getElementById('bulk_meta');
+    var tools = document.getElementById('bulk_tools');
+    var n = B.listings.length;
+    if (meta) meta.textContent = n ? (n + ' listing' + (n === 1 ? '' : 's') + ' from ' + (B.files.length ? B.files.join(', ') : 'your files') + ' — review below, then upload.') : '';
+    if (tools) tools.style.display = n ? 'flex' : 'none';
+    var clr = document.getElementById('bulk_clear_btn'); if (clr) clr.style.display = n ? 'inline-block' : 'none';
+    var up = document.getElementById('bulk_upload_wrap'); if (up) up.style.display = n ? 'block' : 'none';
+    if (!n) { host.innerHTML = ''; return; }
+    var h = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e5e7eb;border-radius:10px;">' +
+      '<table style="border-collapse:collapse;min-width:1040px;width:100%;font-size:12.5px;">' +
+      '<thead><tr style="background:#f3f4f6;color:#374151;text-align:left;">' +
+      '<th style="padding:8px 10px;">#</th><th style="padding:8px 6px;">Photo</th><th style="padding:8px 10px;">Listing</th>' +
+      '<th style="padding:8px 10px;">Category</th><th style="padding:8px 10px;">Colours × Sizes</th>' +
+      '<th style="padding:8px 10px;">MRP</th><th style="padding:8px 10px;">Transfer price</th>' +
+      '<th style="padding:8px 10px;">Selling price <span style="color:#c00;">*</span></th><th style="padding:8px 10px;">Stock / size</th>' +
+      '<th style="padding:8px 10px;">Photos</th><th style="padding:8px 10px;">Status</th><th></th></tr></thead><tbody>';
+    B.listings.forEach(function (L, i) { h += rowHtml(L, i); });
+    host.innerHTML = h + '</tbody></table></div>';
+  }
+  function rowHtml(L, i) {
+    var mrp = listingMrp(L), tp = listingTp(L), fl = floorPrice(L);
+    var probs = problems(L);
+    var badge;
+    if (L.status === 'ok')        badge = '<span style="color:#15803d;font-weight:700;">✅ Submitted — pending IBI review</span>';
+    else if (L.status === 'dup') badge = '<span style="color:#b45309;font-weight:700;">⚠️ Already listed — edit it in My Products</span>';
+    else if (L.status === 'err') badge = '<span style="color:#b91c1c;font-weight:700;">❌ ' + esc(L.msg || 'failed') + '</span>';
+    else if (L.status === 'busy') badge = '<span style="color:#0369a1;font-weight:700;">⏳ Uploading…</span>';
+    else if (probs.length)       badge = '<span style="color:#b45309;">○ ' + esc(probs.join('; ')) + '</span>';
+    else                         badge = '<span style="color:#0369a1;">● Ready</span>';
+    // Drive serves a right-sized thumbnail for sz=w120 — 53 full-size photos would crawl.
+    var thumb = L.imgs.length ? '<img src="' + esc(L.imgs[0].replace(/([?&]sz=)w\d+/, '$1w120')) + '" loading="lazy" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid #eee;" onerror="this.style.visibility=\'hidden\'">' :
+                                '<div style="width:44px;height:44px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#9ca3af;">📷</div>';
+    var vari = (L.colours.length ? L.colours.join(', ') : '—') + '<br><span style="color:#6b7280;">' + (L.sizes.length ? L.sizes.join(', ') : 'no sizes') + ' · ' + L.combos.length + ' variation' + (L.combos.length === 1 ? '' : 's') + '</span>';
+    var done = L.status === 'ok' || L.status === 'dup';
+    var dis = (B.busy || done) ? ' disabled' : '';
+    return '<tr id="bulk_row_' + i + '" style="border-top:1px solid #f1f5f9;vertical-align:top;' + (done ? 'opacity:.7;' : '') + '">' +
+      '<td style="padding:8px 10px;color:#6b7280;">' + (i + 1) + '</td>' +
+      '<td style="padding:6px;">' + thumb + '</td>' +
+      '<td style="padding:8px 10px;max-width:300px;"><div style="font-weight:700;color:#131921;line-height:1.3;">' + esc(L.title) + '</div>' +
+        '<div style="color:#6b7280;margin-top:3px;">' + esc(L.brand || 'no brand') + ' · HSN ' + (L.hsn ? esc(L.hsn) : '<span style="color:#b45309;">missing</span>') + (L.gst ? ' · GST ' + L.gst + '%' : '') + '</div>' +
+        '<div style="color:#9ca3af;font-size:11px;margin-top:2px;">' + esc(L.src) + '</div></td>' +
+      '<td style="padding:8px 10px;">' + (done ? esc(L.category) : categorySelectHtml('bulk_cat_' + i, L.category)) + '</td>' +
+      '<td style="padding:8px 10px;max-width:220px;">' + vari + '</td>' +
+      '<td style="padding:8px 10px;white-space:nowrap;">' + (mrp ? inr(mrp) : '—') + '</td>' +
+      '<td style="padding:8px 10px;white-space:nowrap;">' + (tp ? inr(tp) + '<br><span style="color:#6b7280;font-size:11px;">min ' + inr(fl) + '</span>' : '—') + '</td>' +
+      '<td style="padding:8px 10px;"><input type="number" min="1" inputmode="decimal" value="' + esc(L.sell) + '" placeholder="₹" oninput="ibiBulkSetSell(' + i + ', this.value)"' + dis + ' class="sc-input" style="width:96px;padding:6px 8px;font-size:13px;"></td>' +
+      '<td style="padding:8px 10px;"><input type="number" min="0" inputmode="numeric" value="' + esc(L.stock) + '" placeholder="10" oninput="ibiBulkSetStock(' + i + ', this.value)"' + dis + ' class="sc-input" style="width:70px;padding:6px 8px;font-size:13px;"></td>' +
+      '<td style="padding:8px 10px;">' + L.imgs.length + '</td>' +
+      '<td id="bulk_status_' + i + '" style="padding:8px 10px;max-width:220px;">' + badge + '</td>' +
+      '<td style="padding:8px 6px;">' + (done || B.busy ? '' : '<button onclick="ibiBulkRemove(' + i + ')" title="Remove from this upload" style="border:none;background:transparent;color:#9ca3af;font-size:16px;cursor:pointer;">×</button>') + '</td></tr>';
+  }
+  function refreshRow(i) {
+    var L = B.listings[i], cell = document.getElementById('bulk_status_' + i);
+    if (!L || !cell) return;
+    var tmp = document.createElement('tbody'); tmp.innerHTML = rowHtml(L, i);
+    cell.innerHTML = tmp.querySelector('#bulk_status_' + i).innerHTML;
+  }
+
+  window.ibiBulkOpen = function () {
+    var sel = document.getElementById('bulk_cat_all');
+    if (sel && !sel.options.length) sel.innerHTML = categorySelectHtml('x', '').replace(/^<select[^>]*>/, '').replace(/<\/select>$/, '');
+    loadDraft(); render();
+  };
+
+  // ── Build the addProduct payload exactly as the Add Product form does ──
+  function payloadFor(L, session) {
+    var sell = num(L.sell), stockDefault = L.stock === '' ? 10 : parseInt(L.stock, 10) || 0;
+    var axes = [];
+    if (L.colours.length) axes.push({ name: 'Colour', options: L.colours.slice() });
+    if (L.sizes.length)   axes.push({ name: 'Size',   options: L.sizes.slice() });
+    var combos = [], totalStock = 0, firstPkg = null, firstWt = 0, firstProd = null;
+    L.combos.forEach(function (c) {
+      var opts = [];
+      if (L.colours.length) opts.push(c.colour || L.colours[0]);
+      if (L.sizes.length)   opts.push(c.size || L.sizes[0]);
+      var st = c.stock === '' ? stockDefault : parseInt(c.stock, 10) || 0;
+      totalStock += st;
+      if (!firstPkg && c.pkgL) firstPkg = c;
+      if (!firstWt && c.wt) firstWt = c.wt;
+      if (!firstProd && c.prodL) firstProd = c;
+      combos.push({
+        opts: opts, price: String(sell), mrp: String(c.mrp || listingMrp(L) || sell), stock: String(st), title: '',
+        pkgL: c.pkgL ? String(c.pkgL) : '', pkgW: c.pkgW ? String(c.pkgW) : '', pkgH: c.pkgH ? String(c.pkgH) : '', pkgWt: c.pkgWt ? String(c.pkgWt) : '',
+        prodL: c.prodL || '', prodW: c.prodW || '', prodH: c.prodH || '', prodSize: c.size || '', prodWt: c.wt ? String(c.wt) : '',
+        imgs: c.imgs.join('|'), img: c.imgs[0] || '', on: 1
+      });
+    });
+    var variations = axes.length ? JSON.stringify({ _matrix: 1, axes: axes, combos: combos }) : '[]';
+    var desc = L.desc && L.desc.length >= 20 ? L.desc : (L.title + '. ' + (L.brand ? 'Sold by ' + L.brand + '. ' : '') + (L.sizes.length ? 'Available in sizes ' + L.sizes.join(', ') + '.' : ''));
+    var bullets = L.bullets.length ? L.bullets.slice() : [];
+    if (!bullets.length) { if (L.brand) bullets.push('Brand: ' + L.brand); if (L.sizes.length) bullets.push('Sizes: ' + L.sizes.join(', ')); if (L.colours.length) bullets.push('Colours: ' + L.colours.join(', ')); }
+    if (!bullets.length) bullets.push('Genuine product from ' + (L.brand || 'the seller'));
+    var STOP = { the: 1, and: 1, for: 1, with: 1, from: 1, this: 1, that: 1, your: 1, latest: 1 };
+    var words = [], seen = {};
+    (L.title + ' ' + L.colours.join(' ') + ' ' + L.brand + ' ' + L.catText).toLowerCase().split(/[^a-z0-9]+/).forEach(function (w) {
+      if (w.length >= 3 && !STOP[w] && !seen[w]) { seen[w] = 1; words.push(w); }
+    });
+    var tags = L.tags || words.join(' '); if (tags.length > 200) tags = tags.slice(0, 200).replace(/\s\S*$/, '');
+    var productDimensions = firstProd ? (firstProd.prodL + 'x' + firstProd.prodW + 'x' + firstProd.prodH + ' cm, ' + (firstWt || '') + ' g')
+                          : (L.sizes.length ? ('Size: ' + L.sizes.join(', ') + (firstWt ? ', ' + firstWt + ' g' : '')) : '');
+    var packageDimensions = firstPkg ? (firstPkg.pkgL + 'x' + (firstPkg.pkgW || '') + 'x' + (firstPkg.pkgH || '') + ' cm, ' + (firstPkg.pkgWt || firstWt || '') + ' g') : '';
+    var imgs = L.imgs.slice(0, 10);
+    return {
+      action: 'addProduct', sellerId: session.sellerId, pin: session.pin,
+      title: L.title, price: String(sell), mrp: String(listingMrp(L) || sell), category: L.category, brand: L.brand || (session.bizName || ''),
+      img: imgs[0] || '', additionalImgs: imgs.slice(1).join('|'),
+      description: desc, bullets: bullets.join('|'),
+      stock: String(axes.length ? totalStock : stockDefault), hsn: L.hsn, tags: tags,
+      variations: variations, productDimensions: productDimensions, packageDimensions: packageDimensions,
+      minQty: '1', maxQty: '', allowDuplicate: '', overwrite: ''
+    };
+  }
+
+  // ── Upload: one listing at a time (the sheet backend is single-threaded) ──
+  window.ibiBulkUpload = function () {
+    if (B.busy) return;
+    var session = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null');
+    if (!session || !session.sellerId) { showToast('⚠️ Please log in to Seller Central first.'); return; }
+    var queue = [];
+    B.listings.forEach(function (L, i) { if (L.status !== 'ok' && L.status !== 'dup' && !problems(L).length) queue.push(i); });
+    var skipped = B.listings.filter(function (L) { return L.status !== 'ok' && L.status !== 'dup' && problems(L).length; }).length;
+    if (!queue.length) { showToast(skipped ? '⚠️ Nothing is ready — fix the items marked ○ first (price, category, photo, HSN).' : '✅ Everything here is already submitted.'); return; }
+    if (!confirm('Submit ' + queue.length + ' listing' + (queue.length === 1 ? '' : 's') + ' for IBI review now?' + (skipped ? '\n\n' + skipped + ' item(s) marked ○ will be left out until fixed.' : ''))) return;
+    B.busy = true; render();
+    var bar = document.getElementById('bulk_progress'), fill = document.getElementById('bulk_progress_fill'), txt = document.getElementById('bulk_progress_txt');
+    var btn = document.getElementById('bulk_upload_btn');
+    if (bar) bar.style.display = 'block';
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Uploading…'; }
+    var done = 0, ok = 0, dup = 0, err = 0;
+    function step() {
+      if (!queue.length) return finish();
+      var i = queue.shift(), L = B.listings[i];
+      L.status = 'busy'; refreshRow(i);
+      if (txt) txt.textContent = 'Uploading ' + (done + 1) + ' of ' + (done + queue.length + 1) + ': ' + L.title.slice(0, 60);
+      var params;
+      try { params = payloadFor(L, session); } catch (e) { L.status = 'err'; L.msg = 'could not build listing'; err++; return next(i); }
+      ibi_fetch_post(params, function (res) {
+        if (!res) { L.status = 'err'; L.msg = 'no reply from server — press Upload again to retry'; err++; }
+        else if (res.duplicate) { L.status = 'dup'; L.productId = res.productId || ''; dup++; }
+        else if (res.success) { L.status = 'ok'; L.productId = res.productId || ''; ok++; }
+        else { L.status = 'err'; L.msg = (res.message || 'rejected').slice(0, 80); err++; }
+        next(i);
+      }, 60000);
+    }
+    function next(i) {
+      done++; saveDraft(); refreshRow(i);
+      if (fill) fill.style.width = Math.round(done / (done + queue.length) * 100) + '%';
+      setTimeout(step, 400);                       // a breath between calls keeps the Apps Script quota happy
+    }
+    function finish() {
+      B.busy = false;
+      if (btn) { btn.disabled = false; btn.textContent = '⬆️ Upload to IBI'; }
+      if (txt) txt.textContent = 'Done — ' + ok + ' submitted' + (dup ? ', ' + dup + ' already listed' : '') + (err ? ', ' + err + ' failed (press Upload again to retry them)' : '') + '.';
+      render();
+      showToast(ok ? ('✅ ' + ok + ' listing' + (ok === 1 ? '' : 's') + ' submitted for IBI review. They appear under My Products, where you can edit prices, stock and photos.') : '⚠️ Nothing was submitted — see the Status column.', ok ? 'success' : '');
+      if (ok && typeof loadSellerProducts === 'function') loadSellerProducts();
+    }
+    step();
+  };
+})();
+</script>
 
 <!-- Floating Support Button -->
 <button id="supportFab" onclick="openSupportTicket()"
