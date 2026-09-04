@@ -13,6 +13,10 @@
 //   5. rewrites the block between <!-- IBI:SSR:START --> and <!-- IBI:SSR:END --> in
 //      index.html, so the home page a crawler receives contains the actual product
 //      cards (the SPA repaints the grid at runtime; the markers live in the SOURCE)
+//   6. writes meta-catalogue-feed.csv   — Meta Commerce Manager product feed (house
+//                                       brand only). Commerce Manager fetches it on a
+//                                       schedule and keeps the WhatsApp Business
+//                                       catalogue in step with the storefront.
 //
 // Design rules (do not break):
 //   • Slugs come from the title and are remembered in products.json. If a title is
@@ -51,6 +55,65 @@ function imagesOf(p) {
   return [p.img].concat(String(p.additionalImgs || '').split(/[|,]/))
     .map(fixImg).filter(u => /^https?:\/\//i.test(u))
     .filter((u, i, a) => a.indexOf(u) === i);
+}
+
+// ── Meta / WhatsApp Business catalogue feed ──────────────────────────────────
+// Meta Commerce Manager "scheduled data feed" layout (CSV, one row per item):
+// https://www.facebook.com/business/help/120325381656392 — required columns are
+// id, title, description, availability, condition, price, link, image_link, brand.
+// Rules (do not break):
+//   • HOUSE BRAND ONLY — other sellers' listings never reach IBI's WhatsApp catalogue.
+//   • A variation product is ONE row at the price the storefront card shows; the
+//     buyer picks the colour / pack size on the product page the row links to.
+//   • Out-of-stock stays listed as "out of stock" (never dropped) so an item a
+//     customer shared on WhatsApp keeps working; a row needs a price and a photo
+//     or Meta rejects it, so those are skipped and counted in the log.
+//   • DETERMINISTIC — no timestamps — so the file changes only when a listing does.
+const HOUSE_SELLER = 'IINTELLIGENCEI';
+const FEED_FILE    = 'meta-catalogue-feed.csv';
+const FEED_COLS    = ['id','title','description','availability','condition','price','sale_price',
+                      'link','image_link','additional_image_link','brand','product_type'];
+
+function csvCell(v) {
+  v = String(v == null ? '' : v);
+  return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+function plainText(s, max) {
+  s = String(s == null ? '' : s)
+    .replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim();
+  return s.length > max ? s.slice(0, max - 1).trimEnd() + '…' : s;
+}
+function isHouseBrand(p) {
+  return String(p.sellerId || '').toUpperCase() === HOUSE_SELLER ||
+         String(p.brand || '').toLowerCase() === BRAND.toLowerCase();
+}
+function metaFeed(list, slugs) {
+  let skipped = 0;
+  const rows = [];
+  list.filter(isHouseBrand).forEach(p => {
+    const imgs  = imagesOf(p);
+    const pr    = pricing(p);                 // same price/stock roll-up the product page uses
+    const price = pr.min || 0, mrp = pr.mrp || 0;
+    if (!(price > 0) || !imgs[0]) { skipped++; return; }
+    const bullets = String(p.bullets || '').split('|').map(b => b.trim()).filter(Boolean).join(' • ');
+    const desc = plainText([p.description, bullets].filter(Boolean).join(' '), 5000) || plainText(p.title, 200);
+    rows.push([
+      p.productId,
+      plainText(p.title, 200),
+      desc,
+      pr.inStock ? 'in stock' : 'out of stock',
+      'new',
+      (mrp > price ? mrp : price).toFixed(2) + ' INR',   // list price (MRP)
+      mrp > price ? price.toFixed(2) + ' INR' : '',       // selling price, shown struck against MRP
+      ORIGIN + '/p/' + slugs[String(p.productId)] + '/',
+      imgs[0],
+      imgs.slice(1, 11).join(','),                        // Meta: comma-separated, max 10 extra
+      p.brand || BRAND,
+      String(p.category || ''),
+    ].map(csvCell).join(','));
+  });
+  return { csv: FEED_COLS.join(',') + '\n' + rows.join('\n') + '\n', count: rows.length, skipped };
 }
 
 // ⚠ Keep IDENTICAL to ibiProductSlug() in index.html — the storefront builds share
@@ -261,6 +324,17 @@ function ssrCard(p, slug) {
   });
   // Never redirect a slug that is in live use again.
   Object.keys(redirects).forEach(s => { if (Object.values(slugs).includes(s)) delete redirects[s]; });
+
+  // ── Meta / WhatsApp catalogue feed (before the unchanged-check: it has no
+  //    timestamp, so rewriting it only when its bytes differ costs nothing) ──
+  const mfeed = metaFeed(list, slugs);
+  const feedPath = path.join(ROOT, FEED_FILE);
+  let prevFeed = '';
+  try { prevFeed = fs.readFileSync(feedPath, 'utf8'); } catch (e) {}
+  if (mfeed.csv !== prevFeed) {
+    fs.writeFileSync(feedPath, mfeed.csv, "utf8");
+    console.log('  wrote ' + FEED_FILE + ': ' + mfeed.count + " items" + (mfeed.skipped ? " (" + mfeed.skipped + ' skipped: no price or photo)' : ''));
+  }
 
   // Nothing actually changed? Then write NOTHING. products.json carries a generatedAt
   // stamp, so without this check every half-hourly run would produce a fresh timestamp,

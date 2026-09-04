@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v17.1
+
+📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers' products stay off IBI's WhatsApp catalogue.
+
 ## v17.0
 
 ⭐ VERIFIED REVIEWS AND SELLER RATINGS, THE AMAZON WAY. Only a customer whose order shows Delivered can review — from Track My Order, with a star rating, headline, text and photos for each item, and a separate rating for the seller. Reviews post at once under the customer's first name and last initial with a Verified purchase badge; one review per item per order, so no listing can be stuffed. Product cards and product pages now show the real star rating and count, the product page carries the review list with a rating breakdown and the seller's public response, and the seller's store page shows the seller rating. Seller Central has a Reviews tab — seller rating, product rating, a negative-feedback rate against Amazon's 1% target, every review with a reply box — and the Seller Rating tile that was hidden since v11.1 lights up the day the first buyer rates. IBI can hide a review that breaks the guidelines from the admin desk. Low ratings email the seller and IBI at once.
