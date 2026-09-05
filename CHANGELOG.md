@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v18.2
+
+⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store's rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.
+
 ## v18.1
 
 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product's name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.

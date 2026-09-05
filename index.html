@@ -2621,9 +2621,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v18.1';
+window.IBI_VERSION      = 'v18.2';
 window.IBI_VERSION_DATE = '5 Sep 2026';
-window.IBI_VERSION_NOTE = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
+window.IBI_VERSION_NOTE = 'v18.2 — ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store\'s rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.';
+window.IBI_VERSION_NOTE_PREV10 = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
 window.IBI_VERSION_NOTE_PREV09 = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
 window.IBI_VERSION_NOTE_PREV08 = 'v17.1 — 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers\' products stay off IBI\'s WhatsApp catalogue.';
 window.IBI_VERSION_NOTE_PREV07 = 'v17.0 — ⭐ VERIFIED REVIEWS AND SELLER RATINGS, THE AMAZON WAY. Only a customer whose order shows Delivered can review — from Track My Order, with a star rating, headline, text and photos for each item, and a separate rating for the seller. Reviews post at once under the customer\'s first name and last initial with a Verified purchase badge; one review per item per order, so no listing can be stuffed. Product cards and product pages now show the real star rating and count, the product page carries the review list with a rating breakdown and the seller\'s public response, and the seller\'s store page shows the seller rating. Seller Central has a Reviews tab — seller rating, product rating, a negative-feedback rate against Amazon\'s 1% target, every review with a reply box — and the Seller Rating tile that was hidden since v11.1 lights up the day the first buyer rates. IBI can hide a review that breaks the guidelines from the admin desk. Low ratings email the seller and IBI at once.';
@@ -12630,62 +12631,131 @@ function _agHistory() {
 function _agRun() {
   _agSetBusy(true);
   var hops = 0;
+
+  function fail(msg, status) {
+    if (status === 400) { _ag.messages = []; msg = 'Let’s start over — please send that again.'; }   // history no longer valid
+    else if (_ag.messages.length && _ag.messages[_ag.messages.length - 1].role === 'user' && typeof _ag.messages[_ag.messages.length - 1].content === 'string') _ag.messages.pop();   // let them resend
+    _agLiveDrop();
+    _agErr(msg); _agSetBusy(false); _agSave();
+  }
+
+  // One assistant reply — from the JSON body or from the stream's final 'done' event.
+  function handle(j) {
+    if (j.auto_cards) _ag.autoCards = true;   // this engine relies on the page to draw cards from search results
+    _ag.messages.push({ role: 'assistant', content: j.content });
+    var texts = j.content.filter(function (b) { return b.type === 'text' && b.text && b.text.trim(); });
+    var uses = j.content.filter(function (b) { return b.type === 'tool_use'; });
+    var isFinal = !(j.stop_reason === 'tool_use' && uses.length && hops < _AG_MAX_HOPS);
+    // Cards, guaranteed: the model is asked to call show_products, but a small model often
+    // answers in prose instead. Any product ID it names is swapped for the product's name in
+    // the bubble and drawn as a card; if it named none but a search ran this turn, the top
+    // results become the cards. Rufus-style: the shopper always gets something to tap.
+    var namedIds = isFinal ? _agIdsInText(texts.map(function (b) { return b.text; }).join('\n')) : [];
+    var live = document.getElementById('ibiAgLive');
+    texts.forEach(function (b, idx) {
+      var html = isFinal ? _agHumanizeIds(b.text) : b.text;
+      if (live && idx === 0) {   // the streamed bubble becomes the final, markdown-rendered one
+        live.removeAttribute('id'); live.innerHTML = _agMd(html); _ag.transcript.push({ t: 'bot', html: live.innerHTML }); _agScroll();
+      } else _agBot(html);
+    });
+    if (live && !texts.length) live.remove();
+    // The cart is the truth, not the model's sentence: a small model may say "added" after the
+    // tool refused (wrong option name). Put the real outcome on screen from the tool result.
+    if (isFinal && _ag.turn.addError) {
+      var ae = _ag.turn.addError, opts = (ae.available || []).map(function (a) { return (a.options || []).join(' / ') + (a.price ? ' (' + _agInr(a.price) + ')' : ''); });
+      _agErr('Not added yet — ' + String(ae.error || '').replace(/\s+$/, '') + (opts.length ? ' Options: ' + opts.join(' · ') : ''));
+      _ag.turn.addError = null;
+    }
+    if (isFinal && !_ag.turn.shown) {
+      var ids = namedIds.length ? namedIds : (uses.length ? [] : _ag.turn.searchIds.slice(0, 3));
+      if (ids.length) { _agCards(ids); _ag.turn.shown = true; }
+    }
+    if (!isFinal) {
+      hops++;
+      var results = uses.map(function (u) {
+        var r; try { r = _agTool(u.name, u.input || {}); } catch (e) { r = { error: String(e && e.message || e) }; }
+        var block = { type: 'tool_result', tool_use_id: u.id, content: JSON.stringify(r) };
+        if (r && r.error) block.is_error = true;
+        return block;
+      });
+      _ag.messages.push({ role: 'user', content: results });
+      _agSave();
+      step();
+      return;
+    }
+    if (!texts.length && uses.length) _agBot('Done.');
+    _agSetBusy(false); _agSave();
+    var p = document.getElementById('ibiAgPanel');
+    if (!p.classList.contains('open')) { _ag.unread = true; document.getElementById('ibiAgFab').classList.add('unread'); }
+  }
+
+  // Server-sent events from the proxy: {type:'text',delta} as the words are generated, then
+  // {type:'done',reply}. The timer is IDLE-based — a slow engine that is still talking is fine.
+  function readStream(r, arm) {
+    return new Promise(function (resolve, reject) {
+      var reader = r.body.getReader(), dec = new TextDecoder(), buf = '', finished = false;
+      function pump() {
+        reader.read().then(function (res) {
+          if (res.done) { if (!finished) reject(new Error('stream ended early')); return; }
+          arm(60000);
+          buf += dec.decode(res.value, { stream: true });
+          var nl;
+          while ((nl = buf.indexOf('\n')) !== -1) {
+            var line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+            if (line.indexOf('data:') !== 0) continue;
+            var ev; try { ev = JSON.parse(line.slice(5)); } catch (e) { continue; }
+            if (ev.type === 'text') _agLiveAppend(ev.delta);
+            else if (ev.type === 'done') { finished = true; resolve(ev.reply); return; }
+            else if (ev.type === 'error') { finished = true; reject(new Error(ev.message || 'stream error')); return; }
+          }
+          pump();
+        }, reject);
+      }
+      pump();
+    });
+  }
+
   function step() {
-    var body = JSON.stringify({ messages: _agHistory() });
+    var body = JSON.stringify({ messages: _agHistory(), stream: true });
     var ctrl = ('AbortController' in window) ? new AbortController() : null;
-    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 70000) : null;
+    var timer = null;
+    function arm(ms) { if (!ctrl) return; clearTimeout(timer); timer = setTimeout(function () { ctrl.abort(); }, ms); }
+    arm(70000);
     fetch(_agUrl(), { method: 'POST', headers: { 'content-type': 'application/json' }, body: body, signal: ctrl ? ctrl.signal : undefined })
-      .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
+      .then(function (r) {
+        var ct = r.headers.get('content-type') || '';
+        if (r.status === 200 && ct.indexOf('text/event-stream') !== -1 && r.body && r.body.getReader) {
+          return readStream(r, arm).then(function (reply) { return { status: 200, j: reply }; });
+        }
+        return r.json().then(function (j) { return { status: r.status, j: j }; });
+      })
       .then(function (res) {
-        if (timer) clearTimeout(timer);
+        clearTimeout(timer);
         var j = res.j || {};
         if (res.status !== 200 || !Array.isArray(j.content)) {
-          var msg = j.message || (res.status === 503 ? 'The assistant is being set up. Please use the search bar, or WhatsApp us at +91 89394 14799.' : 'The assistant hit a problem. Please try again.');
-          if (res.status === 400) { _ag.messages = []; msg = 'Let’s start over — please send that again.'; }   // history no longer valid
-          else if (_ag.messages.length && _ag.messages[_ag.messages.length - 1].role === 'user' && typeof _ag.messages[_ag.messages.length - 1].content === 'string') _ag.messages.pop();   // let them resend
-          _agErr(msg); _agSetBusy(false); _agSave(); return;
-        }
-        _ag.messages.push({ role: 'assistant', content: j.content });
-        var texts = j.content.filter(function (b) { return b.type === 'text' && b.text && b.text.trim(); });
-        var uses = j.content.filter(function (b) { return b.type === 'tool_use'; });
-        var isFinal = !(j.stop_reason === 'tool_use' && uses.length && hops < _AG_MAX_HOPS);
-        // Cards, guaranteed: the model is asked to call show_products, but a small model often
-        // answers in prose instead. Any product ID it names is swapped for the product's name in
-        // the bubble and drawn as a card; if it named none but a search ran this turn, the top
-        // results become the cards. Rufus-style: the shopper always gets something to tap.
-        var namedIds = isFinal ? _agIdsInText(texts.map(function (b) { return b.text; }).join('\n')) : [];
-        texts.forEach(function (b) { _agBot(isFinal ? _agHumanizeIds(b.text) : b.text); });
-        if (isFinal && !_ag.turn.shown) {
-          var ids = namedIds.length ? namedIds : (uses.length ? [] : _ag.turn.searchIds.slice(0, 3));
-          if (ids.length) { _agCards(ids); _ag.turn.shown = true; }
-        }
-        if (!isFinal) {
-          hops++;
-          var results = uses.map(function (u) {
-            var r; try { r = _agTool(u.name, u.input || {}); } catch (e) { r = { error: String(e && e.message || e) }; }
-            var block = { type: 'tool_result', tool_use_id: u.id, content: JSON.stringify(r) };
-            if (r && r.error) block.is_error = true;
-            return block;
-          });
-          _ag.messages.push({ role: 'user', content: results });
-          _agSave();
-          step();
+          fail(j.message || (res.status === 503 ? 'The assistant is being set up. Please use the search bar, or WhatsApp us at +91 89394 14799.' : 'The assistant hit a problem. Please try again.'), res.status);
           return;
         }
-        if (!texts.length && uses.length) _agBot('Done.');
-        _agSetBusy(false); _agSave();
-        var p = document.getElementById('ibiAgPanel');
-        if (!p.classList.contains('open')) { _ag.unread = true; document.getElementById('ibiAgFab').classList.add('unread'); }
+        handle(j);
       })
-      .catch(function () {
-        if (timer) clearTimeout(timer);
-        if (_ag.messages.length && _ag.messages[_ag.messages.length - 1].role === 'user' && typeof _ag.messages[_ag.messages.length - 1].content === 'string') _ag.messages.pop();
-        _agErr('Could not reach the assistant. Check your connection and try again.');
-        _agSetBusy(false); _agSave();
+      .catch(function (e) {
+        clearTimeout(timer);
+        fail(String(e && e.message || '').indexOf('stream') !== -1 ? 'The assistant stopped mid-reply. Please try again.' : 'Could not reach the assistant. Check your connection and try again.');
       });
   }
   step();
 }
+
+// Live bubble for a streaming reply: appears on the first words, replacing the typing dots.
+function _agLiveAppend(delta) {
+  if (!delta) return;
+  var b = document.getElementById('ibiAgBody');
+  var live = document.getElementById('ibiAgLive');
+  if (!live) { _agTyping(false); live = document.createElement('div'); live.id = 'ibiAgLive'; live.className = 'ibiAgMsg bot'; live.textContent = ''; b.appendChild(live); }
+  live.textContent += delta;
+  _agScroll();
+}
+function _agLiveDrop() { var live = document.getElementById('ibiAgLive'); if (live) live.remove(); }
 
 // ── Tool execution on the LIVE catalogue and cart ──
 function _agCatName(catId) {
@@ -12775,14 +12845,26 @@ function _agCartView() {
   }).filter(Boolean);
   return { lines: lines, items: lines.reduce(function (s, l) { return s + l.quantity; }, 0), total: lines.reduce(function (s, l) { return s + l.line_total; }, 0), delivery: 'FREE' };
 }
+// Tolerant: a small model writes options as "Quantity: 1", "pack of 2", "1 pack", "Red / XL" or
+// a single string for several axes. Normalise to bare values in axis order before comparing.
 function _agMatchCombo(p, options) {
-  var m = p.variations; var opts = Array.isArray(options) ? options.map(function (o) { return String(o).trim().toLowerCase(); }) : [];
-  if (opts.length !== (m.axes || []).length) return null;
-  return (m.combos || []).find(function (c) {
-    var o = c.opts || []; if (o.length !== opts.length) return false;
-    for (var k = 0; k < o.length; k++) { if (String(o[k]).trim().toLowerCase() !== opts[k]) return false; }
-    return true;
-  }) || null;
+  var m = p.variations, axes = m.axes || [];
+  var raw = Array.isArray(options) ? options.slice() : (options == null || options === '' ? [] : [options]);
+  if (raw.length === 1 && axes.length > 1 && /[\/,|]/.test(String(raw[0]))) raw = String(raw[0]).split(/\s*[\/,|]\s*/);   // "Red / XL"
+  if (raw.length !== axes.length) return null;
+  var norm = function (s) { return String(s).toLowerCase().replace(/[\s ]+/g, ' ').trim(); };
+  var want = raw.map(function (o, i) {
+    var s = norm(o);
+    var ax = norm(axes[i] && axes[i].name || '');
+    if (ax && s.indexOf(ax + ':') === 0) s = s.slice(ax.length + 1).trim();          // "quantity: 1" → "1"
+    else if (ax && s.indexOf(ax + ' ') === 0) s = s.slice(ax.length + 1).trim();     // "quantity 1"
+    s = s.replace(/^(pack of|set of|qty|quantity|size|colou?r)\s*[:\-]?\s*/, '').replace(/\s*(pack|pcs|pieces|nos|units?)$/, '').trim();
+    return s;
+  });
+  var byVal = function (c) { var o = c.opts || []; if (o.length !== want.length) return false; for (var k = 0; k < o.length; k++) if (norm(o[k]) !== want[k]) return false; return true; };
+  var byNum = function (c) { var o = c.opts || []; if (o.length !== want.length) return false; for (var k = 0; k < o.length; k++) { var a = parseFloat(o[k]), b = parseFloat(want[k]); if (isNaN(a) || isNaN(b) ? norm(o[k]) !== want[k] : a !== b) return false; } return true; };
+  var byContains = function (c) { var o = c.opts || []; if (o.length !== want.length) return false; for (var k = 0; k < o.length; k++) if (want[k].indexOf(norm(o[k])) === -1) return false; return true; };
+  return (m.combos || []).find(byVal) || (m.combos || []).find(byNum) || (m.combos || []).find(byContains) || null;
 }
 function _agAdd(inp) {
   var p = _agFind(inp.product_id); if (!p) return { error: 'Unknown product_id ' + inp.product_id };
@@ -12813,10 +12895,19 @@ function _agRemove(inp) {
 }
 function _agTool(name, inp) {
   switch (name) {
-    case 'search_products':     { var sr = _agSearch(inp); _ag.turn.searchIds = (sr.results || []).map(function (r) { return r.id; }); return sr; }
+    case 'search_products':     {
+      var sr = _agSearch(inp); _ag.turn.searchIds = (sr.results || []).map(function (r) { return r.id; });
+      // Engines that leave cards to the page (local): draw them NOW, while the model is still
+      // composing its sentence — one fewer round trip and the shopper sees products seconds earlier.
+      if (_ag.autoCards && !_ag.turn.shown && _ag.turn.searchIds.length) { _agCards(_ag.turn.searchIds.slice(0, 3)); _ag.turn.shown = true; }
+      return sr;
+    }
     case 'get_product_details': { var dr = _agDetails(inp); if (!dr.error && _ag.turn.searchIds.indexOf(dr.id) === -1) _ag.turn.searchIds.unshift(dr.id); return dr; }
-    case 'show_products':       { var n = _agCards(inp.product_ids || []); if (n) _ag.turn.shown = true; return n ? { shown: n } : { error: 'None of those product ids exist.' }; }
-    case 'add_to_cart':         return _agAdd(inp);
+    case 'show_products':       {
+      if (_ag.turn.shown) return { shown: (inp.product_ids || []).length, note: 'cards already on screen for this turn' };   // never draw the same row twice
+      var n = _agCards(inp.product_ids || []); if (n) _ag.turn.shown = true; return n ? { shown: n } : { error: 'None of those product ids exist.' };
+    }
+    case 'add_to_cart':         { var ar = _agAdd(inp); _ag.turn.addError = ar.error ? ar : null; if (!ar.error) _ag.turn.added = ar.added; return ar; }
     case 'remove_from_cart':    return _agRemove(inp);
     case 'view_cart':           return _agCartView();
     case 'open_product_page':   { var p = _agFind(inp.product_id); if (!p) return { error: 'Unknown product_id' }; ibiAgentMinimise(); openProductPage(p.id); return { opened: p.title }; }
