@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.1
+
+📺 EVERY PRODUCT VIDEO ON THE IBI YOUTUBE CHANNEL NOW SHOPS ITSELF. The channel's public uploads are read each night, each video is joined to the listing it shows — by the product link in its description when there is one, otherwise by its title, and a video that shows a family (a chain in six colours, three rice-pot sizes) pins every one of them — and the result is published as a feed the shop imports on its own: new videos appear in Watch & Shop as approved house-brand videos, changed titles and thumbnails refresh, and a video taken off YouTube is hidden here the same day. Nobody types a video in again. The home rail shows the newest video for each product, thirty at most, with the rest under More to watch; the admin desk gains a Sync channel feed button for an immediate import and a report lists the uploads still unmatched so a product link can be added to their YouTube description.
+
 ## v19.0
 
 ▶ WATCH & SHOP: SHOPPABLE VIDEOS, THE AMAZON LIVE WAY. The storefront now carries a Watch & Shop rail — product videos with the products pinned beside the player, so a shopper adds to the cart while the video plays instead of hunting for the item afterwards. Each video opens on its own page: the player on the left, a Shop this video list on the right that lights up the product the moment it appears on screen (tap the time-stamp to jump there), Add to Cart for a plain product and See details for one with options, the recorded date under the title, the seller's card with Visit store, a Share button and More to watch below. A product page shows Watch it in action when a video features that item, opening at the exact moment. Sellers submit videos from a new Videos tab in Seller Central — a YouTube or .mp4 link, a title, the recording date and up to 20 of their own listed products pinned with mm:ss — and IBI approves, hides or features them from the admin desk; the seller is emailed when a video goes live. The rail stays hidden until at least one approved video has a product on sale, so the shop never shows an empty room. Live streaming with chat is the next phase and uses the same page.
@@ -45,6 +49,10 @@
 ## v13.1
 
 🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.
+
+## v13.2
+
+🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.
 
 ## v12.15
 

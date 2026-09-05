@@ -1428,7 +1428,7 @@ loadReviewsDesk = function () { _loadReviewsDesk_v17(); loadVideosDesk(); };
 function loadVideosDesk() {
   let host = document.getElementById('videosDesk');
   if (!host) { const anchor = document.getElementById('reviewsDesk') || document.getElementById('returnsDesk'); if (!anchor) return; host = document.createElement('div'); host.id = 'videosDesk'; host.style.marginTop = '18px'; anchor.insertAdjacentElement('afterend', host); }
-  const head = n => '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">▶ Watch &amp; Shop videos desk' + (n != null ? ' <span style="font-weight:500;color:var(--muted);font-size:12px;">' + n + ' · a Pending video is invisible to shoppers until approved · Feature puts one at the front of the rail</span>' : '') + '</div>';
+  const head = n => '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;"><div style="font-weight:800;font-size:15px;">▶ Watch &amp; Shop videos desk' + (n != null ? ' <span style="font-weight:500;color:var(--muted);font-size:12px;">' + n + ' · a Pending video is invisible to shoppers until approved · Feature puts one at the front of the rail</span>' : '') + '</div><button class="btn btn-edit" onclick="adminSyncVideoFeed()" title="Import every public product video on the IBI YouTube channel from /videos-feed.json">🔄 Sync channel feed</button></div>';
   host.innerHTML = head() + '<div style="color:var(--muted);font-size:12px;">Loading…</div>';
   sheetFetch({ action:'adminGetVideos', ceoToken: ceoToken() }, res => {
     const e = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -1454,6 +1454,10 @@ function adminSetVideo(videoId, status) {
   if (status === 'Rejected') { note = prompt('Reason the seller will see (optional):', ''); if (note === null) return; }
   else if (status === 'Hidden' && !confirm('Hide this video from the storefront?')) return;
   sheetFetch({ action:'adminUpdateVideo', ceoToken: ceoToken(), videoId, status, note }, res => { if (res && res.success) { toast('✅ Video ' + status.toLowerCase()); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Failed')); }, 15000);
+}
+function adminSyncVideoFeed() {
+  toast('Syncing the channel feed…');
+  sheetFetch({ action:'syncVideoFeed', ceoToken: ceoToken() }, res => { if (res && res.success) { toast(res.skipped ? 'ℹ️ ' + res.message : '✅ Feed synced — ' + res.added + ' added, ' + res.updated + ' updated, ' + res.hidden + ' hidden'); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Sync failed')); }, 60000);
 }
 function adminFeatureVideo(videoId, on) {
   sheetFetch({ action:'adminUpdateVideo', ceoToken: ceoToken(), videoId, featured: on ? '1' : '0' }, res => { if (res && res.success) { toast(on ? '⭐ Featured' : 'Unfeatured'); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Failed')); }, 15000);
