@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.3
+
+↩️ BACK FROM A VIDEO RETURNS TO THE PRODUCT PAGE IT CAME FROM. Opening a video from Watch it in action on a product page and pressing Back now lands on that product page again, exactly as it was, instead of on the home screen. The cart and Visit store buttons on the video page still leave both pages behind, as they should.
+
 ## v19.2
 
 🗓️ THE RECORDED DATE READS AS A DATE AGAIN, AND SHARE ALWAYS COPIES. The sheet had turned a typed "25 Sep 2023" into a date cell and the watch page then printed the raw computer form of it ("Mon Sep 25 2023 00:00:00 GMT+0530 …"); dates now print day-first with a named month wherever they appear, and the backend stores them as text so it cannot happen again. The YouTube player's own Copy link button was blocked inside the shop ("Unable to copy link to clipboard") because the frame was never granted clipboard access — granted now — and the shop's Share button gained a fallback copy for browsers that refuse the modern clipboard call. Also: a video opened from a shared link or after a page refresh now has the shop underneath it, so Back returns to the store instead of leaving the site.
