@@ -2621,9 +2621,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v18.2';
+window.IBI_VERSION      = 'v18.3';
 window.IBI_VERSION_DATE = '5 Sep 2026';
-window.IBI_VERSION_NOTE = 'v18.2 — ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store\'s rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.';
+window.IBI_VERSION_NOTE = 'v18.3 — 🛒 THE CART IS THE TRUTH, NOT THE ASSISTANT\'S SENTENCE. A pack size such as "4 Qty" is now understood as one pack, never as four units; asking the assistant to add something it already added no longer doubles it (the line is set, not stacked); a new "change quantity" ability lets it raise or lower units without removing and re-adding; and after any reply that changed the cart, the shop itself prints the real cart — every line, pack, unit and the total — under the reply, with View cart and Checkout buttons. The seller\'s Max order qty is now enforced in the cart as well as on the product page: repeated Add clicks could exceed it before. Prompted by a live chat where two packs of coconut broom sticks were counted and a shopper was told a total that did not match what they meant to buy.';
+window.IBI_VERSION_NOTE_PREV11 = 'v18.2 — ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store\'s rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.';
 window.IBI_VERSION_NOTE_PREV10 = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
 window.IBI_VERSION_NOTE_PREV09 = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
 window.IBI_VERSION_NOTE_PREV08 = 'v17.1 — 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers\' products stay off IBI\'s WhatsApp catalogue.';
@@ -12608,7 +12609,7 @@ function ibiAgentSend() {
   if (!text || _ag.busy) return;
   i.value = '';
   _agChips([]);
-  _ag.turn = { shown: false, searchIds: [] };   // per shopper message: did the model show cards, what did it find
+  _ag.turn = { shown: false, searchIds: [], cartBefore: JSON.stringify(cart) };   // per shopper message: cards shown? what was found? did the cart change?
   _agUser(text);
   _ag.messages.push({ role: 'user', content: text });
   _agRun();
@@ -12666,6 +12667,7 @@ function _agRun() {
       _agErr('Not added yet — ' + String(ae.error || '').replace(/\s+$/, '') + (opts.length ? ' Options: ' + opts.join(' · ') : ''));
       _ag.turn.addError = null;
     }
+    if (isFinal && _ag.turn.cartBefore !== undefined && _ag.turn.cartBefore !== JSON.stringify(cart)) { _agCartSummary(); _ag.turn.cartBefore = JSON.stringify(cart); }
     if (isFinal && !_ag.turn.shown) {
       var ids = namedIds.length ? namedIds : (uses.length ? [] : _ag.turn.searchIds.slice(0, 3));
       if (ids.length) { _agCards(ids); _ag.turn.shown = true; }
@@ -12841,9 +12843,22 @@ function _agCartView() {
   var lines = cart.map(function (i) {
     var p = products.find(function (x) { return x.id === i.id; }); if (!p) return null;
     var unit = (i.vprice != null && i.vprice !== '') ? parseFloat(i.vprice) : p.price;
-    return { id: String(p.productId || p.id), title: p.title, options: i.vlabel || undefined, quantity: i.qty, unit_price: unit, line_total: unit * i.qty };
+    return { id: String(p.productId || p.id), title: p.title, brand: p.brand, pack_option: i.vlabel || undefined, units: i.qty, unit_price: unit, line_total: unit * i.qty };
   }).filter(Boolean);
-  return { lines: lines, items: lines.reduce(function (s, l) { return s + l.quantity; }, 0), total: lines.reduce(function (s, l) { return s + l.line_total; }, 0), delivery: 'FREE' };
+  return { lines: lines, items: lines.reduce(function (s, l) { return s + l.units; }, 0), total: lines.reduce(function (s, l) { return s + l.line_total; }, 0), delivery: 'FREE',
+           note: 'units = number of packs bought; pack_option = the pack size chosen (e.g. "4" means a 4-piece pack, ONE unit).' };
+}
+// The cart as the page knows it — printed after any turn that changed it, so the shopper
+// reads the truth even when the model's sentence drifts (it once summed 2 packs as "corrected").
+function _agCartSummary(silent) {
+  var v = _agCartView(); var b = document.getElementById('ibiAgBody');
+  var m = document.createElement('div'); m.className = 'ibiAgMsg bot ibiAgCartSum';
+  var rows = v.lines.map(function (l) { return '<div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span>' + l.units + ' × ' + _agEsc(ibiTitleNoBrand(l.title, l.brand || '').split(/[,|(]/)[0].trim()) + (l.pack_option ? ' <span style="color:#8B5CF6;font-weight:700">(' + _agEsc(l.pack_option) + ' pack)</span>' : '') + '</span><b style="white-space:nowrap;flex:0 0 auto">' + _agInr(l.line_total) + '</b></div>'; }).join('');
+  m.innerHTML = '<div style="font:700 12.5px Rajdhani,system-ui,sans-serif;color:#555;margin-bottom:4px">🛒 YOUR CART NOW</div>' + (rows || '<div>Empty</div>') +
+    '<div style="display:flex;justify-content:space-between;border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px"><span>Total · FREE delivery</span><b>' + _agInr(v.total) + '</b></div>' +
+    (v.lines.length ? '<div style="display:flex;gap:6px;margin-top:8px"><button class="ibiAgChip" onclick="_agTool(\'open_cart\',{})">View cart</button><button class="ibiAgChip" style="background:#f97316;color:#fff;border-color:#f97316" onclick="_agTool(\'open_checkout\',{})">Checkout</button></div>' : '');
+  b.appendChild(m); _agScroll();
+  _ag.transcript.push({ t: 'bot', html: m.innerHTML }); if (!silent) _agSave();
 }
 // Tolerant: a small model writes options as "Quantity: 1", "pack of 2", "1 pack", "Red / XL" or
 // a single string for several axes. Normalise to bare values in axis order before comparing.
@@ -12881,8 +12896,34 @@ function _agAdd(inp) {
   } else if (!p.inStock) {
     return { error: 'Out of stock right now.' };
   }
-  addToCart(p.id, qty, variant);
-  var v = _agCartView(); v.added = { id: String(p.productId || p.id), title: p.title, options: variant ? variant.vlabel : undefined, quantity: qty };
+  // SET, never increment: an agent's "add" is idempotent. A small model re-issues add_to_cart on
+  // every "ok", and the CEO's cart ended up with 2 then 4 packs of broom sticks that way (5 Sep
+  // 2026). If the line exists, its units are set to `quantity` (default 1); to buy more, the
+  // shopper says so and the model passes the number.
+  var vk = variant ? variant.vk : '';
+  var existing = cart.find(function (c) { return c.id === p.id && (c.vk || '') === vk; });
+  var already = false;
+  if (existing) { already = true; existing.qty = Math.max(1, Math.min(_ibiLineMax(p), qty)); updateCartCount(); renderCart(); showToast('🛒 Cart updated: ' + existing.qty + ' × ' + p.title.substring(0, 32) + (variant && variant.vlabel ? ' — ' + variant.vlabel : ''), 'success'); }
+  else addToCart(p.id, qty, variant);
+  var v = _agCartView();
+  var line = v.lines.find(function (l) { return l.id === String(p.productId || p.id) && (l.pack_option || '') === (variant ? variant.vlabel : ''); }) || null;
+  v.added = { id: String(p.productId || p.id), title: p.title, pack_option: variant ? variant.vlabel : undefined, units: line ? line.units : qty, unit_price: line ? line.unit_price : undefined, line_total: line ? line.line_total : undefined };
+  if (already) { v.already_in_cart = true; v.note = 'This line was already in the cart; its units are now SET to ' + v.added.units + ' (not added again). To change units call set_cart_quantity.'; }
+  if (p.maxQty > 0 && qty > p.maxQty) v.note = (v.note ? v.note + ' ' : '') + 'This product allows at most ' + p.maxQty + ' unit(s) per order.';
+  return v;
+}
+// Change the units of a line already in the cart (0 removes it). Never touches other lines.
+function _agSetQty(inp) {
+  var p = _agFind(inp.product_id); if (!p) return { error: 'Unknown product_id ' + inp.product_id };
+  var n = parseInt(inp.quantity, 10); if (isNaN(n) || n < 0) return { error: 'quantity must be 0 or more' };
+  var vk = '';
+  if (p.variations && p.variations._matrix) { var combo = _agMatchCombo(p, inp.options); if (!combo) { var ln = cart.filter(function (c) { return c.id === p.id; }); if (ln.length === 1) vk = ln[0].vk || ''; else return { error: 'Which pack? Pass options.', in_cart: ln.map(function (c) { return { options: c.vlabel, units: c.qty }; }) }; } else vk = (combo.opts || []).join('|'); }
+  var item = cart.find(function (c) { return c.id === p.id && (c.vk || '') === vk; });
+  if (!item) return { error: 'That product is not in the cart. Use add_to_cart.', cart: _agCartView() };
+  if (n === 0) { removeFromCart(_lineKey(item)); var v0 = _agCartView(); v0.removed = { id: String(p.productId || p.id), pack_option: item.vlabel || undefined }; return v0; }
+  var max = _ibiLineMax(p); var note = n > max ? 'Capped at ' + max + ' unit(s) per order for this product.' : undefined;
+  item.qty = Math.min(max, n); updateCartCount(); renderCart();
+  var v = _agCartView(); v.updated = { id: String(p.productId || p.id), pack_option: item.vlabel || undefined, units: item.qty }; if (note) v.note = note;
   return v;
 }
 function _agRemove(inp) {
@@ -12909,6 +12950,7 @@ function _agTool(name, inp) {
     }
     case 'add_to_cart':         { var ar = _agAdd(inp); _ag.turn.addError = ar.error ? ar : null; if (!ar.error) _ag.turn.added = ar.added; return ar; }
     case 'remove_from_cart':    return _agRemove(inp);
+    case 'set_cart_quantity':   return _agSetQty(inp);
     case 'view_cart':           return _agCartView();
     case 'open_product_page':   { var p = _agFind(inp.product_id); if (!p) return { error: 'Unknown product_id' }; ibiAgentMinimise(); openProductPage(p.id); return { opened: p.title }; }
     case 'open_cart':           { var co = document.getElementById('cartOverlay'); if (co && !co.classList.contains('open')) toggleCart(); ibiAgentMinimise(); return _agCartView(); }
@@ -13029,6 +13071,9 @@ function buyNow(id) {
 // combination: { vk, vprice, vmrp, vlabel, vimg }.
 function _lineKey(c) { return c.id + '::' + (c.vk || ''); }
 
+// Most units of ONE line a shopper may buy: the seller's Max order qty (blank = no limit), never above 10.
+function _ibiLineMax(p) { var m = parseInt(p && p.maxQty, 10) || 0; return m > 0 ? Math.min(10, m) : 10; }
+
 function addToCart(id, qty = 1, variant) {
   const p = products.find(x => x.id === id);
   // Plain products still respect the base stock flag; a matrix variant has already
@@ -13037,7 +13082,8 @@ function addToCart(id, qty = 1, variant) {
   if (!p || (!variant && !p.inStock)) return;
   const vk = variant ? variant.vk : '';
   const ex = cart.find(c => c.id === id && (c.vk || '') === (vk || ''));
-  if (ex) ex.qty = Math.min(ex.qty + qty, 10);
+  qty = Math.max(1, Math.min(_ibiLineMax(p), parseInt(qty, 10) || 1));
+  if (ex) ex.qty = Math.min(ex.qty + qty, _ibiLineMax(p));   // was a flat 10: a second Add exceeded the seller's Max order qty
   else cart.push(variant
     ? { id, qty, vk: variant.vk, vprice: variant.vprice, vmrp: variant.vmrp, vlabel: variant.vlabel, vimg: variant.vimg }
     : { id, qty });
@@ -13061,7 +13107,7 @@ function removeFromCart(lk) {
 function changeCartQty(lk, d) {
   const item = cart.find(c => _lineKey(c) === lk);
   if (!item) return;
-  item.qty = Math.max(1, Math.min(10, item.qty + d));
+  item.qty = Math.max(1, Math.min(_ibiLineMax(products.find(x => x.id === item.id)), item.qty + d));
   renderCart();
 }
 

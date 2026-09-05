@@ -15,7 +15,7 @@
 
 // Bump on EVERY deploy that changes cached files. Activate deletes every cache
 // whose name is not this one, so a bump is what purges the old copies.
-const CACHE_NAME  = 'ibi-marketplace-v18-2';
+const CACHE_NAME  = 'ibi-marketplace-v18-3';
 
 // Only the shell. index.html is here so a navigation still resolves offline;
 // because fetch is network-first it is never PREFERRED over the live copy.

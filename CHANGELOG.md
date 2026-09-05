@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v18.3
+
+🛒 THE CART IS THE TRUTH, NOT THE ASSISTANT'S SENTENCE. A pack size such as "4 Qty" is now understood as one pack, never as four units; asking the assistant to add something it already added no longer doubles it (the line is set, not stacked); a new "change quantity" ability lets it raise or lower units without removing and re-adding; and after any reply that changed the cart, the shop itself prints the real cart — every line, pack, unit and the total — under the reply, with View cart and Checkout buttons. The seller's Max order qty is now enforced in the cart as well as on the product page: repeated Add clicks could exceed it before. Prompted by a live chat where two packs of coconut broom sticks were counted and a shopper was told a total that did not match what they meant to buy.
+
 ## v18.2
 
 ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store's rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.
