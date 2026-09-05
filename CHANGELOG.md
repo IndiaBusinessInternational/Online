@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.2
+
+🗓️ THE RECORDED DATE READS AS A DATE AGAIN, AND SHARE ALWAYS COPIES. The sheet had turned a typed "25 Sep 2023" into a date cell and the watch page then printed the raw computer form of it ("Mon Sep 25 2023 00:00:00 GMT+0530 …"); dates now print day-first with a named month wherever they appear, and the backend stores them as text so it cannot happen again. The YouTube player's own Copy link button was blocked inside the shop ("Unable to copy link to clipboard") because the frame was never granted clipboard access — granted now — and the shop's Share button gained a fallback copy for browsers that refuse the modern clipboard call. Also: a video opened from a shared link or after a page refresh now has the shop underneath it, so Back returns to the store instead of leaving the site.
+
 ## v19.1
 
 📺 EVERY PRODUCT VIDEO ON THE IBI YOUTUBE CHANNEL NOW SHOPS ITSELF. The channel's public uploads are read each night, each video is joined to the listing it shows — by the product link in its description when there is one, otherwise by its title, and a video that shows a family (a chain in six colours, three rice-pot sizes) pins every one of them — and the result is published as a feed the shop imports on its own: new videos appear in Watch & Shop as approved house-brand videos, changed titles and thumbnails refresh, and a video taken off YouTube is hidden here the same day. Nobody types a video in again. The home rail shows the newest video for each product, thirty at most, with the rest under More to watch; the admin desk gains a Sync channel feed button for an immediate import and a report lists the uploads still unmatched so a product link can be added to their YouTube description.
@@ -53,6 +57,10 @@
 ## v13.2
 
 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.
+
+## v13.6
+
+📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.
 
 ## v12.15
 
