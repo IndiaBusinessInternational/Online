@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v18.0
+
+✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store's policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper's own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI's own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.
+
 ## v17.1
 
 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers' products stay off IBI's WhatsApp catalogue.
