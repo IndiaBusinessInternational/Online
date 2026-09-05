@@ -1421,5 +1421,43 @@ function adminSetReview(reviewId, status) {
   sheetFetch({ action:'adminUpdateReview', ceoToken: ceoToken(), reviewId, status }, res => { if (res && res.success) { toast('✅ Review ' + status.toLowerCase()); loadReviewsDesk(); } else toast('❌ ' + (res?.message || 'Failed')); });
 }
 </script>
+<!-- v19.0: Watch & Shop videos desk (approve / reject / hide / feature) under the orders page, after the reviews desk -->
+<script>
+const _loadReviewsDesk_v17 = loadReviewsDesk;
+loadReviewsDesk = function () { _loadReviewsDesk_v17(); loadVideosDesk(); };
+function loadVideosDesk() {
+  let host = document.getElementById('videosDesk');
+  if (!host) { const anchor = document.getElementById('reviewsDesk') || document.getElementById('returnsDesk'); if (!anchor) return; host = document.createElement('div'); host.id = 'videosDesk'; host.style.marginTop = '18px'; anchor.insertAdjacentElement('afterend', host); }
+  const head = n => '<div style="font-weight:800;font-size:15px;margin-bottom:8px;">▶ Watch &amp; Shop videos desk' + (n != null ? ' <span style="font-weight:500;color:var(--muted);font-size:12px;">' + n + ' · a Pending video is invisible to shoppers until approved · Feature puts one at the front of the rail</span>' : '') + '</div>';
+  host.innerHTML = head() + '<div style="color:var(--muted);font-size:12px;">Loading…</div>';
+  sheetFetch({ action:'adminGetVideos', ceoToken: ceoToken() }, res => {
+    const e = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    if (!res || !res.success) { host.innerHTML = head() + '<div style="color:var(--muted);font-size:12px;">' + (res && res.error ? 'The backend has not been updated for Watch &amp; Shop yet — paste and redeploy IBI_Seller_Backend.gs v19.0.' : 'Could not load videos.') + '</div>'; return; }
+    const rows = res.videos || [];
+    if (!rows.length) { host.innerHTML = head() + '<div style="color:var(--muted);font-size:12px;">No videos submitted yet.</div>'; return; }
+    const badge = st => { const c = { Published:'#16a34a', Pending:'#b45309', Hidden:'#6b7280', Rejected:'#dc2626', Removed:'#9ca3af' }[st] || '#6b7280'; return '<span style="font-weight:800;color:' + c + ';">' + e(st) + '</span>'; };
+    host.innerHTML = head(rows.length) +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px;"><thead><tr style="background:#f3f4f6;text-align:left;"><th style="padding:6px 8px;">When</th><th style="padding:6px 8px;">Seller</th><th style="padding:6px 8px;">Video</th><th style="padding:6px 8px;">Pins</th><th style="padding:6px 8px;">Recorded</th><th style="padding:6px 8px;">Views</th><th style="padding:6px 8px;">Status</th><th style="padding:6px 8px;">Actions</th></tr></thead><tbody>' +
+      rows.map(r => '<tr style="border-top:1px solid #eee;vertical-align:top;' + (r.status === 'Hidden' || r.status === 'Removed' ? 'opacity:.6;' : '') + '">' +
+        '<td style="padding:6px 8px;white-space:nowrap;">' + e(r.timestamp) + '</td><td style="padding:6px 8px;">' + e(r.sellerName || r.sellerId) + '<br><span style="color:var(--muted);">' + e(r.sellerId) + '</span></td>' +
+        '<td style="padding:6px 8px;max-width:340px;"><b>' + e(r.title) + '</b>' + (r.featured ? ' <span style="background:#fef3c7;color:#92400e;font-weight:800;padding:1px 6px;border-radius:8px;font-size:10px;">FEATURED</span>' : '') + '<br><a href="' + e(r.url) + '" target="_blank" rel="noopener" style="color:#0284c7;word-break:break-all;">' + e(r.url) + '</a>' + (r.note ? '<br><span style="color:#92400e;">Note: ' + e(r.note) + '</span>' : '') + '</td>' +
+        '<td style="padding:6px 8px;">' + (r.products || []).length + '</td><td style="padding:6px 8px;white-space:nowrap;">' + e(r.recordedOn || '—') + '</td><td style="padding:6px 8px;">' + (r.views || 0) + '</td><td style="padding:6px 8px;">' + badge(r.status) + '</td>' +
+        '<td style="padding:6px 8px;white-space:nowrap;">' +
+          (r.status !== 'Published' && r.status !== 'Removed' ? '<button class="btn btn-approve" onclick="adminSetVideo(\'' + e(r.videoId) + '\',\'Published\')">Approve</button> ' : '') +
+          (r.status === 'Published' ? '<button class="btn btn-reject" onclick="adminSetVideo(\'' + e(r.videoId) + '\',\'Hidden\')">Hide</button> <button class="btn btn-edit" onclick="adminFeatureVideo(\'' + e(r.videoId) + '\',' + (r.featured ? 0 : 1) + ')">' + (r.featured ? 'Unfeature' : 'Feature') + '</button> ' : '') +
+          (r.status === 'Pending' ? '<button class="btn btn-reject" onclick="adminSetVideo(\'' + e(r.videoId) + '\',\'Rejected\')">Reject</button>' : '') +
+        '</td></tr>').join('') + '</tbody></table></div>';
+  }, 20000);
+}
+function adminSetVideo(videoId, status) {
+  let note = '';
+  if (status === 'Rejected') { note = prompt('Reason the seller will see (optional):', ''); if (note === null) return; }
+  else if (status === 'Hidden' && !confirm('Hide this video from the storefront?')) return;
+  sheetFetch({ action:'adminUpdateVideo', ceoToken: ceoToken(), videoId, status, note }, res => { if (res && res.success) { toast('✅ Video ' + status.toLowerCase()); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Failed')); }, 15000);
+}
+function adminFeatureVideo(videoId, on) {
+  sheetFetch({ action:'adminUpdateVideo', ceoToken: ceoToken(), videoId, featured: on ? '1' : '0' }, res => { if (res && res.success) { toast(on ? '⭐ Featured' : 'Unfeatured'); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Failed')); }, 15000);
+}
+</script>
 </body>
 </html>

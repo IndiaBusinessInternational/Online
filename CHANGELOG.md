@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.0
+
+▶ WATCH & SHOP: SHOPPABLE VIDEOS, THE AMAZON LIVE WAY. The storefront now carries a Watch & Shop rail — product videos with the products pinned beside the player, so a shopper adds to the cart while the video plays instead of hunting for the item afterwards. Each video opens on its own page: the player on the left, a Shop this video list on the right that lights up the product the moment it appears on screen (tap the time-stamp to jump there), Add to Cart for a plain product and See details for one with options, the recorded date under the title, the seller's card with Visit store, a Share button and More to watch below. A product page shows Watch it in action when a video features that item, opening at the exact moment. Sellers submit videos from a new Videos tab in Seller Central — a YouTube or .mp4 link, a title, the recording date and up to 20 of their own listed products pinned with mm:ss — and IBI approves, hides or features them from the admin desk; the seller is emailed when a video goes live. The rail stays hidden until at least one approved video has a product on sale, so the shop never shows an empty room. Live streaming with chat is the next phase and uses the same page.
+
 ## v18.3
 
 🛒 THE CART IS THE TRUTH, NOT THE ASSISTANT'S SENTENCE. A pack size such as "4 Qty" is now understood as one pack, never as four units; asking the assistant to add something it already added no longer doubles it (the line is set, not stacked); a new "change quantity" ability lets it raise or lower units without removing and re-adding; and after any reply that changed the cart, the shop itself prints the real cart — every line, pack, unit and the total — under the reply, with View cart and Checkout buttons. The seller's Max order qty is now enforced in the cart as well as on the product page: repeated Add clicks could exceed it before. Prompted by a live chat where two packs of coconut broom sticks were counted and a shopper was told a total that did not match what they meant to buy.
@@ -37,6 +41,10 @@
 ## v14.0
 
 ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller's transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI's 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.
+
+## v13.1
+
+🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.
 
 ## v12.15
 

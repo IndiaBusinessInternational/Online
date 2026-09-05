@@ -662,6 +662,68 @@
     gap: 16px;
   }
 
+  /* ======= v19.0 WATCH & SHOP — shoppable videos ======= */
+  .ws-rail { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .ws-rail::-webkit-scrollbar { height: 6px; }
+  .ws-rail::-webkit-scrollbar-thumb { background: #cfd8dc; border-radius: 3px; }
+  .ws-card { flex: 0 0 260px; scroll-snap-align: start; background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all .2s; }
+  .ws-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+  .ws-thumb { position: relative; aspect-ratio: 16 / 9; background: #111; }
+  .ws-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ws-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .ws-play span { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; padding-left: 3px; }
+  .ws-tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.7); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .ws-tag.live { background: #C40000; }
+  .ws-count { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,.7); color: #fff; font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 4px; }
+  .ws-info { padding: 10px 12px 12px; }
+  .ws-title { font-size: 14px; font-weight: 700; color: #0F1111; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ws-host { font-size: 12px; color: #555; margin-top: 6px; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .ws-host > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ws-avatar { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 800; flex: none; }
+  .ws-lbl { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+  .ws-row2 { display: grid; grid-template-columns: 1fr 170px; gap: 10px; }
+  .ws-row2b { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; }
+  .ws-row3 { display: grid; grid-template-columns: 1fr 90px auto; gap: 8px; }
+  /* watch page */
+  #watchPageOverlay { display: none; position: fixed; inset: 0; background: #f0f2f2; z-index: 8990; overflow-y: auto; }
+  .wp-body { max-width: 1400px; margin: 0 auto; padding: 16px 16px 60px; }
+  .wp-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
+  .wp-grid > * { min-width: 0; }   /* a 1fr track's auto minimum would otherwise grow to the shop rail's scroll content (3 x 250px) and overflow a phone */
+  .wp-player { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .wp-player iframe, .wp-player video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .wp-meta { padding: 14px 4px 0; }
+  .wp-title { font-size: 20px; font-weight: 800; color: #0F1111; margin: 0 0 4px; line-height: 1.25; }
+  .wp-date { font-size: 13px; color: #666; }
+  .wp-share { flex: none; background: #fff; border: 1px solid var(--gray-300); border-radius: 20px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: #0F1111; cursor: pointer; font-family: inherit; }
+  .wp-share:hover { background: #f7f7f7; }
+  .wp-hostcard { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 12px 14px; margin-top: 14px; }
+  .wp-visit { flex: none; background: #0098c9; color: #fff; border: none; border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .wp-shop { background: #fff; border: 1px solid var(--gray-200); border-radius: 12px; padding: 14px; position: sticky; top: 70px; max-height: calc(100dvh - 90px); display: flex; flex-direction: column; min-height: 0; }
+  .wp-shop-head { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 800; color: #0F1111; margin-bottom: 10px; flex: none; }
+  .wp-items { position: relative; overflow-y: auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+  .wp-item { display: grid; grid-template-columns: 72px 1fr; gap: 10px; padding: 10px; border: 1.5px solid #eee; border-radius: 10px; cursor: pointer; transition: border-color .2s, box-shadow .2s; background: #fff; }
+  .wp-item:hover { border-color: #cfd8dc; }
+  .wp-item.now { border-color: #C40000; box-shadow: 0 0 0 3px rgba(196,0,0,.10); }
+  .wp-item img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; background: #f5f5f5; }
+  .wp-item .t { font-size: 13px; font-weight: 600; color: #0F1111; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .wp-item .pr { font-size: 15px; font-weight: 800; color: #0F1111; margin-top: 3px; }
+  .wp-item .pr s { font-size: 12px; color: #888; font-weight: 400; margin-left: 5px; }
+  .wp-item .at { display: inline-block; font-size: 11px; color: #0098c9; font-weight: 700; margin-top: 2px; }
+  .wp-now { font-size: 10px; font-weight: 800; color: #C40000; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+  .wp-btn { display: block; width: 100%; margin-top: 8px; background: #0098c9; color: #fff; border: none; border-radius: 20px; padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .wp-btn.alt { background: #fff; color: #0F1111; border: 1px solid var(--gray-300); }
+  .wp-btn:disabled { opacity: .55; cursor: default; }
+  .wp-more-head { font-size: 17px; font-weight: 800; color: #0F1111; margin: 28px 0 10px; }
+  @media (max-width: 900px) {
+    .wp-grid { grid-template-columns: 1fr; }
+    .wp-shop { position: static; max-height: none; }
+    .wp-items { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+    .wp-item { flex: 0 0 250px; scroll-snap-align: start; }
+    .wp-title { font-size: 17px; }
+    .ws-row2, .ws-row2b, .ws-row3 { grid-template-columns: 1fr; }
+    .ws-card { flex-basis: 220px; }
+  }
+
   /* ======= PRODUCT CARD ======= */
   .product-card {
     background: var(--white);
@@ -2220,6 +2282,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
            banner), plus a gold "Today's Deals" that was href="#" with no handler and
            no Deals section left to open. -->
       <span id="navCatLinks"></span>
+      <a class="nav-link" href="#" id="navWatchShop" onclick="ibiWatchOpenHub();return false;" style="display:none;font-weight:700;">▶ Watch &amp; Shop</a>
       <a class="nav-link" href="#" onclick="ibiAgentToggle();return false;" style="background:#8B5CF6;color:#fff;border-radius:20px;padding:5px 14px;font-weight:700;margin-left:auto;">✨ Ask IBI</a>
       <a class="nav-link" href="#" onclick="openSellOnIBI()" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 14px;font-weight:700;margin-left:4px;">🏪 Sell on IBI</a>
       <a class="nav-link" href="#" onclick="openSellerDashboard()" style="background:#0098c9;color:#fff;border-radius:20px;padding:5px 16px;font-weight:700;margin-left:4px;">🔐 Seller Login</a>
@@ -2441,6 +2504,20 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
        that actually hold stock, so this stays a live index rather than a wall of
        dead tiles — but the grid's own chips do the same job, so it belongs after
        the products, not in front of them. -->
+  <!-- ===== v19.0 WATCH & SHOP — shoppable videos (Amazon Live pattern, recorded phase).
+       Stays display:none until at least one approved video pins a product that is on
+       sale — an empty "Live" shelf reads as a dead shop. Sits BELOW the grid on
+       purpose: the first purchasable item must stay inside the first screenful. -->
+  <section class="products-section" id="watchShopSection" style="display:none;background:#fff;padding:26px 0 18px;">
+    <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
+      <div class="section-header" style="margin-bottom:12px;flex-wrap:wrap;gap:6px;">
+        <h2 class="section-title">▶ Watch &amp; Shop <span style="font-size:12px;font-weight:600;color:#666;padding-left:6px;">Shoppable videos</span></h2>
+        <span style="font-size:12.5px;color:#555;">Add a product to your cart while the video plays</span>
+      </div>
+      <div class="ws-rail" id="watchShopRail"></div>
+    </div>
+  </section>
+
   <section class="categories-section">
     <div class="section-header">
       <h2 class="section-title">Shop by Category</h2>
@@ -2621,20 +2698,20 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v18.3';
+window.IBI_VERSION      = 'v19.0';
 window.IBI_VERSION_DATE = '5 Sep 2026';
-window.IBI_VERSION_NOTE = 'v18.3 — 🛒 THE CART IS THE TRUTH, NOT THE ASSISTANT\'S SENTENCE. A pack size such as "4 Qty" is now understood as one pack, never as four units; asking the assistant to add something it already added no longer doubles it (the line is set, not stacked); a new "change quantity" ability lets it raise or lower units without removing and re-adding; and after any reply that changed the cart, the shop itself prints the real cart — every line, pack, unit and the total — under the reply, with View cart and Checkout buttons. The seller\'s Max order qty is now enforced in the cart as well as on the product page: repeated Add clicks could exceed it before. Prompted by a live chat where two packs of coconut broom sticks were counted and a shopper was told a total that did not match what they meant to buy.';
-window.IBI_VERSION_NOTE_PREV11 = 'v18.2 — ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store\'s rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.';
-window.IBI_VERSION_NOTE_PREV10 = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
-window.IBI_VERSION_NOTE_PREV09 = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
-window.IBI_VERSION_NOTE_PREV08 = 'v17.1 — 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers\' products stay off IBI\'s WhatsApp catalogue.';
-window.IBI_VERSION_NOTE_PREV07 = 'v17.0 — ⭐ VERIFIED REVIEWS AND SELLER RATINGS, THE AMAZON WAY. Only a customer whose order shows Delivered can review — from Track My Order, with a star rating, headline, text and photos for each item, and a separate rating for the seller. Reviews post at once under the customer\'s first name and last initial with a Verified purchase badge; one review per item per order, so no listing can be stuffed. Product cards and product pages now show the real star rating and count, the product page carries the review list with a rating breakdown and the seller\'s public response, and the seller\'s store page shows the seller rating. Seller Central has a Reviews tab — seller rating, product rating, a negative-feedback rate against Amazon\'s 1% target, every review with a reply box — and the Seller Rating tile that was hidden since v11.1 lights up the day the first buyer rates. IBI can hide a review that breaks the guidelines from the admin desk. Low ratings email the seller and IBI at once.';
-window.IBI_VERSION_NOTE_PREV06 = 'v16.0 — 🚚 SELLERS NOW RUN THEIR OWN ORDERS, RETURNS AND PAYMENTS — THE AMAZON SELLER CENTRAL WAY. Manage Orders replaces the read-only order list: every order shows a Ship-by date, and the seller confirms it, marks it packed, confirms the shipment with the carrier and tracking ID, marks it delivered, or cancels it with a reason — each step emails the customer, and the customer\'s Track My Order page (now order ID plus mobile number, read live from the sheet instead of a demo timeline) shows the carrier and tracking number the moment they are entered. Packing slip and shipping label print from the order card. Manage Returns: a customer requests a return from Track My Order with Amazon\'s reason list and photos; the seller authorizes, declines with a reason, or marks the item received; IBI records the refund, and it lands as an adjustment on the seller\'s statement. Payments: settlement periods — the Monday after the 7-day return window — with item total, 5% commission, 18% GST on the commission, refunds and net, printable and downloadable as a spreadsheet. Registration verifies the email with a 6-digit code before the PIN can ever be sent to it; Forgot PIN emails a fresh PIN to the registered address; Change PIN sits in Profile. Seller Central opens with Complete-your-setup — agreement, identity, bank, KYC, first listing, first approval — and an Account Health strip with late-shipment, cancellation and return rates against Amazon\'s targets. Bulk Upload gains an IBI template download and a processing report. Also fixed: customer orders were never reaching the Orders sheet (the save demanded a CEO token a shopper does not have); orders now save for everyone, with prices re-checked against the catalogue.';
-window.IBI_VERSION_NOTE_PREV05 = 'v15.0 — 🪪 SELLER ONBOARDING NOW MEETS THE MARKETPLACE STANDARD: AGREEMENT, BANK, ADDRESS AND KYC. Becoming a seller is a four-step form, the same sequence Amazon, Flipkart and Meesho use. Step one takes the business details with PAN made mandatory and GSTIN optional for the unregistered; step two the registered address with state and pincode, and the pickup address; step three the payout bank account, typed twice and checked against the IFSC format; step four the KYC documents — PAN card, GST certificate, cancelled cheque and address proof — uploaded to a private folder that is never publicly shared, and a tick to accept the new Seller Agreement & Policies, a public page linked from the footer that sets out the 5% commission, weekly payouts, shipping and return terms, prohibited items, and the grievance officer the E-Commerce Rules require. The form cross-checks the PAN against the PAN embedded in the GSTIN and the GSTIN\'s state code against the state chosen, so a mistyped number is caught before it reaches us. The Profile tab now shows all of this — the bank account masked to its last four digits, each document\'s status, and the KYC verdict — and lets the seller correct it; changing the bank account or a document puts KYC back to Pending for re-verification. The admin panel shows every detail, the documents, and a KYC status the team sets to Verified or Rejected with a note the seller sees. Backend: eighteen new columns on the Sellers sheet, added automatically, and a profile-update call that needs the seller\'s own PIN, so a seller can finally save their profile without a CEO token.';
-window.IBI_VERSION_NOTE_PREV04 = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
-window.IBI_VERSION_NOTE_PREV03 = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
-window.IBI_VERSION_NOTE_PREV02 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
-window.IBI_VERSION_NOTE_PREV01 = 'v13.1 — 🎵 THE SHOP NOW HAS ITS OWN MUSIC. An upbeat, high-energy beat track plays quietly in the background — at half volume, never louder — for everyone who opens the shop, looping continuously as they browse. The track is an original composition made in-house for IBI, so it is completely copyright-free: no licence, no royalties, no takedown risk, and nothing owed to anyone. A speaker button now sits at the top of every page, right beside the version badge: one tap silences the music, another brings it back, and the choice is remembered on that device — a customer who mutes it will not hear it again on their next visit unless they ask for it. One honest note about how browsers behave: they do not allow a website to make sound before the visitor has touched the page at all, so on a very first visit the music may hold its breath until the first tap or scroll, then begin. Nothing about products, prices, the cart or checkout changed.';
+window.IBI_VERSION_NOTE = 'v19.0 — ▶ WATCH & SHOP: SHOPPABLE VIDEOS, THE AMAZON LIVE WAY. The storefront now carries a Watch & Shop rail — product videos with the products pinned beside the player, so a shopper adds to the cart while the video plays instead of hunting for the item afterwards. Each video opens on its own page: the player on the left, a Shop this video list on the right that lights up the product the moment it appears on screen (tap the time-stamp to jump there), Add to Cart for a plain product and See details for one with options, the recorded date under the title, the seller\'s card with Visit store, a Share button and More to watch below. A product page shows Watch it in action when a video features that item, opening at the exact moment. Sellers submit videos from a new Videos tab in Seller Central — a YouTube or .mp4 link, a title, the recording date and up to 20 of their own listed products pinned with mm:ss — and IBI approves, hides or features them from the admin desk; the seller is emailed when a video goes live. The rail stays hidden until at least one approved video has a product on sale, so the shop never shows an empty room. Live streaming with chat is the next phase and uses the same page.';
+window.IBI_VERSION_NOTE_PREV11 = 'v18.3 — 🛒 THE CART IS THE TRUTH, NOT THE ASSISTANT\'S SENTENCE. A pack size such as "4 Qty" is now understood as one pack, never as four units; asking the assistant to add something it already added no longer doubles it (the line is set, not stacked); a new "change quantity" ability lets it raise or lower units without removing and re-adding; and after any reply that changed the cart, the shop itself prints the real cart — every line, pack, unit and the total — under the reply, with View cart and Checkout buttons. The seller\'s Max order qty is now enforced in the cart as well as on the product page: repeated Add clicks could exceed it before. Prompted by a live chat where two packs of coconut broom sticks were counted and a shopper was told a total that did not match what they meant to buy.';
+window.IBI_VERSION_NOTE_PREV10 = 'v18.2 — ⚡ THE ASSISTANT ANSWERS SEVERAL TIMES FASTER AND TALKS WHILE IT THINKS. Replies now stream in word by word instead of arriving all at once, product cards appear the moment a search finds them — before the sentence about them is even written — and the engine is given a far shorter brief (the store\'s rules and scope instead of the whole product list), which cut its reading time from about 21 seconds to about 5. Answers are capped at two short sentences. A typical question that took 45 to 90 seconds now shows products in roughly 10 seconds and finishes in about 20.';
+window.IBI_VERSION_NOTE_PREV09 = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
+window.IBI_VERSION_NOTE_PREV08 = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
+window.IBI_VERSION_NOTE_PREV07 = 'v17.1 — 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers\' products stay off IBI\'s WhatsApp catalogue.';
+window.IBI_VERSION_NOTE_PREV06 = 'v17.0 — ⭐ VERIFIED REVIEWS AND SELLER RATINGS, THE AMAZON WAY. Only a customer whose order shows Delivered can review — from Track My Order, with a star rating, headline, text and photos for each item, and a separate rating for the seller. Reviews post at once under the customer\'s first name and last initial with a Verified purchase badge; one review per item per order, so no listing can be stuffed. Product cards and product pages now show the real star rating and count, the product page carries the review list with a rating breakdown and the seller\'s public response, and the seller\'s store page shows the seller rating. Seller Central has a Reviews tab — seller rating, product rating, a negative-feedback rate against Amazon\'s 1% target, every review with a reply box — and the Seller Rating tile that was hidden since v11.1 lights up the day the first buyer rates. IBI can hide a review that breaks the guidelines from the admin desk. Low ratings email the seller and IBI at once.';
+window.IBI_VERSION_NOTE_PREV05 = 'v16.0 — 🚚 SELLERS NOW RUN THEIR OWN ORDERS, RETURNS AND PAYMENTS — THE AMAZON SELLER CENTRAL WAY. Manage Orders replaces the read-only order list: every order shows a Ship-by date, and the seller confirms it, marks it packed, confirms the shipment with the carrier and tracking ID, marks it delivered, or cancels it with a reason — each step emails the customer, and the customer\'s Track My Order page (now order ID plus mobile number, read live from the sheet instead of a demo timeline) shows the carrier and tracking number the moment they are entered. Packing slip and shipping label print from the order card. Manage Returns: a customer requests a return from Track My Order with Amazon\'s reason list and photos; the seller authorizes, declines with a reason, or marks the item received; IBI records the refund, and it lands as an adjustment on the seller\'s statement. Payments: settlement periods — the Monday after the 7-day return window — with item total, 5% commission, 18% GST on the commission, refunds and net, printable and downloadable as a spreadsheet. Registration verifies the email with a 6-digit code before the PIN can ever be sent to it; Forgot PIN emails a fresh PIN to the registered address; Change PIN sits in Profile. Seller Central opens with Complete-your-setup — agreement, identity, bank, KYC, first listing, first approval — and an Account Health strip with late-shipment, cancellation and return rates against Amazon\'s targets. Bulk Upload gains an IBI template download and a processing report. Also fixed: customer orders were never reaching the Orders sheet (the save demanded a CEO token a shopper does not have); orders now save for everyone, with prices re-checked against the catalogue.';
+window.IBI_VERSION_NOTE_PREV04 = 'v15.0 — 🪪 SELLER ONBOARDING NOW MEETS THE MARKETPLACE STANDARD: AGREEMENT, BANK, ADDRESS AND KYC. Becoming a seller is a four-step form, the same sequence Amazon, Flipkart and Meesho use. Step one takes the business details with PAN made mandatory and GSTIN optional for the unregistered; step two the registered address with state and pincode, and the pickup address; step three the payout bank account, typed twice and checked against the IFSC format; step four the KYC documents — PAN card, GST certificate, cancelled cheque and address proof — uploaded to a private folder that is never publicly shared, and a tick to accept the new Seller Agreement & Policies, a public page linked from the footer that sets out the 5% commission, weekly payouts, shipping and return terms, prohibited items, and the grievance officer the E-Commerce Rules require. The form cross-checks the PAN against the PAN embedded in the GSTIN and the GSTIN\'s state code against the state chosen, so a mistyped number is caught before it reaches us. The Profile tab now shows all of this — the bank account masked to its last four digits, each document\'s status, and the KYC verdict — and lets the seller correct it; changing the bank account or a document puts KYC back to Pending for re-verification. The admin panel shows every detail, the documents, and a KYC status the team sets to Verified or Rejected with a note the seller sees. Backend: eighteen new columns on the Sellers sheet, added automatically, and a profile-update call that needs the seller\'s own PIN, so a seller can finally save their profile without a CEO token.';
+window.IBI_VERSION_NOTE_PREV03 = 'v14.0 — ⬆️ A WHOLE CATALOGUE CAN NOW BE LISTED FROM THE SELLER\'S OWN EXCEL SHEETS. Seller Central has a new Bulk Upload tab. A seller drops in the product sheets they already use on Meesho, Flipkart or Amazon — several files at once, in any of those layouts — and the shop reads them itself: every product becomes one listing with its colours and sizes laid out as variations, the photos come from the image-link columns of the sheet, and the HSN code, GST rate, brand, weight and packing size are carried across. A review table then shows each listing with its MRP and the seller\'s transfer price, asks for the selling price (with a one-click fill for every row at a chosen discount off MRP, and a floor that keeps the transfer price intact after IBI\'s 5% commission), lets the category be corrected, and marks anything that is not ready. Upload sends the listings one at a time to IBI for the usual review, says which ones were already listed, and the seller then edits prices, stock and photos from My Products exactly as before. Built for Sathya Sales Corporation, Agra, whose 45-listing footwear, leggings and bags catalogue arrived this way, and open to every seller.';
+window.IBI_VERSION_NOTE_PREV02 = 'v13.6 — 📋 THE BUILT-IN PRODUCT CATALOGUE NOW CARRIES ALL 322 NAMES. The list of product names, HSN codes and GST rates that sellers pick from was refreshed wholesale: every old entry was removed and the list rebuilt from the master price sheet (262 products) plus the IBI Fashion Jewellery register (60 pieces), so all sixty jewellery designs now appear in the picker even when the live catalogue feed cannot be reached. Nothing changes for shoppers.';
+window.IBI_VERSION_NOTE_PREV01 = 'v13.2 — 🎵 THE MUSIC IS NOW CALMER AND WARMER. The background track introduced this morning was an energetic dance beat; it has been replaced with a gentler piece composed the same way, in-house and copyright-free. The new tune is slower, led by soft electric-piano notes over warm sustained chords, with a quiet kick and brushed percussion instead of the hard club drums — pleasant to leave on while browsing rather than something that demands attention. Everything else about the music is unchanged: it still plays for every visitor at half volume, still loops seamlessly, and the speaker button at the top still mutes or restores it with the choice remembered on that device. Devices that already heard the old tune will pick up the new one automatically — the shop now asks for the track under a new address, so no stale copy can keep playing the old beat.';
 window.IBI_VERSION_NOTE_PREV00 = 'v13.0 — 💍 THE JEWELLERY IS NOW CALLED FASHION JEWELLERY, SITS TOGETHER, AND COUNTS ITSELF FROM THE JEWELLERY REGISTER. Three things, all about the same four listings. First the name: the department was headed "Imitation Jewellery" and now reads "Fashion Jewellery" everywhere it appears — the shop heading, the department bar, the category menus and the admin panel. Second, they are together at last: only one of the four was appearing under that heading, because the shop decides which family a product belongs to by reading its title, and these titles say "Crystal Stone Pendant" — so three chokers were being filed under Stone Products, in a different part of the page from the one they belonged to. A listing\'s own category is now trusted ahead of the wording of its title, so all four sit in one place, and any jewellery listed in future joins them automatically. Third, and the reason they all read Out of Stock: fashion jewellery is not counted in the Stock Availability app at all — it has its own register, the IBI Fashion Jewellery app on the office laptop — so the nightly job could find no count for any of them and the rule that nothing may be sold unless it can be shipped took every one off sale, while about thirty-four pieces sat on the shelf. The shop now asks the jewellery register for those listings and the Stock Availability app for everything else, and the jewellery app tells the shop the moment a piece is added or sold, so the two agree within the minute. Colour is treated as part of the product\'s identity here, because in this department one piece differs from the next by nothing else: a chain recorded as Red & Black can no longer hand its count to the plain Black variant, and where two variants of one listing both point at the same shelf neither is allowed to claim it — that is a warning to fix the listing, not a number to guess at. If the laptop is off, the jewellery listings are left exactly as they are rather than emptied.';
 window.IBI_VERSION_NOTE_PREV0 = 'v12.24 — 📦 STOCK ON THE SHOP NOW FOLLOWS THE WAREHOUSE WITHIN THE MINUTE. A product could be counted in and still read "Out of Stock" to every customer. Two separate things caused it. First, the shop keeps a copy of the product list on the delivery network so pages appear instantly, and it was treating that copy as good enough for up to 35 minutes before asking the live sheet. That is fine for a price, which rarely moves, but stock changes all day: on 15 August the count was corrected at 1:41 pm, the sheet held the new figure seconds later, and the shop went on showing Out of Stock because the copy it had drawn from was 22 minutes old. The shop now re-checks after 5 minutes, and a product page — the page where Add to Cart is pressed — always asks for today\'s figure before letting anyone act on it, then quietly corrects itself if a number has moved, without disturbing the option the customer has selected. Second, and larger: the overnight job that copies counts from the Stock Availability app into the shop was matching products by their written name, and it insisted the rarest word on the stock sheet appear in the listing. For nearly every product that rarest word was the measurement — so a broom recorded as 88x5.5x5.5 cm in one app and 80x5.5x5.5 cm in the other counted as two different products, no count was found, and the rule that nothing may be sold unless the warehouse confirms it can be shipped took the listing off sale. Measurements are now compared as numbers with a sensible tolerance, so half a centimetre no longer means a different product, while genuinely different sizes, capacities and pack quantities still keep their own counts. Checked against the whole live catalogue, 47 product options that were showing Out of Stock with goods on the shelf come back on sale, and 17 more were quietly drawing on the wrong product\'s count — a Puttu Maker reading an Idiyappam Maker\'s figure, a 500 gm Cow Dung pack reading the 1 kg pack, three shirt colours all reading the white one — and now read their own.';
 window.IBI_VERSION_NOTE_OLD4 = 'v12.23 — ⚡ THE SHOP NO LONGER WAITS FOR GOOGLE. Until today every visit asked our Google Sheet for the product list before showing anything, and when Google was busy that answer took up to 45 seconds or never came — which is why the shop has felt dead slow. The shop now loads its products from a copy kept on the worldwide delivery network instead. Measured with Google deliberately unreachable, products appeared in 0.6 seconds instead of never. The Google Sheet is still consulted quietly in the background to correct prices and stock, but nobody waits for it, and if it fails there is no longer a scary warning on a shop that is working perfectly well. Nothing changes about ordering, checkout or the seller area.';
@@ -3894,7 +3971,7 @@ function ibiRestoreBackup(input){
 }
 
 function switchDashTab(tab) {
-  ['products','add','orders','earnings','profile','catalog','bulk','reviews'].forEach(t => {
+  ['products','add','orders','earnings','profile','catalog','bulk','reviews','videos'].forEach(t => {
     const el  = document.getElementById('dashTab_' + t);
     const btn = document.getElementById('tab_' + t);
     if (el)  el.style.display  = (t === tab) ? 'block' : 'none';
@@ -3911,6 +3988,7 @@ function switchDashTab(tab) {
   if (tab === 'products') loadSellerProducts();
   if (tab === 'bulk' && typeof ibiBulkOpen === 'function') ibiBulkOpen();   // v14.0 bulk catalogue upload
   if (tab === 'reviews' && typeof ibiLoadSellerReviews === 'function') ibiLoadSellerReviews();   // v17.0
+  if (tab === 'videos' && typeof ibiLoadSellerVideos === 'function') ibiLoadSellerVideos();   // v19.0 Watch & Shop
   if (typeof ibiRenderOnboarding === 'function') setTimeout(ibiRenderOnboarding, 50);   // v16.0 complete-your-setup + account health
   ibiCeoApply();                        // owner-only controls stay hidden unless unlocked
   if (tab === 'add')      { setupAddForm(); _ibiRefreshAINameList(); _ibiSyncStockBtns(); if (!window._scAllProds || !window._scAllProds.length) loadSellerProducts(); }
@@ -14896,6 +14974,7 @@ init();
           <button onclick="switchDashTab('catalog')"  id="tab_catalog"  class="sc-tab">📋 Catalogue</button>
           <button onclick="switchDashTab('bulk')"     id="tab_bulk"     class="sc-tab">⬆️ Bulk Upload</button>
           <button onclick="switchDashTab('reviews')"  id="tab_reviews"  class="sc-tab">⭐ Reviews</button>
+          <button onclick="switchDashTab('videos')"   id="tab_videos"   class="sc-tab">▶ Videos</button>
         </div>
       </div>
 
@@ -15861,6 +15940,36 @@ init();
         </div>
       </div>
 
+      <!-- TAB: Videos — v19.0 Watch & Shop -->
+      <div id="dashTab_videos" style="display:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px;"><h3 style="margin:0;color:#131921;">▶ Watch &amp; Shop videos</h3><button onclick="ibiLoadSellerVideos()" style="padding:8px 14px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">🔄 Refresh</button></div>
+          <p style="font-size:12.5px;color:#666;margin:0 0 14px;">Shoppers watch your product video on the storefront and add the products you pin to their cart while it plays — the Amazon Live pattern. Upload the video to YouTube (public or unlisted) or give a direct .mp4 link, pin your listed products with the moment each one appears, and IBI reviews it before it goes live.</p>
+          <form id="scVideoForm" onsubmit="ibiSellerVideoSubmit(event)" style="border:1px solid #e5e7eb;border-radius:10px;padding:14px;margin-bottom:18px;display:grid;gap:12px;">
+            <div class="ws-row2b">
+              <label style="display:block;"><span class="ws-lbl">Video link</span><input id="scVidUrl" type="url" required placeholder="https://www.youtube.com/watch?v=… or https://…/video.mp4" oninput="ibiSellerVidPreview()" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:7px;font-size:13px;"></label>
+              <div id="scVidPreview" style="padding-top:20px;"></div>
+            </div>
+            <div class="ws-row2">
+              <label style="display:block;"><span class="ws-lbl">Title shoppers see</span><input id="scVidTitle" type="text" required maxlength="120" placeholder="e.g. Coir brushes for every corner of the kitchen" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:7px;font-size:13px;"></label>
+              <label style="display:block;"><span class="ws-lbl">Recorded on</span><input id="scVidDate" type="date" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:7px;font-size:13px;"></label>
+            </div>
+            <div>
+              <span class="ws-lbl">Pin your products <span style="font-weight:400;color:#888;">(up to 20 · the moment is optional, mm:ss)</span></span>
+              <div class="ws-row3">
+                <select id="scVidProduct" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:7px;font-size:13px;"><option value="">— loading your products… —</option></select>
+                <input id="scVidAt" type="text" inputmode="numeric" placeholder="mm:ss" style="width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:7px;font-size:13px;">
+                <button type="button" onclick="ibiSellerVidAddPin()" style="padding:9px 14px;background:#131921;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">+ Pin</button>
+              </div>
+              <div id="scVidPins" style="display:grid;gap:6px;margin-top:8px;"></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button id="scVidSubmit" type="submit" style="padding:10px 20px;background:#0098c9;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">▶ Submit for approval</button></div>
+          </form>
+          <div style="font-size:13px;font-weight:800;color:#131921;margin:6px 0 8px;">Your videos</div>
+          <div id="sc_videos"></div>
+        </div>
+      </div>
+
       <!-- TAB: Earnings & Payouts -->
       <!-- ═══ CATALOGUE TRACKER — upload a product-name Excel, see Completed vs Pending ═══ -->
       <div id="dashTab_catalog" style="display:none;">
@@ -16439,6 +16548,26 @@ init();
   </div>
   <div class="pp-body" style="max-width:1200px;margin:0 auto;padding:20px 16px 60px;">
     <div class="pp-grid" id="ppGrid" style="gap:24px;align-items:start;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- WATCH & SHOP PAGE OVERLAY (v19.0)          -->
+<!-- z-index 8990: the product page (9000) opens ON TOP when a shopper taps
+     See details, and Back returns to the video. -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="watchPageOverlay">
+  <div class="pp-header">
+    <button class="pp-back" onclick="ibiWatchClose()">&#8592; Back</button>
+    <div class="pp-breadcrumb">Home / Watch &amp; Shop / <span id="wpTitleShort">-</span></div>
+    <button onclick="ibiWatchClose();toggleCart();" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
+      🛒 <span id="wpCartCount">0</span>
+    </button>
+  </div>
+  <div class="wp-body">
+    <div class="wp-grid" id="wpGrid"></div>
+    <div id="wpMore"></div>
   </div>
 </div>
 
@@ -17997,6 +18126,277 @@ function saveSellerProfile() {
   };
 
   setTimeout(function () { try { ibiLoadRatings(); } catch (e) {} }, 1500);
+})();
+</script>
+
+<!-- ═══ v19.0 WATCH & SHOP — shoppable videos, the Amazon Live / Flipkart Live pattern in its recorded
+     phase. Home rail (#watchShopSection), watch page (#watch-<id>, overlay above), a "Watch it in action"
+     strip on the product page, the Videos tab in Seller Central; approval desk lives in admin.html.
+     Pins are joined to the LIVE catalogue at render time — a paused or deleted listing simply drops off
+     the rail, and a video with no sellable pin is not shown at all. Live streaming with chat is Phase 2
+     and uses this same page (kind 'live' → LIVE badge). ═══ -->
+<script>
+(function () {
+  'use strict';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function session() { try { return JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (e) { return null; } }
+  function cartTotal() { try { return cart.reduce(function (a, c) { return a + c.qty; }, 0); } catch (e) { return 0; } }
+  var VIDS = null;                 // published videos as the backend sent them (featured first, then newest)
+  var CUR = null;                  // the video open on the watch page
+  var PLAYER = null, POLL = null, YT_QUEUE = null, lastNow = -1, shopKey = '';
+
+  // ── URL helpers ──
+  function ytId(url) { var m = String(url || '').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : ''; }
+  window.ibiVideoKind = function (url) { if (ytId(url)) return 'youtube'; if (/\.(mp4|webm|m3u8)(\?|$)/i.test(url || '')) return 'mp4'; return ''; };
+  function thumbOf(v) { if (v.thumb) return v.thumb; var id = ytId(v.url); if (id) return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; var p = pinsOf(v)[0]; return (p && p.prod.img) || ''; }
+  function fmtAt(s) { s = parseInt(s, 10) || 0; return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function prodById(pid) { return (typeof products !== 'undefined' ? products : []).find(function (x) { return x.productId === pid && !x._preview; }) || null; }
+  // pins joined to the live catalogue, in video order (pins without a moment go last)
+  function pinsOf(v) { var out = []; (v.products || []).forEach(function (pin) { var p = prodById(pin.productId); if (p) out.push({ prod: p, at: parseInt(pin.at, 10) || 0 }); }); out.sort(function (a, b) { return (a.at || 1e9) - (b.at || 1e9); }); return out; }
+  function sellerOf(v) { var sid = String(v.sellerId || '').toLowerCase(); return (typeof sellers !== 'undefined' ? sellers : []).find(function (s) { return String(s.id).toLowerCase() === sid; }) || { id: sid, name: v.sellerName || v.sellerId, color: '#0098c9' }; }
+  function needsChoice(p) { return !!(p._isFamilyCover || p._familyRole === 'parent'); }
+  function avatar(s, size) { size = size || 22; var nm = String(s.name || s.shortName || 'S'); return '<span class="ws-avatar" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * .5) + 'px;background:' + (s.color || '#0098c9') + ';">' + esc(nm.charAt(0).toUpperCase()) + '</span>'; }
+  function dateLine(v) { return v.recordedOn ? ((v.kind === 'live' ? 'Streamed live on ' : 'Recorded on ') + esc(v.recordedOn)) : ('Added ' + esc(v.date || '')); }
+  function shoppable() { return (VIDS || []).filter(function (v) { return pinsOf(v).length; }); }
+
+  // ── home rail + nav link ──
+  function card(v, extra) {
+    var pins = pinsOf(v), s = sellerOf(v), th = thumbOf(v);
+    return '<div class="ws-card" onclick="ibiWatchOpen(\'' + esc(v.videoId) + '\')" role="button" tabindex="0" onkeydown="if(event.key===\'Enter\')this.click()">' +
+      '<div class="ws-thumb">' + (th ? '<img src="' + esc(th) + '" alt="" loading="lazy" decoding="async">' : '') + '<div class="ws-play"><span>▶</span></div>' +
+      '<span class="ws-tag' + (v.kind === 'live' ? ' live' : '') + '">' + (v.kind === 'live' ? 'Live' : 'Video') + '</span>' +
+      (extra || (pins.length ? '<span class="ws-count">🛍 ' + pins.length + ' product' + (pins.length === 1 ? '' : 's') + '</span>' : '')) + '</div>' +
+      '<div class="ws-info"><div class="ws-title">' + esc(v.title) + '</div><div class="ws-host">' + avatar(s) + '<span style="font-weight:600;color:#333;">' + esc(s.name || s.shortName) + '</span><span style="color:#999;">·</span><span>' + dateLine(v) + '</span></div></div></div>';
+  }
+  function renderRail() {
+    var sec = $('watchShopSection'), rail = $('watchShopRail'), nav = $('navWatchShop'); if (!sec || !rail) return;
+    var list = shoppable();
+    if (!list.length) { sec.style.display = 'none'; if (nav) nav.style.display = 'none'; return; }
+    rail.innerHTML = list.map(function (v) { return card(v); }).join('');
+    sec.style.display = ''; if (nav) nav.style.display = '';
+  }
+  window.ibiWatchLoad = function (force, cb) {
+    try { var c = JSON.parse(sessionStorage.getItem('ibi_videos') || 'null'); if (!force && c && Date.now() - c.t < 10 * 60000) { VIDS = c.d; renderRail(); if (cb) cb(); return; } } catch (e) {}
+    ibi_fetch_simple({ action: 'getVideos' }, function (res) {
+      // A backend without v19.0 answers "Unknown action" → no videos, rail hidden, nothing else changes.
+      VIDS = (res && res.success && res.videos) ? res.videos : [];
+      if (res && res.success) { try { sessionStorage.setItem('ibi_videos', JSON.stringify({ t: Date.now(), d: VIDS })); } catch (e) {} }
+      renderRail(); if (cb) cb();
+    }, 15000);
+  };
+  window.ibiWatchOpenHub = function () {
+    var sec = $('watchShopSection'); if (!sec || sec.style.display === 'none') { showToast('Videos are coming soon'); return; }
+    try { closeProductPage(); } catch (e) {} closeWatch();
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // ── watch page ──
+  window.ibiWatchOpen = function (videoId, startAt, noHistory) {
+    var v = (VIDS || []).find(function (x) { return x.videoId === videoId; });
+    if (!v) {
+      if (VIDS === null) { ibiWatchLoad(false, function () { if ((VIDS || []).some(function (x) { return x.videoId === videoId; })) ibiWatchOpen(videoId, startAt, noHistory); else showToast('That video is no longer available'); }); }
+      else showToast('That video is no longer available');
+      return;
+    }
+    var pp = $('productPageOverlay');
+    if (pp && pp.style.display !== 'none') { pp.style.display = 'none'; try { ppStopAutoplay(); } catch (e) {} }
+    stopPlayer(); CUR = v; lastNow = -1; shopKey = '';
+    if (!noHistory) history.pushState({ watchId: v.videoId }, '', '#watch-' + v.videoId);
+    var s = sellerOf(v);
+    $('wpTitleShort').textContent = v.title.length > 40 ? v.title.slice(0, 40) + '…' : v.title;
+    $('wpCartCount').textContent = cartTotal();
+    $('wpGrid').innerHTML =
+      '<div class="wp-main">' +
+        '<div class="wp-player" id="wpPlayer"></div>' +
+        '<div class="wp-meta">' +
+          '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">' +
+            '<div style="min-width:0;"><h1 class="wp-title">' + esc(v.title) + '</h1><div class="wp-date">' + dateLine(v) + (v.views ? ' · ' + Number(v.views).toLocaleString('en-IN') + ' view' + (v.views === 1 ? '' : 's') : '') + '</div></div>' +
+            '<button class="wp-share" onclick="ibiWatchShare()" title="Share this video">⤴ Share</button>' +
+          '</div>' +
+          '<div class="wp-hostcard">' + avatar(s, 40) + '<div style="flex:1;min-width:0;"><div style="font-weight:800;color:#0F1111;">' + esc(s.name || s.shortName) + '</div><div style="font-size:12px;color:#666;">' + esc(s.tagline || 'Seller on IBI Marketplace') + '</div></div>' +
+            '<button class="wp-visit" onclick="ibiWatchClose();openSellerStore(\'' + esc(s.id) + '\')">Visit store ›</button></div>' +
+        '</div>' +
+      '</div>' +
+      '<aside class="wp-shop"><div class="wp-shop-head"><span>🛍 Shop this video</span><span id="wpShopCount" style="font-weight:500;color:#666;font-size:12px;"></span></div><div class="wp-items" id="wpItems"></div></aside>';
+    renderShop(); renderMore(); mountPlayer(v, parseInt(startAt, 10) || 0);
+    var ov = $('watchPageOverlay'); ov.style.display = 'block'; ov.scrollTop = 0; document.body.style.overflow = 'hidden';
+    countView(v);
+  };
+  function itemHTML(pin, idx) {
+    var p = pin.prod, disc = p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
+    var btn = needsChoice(p) ? '<button class="wp-btn alt" onclick="event.stopPropagation();ibiWatchProduct(' + JSON.stringify(p.id) + ')">See details</button>'
+            : (p.inStock ? '<button class="wp-btn" onclick="event.stopPropagation();ibiWatchAdd(' + JSON.stringify(p.id) + ')">Add to Cart</button>' : '<button class="wp-btn alt" disabled>Out of stock</button>');
+    return '<div class="wp-item" id="wpi_' + idx + '" onclick="ibiWatchProduct(' + JSON.stringify(p.id) + ')">' +
+      '<img src="' + esc(p.img) + '" alt="" loading="lazy" onerror="ibiImgFallback(this)">' +
+      '<div style="min-width:0;"><div class="wp-now" id="wpn_' + idx + '" style="display:none;">Featured now</div><div class="t">' + esc(ibiTitleNoBrand(p.title, p.brand)) + '</div>' +
+      '<div class="pr">₹' + formatPrice(p.price) + (p.mrp > p.price ? '<s>₹' + formatPrice(p.mrp) + '</s> <span style="color:#C40000;font-size:12px;font-weight:700;">' + disc + '% off</span>' : '') + '</div>' +
+      (pin.at ? '<span class="at" onclick="event.stopPropagation();ibiWatchSeek(' + pin.at + ')" title="Jump to this moment">▶ ' + fmtAt(pin.at) + '</span>' : '') +
+      btn + '</div></div>';
+  }
+  function renderShop() {
+    if (!CUR) return; var box = $('wpItems'), cnt = $('wpShopCount'); if (!box) return;
+    var pins = pinsOf(CUR), key = pins.map(function (x) { return x.prod.id + '@' + x.at; }).join('|');
+    if (key === shopKey) return; shopKey = key; lastNow = -1;
+    box.innerHTML = pins.length ? pins.map(itemHTML).join('') : '<div style="color:#888;font-size:13px;padding:8px;">Products are loading…</div>';
+    if (cnt) cnt.textContent = pins.length ? pins.length + ' product' + (pins.length === 1 ? '' : 's') : '';
+  }
+  function renderMore() {
+    var host = $('wpMore'); if (!host) return;
+    var others = shoppable().filter(function (v) { return CUR && v.videoId !== CUR.videoId; });
+    host.innerHTML = others.length ? '<div class="wp-more-head">More to watch</div><div class="ws-rail">' + others.map(function (v) { return card(v); }).join('') + '</div>' : '';
+  }
+  // ── player: YouTube through the IFrame API (for the current time), or a plain <video> for .mp4 ──
+  function mountPlayer(v, startAt) {
+    var host = $('wpPlayer'); if (!host) return; var id = ytId(v.url);
+    if (id) {
+      host.innerHTML = '<iframe id="wpYt" src="https://www.youtube-nocookie.com/embed/' + id + '?enablejsapi=1&rel=0&playsinline=1&autoplay=1&start=' + startAt + '&origin=' + encodeURIComponent(location.origin) + '" title="' + esc(v.title) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+      loadYT(function () { if (!CUR || CUR !== v || !$('wpYt')) return; try { PLAYER = new YT.Player('wpYt', { events: { onStateChange: function (e) { if (e.data === 1) startPoll(function () { return PLAYER.getCurrentTime(); }); else stopPoll(); } } }); } catch (e) {} });
+    } else {
+      host.innerHTML = '<video id="wpVid" src="' + esc(v.url) + '" controls autoplay playsinline preload="metadata"' + (v.thumb ? ' poster="' + esc(v.thumb) + '"' : '') + '></video>';
+      var el = $('wpVid'); if (el) { if (startAt) el.currentTime = startAt; el.addEventListener('timeupdate', function () { highlight(el.currentTime); }); }
+    }
+    if (startAt) highlight(startAt);
+  }
+  function loadYT(cb) {
+    if (window.YT && YT.Player) return cb();
+    if (!YT_QUEUE) {
+      YT_QUEUE = []; var prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () { if (prev) { try { prev(); } catch (e) {} } var q = YT_QUEUE || []; YT_QUEUE = []; q.forEach(function (f) { try { f(); } catch (e) {} }); };
+      var sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true; document.head.appendChild(sc);
+    }
+    YT_QUEUE.push(cb);
+  }
+  function startPoll(getT) { stopPoll(); POLL = setInterval(function () { try { highlight(getT()); } catch (e) {} }, 1000); }
+  function stopPoll() { if (POLL) clearInterval(POLL); POLL = null; }
+  function stopPlayer() { stopPoll(); try { if (PLAYER && PLAYER.destroy) PLAYER.destroy(); } catch (e) {} PLAYER = null; var host = $('wpPlayer'); if (host) host.innerHTML = ''; }
+  // the pin whose moment the playback has reached is "Featured now" and scrolled into view
+  function highlight(t) {
+    if (!CUR) return; var pins = pinsOf(CUR), idx = -1;
+    pins.forEach(function (pin, i) { if (pin.at && pin.at <= t + 0.5) idx = i; });
+    if (idx === lastNow) return; lastNow = idx;
+    pins.forEach(function (_, i) { var el = $('wpi_' + i), n = $('wpn_' + i); if (el) el.classList.toggle('now', i === idx); if (n) n.style.display = i === idx ? '' : 'none'; });
+    var box = $('wpItems'), el = $('wpi_' + idx);
+    if (box && el) { if (getComputedStyle(box).flexDirection === 'row') box.scrollTo({ left: Math.max(0, el.offsetLeft - 12), behavior: 'smooth' }); else box.scrollTo({ top: Math.max(0, el.offsetTop - 8), behavior: 'smooth' }); }
+  }
+  window.ibiWatchSeek = function (s) { try { if (PLAYER && PLAYER.seekTo) { PLAYER.seekTo(s, true); PLAYER.playVideo(); } var el = $('wpVid'); if (el) { el.currentTime = s; el.play(); } } catch (e) {} highlight(s); };
+  window.ibiWatchAdd = function (id) { addToCart(id, 1); var c = $('wpCartCount'); if (c) c.textContent = cartTotal(); };
+  window.ibiWatchProduct = function (id) { openProductPage(id); };     // opens above the video; Back returns here
+  window.ibiWatchShare = function () {
+    var url = location.origin + location.pathname + '#watch-' + (CUR ? CUR.videoId : ''), t = CUR ? CUR.title : 'IBI Watch & Shop';
+    if (navigator.share) { navigator.share({ title: t, text: t + ' — Watch & Shop on IBI Marketplace', url: url }).catch(function () {}); return; }
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { showToast('✅ Video link copied!', 'success'); }).catch(function () { showToast('Link: ' + url); });
+    else showToast('Link: ' + url);
+  };
+  function closeWatch() {
+    var ov = $('watchPageOverlay'); if (!ov || ov.style.display !== 'block') return;
+    stopPlayer(); CUR = null; lastNow = -1; shopKey = ''; ov.style.display = 'none';
+    var pp = $('productPageOverlay'); if (!pp || pp.style.display === 'none') document.body.style.overflow = '';
+    if (/^#watch-/.test(location.hash)) history.replaceState(null, '', location.pathname);
+  }
+  window.ibiWatchClose = closeWatch;
+  function countView(v) {
+    try { var k = 'ibi_vv_' + v.videoId; if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1'); } catch (e) {}
+    ibi_fetch_simple({ action: 'videoView', videoId: v.videoId }, function () {}, 8000);
+  }
+  // Back button. The storefront's own popstate handler runs first and, finding no productId, calls
+  // closeProductPage() — which replaces the URL with the bare path. e.state is unaffected by that,
+  // so the watch entry is recognised from it and its hash restored.
+  window.addEventListener('popstate', function (e) {
+    var id = e.state && e.state.watchId;
+    if (id) { if (!CUR || CUR.videoId !== id) ibiWatchOpen(id, 0, true); else { var pp = $('productPageOverlay'); if (pp) pp.style.display = 'none'; document.body.style.overflow = 'hidden'; } history.replaceState(e.state, '', '#watch-' + id); }
+    else if (CUR) closeWatch();
+  });
+
+  // ── product page: "Watch it in action" under the details table ──
+  function productStrip(p) {
+    var host = $('ppWatch'); if (host) host.remove();
+    if (!p || !p.productId || !VIDS || !VIDS.length) return;
+    var pid = p.productId, hits = VIDS.filter(function (v) { return (v.products || []).some(function (x) { return x.productId === pid; }); }); if (!hits.length) return;
+    var row = $('ppDimsRow'), table = row && row.closest('table'); if (!table) return;
+    host = document.createElement('div'); host.id = 'ppWatch'; host.style.marginTop = '18px';
+    host.innerHTML = '<div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:8px;">▶ Watch it in action</div><div class="ws-rail">' + hits.map(function (v) {
+      var pin = (v.products || []).find(function (x) { return x.productId === pid; }) || {}, at = parseInt(pin.at, 10) || 0;
+      return card(v, at ? '<span class="ws-count">at ' + fmtAt(at) + '</span>' : '').replace('onclick="ibiWatchOpen(\'' + esc(v.videoId) + '\')"', 'onclick="ibiWatchOpen(\'' + esc(v.videoId) + '\',' + at + ')"').replace('class="ws-card"', 'class="ws-card" style="flex-basis:230px;"'); }).join('') + '</div>';
+    table.insertAdjacentElement('afterend', host);
+  }
+  if (typeof openProductPage === 'function') { var _opp = openProductPage; openProductPage = function (idOrProd, sw) { var r = _opp.apply(this, arguments); try { var p = (idOrProd && typeof idOrProd === 'object') ? idOrProd : products.find(function (x) { return x.id === idOrProd; }); setTimeout(function () { productStrip(p); }, 60); } catch (e) {} return r; }; }
+  // the catalogue arrives in stages (snapshot, then the sheet) — pins can only be joined once it is here
+  if (typeof renderAllProducts === 'function') { var _rap = renderAllProducts; renderAllProducts = function () { var r = _rap.apply(this, arguments); try { if (VIDS) { renderRail(); if (CUR) { renderShop(); renderMore(); } } } catch (e) {} return r; }; }
+
+  // ── Seller Central: Videos tab ──
+  var scPins = [];
+  function scProducts(cb) {
+    var list = (window._scAllProds || []).filter(function (p) { return p && p.productId; }); if (list.length) return cb(list);
+    var s = session(); if (!s) return cb([]);
+    ibi_fetch_retry({ action: 'getSellerProducts', sellerId: s.sellerId, pin: s.pin }, function (res) { cb(res && res.success && res.products ? res.products : []); }, 25000, 2);
+  }
+  function renderPins() {
+    var h = $('scVidPins'); if (!h) return;
+    h.innerHTML = scPins.length ? scPins.map(function (p, i) { return '<div style="display:flex;align-items:center;gap:8px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:6px 10px;font-size:12.5px;"><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.title) + '</span>' + (p.at ? '<span style="color:#0098c9;font-weight:700;">' + fmtAt(p.at) + '</span>' : '<span style="color:#999;">whole video</span>') + '<button type="button" onclick="ibiSellerVidDelPin(' + i + ')" title="Remove pin" style="border:none;background:none;color:#C40000;cursor:pointer;font-size:14px;">✕</button></div>'; }).join('')
+      : '<div style="font-size:12px;color:#888;">No products pinned yet — pin at least one.</div>';
+  }
+  window.ibiLoadSellerVideos = function () {
+    var s = session(), host = $('sc_videos'); if (!s || !host) return;
+    scProducts(function (list) { var sel = $('scVidProduct'); if (!sel) return; var ok = list.filter(function (p) { return !p.status || p.status === 'Approved'; });
+      sel.innerHTML = '<option value="">' + (ok.length ? '— choose one of your listed products —' : '— no approved listings yet —') + '</option>' + ok.map(function (p) { return '<option value="' + esc(p.productId) + '">' + esc(String(p.title || '').slice(0, 70)) + '</option>'; }).join(''); });
+    host.innerHTML = '<div style="text-align:center;padding:18px;color:#888;">⏳ Loading your videos…</div>';
+    ibi_fetch_retry({ action: 'getSellerVideos', sellerId: s.sellerId, pin: s.pin }, function (res) {
+      if (!res || !res.success) { host.innerHTML = '<div style="color:#92400e;font-size:13px;">⚠️ Could not load your videos' + (res && res.error ? ' — the backend has not been updated for Watch &amp; Shop yet' : '') + '. <button onclick="ibiLoadSellerVideos()" style="padding:5px 10px;border:none;background:#131921;color:#fff;border-radius:6px;cursor:pointer;">Retry</button></div>'; return; }
+      var list = res.videos || []; if (!list.length) { host.innerHTML = '<div style="color:#888;font-size:13px;">No videos yet. Submit your first one above.</div>'; return; }
+      var badge = function (st) { var c = { Published: '#067D62', Pending: '#b45309', Hidden: '#6b7280', Rejected: '#C40000' }[st] || '#6b7280'; return '<span style="font-size:11px;font-weight:800;color:#fff;background:' + c + ';padding:2px 8px;border-radius:10px;white-space:nowrap;">' + esc(st) + '</span>'; };
+      host.innerHTML = list.map(function (v) {
+        var th = v.thumb || (ytId(v.url) ? 'https://i.ytimg.com/vi/' + ytId(v.url) + '/hqdefault.jpg' : ''), n = (v.products || []).length;
+        return '<div style="display:grid;grid-template-columns:120px 1fr;gap:12px;border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:10px;align-items:start;">' +
+          '<div style="aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden;">' + (th ? '<img src="' + esc(th) + '" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">' : '') + '</div>' +
+          '<div style="min-width:0;"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;"><b style="color:#131921;">' + esc(v.title) + '</b>' + badge(v.status) + '</div>' +
+          '<div style="font-size:12px;color:#666;margin:4px 0;">' + n + ' product' + (n === 1 ? '' : 's') + ' pinned' + (v.recordedOn ? ' · recorded ' + esc(v.recordedOn) : '') + ' · ' + (v.views || 0) + ' view' + (v.views === 1 ? '' : 's') + ' · added ' + esc(String(v.timestamp).split(',')[0]) + '</div>' +
+          (v.note ? '<div style="font-size:12px;color:#92400e;">IBI: ' + esc(v.note) + '</div>' : '') +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">' +
+            (v.status === 'Published' ? '<button onclick="ibiWatchOpen(\'' + esc(v.videoId) + '\')" style="padding:6px 12px;border:none;background:#0098c9;color:#fff;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">▶ Watch on the shop</button>' : '<a href="' + esc(v.url) + '" target="_blank" rel="noopener" style="padding:6px 12px;background:#f3f4f6;color:#131921;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;">Open video ↗</a>') +
+            '<button onclick="ibiSellerVideoRemove(\'' + esc(v.videoId) + '\')" style="padding:6px 12px;border:1px solid #fecaca;background:#fff;color:#C40000;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Remove</button></div></div></div>'; }).join('');
+    }, 25000, 3);
+  };
+  window.ibiSellerVidPreview = function () {
+    var url = (($('scVidUrl') || {}).value || '').trim(), id = ytId(url), pv = $('scVidPreview'); if (!pv) return;
+    pv.innerHTML = id ? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="" style="width:160px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block;">'
+      : (ibiVideoKind(url) === 'mp4' ? '<div style="font-size:12px;color:#067D62;font-weight:700;">✓ Direct video file</div>' : (url ? '<div style="font-size:12px;color:#C40000;">Not a YouTube or .mp4 link</div>' : ''));
+  };
+  window.ibiSellerVidAddPin = function () {
+    var sel = $('scVidProduct'), at = String((($('scVidAt') || {}).value || '')).trim();
+    if (!sel || !sel.value) { showToast('⚠️ Choose a product to pin'); return; }
+    if (scPins.length >= 20) { showToast('⚠️ Up to 20 products per video'); return; }
+    if (scPins.some(function (p) { return p.productId === sel.value; })) { showToast('⚠️ Already pinned'); return; }
+    var secs = 0, m = at.match(/^(\d{1,3}):([0-5]?\d)$/); if (m) secs = parseInt(m[1], 10) * 60 + parseInt(m[2], 10); else if (/^\d+$/.test(at)) secs = parseInt(at, 10); else if (at) { showToast('⚠️ Moment as mm:ss, e.g. 1:35'); return; }
+    scPins.push({ productId: sel.value, title: sel.options[sel.selectedIndex].text, at: secs }); sel.value = ''; if ($('scVidAt')) $('scVidAt').value = ''; renderPins();
+  };
+  window.ibiSellerVidDelPin = function (i) { scPins.splice(i, 1); renderPins(); };
+  window.ibiSellerVideoSubmit = function (ev) {
+    if (ev) ev.preventDefault(); var s = session(); if (!s) return;
+    var url = ($('scVidUrl').value || '').trim(), title = ($('scVidTitle').value || '').trim(), dt = ($('scVidDate').value || '').trim();
+    if (!ibiVideoKind(url)) { showToast('⚠️ Paste a YouTube link or a direct .mp4 link'); return; }
+    if (title.length < 4) { showToast('⚠️ Give the video a title'); return; }
+    if (!scPins.length) { showToast('⚠️ Pin at least one product'); return; }
+    // stored as text with a named month — a dd-MM value swaps day and month in the sheet
+    var recorded = ''; if (dt) { var d = new Date(dt + 'T00:00:00'); if (!isNaN(d)) recorded = ('0' + d.getDate()).slice(-2) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ' ' + d.getFullYear(); }
+    var btn = $('scVidSubmit'); if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+    ibi_fetch_post({ action: 'sellerAddVideo', sellerId: s.sellerId, pin: s.pin, url: url, title: title, recordedOn: recorded, products: scPins.map(function (p) { return { productId: p.productId, at: p.at }; }) }, function (res) {
+      if (btn) { btn.disabled = false; btn.textContent = '▶ Submit for approval'; }
+      if (!res || !res.success) { showToast('❌ ' + (res ? (res.message || 'The backend has not been updated for Watch & Shop yet') : 'No reply — try again')); return; }
+      showToast('✅ ' + (res.message || 'Submitted'), 'success');
+      $('scVidUrl').value = ''; $('scVidTitle').value = ''; $('scVidDate').value = ''; scPins = []; renderPins(); ibiSellerVidPreview(); ibiLoadSellerVideos();
+    }, 30000);
+  };
+  window.ibiSellerVideoRemove = function (id) {
+    if (!confirm('Remove this video from Watch & Shop?')) return; var s = session(); if (!s) return;
+    ibi_fetch_post({ action: 'sellerUpdateVideo', sellerId: s.sellerId, pin: s.pin, videoId: id, op: 'remove' }, function (res) {
+      if (res && res.success) { showToast('Video removed'); try { sessionStorage.removeItem('ibi_videos'); } catch (e) {} ibiLoadSellerVideos(); } else showToast('❌ ' + (res && res.message ? res.message : 'Could not remove'));
+    }, 20000);
+  };
+
+  try { renderPins(); } catch (e) {}
+  // after the catalogue calls have had their turn; a #watch- deep link opens once the list is here
+  setTimeout(function () { ibiWatchLoad(false, function () { var h = location.hash || ''; if (/^#watch-/.test(h)) ibiWatchOpen(h.slice(7), 0, true); }); }, 2500);
 })();
 </script>
 
