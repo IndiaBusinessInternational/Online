@@ -2621,9 +2621,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v18.0';
+window.IBI_VERSION      = 'v18.1';
 window.IBI_VERSION_DATE = '5 Sep 2026';
-window.IBI_VERSION_NOTE = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
+window.IBI_VERSION_NOTE = 'v18.1 — 🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product\'s name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.';
+window.IBI_VERSION_NOTE_PREV09 = 'v18.0 — ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store\'s policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper\'s own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI\'s own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.';
 window.IBI_VERSION_NOTE_PREV08 = 'v17.1 — 📲 THE WHATSAPP BUSINESS CATALOGUE NOW FILLS ITSELF FROM THE STOREFRONT. Every approved iINTELLIGENCEi listing is published as a Meta product feed at /meta-catalogue-feed.csv, rebuilt with the half-hourly catalogue snapshot. Meta Commerce Manager fetches that file on a schedule and keeps the WhatsApp Business catalogue in step with the shop — title, description, MRP and selling price, in-stock or out-of-stock, up to ten photos and the product-page link — so a listing edited here reaches WhatsApp on the next fetch with no manual re-upload. House-brand listings only: other sellers\' products stay off IBI\'s WhatsApp catalogue.';
 window.IBI_VERSION_NOTE_PREV07 = 'v17.0 — ⭐ VERIFIED REVIEWS AND SELLER RATINGS, THE AMAZON WAY. Only a customer whose order shows Delivered can review — from Track My Order, with a star rating, headline, text and photos for each item, and a separate rating for the seller. Reviews post at once under the customer\'s first name and last initial with a Verified purchase badge; one review per item per order, so no listing can be stuffed. Product cards and product pages now show the real star rating and count, the product page carries the review list with a rating breakdown and the seller\'s public response, and the seller\'s store page shows the seller rating. Seller Central has a Reviews tab — seller rating, product rating, a negative-feedback rate against Amazon\'s 1% target, every review with a reply box — and the Seller Rating tile that was hidden since v11.1 lights up the day the first buyer rates. IBI can hide a review that breaks the guidelines from the admin desk. Low ratings email the seller and IBI at once.';
 window.IBI_VERSION_NOTE_PREV06 = 'v16.0 — 🚚 SELLERS NOW RUN THEIR OWN ORDERS, RETURNS AND PAYMENTS — THE AMAZON SELLER CENTRAL WAY. Manage Orders replaces the read-only order list: every order shows a Ship-by date, and the seller confirms it, marks it packed, confirms the shipment with the carrier and tracking ID, marks it delivered, or cancels it with a reason — each step emails the customer, and the customer\'s Track My Order page (now order ID plus mobile number, read live from the sheet instead of a demo timeline) shows the carrier and tracking number the moment they are entered. Packing slip and shipping label print from the order card. Manage Returns: a customer requests a return from Track My Order with Amazon\'s reason list and photos; the seller authorizes, declines with a reason, or marks the item received; IBI records the refund, and it lands as an adjustment on the seller\'s statement. Payments: settlement periods — the Monday after the 7-day return window — with item total, 5% commission, 18% GST on the commission, refunds and net, printable and downloadable as a spreadsheet. Registration verifies the email with a 6-digit code before the PIN can ever be sent to it; Forgot PIN emails a fresh PIN to the registered address; Change PIN sits in Profile. Seller Central opens with Complete-your-setup — agreement, identity, bank, KYC, first listing, first approval — and an Account Health strip with late-shipment, cancellation and return rates against Amazon\'s targets. Bulk Upload gains an IBI template download and a processing report. Also fixed: customer orders were never reaching the Orders sheet (the save demanded a CEO token a shopper does not have); orders now save for everyone, with prices re-checked against the catalogue.';
@@ -12326,7 +12327,7 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
 // Dev override: localStorage.ibi_agent_url = 'http://localhost:8788/api/chat'.
 window.IBI_AGENT_URL = 'https://agent.indiabusinessinternational.online/api/chat';
 
-var _ag = { messages: [], transcript: [], busy: false, built: false, unread: false };
+var _ag = { messages: [], transcript: [], busy: false, built: false, unread: false, turn: { shown: false, searchIds: [] } };
 var _AG_STORE = 'ibi_agent_chat_v1';
 var _AG_MAX_HOPS = 8;          // tool round-trips per shopper message
 var _AG_KEEP_CHARS = 24000;    // history sent to the server (older turns dropped whole)
@@ -12568,6 +12569,26 @@ function _agCards(ids, silent) {
   _ag.transcript.push({ t: 'cards', ids: list.map(function (p) { return String(p.productId || p.id); }) }); if (!silent) _agSave();
   return list.length;
 }
+// Product IDs the model wrote into its prose — full "PROD-IINTELLIGENCEI-655415" or the compact
+// "IINTELLIGENCEI-655415" form the local engine's index uses. Unique, in order of mention.
+function _agIdsInText(text) {
+  var out = [], seen = {};
+  var re = /\b(?:PROD-)?([A-Z][A-Z0-9]{2,}-\d{4,})\b/g, m;
+  while ((m = re.exec(String(text || '')))) {
+    var p = _agFind('PROD-' + m[1]) || _agFind(m[1]) || _agFind(m[0]);
+    if (p) { var k = String(p.productId || p.id); if (!seen[k]) { seen[k] = 1; out.push(k); } }
+  }
+  return out;
+}
+// Shoppers should read names, not IDs: swap every ID the model wrote for the product's name.
+function _agHumanizeIds(text) {
+  return String(text || '').replace(/\b(?:PROD-)?([A-Z][A-Z0-9]{2,}-\d{4,})\b/g, function (whole, core) {
+    var p = _agFind('PROD-' + core) || _agFind(core) || _agFind(whole);
+    if (!p) return whole;
+    var name = ibiTitleNoBrand(p.title, p.brand).split(/[,|(]/)[0].trim();
+    return '**' + (name.length > 48 ? name.slice(0, 47) + '…' : name) + '**';
+  }).replace(/\*\*\*\*/g, '**');   // the model often bolds the ID itself: **PROD-…** → keep ONE pair of stars
+}
 function ibiAgentOpenProduct(pid) {
   var p = _agFind(pid); if (!p) return;
   ibiAgentMinimise();
@@ -12586,6 +12607,7 @@ function ibiAgentSend() {
   if (!text || _ag.busy) return;
   i.value = '';
   _agChips([]);
+  _ag.turn = { shown: false, searchIds: [] };   // per shopper message: did the model show cards, what did it find
   _agUser(text);
   _ag.messages.push({ role: 'user', content: text });
   _agRun();
@@ -12626,8 +12648,18 @@ function _agRun() {
         _ag.messages.push({ role: 'assistant', content: j.content });
         var texts = j.content.filter(function (b) { return b.type === 'text' && b.text && b.text.trim(); });
         var uses = j.content.filter(function (b) { return b.type === 'tool_use'; });
-        texts.forEach(function (b) { _agBot(b.text); });
-        if (j.stop_reason === 'tool_use' && uses.length && hops < _AG_MAX_HOPS) {
+        var isFinal = !(j.stop_reason === 'tool_use' && uses.length && hops < _AG_MAX_HOPS);
+        // Cards, guaranteed: the model is asked to call show_products, but a small model often
+        // answers in prose instead. Any product ID it names is swapped for the product's name in
+        // the bubble and drawn as a card; if it named none but a search ran this turn, the top
+        // results become the cards. Rufus-style: the shopper always gets something to tap.
+        var namedIds = isFinal ? _agIdsInText(texts.map(function (b) { return b.text; }).join('\n')) : [];
+        texts.forEach(function (b) { _agBot(isFinal ? _agHumanizeIds(b.text) : b.text); });
+        if (isFinal && !_ag.turn.shown) {
+          var ids = namedIds.length ? namedIds : (uses.length ? [] : _ag.turn.searchIds.slice(0, 3));
+          if (ids.length) { _agCards(ids); _ag.turn.shown = true; }
+        }
+        if (!isFinal) {
           hops++;
           var results = uses.map(function (u) {
             var r; try { r = _agTool(u.name, u.input || {}); } catch (e) { r = { error: String(e && e.message || e) }; }
@@ -12781,9 +12813,9 @@ function _agRemove(inp) {
 }
 function _agTool(name, inp) {
   switch (name) {
-    case 'search_products':     return _agSearch(inp);
-    case 'get_product_details': return _agDetails(inp);
-    case 'show_products':       { var n = _agCards(inp.product_ids || []); return n ? { shown: n } : { error: 'None of those product ids exist.' }; }
+    case 'search_products':     { var sr = _agSearch(inp); _ag.turn.searchIds = (sr.results || []).map(function (r) { return r.id; }); return sr; }
+    case 'get_product_details': { var dr = _agDetails(inp); if (!dr.error && _ag.turn.searchIds.indexOf(dr.id) === -1) _ag.turn.searchIds.unshift(dr.id); return dr; }
+    case 'show_products':       { var n = _agCards(inp.product_ids || []); if (n) _ag.turn.shown = true; return n ? { shown: n } : { error: 'None of those product ids exist.' }; }
     case 'add_to_cart':         return _agAdd(inp);
     case 'remove_from_cart':    return _agRemove(inp);
     case 'view_cart':           return _agCartView();

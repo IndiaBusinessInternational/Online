@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v18.1
+
+🛍️ THE ASSISTANT NOW ANSWERS WITH PRODUCT CARDS, NOT TEXT. Whenever Ask IBI recommends or compares products, the products appear as tappable cards in the chat — photo, price, MRP, stock, seller, View and Add buttons — and the reply keeps to a sentence or two about which one to pick. Product codes never appear in the conversation: if the AI names one, the shop swaps it for the product's name and draws the card, and if the AI searched but forgot the cards, the shop shows the top matches itself. The engine is also told to put every recommendation on cards and to leave price tables to them.
+
 ## v18.0
 
 ✨ AN AI SHOPPING ASSISTANT NOW HELPS EVERY SHOPPER, THE AMAZON RUFUS WAY. A floating Ask IBI button on the storefront, and a link in the menu bar, open a chat that knows the whole live catalogue and the store's policies: describe the occasion, budget or size and it searches, compares real prices and specifications, puts product cards in the chat, adds the right pack or colour to the cart, opens the product page, the cart, the order form or Track My Order on request, and answers in the shopper's own language, Tamil and Hindi included. It only ever talks about products actually on sale here, never invents a price or a stock position, and never places the order or touches payment — checkout stays with the shopper on the usual order form. The AI key sits on IBI's own Cloudflare server at agent.indiabusinessinternational.online, not in the page; until that server is switched on, the button says the assistant is being set up.
