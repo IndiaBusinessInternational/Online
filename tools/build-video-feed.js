@@ -137,7 +137,7 @@ function dateText(iso) { const d = new Date(iso); if (isNaN(d)) return ''; const
   }
   feed.sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
   const byHow = {}; for (const f of feed) { const k = f._how.split(' ')[0]; byHow[k] = (byHow[k] || 0) + 1; }
-  console.log(`uploads ${uploads.length} · public ${pub.size} · matched ${feed.length} (${JSON.stringify(byHow)}) · unmatched ${unmatched.length} · not public ${hidden.length}`);
+  console.log(`uploads ${uploads.length} | public ${pub.size} | matched ${feed.length} (${JSON.stringify(byHow)}) | unmatched ${unmatched.length} | not public ${hidden.length}`);   // ASCII only: the task log is cp1252
   const distinct = new Set(); feed.forEach(f => f.products.forEach(x => distinct.add(x.productId))); console.log(`products covered: ${distinct.size} of ${products.length}`);
   if (REPORT_ONLY) {
     console.log('\n-- title matches (verify these) --'); for (const f of feed.filter(x => x._how.startsWith('title'))) console.log(`  [${f._how}] ${f.title.slice(0, 60)}  =>  ${f._product}`);
@@ -146,9 +146,10 @@ function dateText(iso) { const d = new Date(iso); if (isNaN(d)) return ''; const
       console.log(`  ${v.id}  ${coreTitle(v.title).slice(0, 55)}  [${[...vt].join(' ')}]  ~${c ? Math.round(c.cover * 100) + '% ' + c.p.title.replace(/^iINTELLIGENCEi\s*/i, '').slice(0, 40) : ''}`); }
     return;
   }
-  const out = { generatedAt: new Date().toISOString(), channel: 'UCo-wwOkYxCPaG60XVQ_xD4w', count: feed.length, videos: feed.map(({ _how, _product, publishedAt, ...rest }) => rest) };
+  // no timestamp in either file: the nightly task commits only when the CONTENT changed
+  const out = { channel: 'UCo-wwOkYxCPaG60XVQ_xD4w', count: feed.length, videos: feed.map(({ _how, _product, publishedAt, ...rest }) => rest) };
   const dest = path.join(ROOT, 'videos-feed.json'); const tmp = dest + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(out, null, 1)); fs.renameSync(tmp, dest);
-  fs.writeFileSync(path.join(ROOT, 'tools', 'video-feed-report.txt'), ['generated ' + out.generatedAt, `matched ${feed.length} · unmatched ${unmatched.length} · not public ${hidden.length}`, '', 'UNMATCHED (no product found — give the video a product link in its YouTube description):', ...unmatched.map(v => `  ${v.id}  ${v.title}`), '', 'TITLE MATCHES:', ...feed.filter(x => x._how.startsWith('title')).map(f => `  [${f._how}] ${f.title}  =>  ${f._product}`)].join('\n'));
+  fs.writeFileSync(path.join(ROOT, 'tools', 'video-feed-report.txt'), [`uploads ${uploads.length} | public ${pub.size} | matched ${feed.length} | unmatched ${unmatched.length}`, '', 'UNMATCHED (no product found — give the video a product link in its YouTube description):', ...unmatched.map(v => `  ${v.id}  ${v.title}`), '', 'TITLE MATCHES:', ...feed.filter(x => x._how.startsWith('title')).map(f => `  [${f._how}] ${f.title}  =>  ${f._product}`)].join('\n'));
   console.log('wrote videos-feed.json + tools/video-feed-report.txt');
 })().catch(e => { console.error('build-video-feed failed:', e.message); process.exit(1); });
