@@ -2525,14 +2525,16 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
        stock sync, the Meta/WhatsApp feed and the /p/ pages are all built for physical
        goods with a shelf count and a courier. A subscription has none of those, and the
        licence is bought and activated INSIDE the app (pos.indiabusinessinternational.online),
-       so the card links out instead of adding to the cart. Add a second product as a
-       second .dp-card; keep prices in step with the PoS pricing page. -->
+       so the card links out instead of adding to the cart. Add a further product as a
+       further .dp-card inside #digitalProductsGrid; keep prices in step with each app's
+       own pricing page. v19.5 added the second product, IBI Product Listings Master. -->
   <section class="products-section" id="digitalProductsSection" style="background:#f7f7fb;padding:28px 0 22px;">
     <div style="max-width:1400px;margin:0 auto;padding:0 16px;">
       <div class="section-header" style="margin-bottom:14px;flex-wrap:wrap;gap:6px;">
         <h2 class="section-title">💼 Digital Products <span style="font-size:12px;font-weight:600;color:#666;padding-left:6px;">Software by IBI</span></h2>
         <span style="font-size:12.5px;color:#555;">Delivered online — nothing to ship, start in minutes</span>
       </div>
+      <div id="digitalProductsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,540px),1fr));gap:16px;align-items:start;">
       <div class="dp-card" style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
         <a href="https://pos.indiabusinessinternational.online/?stay" target="_blank" rel="noopener" style="flex:0 0 auto;display:block;">
           <img src="https://pos.indiabusinessinternational.online/app/icons/icon-192.png" alt="IBI Hospitality Industry PoS" width="120" height="120" loading="lazy" style="width:120px;height:120px;border-radius:24px;box-shadow:0 6px 18px rgba(15,118,110,.25);display:block;">
@@ -2560,6 +2562,36 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
           </div>
           <div style="margin-top:10px;font-size:12px;color:#6b7280;">Digital product — the subscription is bought and activated inside the app. Nothing is shipped and no order appears in Track My Order.</div>
         </div>
+      </div>
+
+      <div class="dp-card" style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <a href="https://listingsmaster.indiabusinessinternational.online/" target="_blank" rel="noopener" style="flex:0 0 auto;display:block;">
+          <img src="https://listingsmaster.indiabusinessinternational.online/app/icons/icon-192.png" alt="IBI Product Listings Master" width="120" height="120" loading="lazy" style="width:120px;height:120px;border-radius:24px;box-shadow:0 6px 18px rgba(109,40,217,.25);display:block;">
+        </a>
+        <div style="flex:1 1 320px;min-width:0;">
+          <div style="font-size:11.5px;font-weight:700;color:#6d28d9;letter-spacing:.04em;text-transform:uppercase;">India Business International · Subscription software</div>
+          <h3 style="margin:4px 0 6px;font-size:21px;line-height:1.2;color:#0F1111;">IBI Product Listings Master</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+            <span style="font-size:11.5px;font-weight:700;background:#efe7ff;color:#6d28d9;border-radius:999px;padding:3px 9px;">🛒 13 marketplaces</span>
+            <span style="font-size:11.5px;font-weight:700;background:#efe7ff;color:#6d28d9;border-radius:999px;padding:3px 9px;">🔍 Dynamic SEO</span>
+            <span style="font-size:11.5px;font-weight:700;background:#efe7ff;color:#6d28d9;border-radius:999px;padding:3px 9px;">✅ Compliance checks</span>
+            <span style="font-size:11.5px;font-weight:700;background:#fef3c7;color:#b45309;border-radius:999px;padding:3px 9px;">🎁 Free plan, no card</span>
+          </div>
+          <p style="margin:0 0 10px;font-size:14px;color:#374151;line-height:1.5;">Enter a product once and get the listing every marketplace wants — Amazon India, Amazon Bazaar, Flipkart, Shopsy, Meesho, ShopClues, this marketplace and more. Titles, highlights, bullets, descriptions and keywords are written inside each platform's own limits, checked against its rules and the Legal Metrology declarations, scored out of 100, and handed to you as that platform's upload sheet.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px 22px;align-items:baseline;margin-bottom:12px;">
+            <div><span style="font-size:22px;font-weight:800;color:#0F1111;">Free</span><span style="font-size:12.5px;color:#666;"> forever, every channel</span></div>
+            <div><span style="font-size:16px;font-weight:800;color:#0F1111;">₹499</span><span style="font-size:12.5px;color:#666;"> / month Starter</span></div>
+            <div><span style="font-size:16px;font-weight:800;color:#0F1111;">₹1,499</span><span style="font-size:12.5px;color:#666;"> / month Pro</span></div>
+            <div style="font-size:12px;color:#666;">All prices include GST · Business plan ₹3,999</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+            <a href="https://listingsmaster.indiabusinessinternational.online/app/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#6d28d9;color:#fff;font-weight:800;font-size:14px;border-radius:8px;padding:11px 18px;text-decoration:none;">Start free ›</a>
+            <a href="https://listingsmaster.indiabusinessinternational.online/#how" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:#131921;font-weight:700;font-size:14px;border:1px solid #131921;border-radius:8px;padding:10px 16px;text-decoration:none;">How it works &amp; pricing</a>
+            <a href="https://wa.me/918939414799?text=Interested%20in%20IBI%20Product%20Listings%20Master" target="_blank" rel="noopener" style="font-size:13px;color:#0098c9;font-weight:700;text-decoration:none;">💬 Ask on WhatsApp</a>
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:#6b7280;">Digital product — the plan is bought and activated inside the app. Nothing is shipped and no order appears in Track My Order.</div>
+        </div>
+      </div>
       </div>
     </div>
   </section>
@@ -2601,6 +2633,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
         <li><a href="#" onclick="openSellerDashboard()">Seller Central Login</a></li>
         <li><a href="/seller-agreement.html">Seller Agreement &amp; Policies</a></li>
         <li><a href="https://pos.indiabusinessinternational.online/?stay" target="_blank" rel="noopener">💼 IBI Hospitality PoS — billing software</a></li>
+        <li><a href="https://listingsmaster.indiabusinessinternational.online/" target="_blank" rel="noopener">💼 IBI Product Listings Master — list on every marketplace</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -2745,9 +2778,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v19.4';
-window.IBI_VERSION_DATE = '6 Sep 2026';
-window.IBI_VERSION_NOTE = 'v19.4 — 💼 IBI\'S OWN SOFTWARE IS NOW ON THE SHELF: A DIGITAL PRODUCTS SECTION. The home page carries a Digital Products section, below Watch & Shop and above Shop by Category, presenting the IBI Hospitality Industry PoS — the subscription billing app for tea shops, tiffin centres, restaurants and small hotels (works offline, UPI QR with the exact amount, WhatsApp bills, expenses and profit, 11 Indian languages). The card shows the plans (₹249 a month, ₹1,999 a year, ₹9,999 lifetime, all including GST, first month free) with Start free trial, Demo & pricing and Ask on WhatsApp. It is deliberately not a catalogue row: a subscription has no shelf count and no courier, so it stays out of the stock sync, the WhatsApp catalogue feed and the cart, and the purchase completes inside the app itself, where the licence activates by itself. A footer link under Sell with Us points business owners to it as well.';
+window.IBI_VERSION      = 'v19.5';
+window.IBI_VERSION_DATE = '11 Sep 2026';
+window.IBI_VERSION_NOTE = 'v19.5 — 🛒 A SECOND PIECE OF IBI SOFTWARE ON THE SHELF: PRODUCT LISTINGS MASTER. The Digital Products section now holds two cards side by side on a wide screen and stacked on a phone. The new one is IBI Product Listings Master, the subscription tool for sellers: enter a product once and it writes the listing each marketplace wants — Amazon India, Amazon Bazaar, Flipkart, Shopsy, Meesho, ShopClues, this marketplace and seven more — inside that platform\'s own character limits, past its banned-word and repetition rules, with the Legal Metrology declarations checked, a score out of 100, and the platform\'s own upload sheet to download. It carries a free plan with every channel unlocked, then ₹499, ₹1,499 and ₹3,999 a month, all including GST. Like the PoS it is deliberately not a catalogue row — no shelf count, no courier, nothing in Track My Order — and the plan is bought inside the app itself at listingsmaster.indiabusinessinternational.online. A second footer link under Sell with Us points sellers to it.';
+window.IBI_VERSION_NOTE_PREV12 = 'v19.4 — 💼 IBI\'S OWN SOFTWARE IS NOW ON THE SHELF: A DIGITAL PRODUCTS SECTION. The home page carries a Digital Products section, below Watch & Shop and above Shop by Category, presenting the IBI Hospitality Industry PoS — the subscription billing app for tea shops, tiffin centres, restaurants and small hotels (works offline, UPI QR with the exact amount, WhatsApp bills, expenses and profit, 11 Indian languages). The card shows the plans (₹249 a month, ₹1,999 a year, ₹9,999 lifetime, all including GST, first month free) with Start free trial, Demo & pricing and Ask on WhatsApp. It is deliberately not a catalogue row: a subscription has no shelf count and no courier, so it stays out of the stock sync, the WhatsApp catalogue feed and the cart, and the purchase completes inside the app itself, where the licence activates by itself. A footer link under Sell with Us points business owners to it as well.';
 window.IBI_VERSION_NOTE_PREV11 = 'v19.3 — ↩️ BACK FROM A VIDEO RETURNS TO THE PRODUCT PAGE IT CAME FROM. Opening a video from Watch it in action on a product page and pressing Back now lands on that product page again, exactly as it was, instead of on the home screen. The cart and Visit store buttons on the video page still leave both pages behind, as they should.';
 window.IBI_VERSION_NOTE_PREV10 = 'v19.2 — 🗓️ THE RECORDED DATE READS AS A DATE AGAIN, AND SHARE ALWAYS COPIES. The sheet had turned a typed "25 Sep 2023" into a date cell and the watch page then printed the raw computer form of it ("Mon Sep 25 2023 00:00:00 GMT+0530 …"); dates now print day-first with a named month wherever they appear, and the backend stores them as text so it cannot happen again. The YouTube player\'s own Copy link button was blocked inside the shop ("Unable to copy link to clipboard") because the frame was never granted clipboard access — granted now — and the shop\'s Share button gained a fallback copy for browsers that refuse the modern clipboard call. Also: a video opened from a shared link or after a page refresh now has the shop underneath it, so Back returns to the store instead of leaving the site.';
 window.IBI_VERSION_NOTE_PREV09 = 'v19.1 — 📺 EVERY PRODUCT VIDEO ON THE IBI YOUTUBE CHANNEL NOW SHOPS ITSELF. The channel\'s public uploads are read each night, each video is joined to the listing it shows — by the product link in its description when there is one, otherwise by its title, and a video that shows a family (a chain in six colours, three rice-pot sizes) pins every one of them — and the result is published as a feed the shop imports on its own: new videos appear in Watch & Shop as approved house-brand videos, changed titles and thumbnails refresh, and a video taken off YouTube is hidden here the same day. Nobody types a video in again. The home rail shows the newest video for each product, thirty at most, with the rest under More to watch; the admin desk gains a Sync channel feed button for an immediate import and a report lists the uploads still unmatched so a product link can be added to their YouTube description.';
