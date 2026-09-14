@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.7
+
+💸 IBI APPS PRICES SET AT THE LOW END OF THE MARKET. After checking the Indian and international competition, the four seller editions were repriced: GST Report Generator Pro ₹99 a month and Business ₹249; Finance Tracker Pro ₹99 a month or ₹899 a year; BG Remover from ₹149 for 100 images to ₹999 for 2,000; Invoice & Label Separator free for 300 pages a month, Pro ₹49 a month or ₹399 a year. Prices include GST; outside India the same plans are shown in US dollars. The cards on this shelf now carry the new figures.
+
 ## v19.6
 
 💼 THE DIGITAL PRODUCTS SHELF NOW HOLDS EVERY PIECE OF IBI SOFTWARE, SEVEN IN ALL. Four new seller editions from IBI Apps join the shelf: the IBI GST Report Generator (the month's Amazon, Flipkart, Meesho and ShopClues GST files in, the GSTR-1 tables, portal JSON and a returns analysis out), the IBI Finance Tracker (ledger, monthly plan, commitments, ten-tab reports, voice entry), the IBI BG Remover (clean product photos on the IBI Cloud engine, no API key) and the IBI Invoice & Shipping Label Separator (labels for the parcel, invoices for the file). IBI VideoEditorC Pro is listed too. One IBI account works across the four new apps; every app has a free plan and prices include GST. The cards are now a uniform grid — three across on a wide screen, one on a phone — with a single note that the plan is bought inside each app.
