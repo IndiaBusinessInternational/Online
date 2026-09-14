@@ -2,6 +2,14 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.6
+
+💼 THE DIGITAL PRODUCTS SHELF NOW HOLDS EVERY PIECE OF IBI SOFTWARE, SEVEN IN ALL. Four new seller editions from IBI Apps join the shelf: the IBI GST Report Generator (the month's Amazon, Flipkart, Meesho and ShopClues GST files in, the GSTR-1 tables, portal JSON and a returns analysis out), the IBI Finance Tracker (ledger, monthly plan, commitments, ten-tab reports, voice entry), the IBI BG Remover (clean product photos on the IBI Cloud engine, no API key) and the IBI Invoice & Shipping Label Separator (labels for the parcel, invoices for the file). IBI VideoEditorC Pro is listed too. One IBI account works across the four new apps; every app has a free plan and prices include GST. The cards are now a uniform grid — three across on a wide screen, one on a phone — with a single note that the plan is bought inside each app.
+
+## v19.5
+
+🛒 A SECOND PIECE OF IBI SOFTWARE ON THE SHELF: PRODUCT LISTINGS MASTER. The Digital Products section now holds two cards side by side on a wide screen and stacked on a phone. The new one is IBI Product Listings Master, the subscription tool for sellers: enter a product once and it writes the listing each marketplace wants — Amazon India, Amazon Bazaar, Flipkart, Shopsy, Meesho, ShopClues, this marketplace and seven more — inside that platform's own character limits, past its banned-word and repetition rules, with the Legal Metrology declarations checked, a score out of 100, and the platform's own upload sheet to download. It carries a free plan with every channel unlocked, then ₹499, ₹1,499 and ₹3,999 a month, all including GST. Like the PoS it is deliberately not a catalogue row — no shelf count, no courier, nothing in Track My Order — and the plan is bought inside the app itself at listingsmaster.indiabusinessinternational.online. A second footer link under Sell with Us points sellers to it.
+
 ## v19.4
 
 💼 IBI'S OWN SOFTWARE IS NOW ON THE SHELF: A DIGITAL PRODUCTS SECTION. The home page carries a Digital Products section, below Watch & Shop and above Shop by Category, presenting the IBI Hospitality Industry PoS — the subscription billing app for tea shops, tiffin centres, restaurants and small hotels (works offline, UPI QR with the exact amount, WhatsApp bills, expenses and profit, 11 Indian languages). The card shows the plans (₹249 a month, ₹1,999 a year, ₹9,999 lifetime, all including GST, first month free) with Start free trial, Demo & pricing and Ask on WhatsApp. It is deliberately not a catalogue row: a subscription has no shelf count and no courier, so it stays out of the stock sync, the WhatsApp catalogue feed and the cart, and the purchase completes inside the app itself, where the licence activates by itself. A footer link under Sell with Us points business owners to it as well.
