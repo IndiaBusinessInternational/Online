@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.13
+
+📱 THE PRODUCT PAGE FITS THE PHONE AGAIN. On phones the product page had grown wider than the screen, so the Buy Now button, the seller card and the description scrolled off to the right. The page now stays exactly as wide as the screen, on every product.
+
 ## v19.12
 
 ⚡ THE SHOP PICKS UP EVERY UPDATE ON THE NEXT OPEN. The service worker now re-checks each of the shop's own files with the server on every load, so a new release shows the moment the page is reopened instead of up to ten minutes later. No visible change otherwise.
