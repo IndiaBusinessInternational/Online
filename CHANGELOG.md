@@ -4,7 +4,7 @@
 
 ## v19.8
 
-🧾 THE GST REPORT GENERATOR IS NOW PRICED PER RETURN. One free trial run on the seller's own files, then ₹299 per report (one tax period, with the portal JSON and the analysis sheet), ₹2,999 for a year of unlimited runs or ₹7,999 for life — set between the bare converter software at ₹99 a month and the assisted filing services at ₹499 to ₹998 a month. The card now shows the per-report price and a Try it free button.
+🧾 THE GST REPORT GENERATOR IS NOW PRICED PER RETURN. One free trial run on the seller's own files, then ₹299 per report (one tax period, with the portal JSON and the analysis sheet), ₹2,999 for a year of unlimited runs or ₹6,999 for three years — set between the bare converter software at ₹99 a month and the assisted filing services at ₹499 to ₹998 a month. The card now shows the per-report price and a Try it free button.
 
 ## v19.7
 
