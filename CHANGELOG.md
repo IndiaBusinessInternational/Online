@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.10
+
+📲 PAY BY GPAY OR ANY UPI APP RIGHT AT CHECKOUT. Step 3 of the order form now shows a QR code for the exact order total with the order number already filled in — scan it with GPay, PhonePe, Paytm or BHIM, or tap Open UPI app on a phone. One more button sends the order to WhatsApp with a line for the UPI reference so we can confirm and dispatch. The Zoho card/UPI button and the plain WhatsApp order stay as they were.
+
 ## v19.9
 
 🎬 WATCH THE GST REPORT GENERATOR BEFORE YOU TRY IT. The GST card now carries a two-minute demo video, narrated in nine languages — English, Hindi, Tamil, Telugu, Kannada, Malayalam, Marathi, Gujarati and Bengali — with a language picker that starts on the language of the visitor's phone. The same demo plays inside the app's help assistant, which itself answers in eleven Indian languages.
