@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.12
+
+⚡ THE SHOP PICKS UP EVERY UPDATE ON THE NEXT OPEN. The service worker now re-checks each of the shop's own files with the server on every load, so a new release shows the moment the page is reopened instead of up to ten minutes later. No visible change otherwise.
+
 ## v19.11
 
 🧹 A STRAY ERROR FROM SLOW SERVER REPLIES IS GONE. When the sheet answered after the page had stopped waiting, the late reply called a callback that no longer existed and the browser logged an error. Late replies are now quietly ignored. No visible change.

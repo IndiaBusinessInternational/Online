@@ -15,7 +15,7 @@
 
 // Bump on EVERY deploy that changes cached files. Activate deletes every cache
 // whose name is not this one, so a bump is what purges the old copies.
-const CACHE_NAME  = 'ibi-marketplace-v19-11';
+const CACHE_NAME  = 'ibi-marketplace-v19-12';
 
 // Only the shell. index.html is here so a navigation still resolves offline;
 // because fetch is network-first it is never PREFERRED over the live copy.
@@ -97,8 +97,11 @@ self.addEventListener('fetch', function (event) {
   // get the whole storage bucket evicted, taking the shell down with it.
   var sameOrigin = url.indexOf(self.location.origin) === 0;
 
+  // v19.12: our own files are fetched with cache:'no-cache' — the browser still sends the request but MUST revalidate
+  // with GitHub Pages (ETag → 304 when unchanged), so a release is picked up on the next open instead of after the
+  // 10-minute max-age the host puts on every file. (The IBI Apps site got the same treatment in v1.5.6.)
   event.respondWith(
-    fetch(req)
+    (sameOrigin ? fetch(req, { cache: 'no-cache' }) : fetch(req))
       .then(function (response) {
         if (sameOrigin && response && response.status === 200 && response.type === 'basic') {
           var clone = response.clone();
