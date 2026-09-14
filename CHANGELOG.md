@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.9
+
+🎬 WATCH THE GST REPORT GENERATOR BEFORE YOU TRY IT. The GST card now carries a two-minute demo video, narrated in nine languages — English, Hindi, Tamil, Telugu, Kannada, Malayalam, Marathi, Gujarati and Bengali — with a language picker that starts on the language of the visitor's phone. The same demo plays inside the app's help assistant, which itself answers in eleven Indian languages.
+
 ## v19.8
 
 🧾 THE GST REPORT GENERATOR IS NOW PRICED PER RETURN. One free trial run on the seller's own files, then ₹299 per report (one tax period, with the portal JSON and the analysis sheet), ₹2,999 for a year of unlimited runs or ₹6,999 for three years — set between the bare converter software at ₹99 a month and the assisted filing services at ₹499 to ₹998 a month. The card now shows the per-report price and a Try it free button.
