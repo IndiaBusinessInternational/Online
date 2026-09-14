@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.8
+
+🧾 THE GST REPORT GENERATOR IS NOW PRICED PER RETURN. One free trial run on the seller's own files, then ₹299 per report (one tax period, with the portal JSON and the analysis sheet), ₹2,999 for a year of unlimited runs or ₹7,999 for life — set between the bare converter software at ₹99 a month and the assisted filing services at ₹499 to ₹998 a month. The card now shows the per-report price and a Try it free button.
+
 ## v19.7
 
 💸 IBI APPS PRICES SET AT THE LOW END OF THE MARKET. After checking the Indian and international competition, the four seller editions were repriced: GST Report Generator Pro ₹99 a month and Business ₹249; Finance Tracker Pro ₹99 a month or ₹899 a year; BG Remover from ₹149 for 100 images to ₹999 for 2,000; Invoice & Label Separator free for 300 pages a month, Pro ₹49 a month or ₹399 a year. Prices include GST; outside India the same plans are shown in US dollars. The cards on this shelf now carry the new figures.
