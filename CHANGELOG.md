@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.14
+
+✨ AI LISTINGS APPEAR AS SOON AS THE AI FINISHES. ✨ Generate & Fill used to wait about a minute and a half longer while a copy was being saved to the IBI Google Doc. The listing now fills in the moment it is written, the Google Doc copy is saved in the background, and a busy Google server is retried once automatically.
+
 ## v19.13
 
 📱 THE PRODUCT PAGE FITS THE PHONE AGAIN. On phones the product page had grown wider than the screen, so the Buy Now button, the seller card and the description scrolled off to the right. The page now stays exactly as wide as the screen, on every product.
