@@ -1,6 +1,6 @@
 // =============================================================
 //  IBI AUTH WORKER  —  Cloudflare Worker (ES Module)
-//  Version : 1.2  |  India Business International
+//  Version : 1.3  |  India Business International
 // -------------------------------------------------------------
 //  Protects: finance / gstr / erp / settlement subdomains
 //            (actual routes are set in the Cloudflare dashboard)
@@ -13,6 +13,10 @@
 //            password manager files each tool separately instead
 //            of saving them all under one shared username; plus
 //            OPTIONAL per-tool passwords (see below).
+//  v1.3    : installable apps — the app manifest, service worker
+//            and the five app icons are public (exact paths only),
+//            so Chrome/Android can install ERP / Finance / Settlement
+//            as full-screen apps. They contain no data.
 // =============================================================
 //
 //  Required Environment Variables (set in Cloudflare dashboard):
@@ -43,7 +47,11 @@ const COOKIE_DOMAIN = '.indiabusinessinternational.online';
 // Paths served straight from origin WITHOUT a session — keep this
 // list tight: only non-sensitive static brand assets. The social
 // preview banner must be public or WhatsApp/FB/X can't render it.
-const PUBLIC_PATHS  = ['/og-banner.png'];
+const PUBLIC_PATHS  = ['/og-banner.png',
+  // v1.3 installable-app files (no data): Android fetches these without a session
+  '/manifest.json', '/sw.js',
+  '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-maskable-512.png',
+  '/icons/apple-touch-icon.png', '/icons/favicon-64.png'];
 
 // Per-subdomain names/descriptions for the login page's social
 // preview tags (fallback below covers any other routed host).
