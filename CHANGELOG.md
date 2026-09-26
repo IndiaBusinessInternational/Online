@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.15
+
+📲 THE ADMIN CONSOLE INSTALLS AS ITS OWN APP. On a phone, open the admin page in Chrome and choose Install app: it gets its own ADM icon and opens full screen, separate from the IBI Shop app. Nothing changes for shoppers or sellers.
+
 ## v19.14
 
 ✨ AI LISTINGS APPEAR AS SOON AS THE AI FINISHES. ✨ Generate & Fill used to wait about a minute and a half longer while a copy was being saved to the IBI Google Doc. The listing now fills in the moment it is written, the Google Doc copy is saved in the background, and a busy Google server is retried once automatically.
