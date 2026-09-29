@@ -393,7 +393,7 @@ function ssrCard(p, slug) {
   // ⚠ MIRROR of IBI_PRODUCT_GROUPS / IBI_GROUP_RULES in index.html — both come
   // from the Category column of IBI_Complete_Product_Master_HSN_GST.xlsx. Keep
   // the two in step; a drift only costs a reshuffle on load, never correctness.
-  const GRP_ORDER = ['coconut','palmyrah','aluminium','steel','clay','stone','irontools','wood','jewellery',
+  const GRP_ORDER = ['coconut','palmyrah','aluminium','steel','clay','ceramic','stone','irontools','wood','jewellery',
                      'plants','leaves','spices','food','textile','stationery','garden','pooja','agri','other'];
   const GRP_RULES = [
     ['irontools',  /\b(cast\s*iron|aari\s*work|cobbler|sewing\s*awl|stitching\s*tool|sack\s*needle|dog\s*chain|seed\s*remover|cultivator|trowel)\b/],
@@ -402,6 +402,7 @@ function ssrCard(p, slug) {
     ['palmyrah',   /\b(palmyrah|palmyra|palm\s*leaf|palm\s*jaggery|panai\s*ola|koram\s*pai)\b/],
     ['aluminium',  /\b(alumini?um)\b/],
     ['steel',      /\bstainless\b/],
+    ['ceramic',    /\bceramic\b/],
     ['clay',       /\b(clay|terracotta|terra\s*cotta|earthen)\b/],
     ['stone',      /\b(stone|granite|mortar\s*and\s*pestle|ammikkal)\b/],
     ['jewellery',  /\b(jewellery|jewelry|invisible\s*chain|beads\s*chain|bangle|anklet|necklace|earring)\b/],

@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.16
+
+🍶 CERAMIC PRODUCTS HAVE THEIR OWN SHELF. The glazed ceramic bowls and pickle jars used to sit under Food Products and Spices because their titles mention pickle and spices. They now appear together under a new Ceramic Products heading, right after Clay and Terracotta.
+
 ## v19.15
 
 📲 THE ADMIN CONSOLE INSTALLS AS ITS OWN APP. On a phone, open the admin page in Chrome and choose Install app: it gets its own ADM icon and opens full screen, separate from the IBI Shop app. Nothing changes for shoppers or sellers.
