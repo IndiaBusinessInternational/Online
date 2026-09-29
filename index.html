@@ -2509,6 +2509,11 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
 <!-- IBI:SSR:END --></div>
       <div style="text-align:center;margin-top:28px;padding-bottom:16px;" id="infiniteScrollSentinel">
         <span id="infiniteScrollSpinner" style="display:none;color:#0098c9;font-size:14px;font-weight:600;">⏳ Loading more products...</span>
+        <!-- v19.17 — sections follow the grid (Watch & Shop, departments), so the
+             rest of the catalogue must never hang on a scroll trigger alone:
+             a shopper who scrolls fast lands below the grid with products unseen.
+             Amazon/Flipkart pattern: a visible button that always works. -->
+        <button type="button" id="showMoreBtn" onclick="loadMore()" style="display:none;margin:4px auto 0;min-height:44px;padding:10px 28px;border-radius:24px;border:2px solid #0098c9;background:#fff;color:#0077a3;font-size:15px;font-weight:800;cursor:pointer;"></button>
       </div>
     </div>
   </section>
@@ -2839,9 +2844,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v19.16';
+window.IBI_VERSION      = 'v19.17';
 window.IBI_VERSION_DATE = '29 Sep 2026';
-window.IBI_VERSION_NOTE = 'v19.16 — 🍶 CERAMIC PRODUCTS HAVE THEIR OWN SHELF. The glazed ceramic bowls and pickle jars used to sit under Food Products and Spices because their titles mention pickle and spices. They now appear together under a new Ceramic Products heading, right after Clay and Terracotta.';
+window.IBI_VERSION_NOTE = 'v19.17 — EVERY PRODUCT REACHES THE HOME PAGE. The grid shows 24 products and loaded the rest only when a hidden scroll trigger fired; a fast scroll or a redraw at the bottom left 71 products, all the jewellery among them, never shown. A Show more products button now sits under the grid and the scroll trigger re-checks after every redraw.';
 window.IBI_VERSION_NOTE_PREV12 = 'v19.15 — 📲 THE ADMIN CONSOLE INSTALLS AS ITS OWN APP. On a phone, open the admin page in Chrome and choose Install app: it gets its own ADM icon and opens full screen, separate from the IBI Shop app. Nothing changes for shoppers or sellers.';
 window.IBI_VERSION_NOTE_PREV11 = 'v19.14 — ✨ AI LISTINGS APPEAR AS SOON AS THE AI FINISHES. ✨ Generate &amp; Fill used to wait about a minute and a half longer while a copy was being saved to the IBI Google Doc. The listing now fills in the moment it is written, the Google Doc copy is saved in the background, and a busy Google server is retried once automatically.';
 window.IBI_VERSION_NOTE_PREV10 = 'v19.13 — 📱 THE PRODUCT PAGE FITS THE PHONE AGAIN. On phones the product page had grown wider than the screen, so the Buy Now button, the seller card and the description scrolled off to the right. The page now stays exactly as wide as the screen, on every product.';
@@ -12427,9 +12432,21 @@ function renderAllProducts() {
   const spinner = document.getElementById('infiniteScrollSpinner');
   if (spinner) spinner.style.display = 'none';
   window._allLoaded = shown >= total;
+  const more = document.getElementById('showMoreBtn');
+  if (more) {
+    more.style.display = window._allLoaded ? 'none' : 'block';
+    more.textContent = 'Show more products (' + (total - shown) + ' more)';
+  }
+  // v19.17 — an IntersectionObserver only speaks on a CHANGE. When a redraw
+  // leaves the trigger already on screen (the live feed replacing page 1 while
+  // the shopper sits at the bottom), it never fired again and the grid stopped
+  // at 24. Re-observing makes it report the current state once more.
+  const obs = window._ibiScrollObs, sen = document.getElementById('infiniteScrollSentinel');
+  if (obs && sen && !window._allLoaded) { obs.unobserve(sen); obs.observe(sen); }
 }
 
 function loadMore() {
+  if (window._allLoaded) return;
   allPageCurrent++;
   renderAllProducts();
 }
@@ -12451,6 +12468,7 @@ function initInfiniteScroll() {
       }
     });
   }, { rootMargin: '300px' });
+  window._ibiScrollObs = observer;
   observer.observe(sentinel);
 }
 

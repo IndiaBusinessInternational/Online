@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.17
+
+EVERY PRODUCT REACHES THE HOME PAGE. The grid shows 24 products and loaded the rest only when a hidden scroll trigger fired; a fast scroll or a redraw at the bottom left 71 products, all the jewellery among them, never shown. A Show more products button now sits under the grid and the scroll trigger re-checks after every redraw.
+
 ## v19.16
 
 🍶 CERAMIC PRODUCTS HAVE THEIR OWN SHELF. The glazed ceramic bowls and pickle jars used to sit under Food Products and Spices because their titles mention pickle and spices. They now appear together under a new Ceramic Products heading, right after Clay and Terracotta.
