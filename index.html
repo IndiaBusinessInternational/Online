@@ -2844,9 +2844,9 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v19.17';
+window.IBI_VERSION      = 'v19.18';
 window.IBI_VERSION_DATE = '29 Sep 2026';
-window.IBI_VERSION_NOTE = 'v19.17 — EVERY PRODUCT REACHES THE HOME PAGE. The grid shows 24 products and loaded the rest only when a hidden scroll trigger fired; a fast scroll or a redraw at the bottom left 71 products, all the jewellery among them, never shown. A Show more products button now sits under the grid and the scroll trigger re-checks after every redraw.';
+window.IBI_VERSION_NOTE = 'v19.18 — THE BACKGROUND MUSIC PAUSES IN A HIDDEN TAB. The tune kept playing while the shop sat in a background tab, so it was heard on top of videos in other apps. It now pauses when you switch to another tab and resumes when you come back.';
 window.IBI_VERSION_NOTE_PREV12 = 'v19.15 — 📲 THE ADMIN CONSOLE INSTALLS AS ITS OWN APP. On a phone, open the admin page in Chrome and choose Install app: it gets its own ADM icon and opens full screen, separate from the IBI Shop app. Nothing changes for shoppers or sellers.';
 window.IBI_VERSION_NOTE_PREV11 = 'v19.14 — ✨ AI LISTINGS APPEAR AS SOON AS THE AI FINISHES. ✨ Generate &amp; Fill used to wait about a minute and a half longer while a copy was being saved to the IBI Google Doc. The listing now fills in the moment it is written, the Google Doc copy is saved in the background, and a busy Google server is retried once automatically.';
 window.IBI_VERSION_NOTE_PREV10 = 'v19.13 — 📱 THE PRODUCT PAGE FITS THE PHONE AGAIN. On phones the product page had grown wider than the screen, so the Buy Now button, the seller card and the description scrolled off to the right. The page now stays exactly as wide as the screen, on every product.';
@@ -2975,6 +2975,16 @@ window.IBI_VERSION_NOTE_PREV12 = 'v12.0 — 🧹 ONE SHOP INSTEAD OF FIVE SHELVE
     if (muted) { if (audio) audio.pause(); }
     else tryPlay();
     paint();
+  });
+
+  // v19.18 — the tune PAUSES while this tab is hidden and resumes on return,
+  // the way every media site behaves. It used to keep playing behind other
+  // tabs: the CEO, watching a Short in Social Flow, heard "another song
+  // somewhere inside" — this page, open in a background tab.
+  document.addEventListener('visibilitychange', function(){
+    if (!audio) return;
+    if (document.hidden) audio.pause();
+    else if (!muted) tryPlay();
   });
 
   paint();
