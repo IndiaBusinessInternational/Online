@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.20
+
+🧾 A SUBSCRIPTION AND BILL MANAGER JOINS THE DIGITAL PRODUCTS SHELF. IBI Subscription & Bill Manager puts every subscription, recurring bill and contract renewal in one list, shows the cost a month and a year, reminds before each renewal, and points at the money leaking — price increases, duplicate services, unused subscriptions — with the saving beside each. No bank connection; the list stays on the customer\'s device. Free for 10 subscriptions, then $2.99 a month or $24.99 a year (₹149 / ₹1,199 in India). Nine IBI products on the shelf.
+
 ## v19.19
 
 🔐 A PERSONAL DOCUMENT VAULT JOINS THE DIGITAL PRODUCTS SHELF. IBI Document Vault keeps passports, insurance policies, warranties, property papers, certificates and receipts encrypted on the customer\'s own device, backed up to their own Google Drive, with renewal reminders and plain-English search — IBI never sees a document. Free for 25 documents, then $2.99 a month or $24.99 a year (₹149 / ₹1,199 in India), for individuals, families and expatriates in the US, UK, Canada, Australia, the UAE and worldwide. The shelf now holds eight IBI products.
