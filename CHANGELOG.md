@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.19
+
+🔐 A PERSONAL DOCUMENT VAULT JOINS THE DIGITAL PRODUCTS SHELF. IBI Document Vault keeps passports, insurance policies, warranties, property papers, certificates and receipts encrypted on the customer\'s own device, backed up to their own Google Drive, with renewal reminders and plain-English search — IBI never sees a document. Free for 25 documents, then $2.99 a month or $24.99 a year (₹149 / ₹1,199 in India), for individuals, families and expatriates in the US, UK, Canada, Australia, the UAE and worldwide. The shelf now holds eight IBI products.
+
 ## v19.18
 
 THE BACKGROUND MUSIC PAUSES IN A HIDDEN TAB. The tune kept playing while the shop sat in a background tab, so it was heard on top of videos in other apps. It now pauses when you switch to another tab and resumes when you come back.
