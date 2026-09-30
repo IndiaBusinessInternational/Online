@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.21
+
+🚀 FOUR AI-ERA APPS JOIN THE DIGITAL PRODUCTS SHELF. IBI Memories & Media Archive (photos, videos and voice notes organised by people, events and places, media in the customer's own Google Drive), IBI Learning & Skill Gap Tracker (paste a job description, see the gap, follow a plan, prove each skill with a quiz), IBI Executive Development Tracker (goals, KPIs, habits, decision journal, 360° feedback, AI coach and growth reports for business owners and leaders) and IBI eCommerce Operations (orders, stock, shipping, returns, messages and channel profit from marketplace CSV exports). All four sell worldwide in US dollars with rupee prices in India and a Free plan each.
+
 ## v19.20
 
 🧾 A SUBSCRIPTION AND BILL MANAGER JOINS THE DIGITAL PRODUCTS SHELF. IBI Subscription & Bill Manager puts every subscription, recurring bill and contract renewal in one list, shows the cost a month and a year, reminds before each renewal, and points at the money leaking — price increases, duplicate services, unused subscriptions — with the saving beside each. No bank connection; the list stays on the customer\'s device. Free for 10 subscriptions, then $2.99 a month or $24.99 a year (₹149 / ₹1,199 in India). Nine IBI products on the shelf.
