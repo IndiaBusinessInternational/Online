@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.22
+
+🧩 IBI AMAZON A+ CONTENT JOINS THE DIGITAL PRODUCTS SHELF. Amazon sellers on any marketplace turn product facts and photos into a complete Premium A+ page: AI writes every module, banners, mobile crops and image cards are built in the browser, and a copy-ready kit checks every field against Amazon limits. Free with 5 AI writing runs a month; Pro $2.99 or Rs 149 a month, $24.99 or Rs 1,199 a year.
+
 ## v19.21
 
 🚀 FOUR AI-ERA APPS JOIN THE DIGITAL PRODUCTS SHELF. IBI Memories & Media Archive (photos, videos and voice notes organised by people, events and places, media in the customer's own Google Drive), IBI Learning & Skill Gap Tracker (paste a job description, see the gap, follow a plan, prove each skill with a quiz), IBI Executive Development Tracker (goals, KPIs, habits, decision journal, 360° feedback, AI coach and growth reports for business owners and leaders) and IBI eCommerce Operations (orders, stock, shipping, returns, messages and channel profit from marketplace CSV exports). All four sell worldwide in US dollars with rupee prices in India and a Free plan each.
