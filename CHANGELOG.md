@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.23
+
+💲 SOFTWARE PRICES RESET TO THE MARKET MINIMUM. Every IBI software product on the Digital Products shelf now costs the cheapest price its comparable competitors charge (checked 4 Oct 2026): GST Report Generator ₹199 a report, Finance Tracker $1.99, BG Remover from $5.99, Invoice Separator $7.49, Document Vault $3.99, Bill Manager $3.99, Memories $2.49, Skill Tracker $23.99, Executive Tracker $4.99, eCommerce Operations from $19, Amazon A+ Content $19.99, Listings Master from ₹1,499, Hospitality PoS ₹199 and VideoEditorC Pro ₹399 — rupee prices in India, yearly plans to match.
+
 ## v19.22
 
 🧩 IBI AMAZON A+ CONTENT JOINS THE DIGITAL PRODUCTS SHELF. Amazon sellers on any marketplace turn product facts and photos into a complete Premium A+ page: AI writes every module, banners, mobile crops and image cards are built in the browser, and a copy-ready kit checks every field against Amazon limits. Free with 5 AI writing runs a month; Pro $2.99 or Rs 149 a month, $24.99 or Rs 1,199 a year.
