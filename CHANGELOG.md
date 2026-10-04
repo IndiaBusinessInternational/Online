@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.24
+
+🍽️ THE HOSPITALITY PoS YEARLY PLAN IS NOW ₹1,599. Twelve months of IBI Hospitality Industry PoS now cost ₹1,599 — about ₹133 a month, the cheapest way to run it, below the six-month plan at ₹158 a month. The first month stays free and the monthly plan stays at ₹199.
+
 ## v19.23
 
 💲 SOFTWARE PRICES RESET TO THE MARKET MINIMUM. Every IBI software product on the Digital Products shelf now costs the cheapest price its comparable competitors charge (checked 4 Oct 2026): GST Report Generator ₹199 a report, Finance Tracker $1.99, BG Remover from $5.99, Invoice Separator $7.49, Document Vault $3.99, Bill Manager $3.99, Memories $2.49, Skill Tracker $23.99, Executive Tracker $4.99, eCommerce Operations from $19, Amazon A+ Content $19.99, Listings Master from ₹1,499, Hospitality PoS ₹199 and VideoEditorC Pro ₹399 — rupee prices in India, yearly plans to match.
