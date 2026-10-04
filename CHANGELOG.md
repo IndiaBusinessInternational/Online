@@ -2,6 +2,10 @@
 
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
+## v19.26
+
+Seller Central package-size auto-fill now asks the Order Processing app for box sizes only (action pkgDims), never buyer details
+
 ## v19.25
 
 🎬 WATCH SIX MORE IBI APPS BEFORE YOU TRY THEM, IN 14 LANGUAGES. The Document Vault, Subscription & Bill Manager, Memories & Media Archive, Learning & Skill Gap Tracker, Executive Development Tracker and eCommerce Operations cards now carry a two-minute narrated demo with a language picker — English, Spanish, French, German, Italian, Portuguese, Dutch, Polish, Arabic, Japanese, Chinese, Korean, Indonesian and Turkish — that starts on the language of the visitor's browser. The same videos play on each app's page and inside its help assistant.
