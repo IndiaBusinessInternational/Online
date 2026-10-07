@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v19.30
+- IBI Palmistry card on the Digital Products shelf (after the PDF ToolKit): Start free → apps.indiabusinessinternational.online/palmistry/app/, $9.99 / ₹399 a month, $29.99 / ₹2,999 a year (IBI Apps v1.17.0). Service-worker cache → v19-30.
+
 > Generated from `window.IBI_VERSION_NOTE` in `index.html`. The page keeps only the 12 most recent entries (they render as the version badge tooltip); everything else lives here.
 
 ## v19.26
