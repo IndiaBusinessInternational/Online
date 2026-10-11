@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v19.31
+- Phones edge to edge (CEO rule, 11 Oct 2026): up to 640px the storefront, product page, cart, checkout, Track My Order, Seller Central sign-in, Ask IBI and the Seller Agreement / Privacy Policy pages have no outer gutter, full-bleed cards and panels with 10px inner sides, and the page never scrolls sideways. Tablets and desktop unchanged.
+
 ## v19.30
 - IBI Palmistry card on the Digital Products shelf (after the PDF ToolKit): Start free → apps.indiabusinessinternational.online/palmistry/app/, $9.99 / ₹399 a month, $29.99 / ₹2,999 a year (IBI Apps v1.17.0). Service-worker cache → v19-30.
 

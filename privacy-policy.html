@@ -23,6 +23,14 @@
   .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-top:20px; }
   footer { border-top:1px solid var(--line); padding:22px 0; text-align:center; }
   code { background:#f0ebff; padding:1px 5px; border-radius:4px; }
+  /* phones edge to edge (CEO, 11 Oct 2026): no outer gutter, full-bleed cards, 10px inner sides; never wider than the screen */
+  @media (max-width:640px){
+    html, body { overflow-x:clip; }
+    header { padding-left:0; padding-right:0; }
+    .wrap { padding-left:10px; padding-right:10px; }
+    .card { margin-left:-10px; margin-right:-10px; border-radius:0; border-left:0; border-right:0; padding:16px 10px; overflow-wrap:break-word; }
+    ul { padding-left:18px; }
+  }
 </style>
 </head>
 <body>
