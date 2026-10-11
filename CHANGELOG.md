@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v19.32
+- Seller Agreement on phones: the fee and returns tables scroll sideways inside their card instead of being cut off at the screen edge.
+
 ## v19.31
 - Phones edge to edge (CEO rule, 11 Oct 2026): up to 640px the storefront, product page, cart, checkout, Track My Order, Seller Central sign-in, Ask IBI and the Seller Agreement / Privacy Policy pages have no outer gutter, full-bleed cards and panels with 10px inner sides, and the page never scrolls sideways. Tablets and desktop unchanged.
 
