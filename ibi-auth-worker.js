@@ -1,6 +1,6 @@
 // =============================================================
 //  IBI AUTH WORKER  —  Cloudflare Worker (ES Module)
-//  Version : 1.3  |  India Business International
+//  Version : 1.4  |  India Business International
 // -------------------------------------------------------------
 //  Protects: finance / gstr / erp / settlement subdomains
 //            (actual routes are set in the Cloudflare dashboard)
@@ -17,6 +17,14 @@
 //            and the five app icons are public (exact paths only),
 //            so Chrome/Android can install ERP / Finance / Settlement
 //            as full-screen apps. They contain no data.
+//  v1.4    : WhatsApp rich preview (27 Oct 2026) — the banner is
+//            now a 1200x630 JPEG (og-banner.jpg, under 300 KB;
+//            WhatsApp drops big images) with og:image:type; the
+//            banner and the shared ibi-share.js button script are
+//            public; link-preview robots (WhatsApp, Facebook, X,
+//            Telegram, LinkedIn, Google...) get HTTP 200 and a
+//            small preview page that holds ONLY the app name, one
+//            line and the banner — never the login form, never data.
 // =============================================================
 //
 //  Required Environment Variables (set in Cloudflare dashboard):
@@ -48,6 +56,8 @@ const COOKIE_DOMAIN = '.indiabusinessinternational.online';
 // list tight: only non-sensitive static brand assets. The social
 // preview banner must be public or WhatsApp/FB/X can't render it.
 const PUBLIC_PATHS  = ['/og-banner.png',
+  // v1.4 link-preview banner (JPEG) + the shared Share button script (no data)
+  '/og-banner.jpg', '/ibi-share.js',
   // v1.3 installable-app files (no data): Android fetches these without a session
   '/manifest.json', '/sw.js',
   '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-maskable-512.png',
@@ -64,8 +74,78 @@ const TOOL_META = {
   erp:        { user: 'IBI-ERP',        env: 'ERP',        title: 'IBI ERP',                desc: 'All-in-one business ERP for India Business International — internal staff access.' },
   finance:    { user: 'IBI-Finance',    env: 'FINANCE',    title: 'IBI Finance Tracker',    desc: 'Business finance tracker for India Business International — internal staff access.' },
   settlement: { user: 'IBI-Settlement', env: 'SETTLEMENT', title: 'IBI Settlement Tracker', desc: 'Marketplace settlement & payout reconciliation — internal staff access.' },
-  gstr:       { user: 'IBI-GSTR',       env: 'GSTR',       title: 'IBI GST Reports',        desc: 'GST reporting for India Business International — internal staff access.' }
+  gstr:       { user: 'IBI-GSTR',       env: 'GSTR',       title: 'IBI GST Reports',        desc: 'GST reporting for India Business International — internal staff access.' },
+  itr:        { user: 'IBI-ITR',        env: 'ITR',        title: 'IBI Income Tax Filing Yearly Report Generator', desc: 'Yearly income-tax report and ITR-4 figures for India Business International — internal staff access.' }
 };
+
+// v1.4: link-preview robots. They never sign in, so without this
+// branch a shared link shows a login page (or nothing) in WhatsApp.
+const CRAWLER_RE = /facebookexternalhit|facebot|whatsapp|twitterbot|slackbot|telegrambot|linkedinbot|discordbot|skypeuripreview|googlebot|bingbot|pinterest|embedly|redditbot|applebot/i;
+
+function metaFor(sub) {
+  return TOOL_META[sub] || {
+    user : 'IBI-Access',
+    title: 'IBI Secure Access',
+    desc : 'Internal business tools by India Business International — authorized access only.'
+  };
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+                  .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// The Open Graph / Twitter block, shared by the robot preview page
+// and the login page. Always absolute https URLs: social robots do
+// not resolve relative image URLs.
+function ogBlock(host, meta) {
+  const site   = 'https://' + host + '/';
+  const banner = site + 'og-banner.jpg';
+  const t = esc(meta.title), d = esc(meta.desc);
+  return `<meta name="description" content="${d}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="India Business International">
+<meta property="og:title" content="${t}">
+<meta property="og:description" content="${d}">
+<meta property="og:url" content="${site}">
+<meta property="og:image" content="${banner}">
+<meta property="og:image:secure_url" content="${banner}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${t} — India Business International">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${t}">
+<meta name="twitter:description" content="${d}">
+<meta name="twitter:image" content="${banner}">`;
+}
+
+// What a link-preview robot gets: app name, one line, banner. Nothing else.
+function servePreviewPage(host) {
+  const meta = metaFor(host.split('.')[0]);
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(meta.title)}</title>
+${ogBlock(host, meta)}
+</head>
+<body>
+<h1>${esc(meta.title)}</h1>
+<p>${esc(meta.desc)}</p>
+<img src="https://${host}/og-banner.jpg" width="1200" height="630" alt="${esc(meta.title)}">
+</body>
+</html>`;
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type' : 'text/html; charset=UTF-8',
+      'Cache-Control': 'no-store',
+      'Vary'         : 'User-Agent'
+    }
+  });
+}
 
 // Which password guards this host, and is it tool-specific?
 // Falls back to the shared master password when no override is set,
@@ -127,6 +207,13 @@ export default {
         // Authenticated — pass request straight through to origin
         return fetch(request);
       }
+    }
+
+    // ── v1.4: a link-preview robot gets HTTP 200 + the preview page ──
+    //    (app name, one line, banner — nothing behind the password)
+    if ((request.method === 'GET' || request.method === 'HEAD') &&
+        CRAWLER_RE.test(request.headers.get('User-Agent') || '')) {
+      return servePreviewPage(url.hostname);
     }
 
     // ── No valid session — serve the IBI login page ──
@@ -272,15 +359,10 @@ function parseCookie(cookieHeader, name) {
 // ── IBI Branded Login Page ────────────────────────────────────
 function serveLoginPage(origin, redirectTo, wrongPassword) {
 
-  // Social-preview identity for this subdomain (og-banner.png is
+  // Social-preview identity for this subdomain (og-banner.jpg is
   // publicly reachable via PUBLIC_PATHS, so scrapers can fetch it)
-  const sub  = new URL(origin).hostname.split('.')[0];
-  const meta = TOOL_META[sub] || {
-    user : 'IBI-Access',
-    title: 'IBI Secure Access',
-    desc : 'Internal business tools by India Business International — authorized access only.'
-  };
-  const banner = origin + '/og-banner.png';
+  const host = new URL(origin).hostname;
+  const meta = metaFor(host.split('.')[0]);
 
   const errorBlock = wrongPassword
     ? `<div class="error-msg">
@@ -294,23 +376,9 @@ function serveLoginPage(origin, redirectTo, wrongPassword) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>${meta.title} — IBI Secure Access</title>
-<meta name="description" content="${meta.desc}">
+<title>${esc(meta.title)} — IBI Secure Access</title>
 <!-- Open Graph / social sharing (shown when a gated link is shared) -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="India Business International">
-<meta property="og:title" content="${meta.title}">
-<meta property="og:description" content="${meta.desc}">
-<meta property="og:url" content="${origin}/">
-<meta property="og:image" content="${banner}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="${meta.title} — India Business International">
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${meta.title}">
-<meta name="twitter:description" content="${meta.desc}">
-<meta name="twitter:image" content="${banner}">
+${ogBlock(host, meta)}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Condensed:wght@700;900&display=swap" rel="stylesheet">
