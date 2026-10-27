@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v19.35
+- Edge to edge on every screen (Founder, 27 Oct 2026: make all the apps edge to edge on laptop too): the 1400/1500px centred column and the 16px outer gutter are gone at all widths. Header, department bar, banner, sections, footer, product page and Watch page run full width; section content keeps a 10px side inset (header bars 8-10px); the announcement bar and product-page panels are full-bleed (no side border or radius); html/body overflow-x: clip. Wide screens show more product tiles per row. Phone rules (v19.31) unchanged. Service-worker cache v19-35.
+
 ## v19.34
 - Share this app: a round Share button (ibi-share.js, IBI Share v1.0) at the end of the header actions shares the shop link to WhatsApp, Facebook, X, Telegram, Email, Copy link or More apps (Founder, 27 Oct 2026: all web apps should have a sharing link too). Precached in sw.js.
 - WhatsApp link preview: og:image and twitter:image now point at og-banner.jpg (1200x630, under 300 KB) with og:image:type image/jpeg, og:image:secure_url, and og:site_name India Business International; og:url ends with a slash. og-banner.png is kept.

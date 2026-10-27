@@ -2168,6 +2168,35 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
   .sc-tab-bar { overflow-x:auto; scrollbar-width:none; }
   .sc-tab-bar::-webkit-scrollbar { display:none; }
 
+  /* ══ v19.35 — EDGE TO EDGE ON EVERY SCREEN (Founder, 27 Oct 2026: "Yes, make all the apps edge to edge on laptop too")
+     Laptops and tablets now get the phone treatment: no 1400/1500px centred column, no outer gutter, the section
+     backgrounds and the announcement bar run full-bleed and the content inside them keeps a 10px side inset; wide
+     screens fill the extra width with more product tiles per row. Product tiles keep their own rounded borders inside
+     the 10px inset. The product page and the Watch page use the whole width too. Phones keep the v19.31 block below,
+     which comes later and wins where it differs. Dialogs (checkout, Track My Order, seller store) stay dialogs. */
+  html, body { overflow-x: clip; }
+  .header-top { max-width: none; padding-left: 10px; padding-right: 10px; }
+  .nav-inner { max-width: none; padding-left: 8px; padding-right: 8px; }
+  .hero { max-width: none; }
+  .main-content { max-width: none; padding: 8px 0; }
+  .announce-bar { border-radius: 0; border-left: 0; border-right: 0; padding: 10px; margin-bottom: 8px; overflow-wrap: break-word; }
+  .products-section > div { max-width: none !important; padding-left: 10px !important; padding-right: 10px !important; }
+  .product-card, .dp-card, .seller-card, .ws-card { overflow-wrap: break-word; }
+  footer .footer-top { max-width: none; padding-left: 10px; padding-right: 10px; }
+  footer .footer-bottom { padding-left: 10px; padding-right: 10px; }
+  .pp-header { padding-left: 10px; padding-right: 10px; }
+  #productPageOverlay .pp-body { max-width: none !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .pp-images, .pp-info, .pp-desc { border-radius: 0; border-left: 0; border-right: 0; box-shadow: none; padding-left: 10px; padding-right: 10px; overflow-wrap: break-word; }
+  @media (min-width: 901px) { #ppGrid > :not(.pp-images) { padding-left: 10px; padding-right: 10px; } }
+  .wp-body { max-width: none; padding-left: 0; padding-right: 0; }
+  .wp-player { border-radius: 0; }
+  .wp-meta { padding-left: 10px; padding-right: 10px; }
+  .wp-hostcard, .wp-shop { border-radius: 0; border-left: 0; border-right: 0; padding-left: 10px; padding-right: 10px; }
+  .wp-more-head { padding-left: 10px; padding-right: 10px; }
+  #watchPageOverlay .ws-rail { padding-left: 10px; padding-right: 10px; scroll-padding-left: 10px; }
+  #scTopBar { padding-left: 8px !important; padding-right: 8px !important; }
+  #sellerDashContent { padding-left: 10px !important; padding-right: 10px !important; }
+
   /* ══ v19.31 — PHONES EDGE TO EDGE (CEO, 11 Oct 2026: "edge to edge with no padding to make screen bigger") ══
      Phones only (≤640px); tablets and desktop are untouched. No outer gutter; cards, the toolbar and the
      product-page panels run full-bleed (no side border / radius / shadow); text keeps 10px inner sides (the least
@@ -3069,9 +3098,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v19.34';
+window.IBI_VERSION      = 'v19.35';
 window.IBI_VERSION_DATE = '27 Oct 2026';
-window.IBI_VERSION_NOTE = 'v19.34 — 🔗 SHARE THE SHOP IN ONE TAP, AND A SHARPER WHATSAPP PREVIEW. A round Share button at the end of the top bar sends the shop link to WhatsApp, Facebook, X, Telegram, Email or any app on the phone, or copies it. A link to the shop pasted in WhatsApp now shows the full-size banner with the India Business International name.';
+window.IBI_VERSION_NOTE = 'v19.35 — 🖥️ THE SHOP NOW USES THE WHOLE LAPTOP SCREEN TOO. On laptops and tablets the shop runs edge to edge like it already did on phones: no empty bands down the left and right, the sections and the offer bar reach the screen edges, and a wide screen shows more products in each row. The product page and the Watch page use the full width as well. Phones look the same as before.';
+window.IBI_VERSION_NOTE_PREV21 = 'v19.34 — 🔗 SHARE THE SHOP IN ONE TAP, AND A SHARPER WHATSAPP PREVIEW. A round Share button at the end of the top bar sends the shop link to WhatsApp, Facebook, X, Telegram, Email or any app on the phone, or copies it. A link to the shop pasted in WhatsApp now shows the full-size banner with the India Business International name.';
 window.IBI_VERSION_NOTE_PREV20 = 'v19.33 — 📷 IBI SCANNERC JOINS THE DIGITAL PRODUCTS SHELF. Scan documents, books and ID cards with your phone: auto edges, crop that snaps to the paper, bright Magic colour, crisp text, PDF in one tap. Free scanning; Pro $2.99 a month (₹149 in India). A yearly ScannerC or PDF ToolKit plan now includes the other app free for the same year.';
 window.IBI_VERSION_NOTE_PREV19 = 'v19.32 — 📄 THE SELLER AGREEMENT TABLES FIT THE PHONE. On a phone the fee schedule and the returns table now scroll sideways inside their card, so no column is cut off at the screen edge.';
 window.IBI_VERSION_NOTE_PREV18 = 'v19.31 — 📱 THE SHOP NOW USES THE WHOLE PHONE SCREEN. On a phone the product grid, the product page, the cart, checkout, Track My Order and Seller Central run edge to edge: no empty margin down the sides, square full-width cards and panels, and the page never slides sideways. Tablets and computers look the same as before.';
