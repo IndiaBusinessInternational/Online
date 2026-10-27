@@ -15,7 +15,7 @@
 
 // Bump on EVERY deploy that changes cached files. Activate deletes every cache
 // whose name is not this one, so a bump is what purges the old copies.
-const CACHE_NAME  = 'ibi-marketplace-v19-33';
+const CACHE_NAME  = 'ibi-marketplace-v19-34';
 
 // Only the shell. index.html is here so a navigation still resolves offline;
 // because fetch is network-first it is never PREFERRED over the live copy.
@@ -30,6 +30,7 @@ const CACHE_FILES = [
   '/index.html',
   '/manifest.json',
   '/icon.svg',
+  '/ibi-share.js',
   'https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Hind:wght@300;400;500;600&display=swap'
 ];
 

@@ -3,19 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script src="ibi-share.js" defer data-slot="header .header-actions"></script>
 <title>IBI Marketplace — India Business International | eCommerce for the World</title>
 <meta name="description" content="Shop eco-friendly products, home goods, fashion jewellery, and natural coir products at IBI Marketplace. Free delivery across India. Secure payment via Zoho Pay.">
 <meta name="keywords" content="IBI Marketplace, India Business International, eco-friendly products, coir products, Kanyakumari, online shopping India, jewellery, home goods">
 <meta property="og:title" content="IBI Marketplace — eCommerce for the World">
+<meta property="og:site_name" content="India Business International">
+<meta property="og:image:secure_url" content="https://www.indiabusinessinternational.online/og-banner.jpg">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:description" content="Shop eco-friendly products from Kanyakumari. Free delivery across India.">
-<meta property="og:url" content="https://www.indiabusinessinternational.online">
+<meta property="og:url" content="https://www.indiabusinessinternational.online/">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://www.indiabusinessinternational.online/og-banner.png">
+<meta property="og:image" content="https://www.indiabusinessinternational.online/og-banner.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="IBI Marketplace — eCommerce for the World">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.indiabusinessinternational.online/og-banner.png">
+<meta name="twitter:image" content="https://www.indiabusinessinternational.online/og-banner.jpg">
 <meta name="twitter:title" content="IBI Marketplace — India Business International">
 <meta name="twitter:description" content="Shop eco-friendly products from Kanyakumari. Free delivery across India.">
 <link rel="canonical" href="https://www.indiabusinessinternational.online">
@@ -296,6 +300,12 @@
   .hdr-btn:hover { border-color: var(--white); }
   .hdr-btn .line1 { font-size: 10px; color: var(--gray-300); }
   .hdr-btn .line2 { font-size: 13px; font-weight: 600; }
+
+  /* v19.34: IBI Share button (ibi-share.js) - white icon on the navy header */
+  .header-actions > ibi-share-button { color: #fff !important; }
+  /* At 400px and narrower the header row has no room for one more 40px icon, so the cart shows its icon and count
+     without the word Cart (the usual phone-shop pattern); otherwise Cart, menu and Share wrap onto an extra row. */
+  @media (max-width: 400px) { .header-actions .cart-text { display: none; } }
 
   .cart-btn {
     display: flex;
@@ -3059,9 +3069,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v19.33';
-window.IBI_VERSION_DATE = '11 Oct 2026';
-window.IBI_VERSION_NOTE = 'v19.33 — 📷 IBI SCANNERC JOINS THE DIGITAL PRODUCTS SHELF. Scan documents, books and ID cards with your phone: auto edges, crop that snaps to the paper, bright Magic colour, crisp text, PDF in one tap. Free scanning; Pro $2.99 a month (₹149 in India). A yearly ScannerC or PDF ToolKit plan now includes the other app free for the same year.';
+window.IBI_VERSION      = 'v19.34';
+window.IBI_VERSION_DATE = '27 Oct 2026';
+window.IBI_VERSION_NOTE = 'v19.34 — 🔗 SHARE THE SHOP IN ONE TAP, AND A SHARPER WHATSAPP PREVIEW. A round Share button at the end of the top bar sends the shop link to WhatsApp, Facebook, X, Telegram, Email or any app on the phone, or copies it. A link to the shop pasted in WhatsApp now shows the full-size banner with the India Business International name.';
+window.IBI_VERSION_NOTE_PREV20 = 'v19.33 — 📷 IBI SCANNERC JOINS THE DIGITAL PRODUCTS SHELF. Scan documents, books and ID cards with your phone: auto edges, crop that snaps to the paper, bright Magic colour, crisp text, PDF in one tap. Free scanning; Pro $2.99 a month (₹149 in India). A yearly ScannerC or PDF ToolKit plan now includes the other app free for the same year.';
 window.IBI_VERSION_NOTE_PREV19 = 'v19.32 — 📄 THE SELLER AGREEMENT TABLES FIT THE PHONE. On a phone the fee schedule and the returns table now scroll sideways inside their card, so no column is cut off at the screen edge.';
 window.IBI_VERSION_NOTE_PREV18 = 'v19.31 — 📱 THE SHOP NOW USES THE WHOLE PHONE SCREEN. On a phone the product grid, the product page, the cart, checkout, Track My Order and Seller Central run edge to edge: no empty margin down the sides, square full-width cards and panels, and the page never slides sideways. Tablets and computers look the same as before.';
 window.IBI_VERSION_NOTE_PREV17 = 'v19.30 — ✋ IBI PALMISTRY JOINS THE DIGITAL PRODUCTS SHELF. Hold your palm up to the phone camera: your palm lines traced in colour, your character, your life right now and your future year by year. Free basic reading every day; Pro $9.99 a month (₹399 in India).';

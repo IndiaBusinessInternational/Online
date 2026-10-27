@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v19.34
+- Share this app: a round Share button (ibi-share.js, IBI Share v1.0) at the end of the header actions shares the shop link to WhatsApp, Facebook, X, Telegram, Email, Copy link or More apps (Founder, 27 Oct 2026: all web apps should have a sharing link too). Precached in sw.js.
+- WhatsApp link preview: og:image and twitter:image now point at og-banner.jpg (1200x630, under 300 KB) with og:image:type image/jpeg, og:image:secure_url, and og:site_name India Business International; og:url ends with a slash. og-banner.png is kept.
+
 ## v19.32
 - Seller Agreement on phones: the fee and returns tables scroll sideways inside their card instead of being cut off at the screen edge.
 
