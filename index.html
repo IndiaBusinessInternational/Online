@@ -3100,9 +3100,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.0';
+window.IBI_VERSION      = 'v20.1';
 window.IBI_VERSION_DATE = '28 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.0 — 💳 RAZORPAY CHECKOUT + GOOGLE SHOPPING FEED. Pay by UPI, card, net banking or wallet in one secure Razorpay window: the Apps Script backend prices the cart, creates the Razorpay order and verifies the payment signature before the order is saved as Paid (webhook and re-check backstops). It switches on by itself once the keys are added; until then checkout shows Zoho, the UPI QR and WhatsApp exactly as before. New Google Merchant Center feed (google-merchant-feed.xml, 185 items from 96 products, refreshed with every catalogue snapshot), new Shipping and Returns policy pages, product pages link them and preselect a variation from ?v=. Admin orders show Paid online.';
+window.IBI_VERSION_NOTE = 'v20.1 — 🔒 PAY WITH RAZORPAY, CLEARLY. Checkout now has one online payment: the orange Pay securely with Razorpay button, with the Razorpay mark and UPI, GPay, PhonePe, Paytm, cards, net banking and wallet shown under it. The Zoho payment link and the UPI QR with I have paid by UPI are gone. Order via WhatsApp stays as the other way to order. A tap before the shop has reached Razorpay now waits for it instead of failing.';
+window.IBI_VERSION_NOTE_PREV23 = 'v20.0 — 💳 RAZORPAY CHECKOUT + GOOGLE SHOPPING FEED. Pay by UPI, card, net banking or wallet in one secure Razorpay window: the Apps Script backend prices the cart, creates the Razorpay order and verifies the payment signature before the order is saved as Paid (webhook and re-check backstops). It switches on by itself once the keys are added; until then checkout shows Zoho, the UPI QR and WhatsApp exactly as before. New Google Merchant Center feed (google-merchant-feed.xml, 185 items from 96 products, refreshed with every catalogue snapshot), new Shipping and Returns policy pages, product pages link them and preselect a variation from ?v=. Admin orders show Paid online.';
 window.IBI_VERSION_NOTE_PREV22 = 'v19.35 — 🖥️ THE SHOP NOW USES THE WHOLE LAPTOP SCREEN TOO. On laptops and tablets the shop runs edge to edge like it already did on phones: no empty bands down the left and right, the sections and the offer bar reach the screen edges, and a wide screen shows more products in each row. The product page and the Watch page use the full width as well. Phones look the same as before.';
 window.IBI_VERSION_NOTE_PREV21 = 'v19.34 — 🔗 SHARE THE SHOP IN ONE TAP, AND A SHARPER WHATSAPP PREVIEW. A round Share button at the end of the top bar sends the shop link to WhatsApp, Facebook, X, Telegram, Email or any app on the phone, or copies it. A link to the shop pasted in WhatsApp now shows the full-size banner with the India Business International name.';
 window.IBI_VERSION_NOTE_PREV20 = 'v19.33 — 📷 IBI SCANNERC JOINS THE DIGITAL PRODUCTS SHELF. Scan documents, books and ID cards with your phone: auto edges, crop that snaps to the paper, bright Magic colour, crisp text, PDF in one tap. Free scanning; Pro $2.99 a month (₹149 in India). A yearly ScannerC or PDF ToolKit plan now includes the other app free for the same year.';
@@ -14739,7 +14740,7 @@ function showZohoPaymentSuccess(orderId, total, name, via) {
 // v20.0 RAZORPAY CHECKOUT — UPI, cards, netbanking, wallets. The Apps Script backend prices the cart, creates the
 // Razorpay order and checks razorpay_signature (HMAC-SHA256 with the key secret) before the order is saved as Paid;
 // this page never decides that a payment succeeded. Until the Founder adds the keys, rzpConfig answers enabled:false
-// (or an older backend answers "Unknown action") and checkout shows only Zoho / UPI QR / WhatsApp, exactly as before.
+// (or an older backend answers "Unknown action") and the Pay button tells the shopper to order via WhatsApp. v20.1: Zoho + UPI QR removed.
 // ══════════════════════════════════════════════════════════════════
 window._rzp = null;
 var _rzpCfgP = null, _rzpLibP = null, RZP_PENDING_KEY = 'ibi_rzp_pending';
@@ -14763,27 +14764,11 @@ function ibiLoadRazorpay() {
     document.head.appendChild(sc);
   }));
 }
-// Shows the Razorpay button as the main way to pay; Zoho, UPI QR and WhatsApp stay below it.
+// v20.1: Razorpay is the only online payment; the button always shows, with the order total.
 function ibiRzpPaint() {
-  var on = !!window._rzp, box = document.getElementById('rzpPayBox'), z = document.getElementById('zohoPayBtn');
-  if (!box) return;
-  box.style.display = on ? 'block' : 'none';
-  var intro = document.getElementById('payIntro'), foot = document.getElementById('payFootNote');
-  if (intro) intro.textContent = on ? 'Pay instantly by UPI, debit / credit card, net banking or wallet — your order is confirmed the moment the payment is verified.'
-                                    : 'Pay instantly using UPI, Credit/Debit Card, or Net Banking via Zoho Payments — 100% secure.';
-  if (foot) foot.textContent = on ? '🔒 Online payments by Razorpay (RBI-authorised payment aggregator) · verified by IBI before your order is confirmed'
-                                  : '🔒 Secured by Zoho Payments · RBI Authorised · Certificate No. 170/2024';
-  if (z) {
-    z.style.background = on ? '#fff' : 'linear-gradient(135deg,#0079a3,#4f46e5)';
-    z.style.color = on ? '#0079a3' : '#fff';
-    z.style.border = on ? '1.5px solid #0079a3' : 'none';
-    z.style.boxShadow = on ? 'none' : '0 4px 16px rgba(0,152,201,0.4)';
-    z.style.padding = on ? '11px' : '16px';
-    z.style.fontSize = on ? '13px' : '16px';
-  }
-  var t = window._orderTotal ? '₹' + window._orderTotal.toLocaleString('en-IN') : '';
-  var rt = document.getElementById('rzpPayBtnText'); if (rt) rt.textContent = 'Pay ' + t + ' now — UPI, Card, Net Banking, Wallet';
-  var zt = document.getElementById('zohoPayBtnText'); if (zt && t) zt.textContent = on ? 'Or get a Zoho payment link for ' + t : 'Pay ' + t + ' — UPI / Card / Net Banking';
+  var rt = document.getElementById('rzpPayBtnText'); if (!rt) return;
+  var t = window._orderTotal ? '₹' + window._orderTotal.toLocaleString('en-IN') + ' ' : '';
+  rt.textContent = 'Pay ' + t + 'securely with Razorpay';
 }
 function ibiCheckoutCustomer() {
   var required = { cf_name:'Full Name', cf_door:'Door/Flat No.', cf_street:'Street Name', cf_area:'Area/Location', cf_district:'District', cf_pin:'PIN Code', cf_state:'State', cf_mobile:'Mobile No.' };
@@ -14802,7 +14787,11 @@ function ibiRzpBtn(busy, label) {
 
 function payWithRazorpay() {
   var c = ibiCheckoutCustomer(); if (!c) return;
-  if (!window._rzp) { showToast('⚠️ Card / UPI checkout is not available right now — use the UPI QR or WhatsApp below', ''); return; }
+  if (!window._rzp) {
+    ibiRzpBtn(true, '⏳ Connecting to Razorpay…');
+    ibiRzpConfig().then(function (r) { ibiRzpBtn(false); if (r) payWithRazorpay(); else showToast('⚠️ Online payment is not available right now — please use Order via WhatsApp below', ''); });
+    return;
+  }
   var orderId = window._orderId, items = window._orderCart || [], address = ibiAddressOf(c);
   if (!orderId || !items.length) { showToast('⚠️ Your cart is empty', ''); return; }
   ibiRzpBtn(true, '⏳ Starting secure payment…');
@@ -14815,7 +14804,7 @@ function payWithRazorpay() {
     if (!res || !res.success) {
       ibiRzpBtn(false);
       if (res && res.paid) { showToast('✅ This order is already paid — thank you!', 'success'); return; }
-      showToast('⚠️ ' + ((res && res.message) || 'Payment could not start') + ' — you can pay by the UPI QR or WhatsApp below', '');
+      showToast('⚠️ ' + ((res && res.message) || 'Payment could not start') + ' — please try again, or use Order via WhatsApp below', '');
       return;
     }
     var total = res.total;
@@ -14829,13 +14818,13 @@ function payWithRazorpay() {
         prefill: { name: c.name, email: c.email || '', contact: '+91' + c.mobile },
         notes: { ibi_order: orderId }, theme: { color: '#f97316' },
         handler: function (r) { paid = true; ibiRzpVerify(orderId, r, c, items, total, address); },
-        modal: { ondismiss: function () { if (!paid) { ibiRzpBtn(false); showToast('Payment not completed — tap Pay to try again, or use the UPI QR / WhatsApp below', ''); } } }
+        modal: { ondismiss: function () { if (!paid) { ibiRzpBtn(false); showToast('Payment not completed — tap Pay to try again, or use Order via WhatsApp below', ''); } } }
       });
       rz.on('payment.failed', function (resp) { var d = resp && resp.error && resp.error.description; showToast('⚠️ Payment failed' + (d ? ': ' + d : '') + ' — no money was taken; please try again', ''); });
       rz.open();
     }).catch(function () {
       ibiRzpBtn(false);
-      showToast('⚠️ The payment window could not load — check your connection, or pay by the UPI QR / WhatsApp below', '');
+      showToast('⚠️ The payment window could not load — check your connection, or use Order via WhatsApp below', '');
     });
   }, 45000);
 }
@@ -15330,52 +15319,29 @@ init();
     <!-- STEP 3: Payment -->
     <div style="border:2px solid #0079a3;border-radius:14px;padding:14px;margin-bottom:12px;background:#faf5ff;text-align:left;">
       <div style="font-size:11px;font-weight:700;color:#0079a3;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">💳 Step 3 — Pay Securely</div>
-      <p id="payIntro" style="font-size:12px;color:#555;margin:0 0 12px;">Pay instantly using UPI, Credit/Debit Card, or Net Banking via Zoho Payments — 100% secure.</p>
+      <p id="payIntro" style="font-size:12px;color:#555;margin:0 0 12px;">Pay online with Razorpay by UPI, debit / credit card, net banking or wallet. Your order is confirmed the moment the payment is verified.</p>
 
-      <!-- v20.0: Razorpay Standard Checkout — shown only when the backend reports the keys are set (ibiRzpPaint) -->
-      <div id="rzpPayBox" style="display:none;margin-bottom:10px;">
+      <!-- v20.1 (Founder, 28 Oct 2026): Razorpay is the ONLY online payment. The Zoho link and the UPI QR were removed; Order via WhatsApp stays below. -->
+      <div id="rzpPayBox" style="margin-bottom:12px;">
         <button id="rzpPayBtn" onclick="payWithRazorpay()"
-          style="width:100%;min-height:52px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:12px;
-                 padding:15px 12px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(249,115,22,0.4);
+          style="width:100%;min-height:54px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:12px;
+                 padding:15px 12px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(249,115,22,0.4);
                  display:flex;align-items:center;justify-content:center;gap:10px;line-height:1.25;">
           <span style="font-size:22px;">🔒</span>
-          <span id="rzpPayBtnText">Pay now — UPI, Card, Net Banking, Wallet</span>
+          <span id="rzpPayBtnText">Pay securely with Razorpay</span>
         </button>
-        <div style="font-size:11px;color:#555;text-align:center;margin-top:6px;">GPay · PhonePe · Paytm · BHIM · Visa · Mastercard · RuPay · 50+ banks · wallets</div>
-      </div>
-
-      <!-- Primary: Zoho Pay button -->
-      <button id="zohoPayBtn" onclick="payWithZoho()"
-        style="width:100%;background:linear-gradient(135deg,#0079a3,#4f46e5);color:#fff;border:none;border-radius:12px;
-               padding:16px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:10px;
-               box-shadow:0 4px 16px rgba(0,152,201,0.4);display:flex;align-items:center;justify-content:center;gap:10px;">
-        <span style="font-size:22px;">💳</span>
-        <span id="zohoPayBtnText">Pay Now</span>
-      </button>
-
-      <!-- Payment method icons -->
-      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#555;">UPI</span>
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#555;">VISA</span>
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#555;">Mastercard</span>
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#555;">Net Banking</span>
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#1a73e8;">GPay</span>
-        <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;color:#00b900;">PhonePe</span>
-      </div>
-
-      <!-- v19.10: pay now by GPay / any UPI app — dynamic QR for the order total, order id in the note (rendered by renderUpiQr on open) -->
-      <div id="upiPayBox" style="background:#fff;border:1.5px solid #0079a3;border-radius:12px;padding:12px;margin-bottom:12px;">
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;">
-          <div id="upiQr" role="img" aria-label="UPI QR code for this order" style="width:164px;height:164px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid #e5e7eb;border-radius:10px;padding:6px;box-sizing:border-box;background:#fff;"><span style="font-size:11px;color:#888;">Loading QR…</span></div>
-          <div style="flex:1;min-width:150px;font-size:12px;color:#333;line-height:1.5;">
-            <div style="font-weight:800;font-size:14px;color:#0F1111;">Scan to pay <span id="upiQrAmt"></span> with GPay or any UPI app</div>
-            <div style="color:#555;">Amount and order number are pre-filled.</div>
-            <div style="margin-top:4px;">UPI ID <b>indiabusinessinternational@okicici</b><br><span style="color:#777;">India Business International · ICICI Bank</span></div>
-            <a id="upiOpenLink" href="#" style="display:inline-block;margin-top:8px;background:#0079a3;color:#fff;font-weight:800;font-size:12px;border-radius:8px;padding:8px 12px;text-decoration:none;">Open UPI app on this phone</a>
-          </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:9px 0 8px;font-size:12px;color:#334155;">
+          Secured by <span style="font-family:Arial,Helvetica,sans-serif;font-style:italic;font-weight:900;font-size:16px;color:#072654;letter-spacing:-0.3px;"><span style="color:#3395ff;">&#9889;</span>Razorpay</span>
         </div>
-        <button onclick="sendWhatsAppOrder(true)" style="width:100%;margin-top:10px;background:#25D366;color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:800;cursor:pointer;">✅ I have paid by UPI — send my order on WhatsApp</button>
-        <p style="font-size:10px;color:#888;margin:6px 0 0;text-align:center;">Fill Steps 1 and 2 first · we confirm the payment and dispatch within 1 working day.</p>
+        <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;">
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#555;">UPI</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#1a73e8;">GPay</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#5f259f;">PhonePe</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#00baf2;">Paytm</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#555;">Visa · Mastercard · RuPay</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#555;">Net Banking</span>
+          <span style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;color:#555;">Wallets</span>
+        </div>
       </div>
 
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -15391,7 +15357,7 @@ init();
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Order via WhatsApp instead
       </button>
-      <p id="payFootNote" style="font-size:10px;color:#aaa;margin:8px 0 0;text-align:center;">🔒 Secured by Zoho Payments · RBI Authorised · Certificate No. 170/2024</p>
+      <p id="payFootNote" style="font-size:10px;color:#888;margin:8px 0 0;text-align:center;">🔒 Online payments by Razorpay (RBI-authorised payment aggregator) · verified by IBI before your order is confirmed</p>
     </div>
 
   </div>

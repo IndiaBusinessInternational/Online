@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.1
+- 🔒 PAY WITH RAZORPAY, CLEARLY. Checkout now has one online payment: the orange Pay securely with Razorpay button, with the Razorpay mark and UPI, GPay, PhonePe, Paytm, cards, net banking and wallet shown under it. The Zoho payment link and the UPI QR with I have paid by UPI are gone. Order via WhatsApp stays as the other way to order. A tap before the shop has reached Razorpay now waits for it instead of failing.
+
 ## v20.0
 - 💳 RAZORPAY CHECKOUT + GOOGLE SHOPPING FEED. Pay by UPI, card, net banking or wallet in one secure Razorpay window: the Apps Script backend prices the cart, creates the Razorpay order and verifies the payment signature before the order is saved as Paid (webhook and re-check backstops). It switches on by itself once the keys are added; until then checkout shows Zoho, the UPI QR and WhatsApp exactly as before. New Google Merchant Center feed (google-merchant-feed.xml, 185 items from 96 products, refreshed with every catalogue snapshot), new Shipping and Returns policy pages, product pages link them and preselect a variation from ?v=. Admin orders show Paid online.
 
