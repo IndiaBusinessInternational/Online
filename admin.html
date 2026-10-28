@@ -756,6 +756,7 @@ function loadOrdersData() {
           <div style="display:flex;gap:4px;">
             ${o.payoutStatus!=='Paid'?`<button class="btn btn-approve" onclick="markPayoutPaid('${o.orderId}')">💰 Pay</button>`:'<span style="font-size:11px;color:#16a34a;font-weight:700;">✓ Paid</span>'}
             <button class="btn btn-edit" onclick="updateOrderStatus('${o.orderId}')">📦 Status</button>
+            ${o.status!=='Cancelled'&&o.status!=='Delivered'&&o.status!=='Returned'?`<button class="btn btn-approve" style="background:#0f766e;" onclick="shipOpen('${o.orderId}')">🚚 Ship</button>`:''}
           </div>
         </td>
       </tr>`;
@@ -1467,5 +1468,155 @@ function adminFeatureVideo(videoId, on) {
   sheetFetch({ action:'adminUpdateVideo', ceoToken: ceoToken(), videoId, featured: on ? '1' : '0' }, res => { if (res && res.success) { toast(on ? '⭐ Featured' : 'Unfeatured'); loadVideosDesk(); } else toast('❌ ' + (res?.message || 'Failed')); }, 15000);
 }
 </script>
+
+<!-- v20.2: 🚚 Ship — Shiprocket + Delhivery direct rates side by side, book after an in-dialog confirm, label, tracking to the buyer; manual courier + AWB fallback -->
+<style>
+  #shipModal { position:fixed; inset:0; background:rgba(15,23,42,.55); z-index:9000; display:none; align-items:flex-start; justify-content:center; padding:16px; overflow-y:auto; }
+  #shipModal.open { display:flex; }
+  #shipModal .sm-box { background:#fff; border-radius:14px; width:100%; max-width:640px; margin:auto; box-shadow:0 20px 60px rgba(0,0,0,.35); display:flex; flex-direction:column; max-height:calc(100vh - 32px); }
+  #shipModal .sm-head { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--border); }
+  #shipModal .sm-head h3 { font-size:17px; font-weight:800; flex:1; }
+  #shipModal .sm-x { width:36px; height:36px; border-radius:50%; border:none; background:#f3f4f6; font-size:18px; }
+  #shipModal .sm-body { padding:14px 16px; overflow-y:auto; font-size:14px; }
+  #shipModal .sm-foot { padding:12px 16px; border-top:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+  #shipModal .sm-tabs { display:flex; gap:6px; margin-bottom:12px; }
+  #shipModal .sm-tab { padding:8px 14px; border-radius:20px; border:1.5px solid var(--border); background:#fff; font-weight:700; font-size:13px; }
+  #shipModal .sm-tab.on { background:var(--navy); color:#fff; border-color:var(--navy); }
+  #shipModal .sm-pkg { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0 10px; }
+  #shipModal .sm-pkg label { font-size:12px; color:var(--muted); display:block; }
+  #shipModal input[type=number], #shipModal input[type=text] { width:100%; padding:9px 10px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; }
+  #shipModal .sm-opt { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; margin-bottom:8px; cursor:pointer; }
+  #shipModal .sm-opt.sel { border-color:var(--orange); background:#fff7ed; }
+  #shipModal .sm-opt b.rate { font-size:16px; margin-left:auto; white-space:nowrap; }
+  #shipModal .sm-tag { font-size:10px; font-weight:800; border-radius:10px; padding:2px 7px; margin-left:4px; }
+  #shipModal .sm-btn { padding:11px 16px; border-radius:10px; border:none; font-weight:800; font-size:14px; }
+  #shipModal .sm-primary { background:var(--orange); color:#fff; }
+  #shipModal .sm-ghost { background:#fff; border:1.5px solid var(--border); }
+  #shipModal .sm-warn { background:#fef3c7; border-radius:10px; padding:10px 12px; font-size:13px; margin:8px 0; }
+  #shipModal .sm-ok { background:#dcfce7; border-radius:10px; padding:12px; font-size:13px; line-height:1.6; }
+  @media (max-width:640px) { #shipModal { padding:0; } #shipModal .sm-box { border-radius:0; max-height:100vh; min-height:100vh; } #shipModal .sm-pkg { grid-template-columns:repeat(2,1fr); } }
+</style>
+<div id="shipModal" role="dialog" aria-modal="true" aria-labelledby="smTitle">
+  <div class="sm-box">
+    <div class="sm-head"><h3 id="smTitle">🚚 Ship order</h3><button class="sm-x" aria-label="Close" onclick="shipClose()">✕</button></div>
+    <div class="sm-body" id="smBody"></div>
+    <div class="sm-foot" id="smFoot"></div>
+  </div>
+</div>
+<script>
+let _ship = null;
+const _se = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+function shipOpen(orderId) {
+  _ship = { orderId, tab:'rates', quote:null, sel:-1, step:'' };
+  document.getElementById('smTitle').textContent = '🚚 Ship order ' + orderId;
+  document.getElementById('shipModal').classList.add('open');
+  shipQuote();
+}
+function shipClose() { document.getElementById('shipModal').classList.remove('open'); _ship = null; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && _ship) shipClose(); });
+document.getElementById('shipModal').addEventListener('click', e => { if (e.target.id === 'shipModal') shipClose(); });
+function shipTab(t) { _ship.tab = t; shipRender(); }
+function shipPkg() {
+  const g = id => (document.getElementById(id) || {}).value || '';
+  return { l: g('smL'), b: g('smB'), h: g('smH'), weightG: g('smW') };
+}
+function shipQuote() {
+  const body = document.getElementById('smBody'); const keep = _ship.quote ? shipPkg() : {};
+  body.innerHTML = '<div style="color:var(--muted);">Getting rates from Shiprocket and Delhivery…</div>'; document.getElementById('smFoot').innerHTML = '';
+  sheetFetch(Object.assign({ action:'adminShipQuote', ceoToken: ceoToken(), orderId: _ship.orderId }, keep), res => {
+    if (!_ship) return;
+    if (!res) { body.innerHTML = '<div class="sm-warn">No answer from the backend — try again.</div>'; return; }
+    if (res.message === 'Unauthorized') { body.innerHTML = '<div class="sm-warn">Session expired — sign in again.</div>'; return; }
+    _ship.quote = res; _ship.sel = -1; _ship.step = ''; shipRender();
+  }, 45000);
+}
+function shipRender() {
+  const q = _ship.quote || {}; const body = document.getElementById('smBody'), foot = document.getElementById('smFoot');
+  const tabs = '<div class="sm-tabs"><button class="sm-tab' + (_ship.tab === 'rates' ? ' on' : '') + '" onclick="shipTab(\'rates\')">Book a courier</button><button class="sm-tab' + (_ship.tab === 'manual' ? ' on' : '') + '" onclick="shipTab(\'manual\')">Enter AWB by hand</button></div>';
+  const cur = q.current || {};
+  if (cur.awb) {
+    body.innerHTML = '<div class="sm-ok">✅ <b>' + _se(cur.courier) + '</b> · AWB <b>' + _se(cur.awb) + '</b> · ' + _se(cur.courierStatus || cur.status) +
+      (cur.trackUrl ? '<br><a href="' + _se(cur.trackUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;">Tracking page ↗</a>' : '') +
+      (cur.labelUrl ? ' · <a href="' + _se(cur.labelUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;">Print label (PDF) ↗</a>' : '') +
+      (cur.shipCost ? '<br>Courier cost ₹' + _se(cur.shipCost) : '') + '</div>';
+    foot.innerHTML = '<button class="sm-btn sm-ghost" onclick="shipClose()">Close</button>'; return;
+  }
+  if (_ship.tab === 'manual') {
+    body.innerHTML = tabs + '<p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Booked outside this page? Type the courier and AWB — the buyer gets the tracking link by email at once.</p>' +
+      '<label style="font-size:12px;color:var(--muted);">Courier</label><input type="text" id="smMC" placeholder="Delhivery / DTDC / India Post…">' +
+      '<label style="font-size:12px;color:var(--muted);display:block;margin-top:8px;">Tracking number (AWB)</label><input type="text" id="smMA">' +
+      '<label style="font-size:12px;color:var(--muted);display:block;margin-top:8px;">Tracking link (optional — Delhivery and Shiprocket links are made for you)</label><input type="text" id="smMU" placeholder="https://…">';
+    foot.innerHTML = '<button class="sm-btn sm-ghost" onclick="shipClose()">Cancel</button><button class="sm-btn sm-primary" onclick="shipManual()">Save &amp; send tracking</button>'; return;
+  }
+  const pkg = q.pkg || {};
+  let h = tabs + (q.paid === false ? '<div class="sm-warn">⚠️ This order is not marked Paid online — check the payment before booking.</div>' : '') +
+    '<div style="font-size:13px;">From PIN <b>' + _se(q.fromPin || '—') + '</b> to <b>' + _se(q.toPin || '—') + '</b> · order value ₹' + _se(q.value || 0) + '</div>' +
+    '<div class="sm-pkg"><div><label>Length cm</label><input type="number" id="smL" value="' + _se(pkg.l) + '"></div><div><label>Breadth cm</label><input type="number" id="smB" value="' + _se(pkg.b) + '"></div>' +
+    '<div><label>Height cm</label><input type="number" id="smH" value="' + _se(pkg.h) + '"></div><div><label>Weight g</label><input type="number" id="smW" value="' + _se(pkg.weightG) + '"></div></div>' +
+    (pkg.missing && pkg.missing.length ? '<div class="sm-warn">Package size missing for: ' + pkg.missing.map(_se).join(', ') + ' — a 20×15×10 cm, 500 g box was assumed. Correct it above and tap Refresh rates.</div>' : '');
+  const opts = q.options || [];
+  if (!opts.length) h += '<div class="sm-warn">' + _se(q.message || 'No rates') + '</div>';
+  else {
+    const cheapest = Math.min.apply(null, opts.map(o => o.rate));
+    h += opts.map((o, i) => '<div class="sm-opt' + (i === _ship.sel ? ' sel' : '') + '" onclick="shipPick(' + i + ')"><input type="radio" name="smo"' + (i === _ship.sel ? ' checked' : '') + '>' +
+      '<div><div style="font-weight:700;">' + _se(o.courier) + (o.recommended ? '<span class="sm-tag" style="background:#dbeafe;color:#1d4ed8;">Shiprocket pick</span>' : '') + (o.rate === cheapest ? '<span class="sm-tag" style="background:#dcfce7;color:#166534;">Cheapest</span>' : '') + '</div>' +
+      '<div style="font-size:12px;color:var(--muted);">' + (o.carrier === 'delhivery' ? 'Delhivery direct' : 'via Shiprocket') + (o.mode ? ' · ' + _se(o.mode) : '') + (o.days ? ' · ' + _se(o.days) + ' days' : '') + (o.etd ? ' · by ' + _se(o.etd) : '') + '</div></div>' +
+      '<b class="rate">₹' + _se(o.rate) + '</b></div>').join('');
+  }
+  const errs = Object.keys(q.errors || {}).map(k => '<div style="font-size:12px;color:var(--muted);">' + (k === 'delhivery' ? 'Delhivery' : 'Shiprocket') + ': ' + _se(q.errors[k]) + '</div>').join('');
+  body.innerHTML = h + errs;
+  const o = opts[_ship.sel];
+  if (_ship.step === 'confirm' && o) {
+    foot.innerHTML = '<div style="flex:1 1 100%;font-size:13px;">Book <b>' + _se(o.courier) + '</b> for <b>₹' + _se(o.rate) + '</b>? This is charged to your ' + (o.carrier === 'delhivery' ? 'Delhivery' : 'Shiprocket') + ' account.</div>' +
+      '<button class="sm-btn sm-ghost" onclick="_ship.step=\'\';shipRender()">Back</button><button class="sm-btn sm-primary" id="smBook" onclick="shipBook()">Yes, book ₹' + _se(o.rate) + '</button>';
+  } else {
+    foot.innerHTML = '<button class="sm-btn sm-ghost" onclick="shipQuote()">Refresh rates</button><button class="sm-btn sm-primary"' + (o ? '' : ' disabled style="opacity:.5"') + ' onclick="_ship.step=\'confirm\';shipRender()">Book selected' + (o ? ' (₹' + _se(o.rate) + ')' : '') + '</button>';
+  }
+}
+function shipPick(i) { _ship.sel = i; _ship.step = ''; shipRender(); }
+function shipBook() {
+  const o = (_ship.quote.options || [])[_ship.sel]; if (!o) return;
+  const btn = document.getElementById('smBook'); if (btn) { btn.disabled = true; btn.textContent = '⏳ Booking…'; }
+  sheetFetch(Object.assign({ action:'adminShipBook', ceoToken: ceoToken(), orderId: _ship.orderId, carrier: o.carrier, courierId: o.courierId, courierName: o.courier, rate: o.rate, confirm:'YES' }, shipPkg()), res => {
+    if (!_ship) return;
+    if (!res || !res.success) { toast('❌ ' + ((res && res.message) || 'Booking failed — no answer')); _ship.step = ''; shipRender(); return; }
+    shipDone(res);
+  }, 60000);
+}
+function shipManual() {
+  const c = document.getElementById('smMC').value.trim(), a = document.getElementById('smMA').value.trim(), u = document.getElementById('smMU').value.trim();
+  if (!c || !a) { toast('❌ Courier and AWB are required'); return; }
+  sheetFetch({ action:'adminShipManual', ceoToken: ceoToken(), orderId: _ship.orderId, courier: c, awb: a, trackUrl: u }, res => {
+    if (!_ship) return;
+    if (!res || !res.success) { toast('❌ ' + ((res && res.message) || 'Failed')); return; }
+    shipDone(res);
+  }, 30000);
+}
+function shipDone(res) {
+  const s = res.shipment || {};
+  document.getElementById('smBody').innerHTML = '<div class="sm-ok">✅ <b>' + _se(s.courier) + '</b> · AWB <b>' + _se(s.awb) + '</b><br>The buyer has been emailed the tracking link.' +
+    (s.trackUrl ? '<br><a href="' + _se(s.trackUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;">Tracking page ↗</a>' : '') +
+    (s.labelUrl ? ' · <a href="' + _se(s.labelUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;font-weight:800;">Print label (PDF) ↗</a>' : '') + '</div>';
+  document.getElementById('smFoot').innerHTML = (res.wa ? '<a class="sm-btn" style="background:#25D366;color:#fff;" href="' + _se(res.wa) + '" target="_blank" rel="noopener">Send tracking on WhatsApp</a>' : '') +
+    '<button class="sm-btn sm-ghost" onclick="shipClose()">Done</button>';
+  toast('✅ Shipment saved — ' + (s.courier || '') + ' ' + (s.awb || '')); loadOrdersData();
+}
+/* the 🔄 Courier status button above the orders table */
+const _loadOrdersData_v20 = loadOrdersData;
+loadOrdersData = function () {
+  _loadOrdersData_v20();
+  if (!document.getElementById('courierSyncBtn')) { const tb = document.getElementById('ordersTbody'); const t = tb && tb.closest('table');
+    if (t) { const b = document.createElement('button'); b.id = 'courierSyncBtn'; b.className = 'btn btn-edit'; b.style.margin = '0 0 8px'; b.textContent = '🔄 Courier status';
+      b.onclick = function () { courierRefreshAll(b); }; (t.parentElement.classList.contains('table-wrap') ? t.parentElement : t).insertAdjacentElement('beforebegin', b); } }
+};
+function courierRefreshAll(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Checking couriers…'; }
+  sheetFetch({ action:'adminCourierSync', ceoToken: ceoToken() }, res => {
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Courier status'; }
+    toast(res && res.success ? '✅ ' + res.changed + ' order(s) updated from the couriers' : '❌ ' + ((res && res.message) || 'No answer')); if (res && res.success) loadOrdersData();
+  }, 90000);
+}
+</script>
+
 </body>
 </html>
