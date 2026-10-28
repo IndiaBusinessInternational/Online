@@ -17,6 +17,8 @@
 //                                       brand only). Commerce Manager fetches it on a
 //                                       schedule and keeps the WhatsApp Business
 //                                       catalogue in step with the storefront.
+//   7. writes google-merchant-feed.xml  — Google Merchant Center feed (free listings),
+//                                       house brand only, one item per priced variation.
 //
 // Design rules (do not break):
 //   • Slugs come from the title and are remembered in products.json. If a title is
@@ -35,6 +37,9 @@ const ROOT   = path.join(__dirname, '..');
 const ORIGIN = 'https://www.indiabusinessinternational.online';
 const FEED   = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec?action=getApprovedProducts';
 const BRAND  = 'iINTELLIGENCEi';
+// Bump when productPage() changes, so every /p/ page is rewritten on the next run
+// even if no listing changed (2 = v20.0: variation ?v= links, ProductGroup, policy links).
+const PAGE_TEMPLATE = 2;
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 const esc = s => String(s == null ? '' : s)
@@ -116,6 +121,88 @@ function metaFeed(list, slugs) {
   return { csv: FEED_COLS.join(',') + '\n' + rows.join('\n') + '\n', count: rows.length, skipped };
 }
 
+// ── Google Merchant Center feed (free listings + Shopping) ───────────────────
+// RSS 2.0 with the g: namespace — https://support.google.com/merchants/answer/7052112
+// Merchant Center → Products → Feeds → "Scheduled fetch" of ORIGIN/google-merchant-feed.xml.
+// Rules (do not break):
+//   • HOUSE BRAND ONLY, same as the Meta feed.
+//   • price = what the buyer pays (the product page price). No sale_price: Google lets a
+//     struck-through price show only if the item really sold at it, and MRP is not that.
+//   • A listing whose variations cost different amounts becomes one item PER variation
+//     (item_group_id = productId) linking to /p/<slug>/?v=<n>, which preselects that row
+//     and price; the page's ProductGroup JSON-LD carries the same variant prices.
+//   • Images: drive.google.com's robots.txt blocks every crawler from /thumbnail, so
+//     Google could never fetch them — the same file is served from lh3.googleusercontent.com.
+//   • Shipping is free across India (the storefront promise); identifier_exists = no
+//     (house-brand goods carry no GTIN). Return policy is set once in Merchant Center.
+//   • DETERMINISTIC — no timestamps.
+const GFEED_FILE = 'google-merchant-feed.xml';
+const xmlEsc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+  .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+function gImg(u) {
+  const m = String(u || '').match(/drive\.google\.com\/thumbnail\?id=([\w-]{20,})/);
+  return m ? 'https://lh3.googleusercontent.com/d/' + m[1] + '=w1600' : u;
+}
+// Variations the feed and the page treat as separate items: enabled, priced, and the
+// listing really has more than one price (single-price option lists stay one item).
+function priceVariants(p) {
+  const v = parseVariations(p);
+  if (!v.matrix) return [];
+  const rows = (v.matrix.combos || []).map((c, i) => ({ c, i }))
+    .filter(x => x.c && x.c.on !== 0 && parseFloat(x.c.price) > 0);
+  return new Set(rows.map(x => parseFloat(x.c.price))).size > 1 ? rows : [];
+}
+function variantAxes(p) {
+  const v = parseVariations(p);
+  return ((v.matrix && v.matrix.axes) || []).map(a => String(a && a.name || '').toLowerCase());
+}
+function googleFeed(list, slugs) {
+  let skipped = 0;
+  const items = [];
+  const tag = (k, v) => (v === '' || v == null) ? '' : '<g:' + k + '>' + xmlEsc(v) + '</g:' + k + '>';
+  list.filter(isHouseBrand).forEach(p => {
+    const imgs = imagesOf(p).map(gImg);
+    const bullets = String(p.bullets || '').split('|').map(b => b.trim()).filter(Boolean).join(' • ');
+    const desc = plainText([p.description, bullets].filter(Boolean).join(' '), 5000) || plainText(p.title, 150);
+    const link = ORIGIN + '/p/' + slugs[String(p.productId)] + '/';
+    const one = (id, title, price, inStock, pics, url, extra) => {
+      if (!(price > 0) || !pics[0]) { skipped++; return; }
+      items.push('<item>' + tag('id', id) + '<title>' + xmlEsc(plainText(title, 150)) + '</title>' +
+        '<description>' + xmlEsc(desc) + '</description><link>' + xmlEsc(url) + '</link>' +
+        tag('image_link', pics[0]) + pics.slice(1, 11).map(u => tag('additional_image_link', u)).join('') +
+        tag('availability', inStock ? 'in_stock' : 'out_of_stock') + tag('price', price.toFixed(2) + ' INR') +
+        tag('condition', 'new') + tag('brand', p.brand || BRAND) + tag('identifier_exists', 'no') +
+        tag('product_type', String(p.category || '')) + (extra || '') +
+        '<g:shipping>' + tag('country', 'IN') + tag('price', '0.00 INR') + '</g:shipping></item>');
+    };
+    const vars = priceVariants(p);
+    if (!vars.length) {
+      const pr = pricing(p);
+      one(p.productId, p.title, pr.min || 0, pr.inStock, imgs, link, '');
+      return;
+    }
+    const axes = variantAxes(p);
+    vars.forEach(({ c, i }) => {
+      const own = String(c.imgs || '').split(/[|,]/).map(fixImg).filter(u => /^https?:\/\//i.test(u)).map(gImg);
+      const opts = (c.opts || []).map(String);
+      let extra = tag('item_group_id', p.productId);
+      axes.forEach((a, k) => {
+        if (/^colou?r$/.test(a)) extra += tag('color', opts[k]);
+        else if (/^size$/.test(a)) extra += tag('size', opts[k]);
+      });
+      const stock = c.stock !== undefined && c.stock !== '' ? (parseInt(c.stock, 10) || 0) > 0 : pricing(p).inStock;
+      one(p.productId + '-' + i, c.title || (p.title + ' — ' + opts.join(' / ')), parseFloat(c.price), stock,
+          own.length ? own : imgs, link + '?v=' + i, extra);
+    });
+  });
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n<channel>\n' +
+    '<title>IBI eCommerce Marketplace — ' + BRAND + '</title>\n<link>' + ORIGIN + '/</link>\n' +
+    '<description>' + BRAND + ' products sold on IBI eCommerce Marketplace — free delivery across India</description>\n' +
+    items.join('\n') + '\n</channel>\n</rss>\n';
+  return { xml, count: items.length, skipped };
+}
+
 // ⚠ Keep IDENTICAL to ibiProductSlug() in index.html — the storefront builds share
 // links with its copy and they must land on the pages this file generates.
 function slugOf(title) {
@@ -185,6 +272,22 @@ function productPage(p, slug) {
   };
   if (pr.min === pr.max) ld.offers.price = String(pr.min);
   else { ld.offers.lowPrice = String(pr.min); ld.offers.highPrice = String(pr.max); ld.offers.offerCount = undefined; }
+  // Variations at different prices → ProductGroup with one Product per variation, each at its own
+  // ?v=<n> address and price — the same items and prices as google-merchant-feed.xml.
+  const pv = priceVariants(p);
+  let ldMain = ld;
+  if (pv.length) {
+    ldMain = {
+      '@context': 'https://schema.org', '@type': 'ProductGroup', name: title, image: imgs, description: desc || title,
+      productGroupID: String(p.productId || ''), brand: { '@type': 'Brand', name: p.brand || BRAND }, url: url,
+      hasVariant: pv.map(({ c, i }) => ({
+        '@type': 'Product', sku: String(p.productId) + '-' + i, name: String(c.title || title),
+        image: (String(c.imgs || '').split(/[|,]/).map(fixImg).filter(u => /^https?:\/\//i.test(u))[0]) || imgs[0],
+        offers: { '@type': 'Offer', url: url + '?v=' + i, price: String(parseFloat(c.price)), priceCurrency: 'INR',
+          availability: 'https://schema.org/' + ((c.stock === undefined || c.stock === '' ? pr.inStock : (parseInt(c.stock, 10) || 0) > 0) ? 'InStock' : 'OutOfStock') },
+      })),
+    };
+  }
 
   const crumbs = {
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
@@ -197,9 +300,14 @@ function productPage(p, slug) {
   let variantRows = '';
   if (v.matrix && (v.matrix.combos || []).some(c => c && c.on !== 0)) {
     variantRows = '<h2>Available options</h2><table class="vt"><tr><th>Option</th><th>Price</th><th>MRP</th></tr>' +
-      v.matrix.combos.filter(c => c && c.on !== 0).map(c =>
-        '<tr><td>' + esc(c.title || (c.opts || []).join(' / ')) + '</td><td>₹' + esc(c.price || p.price) +
-        '</td><td class="mrp">₹' + esc(c.mrp || p.mrp) + '</td></tr>').join('') + '</table>';
+      v.matrix.combos.map((c, i) => (!c || c.on === 0) ? '' :
+        '<tr id="v' + i + '" data-price="' + esc(c.price || p.price) + '" data-mrp="' + esc(c.mrp || p.mrp) + '"><td>' +
+        esc(c.title || (c.opts || []).join(' / ')) + '</td><td>₹' + esc(c.price || p.price) +
+        '</td><td class="mrp">₹' + esc(c.mrp || p.mrp) + '</td></tr>').join('') + '</table>' +
+      // ?v=<n> (the Google feed's link for one variation) → that row is selected and its price shown.
+      '<script>(function(){var m=location.search.match(/[?&]v=(\\d+)/),r=m&&document.getElementById("v"+m[1]);if(!r)return;' +
+      'r.className="sel";var e=document.querySelector(".price"),pr=r.getAttribute("data-price"),mr=r.getAttribute("data-mrp");' +
+      'if(e&&pr)e.innerHTML="\u20b9"+pr+(+mr>+pr?" <span class=\\"mrp\\">\u20b9"+mr+"</span><span class=\\"off\\">"+Math.round((1-pr/mr)*100)+"% off</span>":"");})();</script>';
   }
 
   const dims = [];
@@ -215,7 +323,7 @@ function productPage(p, slug) {
     (imgs[0] ? '<meta property="og:image" content="' + esc(imgs[0]) + '">' : '') +
     '<meta property="og:url" content="' + url + '"><meta property="og:site_name" content="IBI Marketplace">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
-    '<script type="application/ld+json">' + JSON.stringify(ld) + '</script>\n' +
+    '<script type="application/ld+json">' + JSON.stringify(ldMain) + '</script>\n' +
     '<script type="application/ld+json">' + JSON.stringify(crumbs) + '</script>\n' +
     '<style>\n' +
     'body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;color:#131921;background:#fff}\n' +
@@ -233,6 +341,8 @@ function productPage(p, slug) {
     'h2{font-size:17px;margin:22px 0 8px}ul{padding-left:20px}li{margin:6px 0;line-height:1.5}\n' +
     'p.d{line-height:1.65;color:#333}\n' +
     '.vt{border-collapse:collapse;width:100%;max-width:560px}.vt td,.vt th{border:1px solid #e5e7eb;padding:8px 12px;font-size:14px;text-align:left}\n' +
+    '.vt tr.sel td{background:#fff7ed;font-weight:700;border-color:#f97316}\n' +
+    '.ship{font-size:14px;color:#333;margin:4px 0 0;line-height:1.6}.ship a{color:#0098c9}\n' +
     '.foot{margin-top:36px;padding:18px 20px;background:#131921;color:#bbb;font-size:13px;text-align:center}.foot a{color:#4dd0ff}\n' +
     '</style>\n</head>\n<body>\n' +
     '<div class="top"><a href="/">🛍️ IBI Marketplace — India Business International</a></div>\n' +
@@ -246,6 +356,8 @@ function productPage(p, slug) {
     (pr.mrp > pr.min ? ' <span class="mrp">₹' + pr.mrp + '</span>' : '') +
     (off ? '<span class="off">' + off + '% off</span>' : '') + '</div>\n' +
     '<span class="stock ' + (pr.inStock ? 'in">✓ In stock' : 'out">Out of stock') + '</span><br>\n' +
+    '<p class="ship">🚚 Free delivery across India · dispatched in 1–2 working days · <a href="/shipping-policy.html">Shipping</a> · ' +
+    '↩️ 7-day returns · <a href="/returns-policy.html">Returns &amp; refunds</a> · 🔒 Prepaid: UPI, cards, net banking</p>\n' +
     '<a class="cta" href="/?p=' + encodeURIComponent(p.productId || '') + '">🛒 Buy on IBI Marketplace</a>' +
     '<a class="cta alt" href="/">Browse all products</a>\n' +
     (desc ? '<h2>About this item</h2><p class="d">' + esc(desc) + '</p>' : '') +
@@ -254,7 +366,9 @@ function productPage(p, slug) {
     (dims.length ? '<h2>Details</h2><table class="vt">' + dims.map(d =>
       '<tr><th>' + esc(d[0]) + '</th><td>' + esc(d[1]) + '</td></tr>').join('') + '</table>' : '') +
     '\n</div>\n' +
-    '<div class="foot">' + BRAND + ' · Kanyakumari, Tamil Nadu · <a href="/">indiabusinessinternational.online</a> — eCommerce for the World</div>\n' +
+    '<div class="foot">' + BRAND + ' · Kanyakumari, Tamil Nadu · <a href="/">indiabusinessinternational.online</a> — eCommerce for the World<br>' +
+    '<a href="/shipping-policy.html">Shipping policy</a> · <a href="/returns-policy.html">Returns &amp; refunds</a> · <a href="/privacy-policy.html">Privacy</a> · ' +
+    'Customer care <a href="tel:+918939414799">+91 8939414799</a></div>\n' +
     '</body>\n</html>\n';
 }
 
@@ -336,12 +450,21 @@ function ssrCard(p, slug) {
     console.log('  wrote ' + FEED_FILE + ': ' + mfeed.count + " items" + (mfeed.skipped ? " (" + mfeed.skipped + ' skipped: no price or photo)' : ''));
   }
 
+  const gfeed = googleFeed(list, slugs);
+  const gPath = path.join(ROOT, GFEED_FILE);
+  let prevG = '';
+  try { prevG = fs.readFileSync(gPath, 'utf8'); } catch (e) {}
+  if (gfeed.xml !== prevG) {
+    fs.writeFileSync(gPath, gfeed.xml, 'utf8');
+    console.log('  wrote ' + GFEED_FILE + ': ' + gfeed.count + ' items' + (gfeed.skipped ? ' (' + gfeed.skipped + ' skipped: no price or photo)' : ''));
+  }
+
   // Nothing actually changed? Then write NOTHING. products.json carries a generatedAt
   // stamp, so without this check every half-hourly run would produce a fresh timestamp,
   // a commit and a full Pages redeploy — 48 empty deploys a day.
   const core = JSON.stringify({ slugs, redirects, products: list });
   const prevCore = JSON.stringify({ slugs: prev.slugs || {}, redirects: prev.redirects || {}, products: prev.products || [] });
-  if (core === prevCore && fs.existsSync(path.join(ROOT, 'p'))) {
+  if (core === prevCore && prev.pageTemplate === PAGE_TEMPLATE && fs.existsSync(path.join(ROOT, 'p'))) {
     console.log('catalogue unchanged — nothing to write');
     return;
   }
@@ -365,6 +488,7 @@ function ssrCard(p, slug) {
   // ── products.json ──
   fs.writeFileSync(path.join(ROOT, 'products.json'), JSON.stringify({
     generatedAt: new Date().toISOString(),
+    pageTemplate: PAGE_TEMPLATE,
     count: list.length,
     slugs: slugs,
     redirects: redirects,
@@ -375,7 +499,7 @@ function ssrCard(p, slug) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [{ loc: ORIGIN + '/', pri: '1.0', freq: 'daily' }]
     .concat(list.map(p => ({ loc: ORIGIN + '/p/' + slugs[String(p.productId)] + '/', pri: '0.8', freq: 'weekly' })))
-    .concat([{ loc: ORIGIN + '/privacy-policy.html', pri: '0.3', freq: 'yearly' }]);
+    .concat(['shipping-policy', 'returns-policy', 'privacy-policy'].map(n => ({ loc: ORIGIN + '/' + n + '.html', pri: '0.3', freq: 'yearly' })));
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(u => '  <url><loc>' + u.loc + '</loc><lastmod>' + today + '</lastmod><changefreq>' + u.freq + '</changefreq><priority>' + u.pri + '</priority></url>').join('\n') +

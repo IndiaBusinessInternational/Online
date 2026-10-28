@@ -746,7 +746,7 @@ function loadOrdersData() {
         <td style="font-family:monospace;font-size:12px;font-weight:700;">${o.orderId||''}</td>
         <td style="font-weight:600;">${o.customerName||'-'}</td>
         <td style="font-size:12px;"><a href="tel:+91${o.customerMobile||''}" style="color:#007185;">+91${o.customerMobile||'-'}</a></td>
-        <td style="font-weight:800;color:#131921;">₹${parseFloat(o.total||0).toLocaleString('en-IN')}</td>
+        <td style="font-weight:800;color:#131921;">₹${parseFloat(o.total||0).toLocaleString('en-IN')}${o.payment&&o.payment.status==='Paid'?`<div title="Razorpay ${o.payment.paymentId||''}" style="font-size:10px;font-weight:800;color:#166534;">💳 Paid online${o.payment.method?' · '+o.payment.method:''}</div>`:''}</td>
         <td style="color:#7C3AED;font-weight:700;">₹${comm.toLocaleString('en-IN')}</td>
         <td style="color:#16a34a;font-weight:700;">₹${net.toLocaleString('en-IN')}</td>
         <td style="font-size:12px;">${o.orderDate||o.timestamp||'-'}</td>

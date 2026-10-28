@@ -1,11 +1,17 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.0
+- 💳 RAZORPAY CHECKOUT + GOOGLE SHOPPING FEED. Pay by UPI, card, net banking or wallet in one secure Razorpay window: the Apps Script backend prices the cart, creates the Razorpay order and verifies the payment signature before the order is saved as Paid (webhook and re-check backstops). It switches on by itself once the keys are added; until then checkout shows Zoho, the UPI QR and WhatsApp exactly as before. New Google Merchant Center feed (google-merchant-feed.xml, 185 items from 96 products, refreshed with every catalogue snapshot), new Shipping and Returns policy pages, product pages link them and preselect a variation from ?v=. Admin orders show Paid online.
+
 ## v19.35
 - Edge to edge on every screen (Founder, 27 Oct 2026: make all the apps edge to edge on laptop too): the 1400/1500px centred column and the 16px outer gutter are gone at all widths. Header, department bar, banner, sections, footer, product page and Watch page run full width; section content keeps a 10px side inset (header bars 8-10px); the announcement bar and product-page panels are full-bleed (no side border or radius); html/body overflow-x: clip. Wide screens show more product tiles per row. Phone rules (v19.31) unchanged. Service-worker cache v19-35.
 
 ## v19.34
 - Share this app: a round Share button (ibi-share.js, IBI Share v1.0) at the end of the header actions shares the shop link to WhatsApp, Facebook, X, Telegram, Email, Copy link or More apps (Founder, 27 Oct 2026: all web apps should have a sharing link too). Precached in sw.js.
 - WhatsApp link preview: og:image and twitter:image now point at og-banner.jpg (1200x630, under 300 KB) with og:image:type image/jpeg, og:image:secure_url, and og:site_name India Business International; og:url ends with a slash. og-banner.png is kept.
+
+## v19.33
+- 📷 IBI SCANNERC JOINS THE DIGITAL PRODUCTS SHELF. Scan documents, books and ID cards with your phone: auto edges, crop that snaps to the paper, bright Magic colour, crisp text, PDF in one tap. Free scanning; Pro $2.99 a month (₹149 in India). A yearly ScannerC or PDF ToolKit plan now includes the other app free for the same year.
 
 ## v19.32
 - Seller Agreement on phones: the fee and returns tables scroll sideways inside their card instead of being cut off at the screen edge.
