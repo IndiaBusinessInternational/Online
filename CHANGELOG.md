@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.11
+- 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.
+
 ## v20.10
 - ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.
 

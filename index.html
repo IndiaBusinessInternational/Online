@@ -2404,6 +2404,20 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
     .ibi-off { left: 8px; top: 8px; font-size: 12px; padding: 5px 6px; }
     .wishlist-btn { width: 30px; height: 30px; }
     .pp-title { font-size: 21px; }
+    /* v20.11 (Founder, 30 Oct 2026: "Only able to move half the page in mobile"): on phones the header no longer sticks to the
+       top. It used to hold about 45% of the screen while only the rest scrolled. It is also one compact row now: badge, sound,
+       a 44px logo and the cart, menu and share icons, with search on its own full-width row. */
+    header { position: relative; }
+    .go-bottom { padding: 4px 10px; font-size: 12px; }
+    #ibiDateTimeBar { font-size: 12px !important; padding: 3px 8px !important; }
+    .header-top { flex-wrap: wrap; gap: 6px; padding: 6px 8px; }
+    .logo { padding: 0 2px; border: 0; }
+    .logo img { height: 44px; }
+    .header-actions { margin-left: auto; gap: 2px; flex-wrap: nowrap; }
+    .header-actions .cart-text { display: none; }
+    .search-bar { height: 42px; margin-top: 0; }
+    .nav-inner { padding-top: 6px; padding-bottom: 8px; }
+    .nav-link { padding: 5px 12px; font-size: 13px; }
     .section-title { font-size: 20px; }
     #allCatFilters { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin-left: -10px; margin-right: -10px; padding: 0 10px 2px; }
     #allCatFilters::-webkit-scrollbar { display: none; }
@@ -3268,9 +3282,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.10';
+window.IBI_VERSION      = 'v20.11';
 window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.10 — ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.';
+window.IBI_VERSION_NOTE = 'v20.11 — 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.';
+window.IBI_VERSION_NOTE_PREV33 = 'v20.10 — ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.';
 window.IBI_VERSION_NOTE_PREV32 = 'v20.9 — 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.';
 window.IBI_VERSION_NOTE_PREV31 = 'v20.8 — 🧾 SELLER FEES AS AMAZON CHARGES THEM (Seller Agreement v1.2). Sellers pay a 5% commission, a closing fee per order (₹10 up to ₹500, ₹20 up to ₹1,000, ₹40 above) that covers payment collection, the courier charge only when IBI ships the parcel for them, and 18% GST on every fee. Settlement statements, the order card, earnings and the new-order email show each fee. Existing sellers move to these fees for orders placed from 1 December 2026; earlier orders keep 5% plus GST on the commission. iINTELLIGENCEi is the own brand of India Business International, not a seller, so its items carry no commission, fees or payout. Shoppers pay exactly the same as before.';
 window.IBI_VERSION_NOTE_PREV30 = 'v20.7 — 📜 LEGAL PAGES UPDATED. Returns are now shown as 7 days from delivery everywhere in the shop, the same as the Returns Policy. The Privacy Policy is brought up to date (Razorpay, couriers, reviews, your rights, adults only, record keeping). A new Terms of Use page is in the footer, and the Grievance Officer is named on every customer policy page. Disputes go to the courts of Kanyakumari District (Seller Agreement v1.1).';
