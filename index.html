@@ -2255,6 +2255,160 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
     html #ibiAgHead { padding-left: 8px; padding-right: 8px; }
     html #ibiAgBody { padding-left: 10px; padding-right: 10px; }
   }
+
+  /* ══ v20.9 — DESIGN LAYER (Founder, 30 Oct 2026: "more professional and modern, also unique" + "Use Sea Blue color,
+     Black Color, and many different colors ... or color patterns"). Visual only: no prices, checkout or order logic here.
+     Sea Blue drives every action, black carries the header / hero / footer, and each department has its own colour
+     (--k) on its tile, chip dot, card stripe, brand tag and group underline. Signature patterns: the six-colour IBI
+     stripe, the multi-colour dot-grid from the IBI logo, and the sea wave under the hero. Base text 16px. */
+  :root {
+    --sea: #006994; --sea-d: #00547A; --sea-l: #E3F3FA; --ink: #0A0D12; --ink-3: #232A33;
+    --paper: #F5F6F8; --line: #E4E7EB; --muted: #5D6673;
+    --c-fash: #E11D74; --c-home: #006994; --c-groc: #15803D; --c-jew: #C98A00; --c-pet: #7C3AED; --c-book: #E4572E;
+    --ibi-stripe: linear-gradient(90deg, #E11D74 0 16.6%, #006994 16.6% 33.3%, #15803D 33.3% 50%, #C98A00 50% 66.6%, #7C3AED 66.6% 83.3%, #E4572E 83.3%);
+    --ibi-dots: radial-gradient(rgba(0,197,255,.5) 1.5px, transparent 1.7px) 0 0 / 21px 21px, radial-gradient(rgba(245,183,0,.42) 1.5px, transparent 1.7px) 7px 7px / 21px 21px, radial-gradient(rgba(225,29,116,.42) 1.5px, transparent 1.7px) 14px 14px / 21px 21px;
+  }
+  body { font-size: 16px; background: var(--paper); color: var(--ink); }
+  h1, h2, h3, .section-title { font-family: 'Roboto Condensed', Roboto, sans-serif; }
+
+  /* top strips and header */
+  .go-bottom { background: var(--ink); color: #9AA4B2; padding: 6px 10px; font-size: 13px; border-bottom: 1px solid var(--ink-3); }
+  .go-bottom:hover { background: var(--ink-3); color: #fff; }
+  header { background: var(--ink); }
+  header::before { content: ''; display: block; height: 4px; background: var(--ibi-stripe); }
+  #ibiDateTimeBar { background: var(--ink) !important; color: #9AA4B2 !important; font-size: 13px !important; font-weight: 500 !important; padding: 4px 10px !important; border-bottom: 1px solid var(--ink-3) !important; }
+  .header-top { background: var(--ink); gap: 14px; }
+  .search-btn { background: var(--sea) !important; color: #fff !important; }
+  .search-btn svg { fill: #fff; }
+  .cart-count { background: #F5B700 !important; color: var(--ink) !important; font-weight: 900; }
+  .nav-bar { background: var(--ink); border-top: 1px solid var(--ink-3); }
+  .nav-inner { gap: 6px; padding-top: 8px; padding-bottom: 10px; align-items: center; }
+  .nav-link { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--ink-3) !important; border-radius: 99px; padding: 6px 14px; font-size: 14px; color: #D6DCE4; white-space: nowrap; }
+  .nav-link:hover { border-color: var(--k, #00C5FF) !important; color: #fff; }
+  #navCatLinks { display: contents; }
+  #navCatLinks .nav-link::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--k, #00C5FF); flex: none; }
+  .nav-link.all { background: var(--sea); border-color: var(--sea) !important; color: #fff; }
+  .nav-link.all svg { fill: #fff; }
+
+  /* hero */
+  .ibi-hero { position: relative; overflow: hidden; color: #fff; padding: 22px 10px 40px; background: radial-gradient(120% 140% at 100% 0%, #0B4F73 0%, #072B40 35%, #0A0D12 70%); }
+  .ibi-hero::after { content: ''; position: absolute; inset: 0 0 0 50%; background: var(--ibi-dots); -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%); mask-image: linear-gradient(90deg, transparent, #000 45%); pointer-events: none; }
+  .ibi-hero-in { position: relative; z-index: 1; }
+  .ibi-eyebrow { font: 700 12px/1 'Roboto Condensed', sans-serif; letter-spacing: 2.4px; text-transform: uppercase; color: #00C5FF; }
+  .ibi-hero h1 { font: 700 32px/1.12 'Roboto Condensed', sans-serif; margin: 10px 0 8px; max-width: 760px; }
+  .ibi-hero h1 em { font-style: normal; background: linear-gradient(90deg, #00C5FF, #4CC26B 45%, #F5B700 85%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ibi-hero p { color: #B8C1CC; max-width: 620px; }
+  .ibi-trust { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .ibi-trust span { font-size: 14px; padding: 6px 12px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+  .ibi-trust span:nth-child(1) b { color: #4CC26B; }
+  .ibi-trust span:nth-child(2) b { color: #F5B700; }
+  .ibi-trust span:nth-child(3) b { color: #00C5FF; }
+  .ibi-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 18px; }
+  .ibi-tiles:empty { display: none; }
+  .ibi-tile { position: relative; overflow: hidden; border: 0; border-radius: 16px; padding: 14px; min-height: 92px; color: #fff; text-align: left; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; cursor: pointer; font-family: inherit; box-shadow: 0 8px 22px rgba(0,0,0,.25); background: linear-gradient(135deg, color-mix(in srgb, var(--k) 70%, #000), var(--k)); transition: transform .18s; }
+  .ibi-tile:hover { transform: translateY(-3px); }
+  .ibi-tile::after { content: ''; position: absolute; right: -12px; bottom: -12px; width: 70px; height: 70px; border-radius: 50%; background-image: radial-gradient(rgba(255,255,255,.42) 1.5px, transparent 1.7px); background-size: 9px 9px; }
+  .ibi-tile i { font-style: normal; font-size: 24px; line-height: 1; }
+  .ibi-tile b { font: 700 16px/1.15 'Roboto Condensed', sans-serif; position: relative; z-index: 1; }
+  .ibi-hero .ibi-wave { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 24px; z-index: 1; display: block; }
+  .announce-bar { display: none !important; }
+
+  /* toolbar, chips, group heads */
+  #allProductsSection { background: var(--paper) !important; padding-top: 14px !important; }
+  .section-title { font-size: 22px; color: var(--ink); }
+  .ibi-grid-toolbar { background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+  .ibi-tb-input { border-radius: 10px !important; }
+  .all-cat-btn { display: inline-flex; align-items: center; gap: 7px; border-radius: 99px !important; padding: 8px 14px !important; font-size: 14px !important; border: 1.5px solid var(--line) !important; background: #fff !important; color: var(--ink) !important; }
+  .all-cat-btn:hover { border-color: var(--k, var(--sea)) !important; }
+  .all-cat-btn.active { background: var(--k, var(--sea)) !important; border-color: var(--k, var(--sea)) !important; color: #fff !important; font-weight: 700 !important; }
+  .ibi-grp-head { border-bottom: 2px solid var(--line) !important; position: relative; }
+  .ibi-grp-head::after { content: ''; position: absolute; left: 0; bottom: -2px; width: 120px; height: 2px; background: var(--k, var(--sea)); }
+  .ibi-grp-head > span:nth-child(2) { font: 700 20px/1.2 'Roboto Condensed', sans-serif !important; color: var(--ink) !important; }
+
+  /* product grid and cards */
+  #allProductsGrid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important; gap: 14px !important; }
+  .product-card { border: 1px solid var(--line); border-top: 4px solid var(--k, var(--sea)); border-radius: 14px; background: #fff; overflow: hidden; transition: transform .18s, box-shadow .18s; }
+  .product-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(0,105,148,.16); }
+  .product-img-wrap { background: #EEF0F3; }
+  .product-img-wrap img { transition: transform .35s; }
+  .product-card:hover .product-img-wrap img { transform: scale(1.04); }
+  .ibi-off { position: absolute; left: 10px; top: 10px; z-index: 2; background: #FF8A00; color: #111; font: 900 13px/1 Roboto, sans-serif; padding: 6px 8px; border-radius: 8px; }
+  .product-card .product-badge { top: 44px; }
+  .wishlist-btn { opacity: 1; border-radius: 50%; }
+  .product-info { padding: 12px; display: flex; flex-direction: column; gap: 5px; }
+  .product-brand { align-self: flex-start; font: 700 11px/1 'Roboto Condensed', sans-serif; letter-spacing: 1px; color: var(--k, var(--sea)); background: color-mix(in srgb, var(--k, #006994) 12%, #fff); padding: 4px 7px; border-radius: 6px; }
+  .product-title { font-size: 15px; font-weight: 500; line-height: 1.35; color: var(--ink); }
+  .price-row { font-variant-numeric: tabular-nums; }
+  .price-main { font-size: 21px; font-weight: 900; color: var(--ink); }
+  .price-orig { font-size: 14px; }
+  .price-discount { font-size: 14px; font-weight: 700; color: var(--c-groc); }
+  .product-info .delivery-info, .product-info .in-stock, .product-info .out-stock { display: inline-block; font-size: 13px; margin: 0 8px 0 0; }
+  .product-info .delivery-info { color: var(--muted); }
+  .product-info .delivery-info::before { content: '🚚 '; }
+  .pc-seller { display: none !important; }
+  .add-cart-btn { background: var(--sea); color: #fff; height: 42px; border-radius: 10px; font-size: 15px; font-weight: 700; margin-top: auto; }
+  .add-cart-btn:hover { background: var(--sea-d); transform: none; }
+  .ibi-ssr-card .product-price .price-now { font-size: 21px; font-weight: 900; }
+
+  /* product page */
+  #productPageOverlay { background: var(--paper); }
+  .pp-header { background: var(--ink); }
+  .pp-header::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--ibi-stripe); }
+  .pp-images, .pp-info, .pp-desc { border: 1px solid var(--line); }
+  .pp-brand { color: var(--sea); }
+  .pp-title { font: 700 24px/1.25 'Roboto Condensed', sans-serif; color: var(--ink); }
+  .pp-price-box { background: var(--sea-l); }
+  .pp-price { color: var(--ink); }
+  .pp-bullet { font-size: 15px; }
+  .pp-bullet::before { color: var(--sea); }
+  .pp-thumb:hover, .pp-thumb.active { border-color: var(--sea); }
+  .pp-add-cart { background: var(--sea); height: 50px; border-radius: 12px; font-size: 16px; }
+  .pp-add-cart:hover { background: var(--sea-d); }
+  .pp-buy-now { background: var(--ink); height: 50px; border-radius: 12px; font-size: 16px; }
+  .pp-desc h3 { font: 700 19px/1.3 'Roboto Condensed', sans-serif; color: var(--sea); }
+
+  /* cart drawer */
+  .cart-hdr { background: var(--ink); }
+  .cart-item { border-radius: 12px; }
+  .cart-qty-btn:hover { border-color: var(--sea); }
+
+  /* footer */
+  footer { position: relative; background: var(--ibi-dots), radial-gradient(120% 120% at 0% 100%, #072B40 0%, #0A0D12 60%); background-color: var(--ink); }
+  footer::before { content: ''; display: block; height: 5px; background: var(--ibi-stripe); }
+  .footer-col h4 { font: 700 13px/1 'Roboto Condensed', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: #00C5FF; }
+  .footer-col:nth-child(4n+2) h4 { color: #4CC26B; }
+  .footer-col:nth-child(4n+3) h4 { color: #F5B700; }
+  .footer-col:nth-child(4n) h4 { color: #FF5C8A; }
+  .footer-col ul li a { font-size: 14px; }
+
+  @media (min-width: 1200px) { #allProductsGrid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; } }
+  @media (max-width: 640px) {
+    .ibi-hero { padding: 16px 10px 32px; }
+    .ibi-hero h1 { font-size: 25px; }
+    .ibi-hero p { display: none; }
+    .ibi-hero::after { inset: 0 0 0 35%; opacity: .55; }
+    .ibi-trust span { font-size: 13px; padding: 5px 9px; }
+    .ibi-tiles { display: flex; overflow-x: auto; scrollbar-width: none; gap: 8px; margin: 14px -10px 0; padding: 0 10px 4px; scroll-padding-left: 10px; }
+    .ibi-tiles::-webkit-scrollbar { display: none; }
+    .ibi-tile { flex: 0 0 116px; min-height: 76px; padding: 10px; border-radius: 12px; }
+    .ibi-tile b { font-size: 14px; }
+    .ibi-tile i { font-size: 20px; }
+    #allProductsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; margin-left: 0; margin-right: 0; }
+    .product-card { border-radius: 12px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+    .product-info { padding: 9px; gap: 4px; }
+    .product-title { font-size: 14px; }
+    .price-main, .ibi-ssr-card .product-price .price-now { font-size: 18px; }
+    .price-orig, .price-discount { font-size: 13px; }
+    .product-info .delivery-info, .product-info .in-stock, .product-info .out-stock { font-size: 12px; }
+    .add-cart-btn { height: 40px; font-size: 14px; }
+    .ibi-off { left: 8px; top: 8px; font-size: 12px; padding: 5px 6px; }
+    .wishlist-btn { width: 30px; height: 30px; }
+    .pp-title { font-size: 21px; }
+    .section-title { font-size: 20px; }
+    #allCatFilters { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin-left: -10px; margin-right: -10px; padding: 0 10px 2px; }
+    #allCatFilters::-webkit-scrollbar { display: none; }
+    .all-cat-btn { flex: none; }
+  }
 </style>
   <!-- jsPDF for PDF generation (primary CDN) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="loadJsPDFFallback()"></script>
@@ -2401,6 +2555,19 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
      not stock: 3 of the 4 CTAs (electronics ×2, jewellery) opened an empty grid, and
      grocery held a single product. It also pushed the first purchasable item a full
      screen down. Products now start immediately. -->
+
+<!-- v20.9 hero: short, and every tile is a department that has live listings (filled by buildNavCategories),
+     so it never advertises an empty shelf like the carousel removed on 31 Jul 2026 did. -->
+<section class="ibi-hero" aria-label="IBI Marketplace">
+  <div class="ibi-hero-in">
+    <div class="ibi-eyebrow">Made in India · Sold direct</div>
+    <h1>Natural, handmade and everyday goods — <em>straight from Indian makers.</em></h1>
+    <p>Coir, palmyrah, stone, aluminium cookware, fresh leaves and more, packed and shipped by the people who make them.</p>
+    <div class="ibi-trust"><span><b>Free</b> delivery on all products</span><span><b>7-day</b> easy returns</span><span><b>100%</b> prepaid · secure payments</span></div>
+    <div class="ibi-tiles" id="ibiHeroTiles"></div>
+  </div>
+  <svg class="ibi-wave" viewBox="0 0 1440 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24 C 240 0 480 0 720 12 S 1200 24 1440 5 V24 Z" fill="#F5F6F8"/></svg>
+</section>
 
 <!-- ===== MAIN CONTENT ===== -->
 <div class="main-content">
@@ -3101,9 +3268,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.8';
+window.IBI_VERSION      = 'v20.9';
 window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.8 — 🧾 SELLER FEES AS AMAZON CHARGES THEM (Seller Agreement v1.2). Sellers pay a 5% commission, a closing fee per order (₹10 up to ₹500, ₹20 up to ₹1,000, ₹40 above) that covers payment collection, the courier charge only when IBI ships the parcel for them, and 18% GST on every fee. Settlement statements, the order card, earnings and the new-order email show each fee. Existing sellers move to these fees for orders placed from 1 December 2026; earlier orders keep 5% plus GST on the commission. iINTELLIGENCEi is the own brand of India Business International, not a seller, so its items carry no commission, fees or payout. Shoppers pay exactly the same as before.';
+window.IBI_VERSION_NOTE = 'v20.9 — 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.';
+window.IBI_VERSION_NOTE_PREV31 = 'v20.8 — 🧾 SELLER FEES AS AMAZON CHARGES THEM (Seller Agreement v1.2). Sellers pay a 5% commission, a closing fee per order (₹10 up to ₹500, ₹20 up to ₹1,000, ₹40 above) that covers payment collection, the courier charge only when IBI ships the parcel for them, and 18% GST on every fee. Settlement statements, the order card, earnings and the new-order email show each fee. Existing sellers move to these fees for orders placed from 1 December 2026; earlier orders keep 5% plus GST on the commission. iINTELLIGENCEi is the own brand of India Business International, not a seller, so its items carry no commission, fees or payout. Shoppers pay exactly the same as before.';
 window.IBI_VERSION_NOTE_PREV30 = 'v20.7 — 📜 LEGAL PAGES UPDATED. Returns are now shown as 7 days from delivery everywhere in the shop, the same as the Returns Policy. The Privacy Policy is brought up to date (Razorpay, couriers, reviews, your rights, adults only, record keeping). A new Terms of Use page is in the footer, and the Grievance Officer is named on every customer policy page. Disputes go to the courts of Kanyakumari District (Seller Agreement v1.1).';
 window.IBI_VERSION_NOTE_PREV29 = 'v20.6 — 🔒 PAYMENT DETAILS CORRECTED. The Product Details table on every product page now lists UPI, credit or debit card and net banking via Razorpay, 100% prepaid. WhatsApp Pay is no longer listed, because payments are taken only through Razorpay.';
 window.IBI_VERSION_NOTE_PREV28 = 'v20.5 — 🔒 PAYMENT WORDING MATCHES CHECKOUT. The product page now says payments are secured by Razorpay (UPI, cards, net banking) instead of Google Pay, and the order window says you fill in your delivery details and pay securely with Razorpay, or order on WhatsApp, instead of waiting for a payment link.';
@@ -3461,6 +3629,15 @@ else buildCategorySelect();
 
 /** Filter chips above All Products — one per department that actually has stock,
  *  so the row never fills with empty shelves. */
+// v20.9: one colour per department — tiles, chip dots, card stripes and brand tags all read it.
+var IBI_CAT_COLOURS = { clothing:'#E11D74', home:'#006994', grocery:'#15803D', jewellery:'#C98A00', pets:'#7C3AED', books:'#E4572E',
+  electronics:'#4F46E5', beauty:'#DB2777', baby:'#EC4899', toys:'#EF4444', sports:'#EA580C', auto:'#475569', office:'#0D9488',
+  industrial:'#78716C', musical:'#9333EA', handmade:'#B45309' };
+function ibiCatColour(cat) {
+  var id = String(cat || '').toLowerCase().split('-')[0];
+  return IBI_CAT_COLOURS[id] || '#006994';
+}
+
 function buildCategoryChips() {
   var wrap = document.getElementById('allCatFilters');
   if (!wrap) return;
@@ -3470,7 +3647,7 @@ function buildCategoryChips() {
   });
   var btn = function (id, label, on) {
     return '<button class="all-cat-btn' + (on ? ' active' : '') + '" data-cat="' + id + '" onclick="filterAllCat(\'' + id + '\')" ' +
-      'style="padding:7px 16px;border-radius:20px;border:1.5px solid ' + (on ? '#0098c9' : '#ddd') + ';background:' + (on ? '#0098c9' : '#fff') +
+      'style="--k:' + (id === 'all' ? '#006994' : ibiCatColour(id)) + ';padding:7px 16px;border-radius:20px;border:1.5px solid ' + (on ? '#0098c9' : '#ddd') + ';background:' + (on ? '#0098c9' : '#fff') +
       ';color:' + (on ? '#fff' : '#333') + ';cursor:pointer;font-size:13px;' + (on ? 'font-weight:600;' : '') + '">' + label + '</button>';
   };
   wrap.innerHTML = btn('all', 'All', allCategoryFilter === 'all') +
@@ -3491,7 +3668,11 @@ function buildNavCategories() {
     return live.some(function (p) { return categoryMatches(p.category, c.id); });
   });
   wrap.innerHTML = shown.map(function (c) {
-    return '<a class="nav-link" href="#" onclick="filterCat(\'' + c.id + '\');return false;">' + c.name + '</a>';
+    return '<a class="nav-link" href="#" style="--k:' + ibiCatColour(c.id) + '" onclick="filterCat(\'' + c.id + '\');return false;">' + c.name + '</a>';
+  }).join('');
+  var tiles = document.getElementById('ibiHeroTiles');
+  if (tiles) tiles.innerHTML = shown.map(function (c) {
+    return '<button type="button" class="ibi-tile" style="--k:' + ibiCatColour(c.id) + '" onclick="filterCat(\'' + c.id + '\')"><i>' + c.icon + '</i><b>' + c.name + '</b></button>';
   }).join('');
 }
 
@@ -12393,7 +12574,7 @@ function productCard(p) {
   const sellerName = sellerObj ? sellerObj.shortName : (p.seller || 'IBI');
   const sellerColor = sellerObj ? sellerObj.color : '#0098c9';
   return `
-    <div class="product-card" onclick="openProductPage(${p.id})">
+    <div class="product-card" style="--k:${ibiCatColour(p.category)}" onclick="openProductPage(${p.id})">
       ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge==='bestseller'?'#1 Best Seller':p.badge==='new'?'New':'deal'===p.badge?'Deal':'Prime'}</span>` : ''}
       <div class="product-img-wrap">
         ${p.img
@@ -12406,6 +12587,7 @@ function productCard(p) {
              </div>`
           : `<div class="product-img-placeholder"><div class="p-icon">${p.icon||'🛍️'}</div><div class="p-label">${p.brand}</div></div>`
         }
+        ${disc > 0 ? `<span class="ibi-off">-${disc}%</span>` : ''}
         <button class="wishlist-btn" onclick="toggleWish(event,${p.id})" id="wish-${p.id}" title="Add to Wishlist">♡</button>
       </div>
       <div class="product-info">
@@ -12423,7 +12605,7 @@ function productCard(p) {
         </div>
         <div class="delivery-info">FREE delivery</div>
         <div class="${p.inStock ? 'in-stock' : 'out-stock'}">${p.inStock ? '✓ In Stock' : '✗ Out of Stock'}</div>
-        <div style="font-size:10px;color:#666;margin:4px 0 2px;display:flex;align-items:center;gap:4px;">
+        <div class="pc-seller" style="font-size:10px;color:#666;margin:4px 0 2px;display:flex;align-items:center;gap:4px;">
           <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${sellerColor};"></span>
           <span>Sold by <strong style="color:${sellerColor};cursor:pointer;" onclick="event.stopPropagation();openSellerStore('${p.seller}')">${sellerName}</strong></span>
         </div>
@@ -12444,7 +12626,7 @@ function familyCard(p) {
   const sellerName = sellerObj ? sellerObj.shortName : (p.seller || 'IBI');
   const sellerColor= sellerObj ? sellerObj.color : '#0098c9';
   return `
-    <div class="product-card" onclick="openProductPage(${openId})">
+    <div class="product-card" style="--k:${ibiCatColour(p.category)}" onclick="openProductPage(${openId})">
       <span class="product-badge badge-deal">${count} ${theme}${count>1?' options':' option'}</span>
       <div class="product-img-wrap">
         ${p.img
@@ -12463,7 +12645,7 @@ function familyCard(p) {
         </div>
         <div class="delivery-info">FREE delivery</div>
         <div style="font-size:11px;color:#8B5CF6;font-weight:700;margin-top:3px;">🎨 ${count} ${theme} to choose from</div>
-        <div style="font-size:10px;color:#666;margin:4px 0 2px;display:flex;align-items:center;gap:4px;">
+        <div class="pc-seller" style="font-size:10px;color:#666;margin:4px 0 2px;display:flex;align-items:center;gap:4px;">
           <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${sellerColor};"></span>
           <span>Sold by <strong style="color:${sellerColor};cursor:pointer;" onclick="event.stopPropagation();openSellerStore('${p.seller}')">${sellerName}</strong></span>
         </div>
@@ -12620,6 +12802,7 @@ function ibiProductGroup(p) {
   return id;
 }
 function _grpIdx(p) { const i = _IBI_GRP_POS[ibiProductGroup(p)]; return (i === undefined) ? 999 : i; }
+var IBI_GRP_COLOURS = ['#006994', '#E11D74', '#15803D', '#C98A00', '#7C3AED', '#E4572E'];
 function _grpDef(id) { return IBI_PRODUCT_GROUPS.find(g => g.id === id) || IBI_PRODUCT_GROUPS[IBI_PRODUCT_GROUPS.length - 1]; }
 
 // A family cover card stands in for its children; price them by the cover, which
@@ -12691,7 +12874,7 @@ function _ibiPageCards(page, start) {
     const g = ibiProductGroup(p);
     if (g !== prev) {
       const d = _grpDef(g);
-      html += '<div class="ibi-grp-head" style="grid-column:1/-1;display:flex;align-items:baseline;gap:8px;margin:' +
+      html += '<div class="ibi-grp-head" style="--k:' + IBI_GRP_COLOURS[IBI_PRODUCT_GROUPS.indexOf(d) % IBI_GRP_COLOURS.length] + ';grid-column:1/-1;display:flex;align-items:baseline;gap:8px;margin:' +
               (prev === null ? '0' : '18px') + ' 0 2px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">' +
                 '<span style="font-size:17px;">' + d.icon + '</span>' +
                 '<span style="font-size:16px;font-weight:800;color:#131921;letter-spacing:.2px;">' + d.label + '</span>' +

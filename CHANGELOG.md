@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.9
+- 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.
+
 ## v20.8
 - 🧾 SELLER FEES AS AMAZON CHARGES THEM (Seller Agreement v1.2). Sellers pay a 5% commission, a closing fee per order (₹10 up to ₹500, ₹20 up to ₹1,000, ₹40 above) that covers payment collection, the courier charge only when IBI ships the parcel for them, and 18% GST on every fee. Settlement statements, the order card, earnings and the new-order email show each fee. Existing sellers move to these fees for orders placed from 1 December 2026; earlier orders keep 5% plus GST on the commission. iINTELLIGENCEi is the own brand of India Business International, not a seller, so its items carry no commission, fees or payout. Shoppers pay exactly the same as before.
 

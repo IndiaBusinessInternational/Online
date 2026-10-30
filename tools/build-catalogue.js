@@ -39,7 +39,7 @@ const FEED   = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_
 const BRAND  = 'iINTELLIGENCEi';
 // Bump when productPage() changes, so every /p/ page is rewritten on the next run
 // even if no listing changed (2 = v20.0: variation ?v= links, ProductGroup, policy links).
-const PAGE_TEMPLATE = 2;
+const PAGE_TEMPLATE = 3;
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 const esc = s => String(s == null ? '' : s)
@@ -323,6 +323,7 @@ function productPage(p, slug) {
     (imgs[0] ? '<meta property="og:image" content="' + esc(imgs[0]) + '">' : '') +
     '<meta property="og:url" content="' + url + '"><meta property="og:site_name" content="IBI Marketplace">\n' +
     '<meta name="twitter:card" content="summary_large_image">\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">\n' +
     '<script type="application/ld+json">' + JSON.stringify(ldMain) + '</script>\n' +
     '<script type="application/ld+json">' + JSON.stringify(crumbs) + '</script>\n' +
     '<style>\n' +
@@ -344,6 +345,18 @@ function productPage(p, slug) {
     '.vt tr.sel td{background:#fff7ed;font-weight:700;border-color:#f97316}\n' +
     '.ship{font-size:14px;color:#333;margin:4px 0 0;line-height:1.6}.ship a{color:#0098c9}\n' +
     '.foot{margin-top:36px;padding:18px 20px;background:#131921;color:#bbb;font-size:13px;text-align:center}.foot a{color:#4dd0ff}\n' +
+    '/* v20.9 look: Sea Blue + black + IBI colour stripe, same as the storefront */\n' +
+    'body{font-family:Roboto,system-ui,Segoe UI,sans-serif;font-size:16px;background:#F5F6F8;color:#0A0D12}\n' +
+    '.top{position:relative;padding:16px 20px 14px;background:radial-gradient(120% 200% at 100% 0%,#0B4F73 0%,#072B40 40%,#0A0D12 75%);font-family:\'Roboto Condensed\',Roboto,sans-serif;font-size:18px;letter-spacing:.3px}\n' +
+    '.top:before,.foot:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#E11D74 0 16.6%,#006994 16.6% 33.3%,#15803D 33.3% 50%,#C98A00 50% 66.6%,#7C3AED 66.6% 83.3%,#E4572E 83.3%)}\n' +
+    '.wrap{max-width:1100px;background:#fff;border:1px solid #E4E7EB;border-radius:18px;margin:18px auto;padding:22px}\n' +
+    'h1{font-family:\'Roboto Condensed\',Roboto,sans-serif;font-size:27px;line-height:1.25}h2{color:#006994;font-family:\'Roboto Condensed\',Roboto,sans-serif;font-size:20px}\n' +
+    '.crumb a,.ship a{color:#006994}.gal img{border-radius:14px;border-color:#E4E7EB;background:#EEF0F3}\n' +
+    '.price{font-size:30px;font-variant-numeric:tabular-nums}.off{color:#15803D}\n' +
+    '.cta{background:#006994;border-radius:12px}.cta:hover{background:#00547A}.cta.alt{background:#0A0D12;color:#fff;border-color:#0A0D12}\n' +
+    '.vt tr.sel td{background:#E3F3FA;border-color:#006994}\n' +
+    '.foot{position:relative;background:#0A0D12;color:#9AA4B2;padding-top:22px}.foot a{color:#00C5FF}\n' +
+    '@media(max-width:640px){.wrap{margin:0;border-radius:0;border-left:0;border-right:0;padding:14px 10px}h1{font-size:22px}.gal img{width:calc(50% - 5px);height:auto;aspect-ratio:1}}\n' +
     '</style>\n</head>\n<body>\n' +
     '<div class="top"><a href="/">🛍️ IBI Marketplace — India Business International</a></div>\n' +
     '<div class="wrap">\n' +
