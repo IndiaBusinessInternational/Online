@@ -3100,9 +3100,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.4';
+window.IBI_VERSION      = 'v20.5';
 window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.4 — ✋ CANCELLED MEANS CANCELLED. When IBI cancels an order in the admin page, every seller part of it is cancelled too and its payout is stopped, so nobody packs it and no seller is paid for it. Cancelled orders no longer count in revenue or pending payouts, and the Pay and Ship buttons disappear for them.';
+window.IBI_VERSION_NOTE = 'v20.5 — 🔒 PAYMENT WORDING MATCHES CHECKOUT. The product page now says payments are secured by Razorpay (UPI, cards, net banking) instead of Google Pay, and the order window says you fill in your delivery details and pay securely with Razorpay, or order on WhatsApp, instead of waiting for a payment link.';
+window.IBI_VERSION_NOTE_PREV27 = 'v20.4 — ✋ CANCELLED MEANS CANCELLED. When IBI cancels an order in the admin page, every seller part of it is cancelled too and its payout is stopped, so nobody packs it and no seller is paid for it. Cancelled orders no longer count in revenue or pending payouts, and the Pay and Ship buttons disappear for them.';
 window.IBI_VERSION_NOTE_PREV26 = 'v20.3 — 🔒 SAFER RAZORPAY PAYMENTS. Every item is now priced by the shop itself before you pay: an item that is no longer on sale is refused with a clear message instead of being charged at an old price. As soon as your payment is confirmed, the shop emails you the order confirmation from its own server, so it reaches you even if you closed the page right after paying.';
 window.IBI_VERSION_NOTE_PREV25 = 'v20.2 — 🚚 COURIER SHIPPING WITH SHIPROCKET AND DELHIVERY. In the admin page every order now has a Ship button: it reads the package size and weight from the listing, shows every Shiprocket courier next to Delhivery direct, cheapest first, and books the chosen one only after a second confirm. The label PDF opens at once, the buyer gets the tracking link by email, and a WhatsApp button sends it too. Every hour the shop asks the courier for news, so orders move to Shipped, Delivered or Returned by themselves, and Track My Order shows the latest courier status. A courier number typed by hand also sends the tracking link.';
 window.IBI_VERSION_NOTE_PREV24 = 'v20.1 — 🔒 PAY WITH RAZORPAY, CLEARLY. Checkout now has one online payment: the orange Pay securely with Razorpay button, with the Razorpay mark and UPI, GPay, PhonePe, Paytm, cards, net banking and wallet shown under it. The Zoho payment link and the UPI QR with I have paid by UPI are gone. Order via WhatsApp stays as the other way to order. A tap before the shop has reached Razorpay now waits for it instead of failing.';
@@ -8290,7 +8291,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:20px;">🔒</span>
-          <div style="font-size:13px;color:#333;"><strong>Secure Payment</strong> via Google Pay · 100% authentic</div>
+          <div style="font-size:13px;color:#333;"><strong>Secure Payment</strong> via Razorpay · UPI, cards, net banking · 100% authentic</div>
         </div>
       </div>
 
@@ -15262,7 +15263,7 @@ init();
     <div style="margin-bottom:14px;">
       <div style="font-size:32px;margin-bottom:4px;">🛒</div>
       <h3 style="margin:0 0 4px;color:#1a1a1a;font-size:18px;font-weight:800;">Place Your Order</h3>
-      <p style="color:#888;font-size:12px;margin:0;">Fill your details and send to WhatsApp. We'll reply with a payment link!</p>
+      <p style="color:#888;font-size:12px;margin:0;">Fill in your delivery details, then pay securely with Razorpay. You can also order on WhatsApp.</p>
     </div>
 
     <!-- STEP 1: Order Summary -->

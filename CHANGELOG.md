@@ -1,5 +1,14 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.5
+- 🔒 PAYMENT WORDING MATCHES CHECKOUT. The product page now says payments are secured by Razorpay (UPI, cards, net banking) instead of Google Pay, and the order window says you fill in your delivery details and pay securely with Razorpay, or order on WhatsApp, instead of waiting for a payment link.
+
+## v20.4
+- Admin Cancel also cancels every seller part and sets the payout to Cancelled (unless already Paid); cancelled orders leave the admin totals and seller earnings; no Pay or Ship button on them; typed statuses matched in any capitals, unknown refused.
+
+## v20.3
+- Razorpay hardening: every item and combination is charged its own listed price, unknown items are refused; the buyer gets the payment-received email from the server.
+
 ## v20.2
 - 🚚 COURIER SHIPPING WITH SHIPROCKET AND DELHIVERY. In the admin page every order now has a Ship button: it reads the package size and weight from the listing, shows every Shiprocket courier next to Delhivery direct, cheapest first, and books the chosen one only after a second confirm. The label PDF opens at once, the buyer gets the tracking link by email, and a WhatsApp button sends it too. Every hour the shop asks the courier for news, so orders move to Shipped, Delivered or Returned by themselves, and Track My Order shows the latest courier status. A courier number typed by hand also sends the tracking link. Backend v20.2 (Apps Script Version 92) with hourly trigger courierSyncAll; carrier keys in Script Properties (SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD, DELHIVERY_TOKEN / DELHIVERY_PICKUP_NAME).
 
