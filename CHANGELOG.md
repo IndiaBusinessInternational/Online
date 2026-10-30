@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.6
+- 🔒 PAYMENT DETAILS CORRECTED. The Product Details table on every product page now lists UPI, credit or debit card and net banking via Razorpay, 100% prepaid. WhatsApp Pay is no longer listed, because payments are taken only through Razorpay.
+
 ## v20.5
 - 🔒 PAYMENT WORDING MATCHES CHECKOUT. The product page now says payments are secured by Razorpay (UPI, cards, net banking) instead of Google Pay, and the order window says you fill in your delivery details and pay securely with Razorpay, or order on WhatsApp, instead of waiting for a payment link.
 
