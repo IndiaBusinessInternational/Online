@@ -722,10 +722,11 @@ function loadOrdersData() {
   sheetFetch({ action:'getAdminOrders', ceoToken: ceoToken() }, (res) => {
     if (!res || !res.success) return;
     const orders = res.orders || [];
-    // Update summary stats
-    const totalRev    = orders.reduce((s,o) => s + parseFloat(o.total||0), 0);
-    const totalComm   = orders.reduce((s,o) => s + parseFloat(o.commission||0), 0);
-    const pendPayout  = orders.filter(o=>o.payoutStatus!=='Paid').reduce((s,o) => s + parseFloat(o.total||0) - parseFloat(o.commission||0), 0);
+    // Update summary stats (v20.4: cancelled orders count for nothing)
+    const live        = orders.filter(o => o.status!=='Cancelled' && o.payoutStatus!=='Cancelled');
+    const totalRev    = live.reduce((s,o) => s + parseFloat(o.total||0), 0);
+    const totalComm   = live.reduce((s,o) => s + parseFloat(o.commission||0), 0);
+    const pendPayout  = live.filter(o=>o.payoutStatus!=='Paid').reduce((s,o) => s + parseFloat(o.total||0) - parseFloat(o.commission||0), 0);
     const se = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
     se('ord_total_count',      orders.length);
     se('ord_total_revenue',    '₹' + totalRev.toLocaleString('en-IN'));
@@ -741,7 +742,8 @@ function loadOrdersData() {
       const comm    = parseFloat(o.commission||0);
       const net     = parseFloat(o.total||0) - comm;
       const statusColors = { Placed:'#fef9c3', Confirmed:'#dbeafe', Packed:'#f3e8ff', Shipped:'#fff7ed', Delivered:'#dcfce7', Cancelled:'#fee2e2' };
-      const payoutColors = { Pending:'#fef9c3', Processing:'#dbeafe', Paid:'#dcfce7' };
+      const payoutColors = { Pending:'#fef9c3', Processing:'#dbeafe', Paid:'#dcfce7', Cancelled:'#fee2e2' };
+      const cancelled = o.status==='Cancelled' || o.payoutStatus==='Cancelled';
       return `<tr>
         <td style="font-family:monospace;font-size:12px;font-weight:700;">${o.orderId||''}</td>
         <td style="font-weight:600;">${o.customerName||'-'}</td>
@@ -754,9 +756,9 @@ function loadOrdersData() {
         <td><span class="badge" style="background:${payoutColors[o.payoutStatus]||'#fef9c3'};color:#333;">${o.payoutStatus||'Pending'}</span></td>
         <td>
           <div style="display:flex;gap:4px;">
-            ${o.payoutStatus!=='Paid'?`<button class="btn btn-approve" onclick="markPayoutPaid('${o.orderId}')">💰 Pay</button>`:'<span style="font-size:11px;color:#16a34a;font-weight:700;">✓ Paid</span>'}
+            ${o.payoutStatus==='Paid'?'<span style="font-size:11px;color:#16a34a;font-weight:700;">✓ Paid</span>':cancelled?'':`<button class="btn btn-approve" onclick="markPayoutPaid('${o.orderId}')">💰 Pay</button>`}
             <button class="btn btn-edit" onclick="updateOrderStatus('${o.orderId}')">📦 Status</button>
-            ${o.status!=='Cancelled'&&o.status!=='Delivered'&&o.status!=='Returned'?`<button class="btn btn-approve" style="background:#0f766e;" onclick="shipOpen('${o.orderId}')">🚚 Ship</button>`:''}
+            ${!cancelled&&o.status!=='Delivered'&&o.status!=='Returned'?`<button class="btn btn-approve" style="background:#0f766e;" onclick="shipOpen('${o.orderId}')">🚚 Ship</button>`:''}
           </div>
         </td>
       </tr>`;
