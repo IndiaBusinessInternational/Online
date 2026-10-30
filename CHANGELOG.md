@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.10
+- ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.
+
 ## v20.9
 - 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.
 
