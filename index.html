@@ -2422,6 +2422,19 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
     #allCatFilters { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin-left: -10px; margin-right: -10px; padding: 0 10px 2px; }
     #allCatFilters::-webkit-scrollbar { display: none; }
     .all-cat-btn { flex: none; }
+    /* v20.12 (Founder, 30 Oct 2026, Pixel 10a: "Some overlap or just at the border of text"): the round help and WhatsApp
+       buttons are smaller and sit tighter in the corner, so they cover less of the page. */
+    #supportFab { width: 44px !important; height: 44px !important; right: 12px !important; bottom: 74px !important; font-size: 19px !important; }
+    .wa-bubble { width: 48px; height: 48px; right: 12px; bottom: 16px; }
+    .wa-bubble svg { width: 26px; height: 26px; }
+    #waTooltip { right: 12px !important; bottom: 128px !important; }
+  }
+  /* v20.12: on phones and tablets the product page text columns (title, price, options, description) had no side
+     padding, so letters touched the screen edge. They now keep 12px sides like the photo panel, and the page ends with
+     room to scroll the last lines clear of the floating Ask IBI, help and WhatsApp buttons. */
+  @media (max-width: 900px) {
+    #ppGrid > :not(.pp-images) { padding-left: 12px; padding-right: 12px; }
+    #productPageOverlay .pp-body { padding-bottom: 150px !important; }
   }
 </style>
   <!-- jsPDF for PDF generation (primary CDN) -->
@@ -3282,9 +3295,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.11';
+window.IBI_VERSION      = 'v20.12';
 window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.11 — 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.';
+window.IBI_VERSION_NOTE = 'v20.12 — 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.';
+window.IBI_VERSION_NOTE_PREV34 = 'v20.11 — 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.';
 window.IBI_VERSION_NOTE_PREV33 = 'v20.10 — ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.';
 window.IBI_VERSION_NOTE_PREV32 = 'v20.9 — 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.';
 window.IBI_VERSION_NOTE_PREV31 = 'v20.8 — 🧾 SELLER FEES AS AMAZON CHARGES THEM (Seller Agreement v1.2). Sellers pay a 5% commission, a closing fee per order (₹10 up to ₹500, ₹20 up to ₹1,000, ₹40 above) that covers payment collection, the courier charge only when IBI ships the parcel for them, and 18% GST on every fee. Settlement statements, the order card, earnings and the new-order email show each fee. Existing sellers move to these fees for orders placed from 1 December 2026; earlier orders keep 5% plus GST on the commission. iINTELLIGENCEi is the own brand of India Business International, not a seller, so its items carry no commission, fees or payout. Shoppers pay exactly the same as before.';

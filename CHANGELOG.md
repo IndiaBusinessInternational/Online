@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.12
+- 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.
+
 ## v20.11
 - 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.
 
