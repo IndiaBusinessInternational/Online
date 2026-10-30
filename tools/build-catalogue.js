@@ -367,7 +367,7 @@ function productPage(p, slug) {
       '<tr><th>' + esc(d[0]) + '</th><td>' + esc(d[1]) + '</td></tr>').join('') + '</table>' : '') +
     '\n</div>\n' +
     '<div class="foot">' + BRAND + ' · Kanyakumari, Tamil Nadu · <a href="/">indiabusinessinternational.online</a> — eCommerce for the World<br>' +
-    '<a href="/shipping-policy.html">Shipping policy</a> · <a href="/returns-policy.html">Returns &amp; refunds</a> · <a href="/privacy-policy.html">Privacy</a> · ' +
+    '<a href="/shipping-policy.html">Shipping policy</a> · <a href="/returns-policy.html">Returns &amp; refunds</a> · <a href="/privacy-policy.html">Privacy</a> · <a href="/terms.html">Terms of Use</a> · ' +
     'Customer care <a href="tel:+918939414799">+91 8939414799</a></div>\n' +
     '</body>\n</html>\n';
 }
@@ -499,7 +499,7 @@ function ssrCard(p, slug) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [{ loc: ORIGIN + '/', pri: '1.0', freq: 'daily' }]
     .concat(list.map(p => ({ loc: ORIGIN + '/p/' + slugs[String(p.productId)] + '/', pri: '0.8', freq: 'weekly' })))
-    .concat(['shipping-policy', 'returns-policy', 'privacy-policy'].map(n => ({ loc: ORIGIN + '/' + n + '.html', pri: '0.3', freq: 'yearly' })));
+    .concat(['shipping-policy', 'returns-policy', 'privacy-policy', 'terms'].map(n => ({ loc: ORIGIN + '/' + n + '.html', pri: '0.3', freq: 'yearly' })));
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(u => '  <url><loc>' + u.loc + '</loc><lastmod>' + today + '</lastmod><changefreq>' + u.freq + '</changefreq><priority>' + u.pri + '</priority></url>').join('\n') +

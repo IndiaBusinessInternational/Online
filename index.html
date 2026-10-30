@@ -2408,7 +2408,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
   <!-- Announcement -->
   <div class="announce-bar">
     <span class="icon">🚚</span>
-    <div><strong>Free Delivery</strong> on all products · <strong>Easy Returns</strong> within 7–10 Days · <strong>100% Prepaid</strong> — Safe &amp; Secure Online Payments</div>
+    <div><strong>Free Delivery</strong> on all products · <strong>Easy Returns</strong> within 7 days of delivery · <strong>100% Prepaid</strong> — Safe &amp; Secure Online Payments</div>
   </div>
 
   <!-- ⚠⚠ PRODUCTS COME FIRST. The first purchasable item must stay inside the first
@@ -2967,6 +2967,7 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
         <li><a href="/shipping-policy.html">Shipping Policy</a></li>
         <li><a href="/returns-policy.html">Returns &amp; Refunds</a></li>
         <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+        <li><a href="/terms.html">Terms of Use</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -3035,9 +3036,9 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
       <span class="payment-icon">Net Banking</span>
     </div>
     <!-- "Conditions of Use" and "Interest-Based Ads" removed in v12.8 — both were
-         href="#" and neither document exists. Add Conditions of Use back the day
-         there is a page to point it at. -->
-    <p style="margin-top:12px">© 2026 India Business International · All Rights Reserved · <a href="/shipping-policy.html" style="color:#aaa;">Shipping</a> · <a href="/returns-policy.html" style="color:#aaa;">Returns &amp; Refunds</a> · <a href="/privacy-policy.html" style="color:#aaa;">Privacy Policy</a></p>
+         href="#" and neither document existed. v20.7 adds the real Terms of Use page
+         (/terms.html); "Interest-Based Ads" stays out — the shop shows no such ads. -->
+    <p style="margin-top:12px">© 2026 India Business International · All Rights Reserved · <a href="/shipping-policy.html" style="color:#aaa;">Shipping</a> · <a href="/returns-policy.html" style="color:#aaa;">Returns &amp; Refunds</a> · <a href="/privacy-policy.html" style="color:#aaa;">Privacy Policy</a> · <a href="/terms.html" style="color:#aaa;">Terms of Use</a></p>
   </div>
 </footer>
 
@@ -3100,9 +3101,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.6';
+window.IBI_VERSION      = 'v20.7';
 window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.6 — 🔒 PAYMENT DETAILS CORRECTED. The Product Details table on every product page now lists UPI, credit or debit card and net banking via Razorpay, 100% prepaid. WhatsApp Pay is no longer listed, because payments are taken only through Razorpay.';
+window.IBI_VERSION_NOTE = 'v20.7 — 📜 LEGAL PAGES UPDATED. Returns are now shown as 7 days from delivery everywhere in the shop, the same as the Returns Policy. The Privacy Policy is brought up to date (Razorpay, couriers, reviews, your rights, adults only, record keeping). A new Terms of Use page is in the footer, and the Grievance Officer is named on every customer policy page. Disputes go to the courts of Kanyakumari District (Seller Agreement v1.1).';
+window.IBI_VERSION_NOTE_PREV29 = 'v20.6 — 🔒 PAYMENT DETAILS CORRECTED. The Product Details table on every product page now lists UPI, credit or debit card and net banking via Razorpay, 100% prepaid. WhatsApp Pay is no longer listed, because payments are taken only through Razorpay.';
 window.IBI_VERSION_NOTE_PREV28 = 'v20.5 — 🔒 PAYMENT WORDING MATCHES CHECKOUT. The product page now says payments are secured by Razorpay (UPI, cards, net banking) instead of Google Pay, and the order window says you fill in your delivery details and pay securely with Razorpay, or order on WhatsApp, instead of waiting for a payment link.';
 window.IBI_VERSION_NOTE_PREV27 = 'v20.4 — ✋ CANCELLED MEANS CANCELLED. When IBI cancels an order in the admin page, every seller part of it is cancelled too and its payout is stopped, so nobody packs it and no seller is paid for it. Cancelled orders no longer count in revenue or pending payouts, and the Pay and Ship buttons disappear for them.';
 window.IBI_VERSION_NOTE_PREV26 = 'v20.3 — 🔒 SAFER RAZORPAY PAYMENTS. Every item is now priced by the shop itself before you pay: an item that is no longer on sale is refused with a clear message instead of being charged at an old price. As soon as your payment is confirmed, the shop emails you the order confirmation from its own server, so it reaches you even if you closed the page right after paying.';
@@ -8288,7 +8290,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
           <span style="font-size:20px;">↩️</span>
-          <div style="font-size:13px;color:#333;"><strong>7 to 10 days</strong> easy return & exchange policy</div>
+          <div style="font-size:13px;color:#333;"><strong>7-day</strong> return &amp; replacement for damaged, wrong or defective items</div>
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:20px;">🔒</span>
@@ -8366,7 +8368,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
           ${!ibiHasRating(p) ? '' : `<tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Rating</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">${p.rating} ★ (${(parseInt(p.reviews,10)).toLocaleString('en-IN')} ratings)</td></tr>`}
           <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Availability</td><td style="padding:10px 14px;border-bottom:1px solid #eee;color:${inStock?'#16a34a':'#c00'};font-weight:700;">${inStock?'✓ In Stock':'✗ Out of Stock'}</td></tr>
           <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Delivery</td><td style="padding:10px 14px;border-bottom:1px solid #eee;color:#c00;font-weight:700;">FREE Delivery — All India</td></tr>
-          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Returns</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">7 to 10 days easy return &amp; exchange</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Returns</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">7 days from delivery for damaged, wrong, missing or defective items (<a href="/returns-policy.html" style="color:#007185;">Returns policy</a>)</td></tr>
           <tr><td style="padding:10px 14px;color:#666;font-weight:700;border-bottom:1px solid #eee;">Payment</td><td style="padding:10px 14px;border-bottom:1px solid #eee;">UPI · Credit/Debit Card · Net Banking (via Razorpay) · 100% Prepaid (No COD)</td></tr>
           <tr style="background:#f9f9f9;"><td style="padding:10px 14px;color:#666;font-weight:700;">Product ID</td><td style="padding:10px 14px;font-family:monospace;">#${p.id}</td></tr>
         </table>
@@ -8406,7 +8408,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
         <div style="display:grid;gap:12px;margin-bottom:16px;">
           ${[
             { q:'Is this product genuine and authentic?', a:'Yes, 100% authentic. All products on IBI Marketplace are sourced directly from verified sellers and quality-checked before listing.' },
-            { q:'What is the return policy?', a:'We offer a 7 to 10 days easy return policy. If you are not satisfied, contact us on WhatsApp (+91 89394 14799) within 7–10 days of delivery.' },
+            { q:'What is the return policy?', a:'You can ask for a return or replacement within 7 days of delivery if the item is damaged, defective, wrong, missing or different from the listing. Change-of-mind returns are accepted only where the listing says returnable. Use Track My Order, or WhatsApp +91 89394 14799 with your order ID and photos. Full details: indiabusinessinternational.online/returns-policy.html' },
             { q:'Is free delivery available for this product?', a:'Yes! Free delivery is available on all products to any location in India. Estimated delivery in 3-7 working days.' }
           ].map(qa => `
             <div style="border-left:3px solid #007185;padding:12px 16px;background:#f0f9ff;border-radius:0 8px 8px 0;">
@@ -13593,7 +13595,7 @@ function openProduct(id) {
     <div style="font-size:12px;color:#666;display:flex;gap:12px;flex-wrap:wrap;margin-top:4px">
       <span>📦 FREE delivery tomorrow</span>
       <span>${p.inStock ? '✅ In Stock' : '❌ Out of Stock'}</span>
-      <span>↩️ 7–10 days easy return</span>
+      <span>↩️ 7-day returns</span>
     </div>
   `;
   document.getElementById('modalOverlay').classList.add('open');
@@ -17492,7 +17494,7 @@ window.addEventListener('appinstalled', function() {
   // GST state codes — the first two GSTIN digits must match the chosen state.
   var STATES = [['01','Jammu & Kashmir'],['02','Himachal Pradesh'],['03','Punjab'],['04','Chandigarh'],['05','Uttarakhand'],['06','Haryana'],['07','Delhi'],['08','Rajasthan'],['09','Uttar Pradesh'],['10','Bihar'],['11','Sikkim'],['12','Arunachal Pradesh'],['13','Nagaland'],['14','Manipur'],['15','Mizoram'],['16','Tripura'],['17','Meghalaya'],['18','Assam'],['19','West Bengal'],['20','Jharkhand'],['21','Odisha'],['22','Chhattisgarh'],['23','Madhya Pradesh'],['24','Gujarat'],['26','Dadra & Nagar Haveli and Daman & Diu'],['27','Maharashtra'],['29','Karnataka'],['30','Goa'],['31','Lakshadweep'],['32','Kerala'],['33','Tamil Nadu'],['34','Puducherry'],['35','Andaman & Nicobar Islands'],['36','Telangana'],['37','Andhra Pradesh'],['38','Ladakh']];
   window.IBI_STATES = STATES;
-  window.IBI_AGREEMENT_VERSION = 'v1.0';
+  window.IBI_AGREEMENT_VERSION = 'v1.1';
 
   function $(id) { return document.getElementById(id); }
   function val(id) { var el = $(id); return el ? String(el.value || '').trim() : ''; }

@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.7
+- 📜 LEGAL PAGES UPDATED. Returns are now shown as 7 days from delivery everywhere in the shop, the same as the Returns Policy. The Privacy Policy is brought up to date (Razorpay, couriers, reviews, your rights, adults only, record keeping). A new Terms of Use page is in the footer, and the Grievance Officer is named on every customer policy page. Disputes go to the courts of Kanyakumari District (Seller Agreement v1.1).
+
 ## v20.6
 - 🔒 PAYMENT DETAILS CORRECTED. The Product Details table on every product page now lists UPI, credit or debit card and net banking via Razorpay, 100% prepaid. WhatsApp Pay is no longer listed, because payments are taken only through Razorpay.
 
