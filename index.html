@@ -3100,9 +3100,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.2';
-window.IBI_VERSION_DATE = '28 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.2 — 🚚 COURIER SHIPPING WITH SHIPROCKET AND DELHIVERY. In the admin page every order now has a Ship button: it reads the package size and weight from the listing, shows every Shiprocket courier next to Delhivery direct, cheapest first, and books the chosen one only after a second confirm. The label PDF opens at once, the buyer gets the tracking link by email, and a WhatsApp button sends it too. Every hour the shop asks the courier for news, so orders move to Shipped, Delivered or Returned by themselves, and Track My Order shows the latest courier status. A courier number typed by hand also sends the tracking link.';
+window.IBI_VERSION      = 'v20.3';
+window.IBI_VERSION_DATE = '30 Oct 2026';
+window.IBI_VERSION_NOTE = 'v20.3 — 🔒 SAFER RAZORPAY PAYMENTS. Every item is now priced by the shop itself before you pay: an item that is no longer on sale is refused with a clear message instead of being charged at an old price. As soon as your payment is confirmed, the shop emails you the order confirmation from its own server, so it reaches you even if you closed the page right after paying.';
+window.IBI_VERSION_NOTE_PREV25 = 'v20.2 — 🚚 COURIER SHIPPING WITH SHIPROCKET AND DELHIVERY. In the admin page every order now has a Ship button: it reads the package size and weight from the listing, shows every Shiprocket courier next to Delhivery direct, cheapest first, and books the chosen one only after a second confirm. The label PDF opens at once, the buyer gets the tracking link by email, and a WhatsApp button sends it too. Every hour the shop asks the courier for news, so orders move to Shipped, Delivered or Returned by themselves, and Track My Order shows the latest courier status. A courier number typed by hand also sends the tracking link.';
 window.IBI_VERSION_NOTE_PREV24 = 'v20.1 — 🔒 PAY WITH RAZORPAY, CLEARLY. Checkout now has one online payment: the orange Pay securely with Razorpay button, with the Razorpay mark and UPI, GPay, PhonePe, Paytm, cards, net banking and wallet shown under it. The Zoho payment link and the UPI QR with I have paid by UPI are gone. Order via WhatsApp stays as the other way to order. A tap before the shop has reached Razorpay now waits for it instead of failing.';
 window.IBI_VERSION_NOTE_PREV23 = 'v20.0 — 💳 RAZORPAY CHECKOUT + GOOGLE SHOPPING FEED. Pay by UPI, card, net banking or wallet in one secure Razorpay window: the Apps Script backend prices the cart, creates the Razorpay order and verifies the payment signature before the order is saved as Paid (webhook and re-check backstops). It switches on by itself once the keys are added; until then checkout shows Zoho, the UPI QR and WhatsApp exactly as before. New Google Merchant Center feed (google-merchant-feed.xml, 185 items from 96 products, refreshed with every catalogue snapshot), new Shipping and Returns policy pages, product pages link them and preselect a variation from ?v=. Admin orders show Paid online.';
 window.IBI_VERSION_NOTE_PREV22 = 'v19.35 — 🖥️ THE SHOP NOW USES THE WHOLE LAPTOP SCREEN TOO. On laptops and tablets the shop runs edge to edge like it already did on phones: no empty bands down the left and right, the sections and the offer bar reach the screen edges, and a wide screen shows more products in each row. The product page and the Watch page use the full width as well. Phones look the same as before.';
@@ -14277,7 +14278,7 @@ function numWords(n) {
 // ══════════════════════════════════════════════════════════
 // EMAIL — send to BOTH IBI owner AND customer
 // ══════════════════════════════════════════════════════════
-function sendOrderEmail(orderId, c, orderItems, total, pdfBase64) {
+function sendOrderEmail(orderId, c, orderItems, total, pdfBase64, opts) {
   const address = c.door + ', ' + c.street +
     (c.landmark ? ', Near ' + c.landmark : '') +
     ', ' + c.area + ', ' + c.district + ' - ' + c.pin + ', ' + c.state;
@@ -14549,8 +14550,8 @@ function sendOrderEmail(orderId, c, orderItems, total, pdfBase64) {
     })
     .catch(err => console.error('❌ Admin email failed:', err));
 
-  // 2️⃣ Send invoice to customer
-  if (c.email) {
+  // 2️⃣ Send invoice to customer (v20.3: skipped when the backend already mailed the paid-order confirmation)
+  if (c.email && !(opts && opts.serverMail)) {
     emailjs.send('service_xzoyjwl', 'template_7xyvagk', custParams)
       .then(() => {
         console.log('✅ Invoice email sent to customer: ' + c.email);
@@ -14834,7 +14835,7 @@ function ibiRzpVerify(orderId, r, c, items, total, address) {
   ibiRzpBtn(true, '⏳ Confirming your payment…');
   ibi_fetch_post({ action: 'rzpVerify', orderId: orderId, razorpay_order_id: r.razorpay_order_id,
     razorpay_payment_id: r.razorpay_payment_id, razorpay_signature: r.razorpay_signature }, function (v) {
-    if (v && v.success) { ibiRzpDone(orderId, c, items, v.total || total, address, v.method); return; }
+    if (v && v.success) { ibiRzpDone(orderId, c, items, v.total || total, address, v.method, v.serverMail); return; }
     ibiRzpBtn(false);
     if (v && v.badSignature) {
       showToast('⚠️ We could not verify this payment. If money was debited, WhatsApp +91 89394 14799 with payment ID ' + r.razorpay_payment_id, '');
@@ -14847,7 +14848,7 @@ function ibiRzpVerify(orderId, r, c, items, total, address) {
   }, 60000);
 }
 
-function ibiRzpDone(orderId, c, items, total, address, method) {
+function ibiRzpDone(orderId, c, items, total, address, method, serverMail) {
   try { localStorage.removeItem(RZP_PENDING_KEY); } catch (e) {}
   closeOrderModal();
   cart = []; updateCartCount(); renderCart();
@@ -14860,7 +14861,7 @@ function ibiRzpDone(orderId, c, items, total, address, method) {
     var ks = Object.keys(oc); if (ks.length > 20) delete oc[ks[0]];
     localStorage.setItem('ibi_order_cache', JSON.stringify(oc));
   } catch (e) {}
-  setTimeout(function () { try { sendOrderEmail(orderId, c, items.map(function (i) { return { title: i.title, qty: i.qty, price: i.price, total: i.total }; }), total, null); } catch (e) {} }, 1000);
+  setTimeout(function () { try { sendOrderEmail(orderId, c, items.map(function (i) { return { title: i.title, qty: i.qty, price: i.price, total: i.total }; }), total, null, { serverMail: !!serverMail }); } catch (e) {} }, 1000);
   showZohoPaymentSuccess(orderId, Number(total), c.name, 'via Razorpay' + (method ? ' · ' + String(method).toUpperCase() : '') + ' · verified by IBI');
 }
 
@@ -14870,7 +14871,7 @@ function ibiRzpResume(again) {
   if (!pend || !pend.orderId) return;
   if (Date.now() - (pend.ts || 0) > 2 * 86400000) { try { localStorage.removeItem(RZP_PENDING_KEY); } catch (e) {} return; }
   ibi_fetch_simple({ action: 'rzpCheck', orderId: pend.orderId }, function (r) {
-    if (r && r.success) { ibiRzpDone(pend.orderId, pend.customer, pend.items || [], r.total || pend.total, ibiAddressOf(pend.customer), r.method); return; }
+    if (r && r.success) { ibiRzpDone(pend.orderId, pend.customer, pend.items || [], r.total || pend.total, ibiAddressOf(pend.customer), r.method, r.serverMail); return; }
     if (r && (r.pending || /No online payment/.test(r.message || '')) && Date.now() - pend.ts > 2 * 3600000) { try { localStorage.removeItem(RZP_PENDING_KEY); } catch (e) {} return; }
     if (again) showToast('⏳ Still confirming order ' + pend.orderId + ' — you will get the confirmation email; nothing more to pay.', '');
   }, 30000);
