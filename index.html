@@ -2436,6 +2436,19 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
     #ppGrid > :not(.pp-images) { padding-left: 12px; padding-right: 12px; }
     #productPageOverlay .pp-body { padding-bottom: 150px !important; }
   }
+  /* v20.13 (Founder, 31 Oct 2026: "top part hides 1/3rd of website area, when we scroll down"): on laptops and tablets
+     the pinned header was 217px (date strip + 119px header + department row). Once the page is scrolled, the scroll
+     script near the Esc handler adds .ibi-slim: only one slim bar stays pinned (logo, search, account, orders, cart),
+     about 60px. Back at the top the full header returns. Phones keep v20.11 (nothing pinned). */
+  @media (min-width: 641px) {
+    header.ibi-slim { position: fixed; top: 0; left: 0; right: 0; box-shadow: 0 2px 12px rgba(0,0,0,.35); animation: ibiSlimIn .18s ease-out; }
+    header.ibi-slim #ibiDateTimeBar, header.ibi-slim .nav-bar, header.ibi-slim .deliver-to,
+    header.ibi-slim .ibi-version-badge, header.ibi-slim .ibi-music-btn { display: none !important; }
+    header.ibi-slim .header-top { padding-top: 6px; padding-bottom: 6px; }
+    header.ibi-slim .logo { padding: 0 4px; }
+    header.ibi-slim .logo img { height: 44px; }
+  }
+  @keyframes ibiSlimIn { from { transform: translateY(-100%); } to { transform: none; } }
 </style>
   <!-- jsPDF for PDF generation (primary CDN) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="loadJsPDFFallback()"></script>
@@ -3295,9 +3308,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.12';
-window.IBI_VERSION_DATE = '30 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.12 — 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.';
+window.IBI_VERSION      = 'v20.13';
+window.IBI_VERSION_DATE = '31 Oct 2026';
+window.IBI_VERSION_NOTE = 'v20.13 — 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.';
+window.IBI_VERSION_NOTE_PREV35 = 'v20.12 — 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.';
 window.IBI_VERSION_NOTE_PREV34 = 'v20.11 — 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.';
 window.IBI_VERSION_NOTE_PREV33 = 'v20.10 — ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.';
 window.IBI_VERSION_NOTE_PREV32 = 'v20.9 — 🎨 A NEW LOOK FOR THE WHOLE SHOP. Sea Blue and black with a colour for every department: a short hero with the department tiles, the six-colour IBI stripe and the dot pattern from the IBI logo, cleaner product cards with the discount on the photo, two products per row on phones and six on laptops, bigger 16px text, and the same look on the product pages and on every policy page (with a contents list on laptops). Prices, checkout, Razorpay and the order flow are unchanged.';
@@ -13955,6 +13969,42 @@ function toggleCart() {
 function closeCartOnOverlay(e) {
   if (e.target === document.getElementById('cartOverlay')) toggleCart();
 }
+
+// v20.13 slim header (Founder, 31 Oct 2026). At 641px and wider, once the page is scrolled past 140px the header
+// gets .ibi-slim: it leaves the page flow (position fixed) and shows only logo, search, account, orders and cart.
+// A spacer of the full header height takes its place, so the page never jumps. Below 60px the full header returns.
+// The 140/60 gap stops it flickering at one scroll position. Phones never go slim.
+(function () {
+  var hdr = document.querySelector('header');
+  if (!hdr) return;
+  var spacer = document.createElement('div');
+  spacer.id = 'ibiHdrSpacer';
+  spacer.setAttribute('aria-hidden', 'true');
+  hdr.parentNode.insertBefore(spacer, hdr.nextSibling);
+  var wide = window.matchMedia('(min-width: 641px)');
+  var slim = false, ticking = false;
+  function setSlim(on) {
+    if (on === slim) return;
+    if (on) { spacer.style.height = hdr.offsetHeight + 'px'; hdr.classList.add('ibi-slim'); }
+    else { hdr.classList.remove('ibi-slim'); spacer.style.height = '0px'; }
+    slim = on;
+  }
+  function check() {
+    ticking = false;
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    if (!wide.matches) { setSlim(false); return; }
+    if (!slim && y > 140) setSlim(true);
+    else if (slim && y < 60) setSlim(false);
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(check); }
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    if (slim) { setSlim(false); }
+    check();
+  });
+  check();
+})();
 
 // v20.9 UX standard: Esc closes the open layer, top-most first (the cart drawer, then the product page).
 // Dialogs with their own Esc handling (zoom, Ask IBI, seller pickers) mark the event handled first.

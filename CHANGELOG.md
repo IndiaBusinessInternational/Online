@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.13
+- 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.
+
 ## v20.12
 - 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.
 
