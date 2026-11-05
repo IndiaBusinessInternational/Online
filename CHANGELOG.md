@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.15
+- 🏷️ Separate print-outs too: Shipping Label only and Tax Invoice only, besides the one-sheet Label + Tax Invoice. Three buttons in Seller Central Orders and the same three choices on the print page. Print and Download PDF work for each.
+
 ## v20.14
 - 🧾 Label and Tax Invoice on one A4 sheet, Amazon style: label top left, Tax Invoice top right, cut lines. PAN, GSTIN, HSN, CGST + SGST or IGST, amount in words. Large, neat To Address. Print and Download PDF buttons. No more made-up SUR, 1 kg, STD or TN29 boxes. New backend action invoiceInfo.
 
