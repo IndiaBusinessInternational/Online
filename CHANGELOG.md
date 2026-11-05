@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.14
+- 🧾 Label and Tax Invoice on one A4 sheet, Amazon style: label top left, Tax Invoice top right, cut lines. PAN, GSTIN, HSN, CGST + SGST or IGST, amount in words. Large, neat To Address. Print and Download PDF buttons. No more made-up SUR, 1 kg, STD or TN29 boxes. New backend action invoiceInfo.
+
 ## v20.13
 - 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.
 

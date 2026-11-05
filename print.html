@@ -3,345 +3,580 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IBI — Print Document</title>
+<meta name="robots" content="noindex">
+<title>IBI Label and Tax Invoice</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:Arial,sans-serif; background:#e5e5e5; }
+  :root { --ink:#000; --line:#000; --soft:#555; --bar:#0A0D12; --action:#006994; --page:#e5e5e5; }
+  html, body { background:var(--page); color:var(--ink); font-family:Arial,Helvetica,sans-serif; }
 
-  .screen-bar {
-    background:#131921; color:#fff; padding:12px 20px;
-    display:flex; align-items:center; justify-content:space-between;
-    position:sticky; top:0; z-index:100;
-  }
-  .screen-bar h1 { font-size:15px; font-weight:800; }
-  .print-btn {
-    background:#f97316; color:#fff; border:none;
-    padding:9px 22px; border-radius:6px; font-size:14px;
-    font-weight:800; cursor:pointer;
-  }
-  .print-btn:hover { background:#ea580c; }
-
-  .doc-wrap {
-    max-width:700px; margin:24px auto; background:#fff;
-    box-shadow:0 2px 12px rgba(0,0,0,.15);
-  }
-  #docContent { padding:0; }
-
-  /* Loading state */
-  .loading {
-    text-align:center; padding:60px 20px; color:#555;
-  }
-  .spinner {
-    display:inline-block; width:32px; height:32px;
-    border:3px solid #ddd; border-top-color:#f97316;
-    border-radius:50%; animation:spin .7s linear infinite;
-    margin-bottom:14px;
-  }
+  /* ── Screen bar: never printed, never in the PDF ── */
+  .screen-bar { background:var(--bar); color:#fff; padding:10px 16px; display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .screen-bar small { display:block; font-size:12px; opacity:.75; }
+  .screen-bar h1 { font-size:16px; font-weight:800; }
+  .bar-btns { display:flex; flex-wrap:wrap; gap:8px; }
+  .bar-btns button, .bar-btns a { font:800 16px Arial,sans-serif; border:0; border-radius:6px; padding:10px 18px;
+    cursor:pointer; text-decoration:none; color:#fff; background:var(--action); min-height:44px; display:inline-flex; align-items:center; }
+  .bar-btns .quiet { background:rgba(255,255,255,.16); font-weight:600; }
+  .bar-btns button:disabled { opacity:.6; cursor:wait; }
+  .warn { background:#fff4e5; border-bottom:2px solid #b45309; color:#7c2d12; font-size:16px; line-height:1.45; padding:10px 16px; }
+  .warn b { display:block; }
+  .scroller { padding:16px 0; display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .state-box { background:#fff; max-width:640px; margin:24px 16px; padding:32px 20px; text-align:center; font-size:16px; line-height:1.5; }
+  .spinner { display:inline-block; width:32px; height:32px; border:3px solid #ddd; border-top-color:var(--action);
+    border-radius:50%; animation:spin .7s linear infinite; margin-bottom:12px; }
   @keyframes spin { to { transform:rotate(360deg); } }
 
-  /* Print styles */
+  /* ── One A4 sheet: label top left, invoice top right, cut lines as on an Amazon sheet ── */
+  .sheet { position:relative; width:210mm; min-height:296mm; background:#fff; display:grid;
+    grid-template-columns:105mm 105mm; align-items:start; box-shadow:0 2px 12px rgba(0,0,0,.18); }
+  .cut-v { position:absolute; left:105mm; top:0; bottom:0; border-left:.3mm dashed #000; }
+  .cut-h { position:absolute; left:0; right:0; top:148.5mm; border-top:.3mm dashed #000; }
+  .cancelled { border:.5mm solid #000; text-align:center; font-weight:800; font-size:1.25em; padding:1mm; margin-bottom:1.5mm; }
+
+  /* ── Shipping label ── */
+  .lab { padding:4mm 4mm 3mm; font-size:8pt; line-height:1.25; min-height:148.5mm; display:flex; flex-direction:column; }
+  .lab-top { display:grid; grid-template-columns:1fr 27mm; gap:2.5mm; align-items:start; }
+  .barcode img { display:block; width:100%; height:15mm; image-rendering:pixelated; }
+  .barcode div { text-align:center; font-weight:800; font-size:9.5pt; letter-spacing:.2pt; margin-top:.8mm; }
+  .tag { border:.4mm solid #000; text-align:center; font-weight:800; font-size:10pt; padding:1mm .5mm; margin-bottom:1mm; line-height:1.15; overflow-wrap:anywhere; }
+  .tag.big { font-size:12.5pt; padding:1.4mm .5mm; }
+  .ship-to { margin-top:2.5mm; flex:0 0 auto; }
+  .ship-to .h { font-weight:800; font-size:9pt; }
+  .ship-to .name { font-weight:800; font-size:14pt; line-height:1.2; margin:.6mm 0 1mm; overflow-wrap:anywhere; }
+  .ship-to .ln { font-size:11pt; line-height:1.28; font-weight:600; overflow-wrap:anywhere; }
+  .ship-to .city { font-size:12.5pt; font-weight:800; line-height:1.3; margin-top:.5mm; }
+  .ship-to .ph { font-size:11pt; font-weight:800; margin-top:1mm; }
+  .ord { margin-top:2mm; font-weight:800; font-size:9pt; line-height:1.3; border-bottom:.3mm solid #000; padding-bottom:1.5mm; }
+  .from { display:grid; grid-template-columns:1fr 19mm; gap:2mm; margin-top:1.5mm; font-size:7pt; line-height:1.25; }
+  .from img { width:19mm; height:19mm; display:block; }
+  .from .scan { font-size:5.5pt; text-align:center; margin-top:.3mm; }
+  .contents { margin-top:1.5mm; font-size:7.5pt; line-height:1.28; border-top:.3mm solid #000; padding-top:1.2mm; }
+  .decl { margin-top:1.5mm; border-top:.3mm solid #000; padding-top:1.2mm; font-size:6.8pt; font-weight:700; text-align:center; }
+  .lab-tbl { width:100%; border-collapse:collapse; margin-top:1mm; table-layout:fixed; }
+  .lab-tbl th, .lab-tbl td { border:.3mm solid #000; padding:.6mm .7mm; font-size:6pt; text-align:left; vertical-align:top; overflow-wrap:anywhere; }
+  .lab-tbl th { font-size:6.4pt; text-align:center; }
+  .sold-on { margin-top:auto; padding-top:1.5mm; font-size:7pt; font-weight:800; }
+
+  /* ── Tax invoice: em units so the full-page copy can scale up ── */
+  .inv { padding:4mm 4mm 3mm; font-size:6.7pt; line-height:1.28; min-height:148.5mm; display:flex; flex-direction:column; }
+  .inv-head { display:flex; justify-content:space-between; gap:3mm; align-items:flex-start; }
+  .brand b { display:block; font-size:1.55em; font-weight:800; line-height:1.1; }
+  .brand span { font-size:.85em; }
+  .doc-t { text-align:right; font-size:1.02em; }
+  .doc-t b { font-weight:800; display:block; font-size:1.1em; }
+  .inv-mid { display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin-top:2.5mm; }
+  .inv-mid .r { text-align:right; }
+  .inv-mid p { overflow-wrap:anywhere; }
+  .lbl { font-weight:800; }
+  .gap { margin-top:1.6mm; }
+  .inv-meta { display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin-top:2mm; }
+  .inv-meta .r { text-align:right; }
+  table.lines { width:100%; border-collapse:collapse; margin-top:2mm; }
+  table.lines th, table.lines td { border:.2mm solid #000; padding:.6mm .7mm; vertical-align:top; }
+  table.lines th { font-weight:800; text-align:left; background:#eee; line-height:1.1; font-size:.92em; }
+  table.lines td.n, table.lines th.n { text-align:right; white-space:nowrap; }
+  table.lines td.c, table.lines th.c { text-align:center; white-space:nowrap; }
+  table.lines td.d { overflow-wrap:anywhere; }
+  table.lines tr.tot td { font-weight:800; background:#eee; }
+  .words { border:.2mm solid #000; border-top:0; padding:.8mm .9mm; font-weight:800; }
+  .sign { border:.2mm solid #000; border-top:0; padding:.8mm .9mm; text-align:right; font-weight:800; min-height:11.5mm; display:flex; flex-direction:column; justify-content:space-between; }
+  .rc { margin-top:.8mm; }
+  .inv-foot { margin-top:auto; padding-top:2mm; text-align:center; font-size:.82em; color:var(--soft); }
+
+  /* Full-page Tax Invoice (the buyer's copy from the order email) */
+  .sheet.solo { grid-template-columns:1fr; }
+  .solo .inv { font-size:10.5pt; padding:10mm; min-height:296mm; }
+  .solo table.lines th, .solo table.lines td { padding:1.2mm 1.4mm; }
+  .solo .sign { min-height:22mm; }
+
+  @page { size:A4 portrait; margin:0; }
   @media print {
-    body { background:#fff; }
-    .screen-bar { display:none !important; }
-    .doc-wrap { margin:0; box-shadow:none; max-width:100%; }
-    #docContent { padding:0; }
+    html, body { background:#fff; }
+    .screen-bar, .warn { display:none !important; }
+    .scroller { padding:0; gap:0; display:block; }
+    .sheet { box-shadow:none; zoom:1 !important; break-after:page; page-break-after:always; }
+    .sheet:last-child { break-after:auto; page-break-after:auto; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
 </style>
 </head>
 <body>
 
-<!-- Top bar (hidden when printing) -->
 <div class="screen-bar">
   <div>
-    <div style="font-size:12px;opacity:.7;margin-bottom:2px;">IBI Marketplace</div>
-    <h1 id="docTitle">Loading Document…</h1>
+    <small>IBI eCommerce Marketplace &middot; <span id="verTag"></span></small>
+    <h1 id="docTitle">Loading&hellip;</h1>
   </div>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <button class="print-btn" onclick="window.print()">🖨️ Print</button>
-    <button onclick="window.close()" style="background:rgba(255,255,255,.15);color:#fff;border:none;padding:9px 16px;border-radius:6px;font-size:13px;cursor:pointer;">✕ Close</button>
-  </div>
-</div>
-
-<div class="doc-wrap">
-  <div id="docContent">
-    <div class="loading">
-      <div class="spinner"></div><br>
-      Loading your document…<br>
-      <small style="color:#888;font-size:12px;margin-top:8px;display:block;">
-        Fetching order details from IBI server
-      </small>
-    </div>
+  <div class="bar-btns">
+    <button type="button" id="btnPrint" disabled>🖨️ Print</button>
+    <button type="button" id="btnPdf" disabled>⬇️ Download PDF</button>
+    <button type="button" class="quiet" id="btnClose">✕ Close</button>
   </div>
 </div>
+<div class="warn" id="warnBox" hidden></div>
 
+<div class="scroller" id="docContent">
+  <div class="state-box"><div class="spinner"></div><br>Loading your document&hellip;</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
+const PRINT_VERSION = 'v20.14';
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_f07UH_5KWtoAyJ3iA-i6NaZWCXrCLy4t3IY-_vr7sq9/exec';
+const SITE = 'www.indiabusinessinternational.online';
 
 const params  = new URLSearchParams(window.location.search);
-const type    = params.get('type')  || 'invoice';   // invoice | shipping
+const type    = params.get('type')  || 'invoice';   /* invoice = full-page Tax Invoice; shipping or both = one sheet with both */
 const orderId = params.get('order') || '';
+const SOLO    = type === 'invoice';
 
-document.getElementById('docTitle').textContent =
-  type === 'shipping' ? 'Shipping Label — ' + orderId : 'Tax Invoice — ' + orderId;
+document.getElementById('verTag').textContent = PRINT_VERSION;
 
-// Fetch order from Google Sheets
-function ibi_fetch(p, cb) {
-  const cbName = '_p_' + Date.now();
-  const url = SHEET_URL + '?' + new URLSearchParams(p).toString() + '&callback=' + cbName;
-  let done = false;
-  const timer = setTimeout(() => { if(!done){done=true;cb(null);} }, 10000);
-  window[cbName] = res => {
-    if(done) return; done=true; clearTimeout(timer);
-    window[cbName]=null;
-    const s=document.getElementById(cbName); if(s) s.remove();
-    cb(res);
-  };
-  const s = document.createElement('script');
-  s.id = cbName; s.src = url;
-  s.onerror = () => { if(!done){done=true;clearTimeout(timer);cb(null);} };
-  document.head.appendChild(s);
+/* IBI's own details: exactly as on its Amazon tax invoice of 4 Nov 2026. */
+const IBI = {
+  name:'INDIA BUSINESS INTERNATIONAL',
+  lines:['Plot No 8/9 B, Overseer eCommerce WareHouse,', 'Neeruvakuzhi - South, Karungal to Kurumpanai', 'Road, Kanyakumari District,', 'Palapallam Post Office, TAMIL NADU, 629159', 'IN'],
+  oneLine:'Plot No 8/9 B, Overseer eCommerce WareHouse, Neeruvakuzhi - South, Karungal to Kurumpanai Road, Kanyakumari District, Palapallam Post Office, TAMIL NADU, 629159, India',
+  pan:'AOLPP8759A', gstin:'33AOLPP8759A2ZO', fssai:'22419077000642', phone:'+91 89394 14799'
+};
+const HOUSE = ['iintelligencei', 'ibi'];
+
+/* HSN to GST rate: IBI's own master (IBI_HSN_MASTER in index.html) plus clay cookware 69120020. A code not here prints no tax and raises a warning: never a guess. */
+const GST_BY_HSN = {
+  '96031000':5,'56079010':5,'57050010':5,'44029010':0,'08011990':0,'53050040':0,'46021919':0,'46012900':0,'17019990':5,
+  '76151030':5,'76151012':5,'73239390':5,'69120010':5,'69120020':5,'69120040':0,'68029900':5,'68159990':5,'73269090':18,
+  '82059000':18,'82159900':18,'82013000':0,'73158900':18,'73269099':18,'73191020':18,'73239100':5,'44219990':18,
+  '94036000':18,'06022010':0,'06021000':0,'06022090':0,'08039010':0,'07099990':0,'12119099':0,'14049090':0,'06049000':0,
+  '09109100':5,'09042110':5,'09092290':5,'08109020':5,'42029900':18,'61091000':5,'63049919':5,'63026000':5,'57050029':5,
+  '96159000':18,'48201010':0,'39232990':18,'25199040':5,'05080010':0,'31010099':0,'71179010':3,'71171990':3
+};
+function gstRate(hsn, title) {
+  if (hsn === '14049060') return /\braw\b/i.test(title) ? 0 : 5;   /* the master holds raw shell at 0% and the shell spatula at 5% */
+  return Object.prototype.hasOwnProperty.call(GST_BY_HSN, hsn) ? GST_BY_HSN[hsn] : null;
+}
+function normHsn(h) {
+  let s = String(h == null ? '' : h).trim().replace(/\.0+$/, '');
+  if (/^\d+$/.test(s) && s.length % 2) s = '0' + s;   /* a sheet number loses the leading zero of 07099990 */
+  return s;
+}
+
+const STATES = {
+  jammuandkashmir:['JAMMU AND KASHMIR','01'],himachalpradesh:['HIMACHAL PRADESH','02'],punjab:['PUNJAB','03'],chandigarh:['CHANDIGARH','04'],
+  uttarakhand:['UTTARAKHAND','05'],uttaranchal:['UTTARAKHAND','05'],haryana:['HARYANA','06'],delhi:['DELHI','07'],newdelhi:['DELHI','07'],nctofdelhi:['DELHI','07'],
+  rajasthan:['RAJASTHAN','08'],uttarpradesh:['UTTAR PRADESH','09'],bihar:['BIHAR','10'],sikkim:['SIKKIM','11'],arunachalpradesh:['ARUNACHAL PRADESH','12'],
+  nagaland:['NAGALAND','13'],manipur:['MANIPUR','14'],mizoram:['MIZORAM','15'],tripura:['TRIPURA','16'],meghalaya:['MEGHALAYA','17'],assam:['ASSAM','18'],
+  westbengal:['WEST BENGAL','19'],jharkhand:['JHARKHAND','20'],odisha:['ODISHA','21'],orissa:['ODISHA','21'],chhattisgarh:['CHHATTISGARH','22'],chattisgarh:['CHHATTISGARH','22'],
+  madhyapradesh:['MADHYA PRADESH','23'],gujarat:['GUJARAT','24'],dadraandnagarhaveli:['DADRA AND NAGAR HAVELI AND DAMAN AND DIU','26'],damananddiu:['DADRA AND NAGAR HAVELI AND DAMAN AND DIU','26'],
+  dadraandnagarhavelianddamananddiu:['DADRA AND NAGAR HAVELI AND DAMAN AND DIU','26'],maharashtra:['MAHARASHTRA','27'],karnataka:['KARNATAKA','29'],goa:['GOA','30'],lakshadweep:['LAKSHADWEEP','31'],
+  kerala:['KERALA','32'],tamilnadu:['TAMIL NADU','33'],puducherry:['PUDUCHERRY','34'],pondicherry:['PUDUCHERRY','34'],andamanandnicobarislands:['ANDAMAN AND NICOBAR ISLANDS','35'],
+  andamanandnicobar:['ANDAMAN AND NICOBAR ISLANDS','35'],telangana:['TELANGANA','36'],telengana:['TELANGANA','36'],andhrapradesh:['ANDHRA PRADESH','37'],ladakh:['LADAKH','38']
+};
+function stateKey(s) { return String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z]/g, ''); }
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+function money(n) { return '₹' + (Number(n) || 0).toLocaleString('en-IN', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+
+/* Splits "101, GST Road, Near X, Area, City - 600045, Tamil Nadu" into clean lines for a clear To Address. */
+function parseAddress(raw) {
+  const text = String(raw || '').replace(/\s+/g, ' ').trim();
+  let parts = text.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  let state = '', code = '', pin = '', city = '';
+  if (parts.length) {
+    const hit = STATES[stateKey(parts[parts.length - 1])];
+    if (hit) { state = hit[0]; code = hit[1]; parts.pop(); }
+  }
+  if (!state) {
+    const words = stateKey(text.replace(/\d+/g, ' '));
+    Object.keys(STATES).sort(function (a, b) { return b.length - a.length; }).some(function (k) {
+      if (words.slice(-k.length) === k) { state = STATES[k][0]; code = STATES[k][1]; return true; }
+      return false;
+    });
+  }
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const m = parts[i].match(/^(.*?)[\s\-–]*\b(\d{6})\b[\s\-–]*(.*)$/);
+    if (m) { pin = m[2]; city = (m[1] + ' ' + m[3]).trim(); parts.splice(i, 1); break; }
+  }
+  if (!city && parts.length > 1) city = parts.pop();
+  const seen = {};
+  parts = parts.filter(function (p) { const k = p.toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; });
+  const lines = [];
+  parts.forEach(function (p) {
+    const last = lines.length - 1;
+    if (last >= 0 && !/^near\b/i.test(p) && !/^near\b/i.test(lines[last]) && (lines[last] + ', ' + p).length <= 34) lines[last] += ', ' + p;
+    else lines.push(p);
+  });
+  return { lines:lines, city:city, pin:pin, state:state, code:code };
+}
+function phoneOf(raw) {
+  const d = String(raw || '').replace(/\D/g, '').slice(-10);
+  return d.length === 10 ? d : '';
+}
+function phoneShow(raw) {
+  const d = phoneOf(raw);
+  return d ? '+91 ' + d.slice(0, 5) + ' ' + d.slice(5) : '';
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* Sheet dates arrive as ISO (UTC) or as en-IN text "5/11/2026, 3:56:00 pm": day first. */
+function parseWhen(v) {
+  const s = String(v || '').trim();
+  if (!s) return null;
+  const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:[, ]+(\d{1,2}):(\d{2})(?::\d{2})?\s*([ap]m)?)?/i);
+  if (m) {
+    let h = parseInt(m[4] || '0', 10);
+    if (m[6]) { h = h % 12 + (/p/i.test(m[6]) ? 12 : 0); }
+    return { d:+m[1], mo:+m[2], y:+m[3], h:h, mi:parseInt(m[5] || '0', 10) };
+  }
+  const t = new Date(s);
+  if (isNaN(t)) return null;
+  const f = new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Kolkata', day:'numeric', month:'numeric', year:'numeric', hour:'numeric', minute:'numeric', hour12:false }).formatToParts(t);
+  const g = function (k) { return parseInt((f.find(function (x) { return x.type === k; }) || {}).value || '0', 10); };
+  return { d:g('day'), mo:g('month'), y:g('year'), h:g('hour') % 24, mi:g('minute') };
+}
+function dateShow(v) {
+  const w = parseWhen(v);
+  if (!w) return esc(v || '');
+  return String(w.d).padStart(2, '0') + ' ' + MONTHS[w.mo - 1] + ' ' + w.y;
+}
+
+/* Amount in words, Indian numbering: One Thousand Six Hundred Eight only */
+function amountWords(n) {
+  const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const two = function (x) { return x < 20 ? ones[x] : tens[Math.floor(x / 10)] + (x % 10 ? '-' + ones[x % 10] : ''); };
+  const three = function (x) { return (x >= 100 ? ones[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + two(x % 100); };
+  let r = Math.floor(n); const paise = Math.round((n - r) * 100); const out = [];
+  if (r >= 10000000) { out.push(three(Math.floor(r / 10000000)) + ' Crore'); r %= 10000000; }
+  if (r >= 100000) { out.push(two(Math.floor(r / 100000)) + ' Lakh'); r %= 100000; }
+  if (r >= 1000) { out.push(two(Math.floor(r / 1000)) + ' Thousand'); r %= 1000; }
+  if (r > 0) out.push(three(r));
+  return (out.join(' ') || 'Zero') + (paise ? ' and ' + two(paise) + ' Paise' : '') + ' only';
+}
+
+/* Code 128 set B, drawn to a PNG so the barcode survives print and PDF sharply. */
+const C128 = ['212222','222122','222221','121223','121322','131222','122213','122312','132212','221213','221312','231212','112232','122132','122231','113222','123122','123221','223211','221132','221231','213212','223112','312131','311222','321122','321221','312212','322112','322211','212123','212321','232121','111323','131123','131321','112313','132113','132311','211313','231113','231311','112133','112331','132131','113123','113321','133121','313121','211331','231131','213113','213311','213131','311123','311321','331121','312113','312311','332111','314111','221411','431111','111224','111422','121124','121421','141122','141221','112214','112412','122114','122411','142112','142211','241211','221114','413111','241112','134111','111242','121142','121241','114212','124112','124211','411212','421112','421211','212141','214121','412121','111143','111341','131141','114113','114311','411113','411311','113141','114131','311141','411131','211412','211214','211232','2331112'];
+function code128Png(text) {
+  const vals = [104];
+  for (let i = 0; i < text.length; i++) vals.push(text.charCodeAt(i) - 32);
+  let sum = 104;
+  for (let j = 1; j < vals.length; j++) sum += vals[j] * j;
+  vals.push(sum % 103); vals.push(106);
+  const widths = vals.map(function (v) { return C128[v]; }).join('');
+  let mods = 20;
+  for (let k = 0; k < widths.length; k++) mods += +widths[k];
+  const px = 4, c = document.createElement('canvas');
+  c.width = mods * px; c.height = 200;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.fillStyle = '#000';
+  let x = 10 * px;
+  for (let n = 0; n < widths.length; n++) {
+    const w = +widths[n] * px;
+    if (n % 2 === 0) g.fillRect(x, 0, w, c.height);
+    x += w;
+  }
+  return c.toDataURL('image/png');
+}
+function qrImg(data) {
+  try {
+    const q = qrcode(0, 'M');
+    q.addData(data); q.make();
+    return q.createDataURL(5, 0);
+  } catch (e) { return ''; }
 }
 
 function showError(msg) {
+  document.getElementById('docTitle').textContent = 'Document not found';
+  const wa = 'https://wa.me/918939414799?text=' + encodeURIComponent('Hi IBI, I need my invoice for Order ' + orderId);
   document.getElementById('docContent').innerHTML =
-    '<div style="text-align:center;padding:48px 24px;">' +
-    '<div style="font-size:48px;margin-bottom:16px;">⚠️</div>' +
-    '<div style="font-size:18px;font-weight:700;color:#c00;margin-bottom:8px;">Document Not Found</div>' +
-    '<p style="font-size:14px;color:#555;margin-bottom:20px;">' + msg + '</p>' +
-    '<p style="font-size:13px;color:#888;">Order ID: <strong>' + orderId + '</strong></p>' +
-    '<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;">' +
-    '<a href="https://www.indiabusinessinternational.online/" style="padding:10px 20px;background:#131921;color:#fff;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">← Go to Website</a>' +
-    '<a href="https://wa.me/918939414799?text=Hi+IBI!+I+need+my+invoice+for+Order+' + orderId + '" target="_blank" style="padding:10px 20px;background:#25D366;color:#fff;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">💬 WhatsApp IBI</a>' +
-    '</div>' +
-    '</div>';
+    '<div class="state-box"><div style="font-size:18px;font-weight:800;margin-bottom:8px;">Document Not Found</div>' +
+    '<p>' + msg + '</p>' + (orderId ? '<p style="margin-top:8px;">Order ID: <b>' + esc(orderId) + '</b></p>' : '') +
+    '<div class="bar-btns" style="margin-top:16px;justify-content:center;">' +
+    '<a href="https://' + SITE + '/">Go to Website</a><a href="' + wa + '" target="_blank" rel="noopener" style="background:#128C7E;">WhatsApp IBI</a></div></div>';
 }
 
-function renderInvoice(order) {
-  const o = order;
-  let items = [];
-  try { items = JSON.parse(o.items || '[]'); } catch(e) { items = []; }
+/* Backend lookup: HSN, pack and weight per item, payment, courier. Order ID + the mobile on the order is the proof. */
+function fetchInfo(order) {
+  const mobile = phoneOf(order.customerMobile);
+  if (!mobile) return Promise.resolve(null);
+  const ctl = new AbortController();
+  const timer = setTimeout(function () { ctl.abort(); }, 25000);
+  return fetch(SHEET_URL + '?' + new URLSearchParams({ action:'invoiceInfo', orderId:order.orderId, mobile:mobile }).toString(), { signal:ctl.signal })
+    .then(function (r) { return r.json(); })
+    .then(function (j) { clearTimeout(timer); return j && j.success ? j : null; })
+    .catch(function () { clearTimeout(timer); return null; });
+}
 
-  const itemRows = items.map((it,i) =>
-    '<tr style="border-bottom:1px solid #eee;">' +
-    '<td style="padding:8px 12px;font-size:12px;">'+(i+1)+'</td>' +
-    '<td style="padding:8px 12px;font-size:12px;">'+(it.title||'')+'</td>' +
-    '<td style="padding:8px 12px;font-size:12px;text-align:center;">'+(it.qty||1)+'</td>' +
-    '<td style="padding:8px 12px;font-size:12px;text-align:right;">&#8377;'+(parseFloat(it.price||0).toLocaleString('en-IN'))+'</td>' +
-    '<td style="padding:8px 12px;font-size:12px;text-align:right;font-weight:700;">&#8377;'+(parseFloat(it.total||0).toLocaleString('en-IN'))+'</td>' +
-    '</tr>'
-  ).join('');
+function buildLines(order, info, warnings) {
+  let items = order.items;
+  if (typeof items === 'string') { try { items = JSON.parse(items || '[]'); } catch (e) { items = []; } }
+  if (!Array.isArray(items)) items = [];
+  const infos = (info && info.items) || [];
+  return items.map(function (it) {
+    const hit = infos.find(function (x) { return x.title === it.title; }) || {};
+    const whole = String(it.title || '');
+    const base = whole.split(' — ')[0].trim();
+    const qty = parseInt(it.qty, 10) || 1;
+    const total = Math.round((parseFloat(it.total) || (parseFloat(it.price) || 0) * qty) * 100);
+    const hsn = normHsn(hit.hsn);
+    const rate = hsn ? gstRate(hsn, base) : null;
+    let pack = '';
+    (hit.variant || []).forEach(function (v) {
+      const isQty = /qty|quant|pack/i.test(v.name || '');
+      pack += (pack ? ', ' : '') + (isQty && /^\d+$/.test(v.value) ? 'Pack of ' + v.value + ' Qty' : (v.value || ''));
+    });
+    if (!pack && whole.indexOf(' — ') !== -1) pack = whole.split(' — ').slice(1).join(' — ').trim();
+    if (!hsn) warnings.push('No HSN found for: ' + base.slice(0, 60) + '. Fill it on the listing; the tax on this line is left blank.');
+    else if (rate === null) warnings.push('HSN ' + hsn + ' has no GST rate in the IBI master. The tax on this line is left blank.');
+    return { title:base, pack:pack, short:hit.comboTitle || (base.slice(0, 70) + (pack ? ', ' + pack : '')), qty:qty, total:total, hsn:hsn, rate:rate,
+      seller:String(hit.sellerId || order.sellerId || 'ibi').toLowerCase(), weight:(parseFloat(hit.pkgWt) || 0) * qty, category:hit.category || '' };
+  });
+}
 
-  const total = parseFloat(o.total||0);
+function taxOf(line, intra) {
+  if (line.rate === null) return { net:null, tax:null, cgst:null, sgst:null, igst:null };
+  const net = Math.round(line.total / (1 + line.rate / 100));
+  const tax = line.total - net;
+  if (intra === null) return { net:net, tax:tax };
+  if (intra) { const c = Math.round(tax / 2); return { net:net, tax:tax, cgst:c, sgst:tax - c }; }
+  return { net:net, tax:tax, igst:tax };
+}
 
-  return '<div style="font-family:Arial,sans-serif;border:1.5px solid #333;">' +
-
-    // Header
-    '<div style="border-bottom:2px solid #333;padding:12px 16px;display:flex;justify-content:space-between;align-items:flex-end;">' +
+function renderLabel(o, lines, seller, addr, pay, ship) {
+  const awb = ship && ship.awb ? String(ship.awb) : '';
+  const code = awb || String(o.orderId);
+  const grams = lines.reduce(function (s, l) { return s + l.weight; }, 0);
+  const allWeighed = lines.every(function (l) { return l.weight > 0; });
+  const invNo = 'INV-' + o.orderId;
+  const shipDate = (ship && (ship.shippedOn || ship.packedOn)) || new Date().toISOString();
+  const cats = lines.map(function (l) { return String(l.category || '').split('-').pop(); }).filter(Boolean);
+  const itemType = cats.filter(function (c, i) { return cats.indexOf(c) === i; }).join(', ').toUpperCase();
+  const packs = lines.reduce(function (s, l) { return s + l.qty; }, 0);
+  const qr = qrImg('https://' + SITE + '/#track-' + o.orderId);
+  const cityLine = [addr.city, addr.pin].filter(Boolean).join(' - ').toUpperCase();
+  return '<div class="lab">' +
+    (String(o.status) === 'Cancelled' ? '<div class="cancelled">CANCELLED: DO NOT SHIP</div>' : '') +
+    '<div class="lab-top"><div class="barcode"><img alt="Barcode ' + esc(code) + '" src="' + code128Png(code) + '"><div>' + (awb ? 'AWB ' : 'ORDER ') + esc(code) + '</div></div>' +
     '<div>' +
-    '<div style="font-size:16px;font-weight:900;">INDIA BUSINESS INTERNATIONAL</div>' +
-    '<div style="font-size:10px;color:#555;margin-top:2px;">Palapallam PO, Kanyakumari Dist, Tamil Nadu – 629159</div>' +
-    '<div style="font-size:10px;color:#555;">Ph: +91 89394 14799 | indiabusinessinternational@gmail.com</div>' +
+      (ship && ship.courier ? '<div class="tag">' + esc(ship.courier) + '</div>' : '') +
+      (allWeighed ? '<div class="tag">' + (grams / 1000).toFixed(2) + ' kgs</div>' : '') +
+      '<div class="tag big">' + esc(pay) + '</div>' +
+      '<div class="tag">PACKS ' + packs + '</div>' +
+    '</div></div>' +
+    '<div class="ship-to"><div class="h">Ship To:</div><div class="name">' + esc(o.customerName) + '</div>' +
+      addr.lines.map(function (l, i) { return '<div class="ln">' + esc(l) + (i < addr.lines.length - 1 ? ',' : '') + '</div>'; }).join('') +
+      (cityLine ? '<div class="city">' + esc(cityLine) + '</div>' : '') +
+      (addr.state ? '<div class="city">' + esc(addr.state) + '</div>' : '') +
+      (phoneShow(o.customerMobile) ? '<div class="ph">Mobile: ' + esc(phoneShow(o.customerMobile)) + '</div>' : '') +
     '</div>' +
-    '<div style="text-align:right;">' +
-    '<div style="font-size:13px;font-weight:800;border:1.5px solid #333;padding:4px 10px;">TAX INVOICE</div>' +
-    '<div style="font-size:10px;color:#555;margin-top:3px;">Invoice No: INV-'+o.orderId+'</div>' +
-    '</div>' +
-    '</div>' +
-
-    // Meta
-    '<div style="background:#f7f7f7;border-bottom:1px solid #ddd;padding:8px 16px;display:flex;justify-content:space-between;">' +
-    '<span style="font-size:11px;"><strong>Order ID:</strong> '+o.orderId+'</span>' +
-    '<span style="font-size:11px;"><strong>Date:</strong> '+o.orderDate+'</span>' +
-    '</div>' +
-
-    // Sold By & Ship To
-    '<div style="display:flex;border-bottom:1px solid #ddd;">' +
-    '<div style="flex:1;padding:10px 16px;border-right:1px solid #ddd;">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;">SOLD BY</div>' +
-    '<div style="font-size:12px;font-weight:700;">India Business International</div>' +
-    '<div style="font-size:11px;color:#444;line-height:1.7;">Palapallam PO, Kanyakumari Dist<br>Tamil Nadu – 629159<br>+91 89394 14799</div>' +
-    '</div>' +
-    '<div style="flex:1;padding:10px 16px;">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:6px;">BILL &amp; SHIP TO</div>' +
-    '<div style="font-size:12px;font-weight:700;">'+o.customerName+'</div>' +
-    '<div style="font-size:11px;color:#444;line-height:1.7;">'+o.address+'<br>Mobile: +91'+o.customerMobile+(o.customerEmail ? '<br>'+o.customerEmail : '')+'</div>' +
-    '</div>' +
-    '</div>' +
-
-    // Table
-    '<table style="width:100%;border-collapse:collapse;">' +
-    '<thead><tr style="border-bottom:1.5px solid #333;">' +
-    '<th style="padding:8px 12px;font-size:11px;text-align:left;">#</th>' +
-    '<th style="padding:8px 12px;font-size:11px;text-align:left;">Product Description</th>' +
-    '<th style="padding:8px 12px;font-size:11px;text-align:center;">Qty</th>' +
-    '<th style="padding:8px 12px;font-size:11px;text-align:right;">Unit Price</th>' +
-    '<th style="padding:8px 12px;font-size:11px;text-align:right;">Amount</th>' +
-    '</tr></thead>' +
-    '<tbody>' + (itemRows || '<tr><td colspan="5" style="padding:10px 12px;font-size:12px;text-align:center;color:#888;">Items data not available</td></tr>') + '</tbody>' +
-    '</table>' +
-
-    // Totals
-    '<div style="padding:10px 16px;border-top:1.5px solid #333;">' +
-    '<table style="width:100%;font-size:12px;border-collapse:collapse;">' +
-    '<tr><td style="padding:3px 0;">Subtotal</td><td style="text-align:right;">&#8377;'+total.toLocaleString('en-IN')+'</td></tr>' +
-    '<tr><td style="padding:3px 0;">Shipping</td><td style="text-align:right;color:#16a34a;">FREE</td></tr>' +
-    '<tr><td style="padding:3px 0;">Tax (GST)</td><td style="text-align:right;">Included</td></tr>' +
-    '<tr style="border-top:1.5px solid #333;font-size:14px;font-weight:900;">' +
-    '<td style="padding:8px 0;">GRAND TOTAL</td>' +
-    '<td style="text-align:right;padding:8px 0;">&#8377;'+total.toLocaleString('en-IN')+'</td></tr>' +
-    '</table>' +
-    '</div>' +
-
-    // Declaration
-    '<div style="border-top:1px solid #ddd;padding:8px 16px;font-size:10px;color:#555;">' +
-    'Goods are sold for end-user consumption only. Not for resale. Check package before accepting.<br>' +
-    'Report damage within 24 hours: +91 89394 14799' +
-    '</div>' +
-
-    // Footer
-    '<div style="border-top:1.5px solid #333;padding:8px 16px;display:flex;justify-content:space-between;font-size:10px;">' +
-    '<span>This is a computer-generated invoice.</span>' +
-    '<span><strong>For INDIA BUSINESS INTERNATIONAL</strong></span>' +
-    '</div>' +
-    '</div>';
+    '<div class="ord">Order Id: ' + esc(o.orderId) + '<br>Ship Date: ' + dateShow(shipDate) + '</div>' +
+    '<div class="from"><div><b>Ship From: ' + esc(seller.name) + '</b><br><b>Return Address:</b> ' + esc(seller.oneLine) + (seller.phone ? '<br><b>Phone:</b> ' + esc(seller.phone) : '') + '</div>' +
+      (qr ? '<div><img alt="Scan to track" src="' + qr + '"><div class="scan">Scan to track</div></div>' : '<div></div>') + '</div>' +
+    '<div class="contents"><b>Contents:</b> ' + lines.map(function (l) { return esc(l.short) + ' &times; ' + l.qty; }).join('; ') + '</div>' +
+    '<div class="decl">Customer Self Declaration: The goods sold are intended for end user consumption. Not for resale.</div>' +
+    '<table class="lab-tbl"><thead><tr><th style="width:6%;">#</th><th style="width:24%;">SELLER</th><th style="width:24%;">GSTIN</th><th style="width:18%;">INVOICE</th><th style="width:13%;">DATE</th><th style="width:15%;">ITEM TYPE</th></tr></thead>' +
+    '<tbody><tr><td>1</td><td>' + esc(seller.name) + '</td><td>' + esc(seller.gstin || '') + '</td><td>' + esc(invNo) + '</td><td>' + dateShow(o.orderDate) + '</td><td>' + esc(itemType) + '</td></tr></tbody></table>' +
+    '<div class="sold-on">Sold on: ' + SITE + '</div>' +
+  '</div>';
 }
 
-function renderShipping(order) {
-  const o = order;
-  const total = parseFloat(o.total||0);
-  let items = [];
-  try { items = JSON.parse(o.items || '[]'); } catch(e) {}
-
-  return '<div style="font-family:Arial,sans-serif;border:2px solid #333;">' +
-
-    // Header
-    '<div style="border-bottom:2px solid #333;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">' +
-    '<div>' +
-    '<div style="font-size:16px;font-weight:900;letter-spacing:.5px;">INDIA BUSINESS INTERNATIONAL</div>' +
-    '<div style="font-size:10px;color:#555;">eCommerce for the World | iINTELLIGENCEi</div>' +
-    '</div>' +
-    '<div style="font-size:12px;font-weight:700;border:1.5px solid #333;padding:4px 10px;">SHIPPING LABEL</div>' +
-    '</div>' +
-
-    // AWB
-    '<div style="border-bottom:1px solid #ddd;padding:10px 16px;display:flex;align-items:center;gap:16px;">' +
-    '<div style="flex:1;">' +
-    // QR Code linking to order tracking page
-    '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:6px;">' +
-    '<div style="text-align:center;">' +
-    '<img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=' +
-      encodeURIComponent('https://www.indiabusinessinternational.online/#track-' + o.orderId) +
-    '" alt="QR Code" style="width:90px;height:90px;border:1px solid #ddd;padding:3px;display:block;">' +
-    '<div style="font-size:9px;color:#555;margin-top:3px;text-align:center;">Scan to Track Order</div>' +
-    '</div>' +
-    '<div style="flex:1;">' +
-    '<div style="font-size:10px;color:#555;font-weight:700;text-transform:uppercase;margin-bottom:3px;">AWB / Order ID</div>' +
-    '<div style="font-size:18px;font-weight:900;letter-spacing:1px;">' + o.orderId + '</div>' +
-    '<div style="font-size:10px;color:#555;margin-top:6px;">Scan QR code to track your order or visit:</div>' +
-    '<div style="font-size:10px;color:#333;word-break:break-all;">www.indiabusinessinternational.online</div>' +
-    '</div>' +
-    '</div>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">' +
-    '<div style="border:1px solid #333;padding:5px 10px;font-size:11px;font-weight:700;text-align:center;">SUR</div>' +
-    '<div style="border:1px solid #333;padding:5px 10px;font-size:11px;font-weight:700;text-align:center;">1 kg</div>' +
-    '<div style="border:1px solid #333;padding:5px 10px;font-size:11px;font-weight:700;text-align:center;">STD</div>' +
-    '<div style="border:1px solid #333;padding:5px 10px;font-size:11px;font-weight:700;text-align:center;">PREPAID</div>' +
-    '</div>' +
-    '</div>' +
-
-    // SHIP TO
-    '<div style="border-bottom:1px solid #ddd;padding:12px 16px;display:flex;gap:16px;">' +
-    '<div style="flex:1;">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:5px;">SHIP TO:</div>' +
-    '<div style="font-size:18px;font-weight:900;">'+o.customerName+'</div>' +
-    '<div style="font-size:12px;line-height:1.8;margin-top:5px;">'+o.address+'</div>' +
-    '<div style="font-size:13px;font-weight:700;margin-top:5px;">📱 +91'+o.customerMobile+'</div>' +
-    '</div>' +
-    '<div style="border-left:1px solid #ddd;padding-left:16px;min-width:170px;">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px;">ORDER DETAILS:</div>' +
-    '<div style="font-size:11px;line-height:1.9;">' +
-    '<strong>Order ID:</strong> '+o.orderId+'<br>' +
-    '<strong>Date:</strong> '+o.orderDate+'<br>' +
-    '<strong>Items:</strong> '+items.length+'<br>' +
-    '<strong style="font-size:14px;">Total: &#8377;'+total.toLocaleString('en-IN')+'</strong>' +
-    '</div>' +
-    '</div>' +
-    '</div>' +
-
-    // Sold By
-    '<div style="border-bottom:1px solid #ddd;padding:8px 16px;font-size:11px;">' +
-    '<strong>SOLD BY:</strong> India Business International | Palapallam PO, Kanyakumari – 629159 | indiabusinessinternational@gmail.com | +91 89394 14799' +
-    '</div>' +
-
-    // Declaration
-    '<div style="border-bottom:1px solid #ddd;padding:7px 16px;font-size:10px;color:#444;">' +
-    'Customer Declaration: Goods sold for end-user consumption only. Not for resale. Check package before accepting. Report damage within 24 hours.' +
-    '</div>' +
-
-    // Bottom bar
-    '<div style="border-top:2px solid #333;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">' +
-    '<span style="font-size:15px;font-weight:900;">IBI</span>' +
-    '<span style="font-size:15px;font-weight:900;">TN29</span>' +
-    '<span style="font-size:15px;font-weight:900;">'+o.orderId.slice(-4)+'</span>' +
-    '<span style="font-size:15px;font-weight:900;border:2px solid #333;padding:3px 10px;">PREPAID</span>' +
-    '</div>' +
-    '</div>';
+function renderInvoice(o, lines, seller, addr, pay) {
+  const sellerCode = String(seller.gstin || '').slice(0, 2);
+  const intra = addr.code && sellerCode ? addr.code === sellerCode : null;
+  let sumTax = 0, sumTot = 0, taxKnown = true;
+  const rows = lines.map(function (l, i) {
+    const t = taxOf(l, intra);
+    sumTot += l.total;
+    if (t.tax === null) taxKnown = false; else sumTax += t.tax;
+    const hasNet = t.net !== null;
+    const unit = hasNet ? money(t.net / l.qty / 100) : '';
+    let rate = '', kind = '', amt = '';
+    if (hasNet) {
+      if (l.rate === 0) { rate = '0%'; kind = 'Exempt'; amt = money(0); }
+      else if (intra === true) { const half = l.rate / 2; rate = half + '%<br>' + half + '%'; kind = 'CGST<br>SGST'; amt = money(t.cgst / 100) + '<br>' + money(t.sgst / 100); }
+      else if (intra === false) { rate = l.rate + '%'; kind = 'IGST'; amt = money(t.igst / 100); }
+      else { rate = l.rate + '%'; kind = ''; amt = money(t.tax / 100); }
+    }
+    return '<tr><td class="c">' + (i + 1) + '</td>' +
+      '<td class="d">' + esc(l.title) + (l.pack ? ' | ' + esc(l.pack) : '') + (l.hsn ? '<br>HSN:' + esc(l.hsn) : '') + '</td>' +
+      '<td class="n">' + unit + '</td><td class="c">' + l.qty + '</td>' +
+      '<td class="n">' + (hasNet ? money(t.net / 100) : '') + '</td>' +
+      '<td class="c">' + rate + '</td><td class="c">' + kind + '</td><td class="n">' + amt + '</td>' +
+      '<td class="n">' + money(l.total / 100) + '</td></tr>';
+  }).join('');
+  const addrBlock = function (label, withName) {
+    const c = [addr.city, addr.state, addr.pin].filter(Boolean).join(', ').toUpperCase();
+    return '<p class="lbl">' + label + ' :</p><p>' + esc(o.customerName) + '</p>' +
+      addr.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
+      (c ? '<p>' + esc(c) + '</p>' : '') + '<p>IN</p>' +
+      (addr.code ? '<p><span class="lbl">State/UT Code:</span>' + esc(addr.code) + '</p>' : '');
+  };
+  const place = addr.state || '';
+  return '<div class="inv">' +
+    (String(o.status) === 'Cancelled' ? '<div class="cancelled">CANCELLED ORDER</div>' : '') +
+    '<div class="inv-head"><div class="brand"><b>India Business International</b><span>' + SITE + '</span></div>' +
+      '<div class="doc-t"><b>Tax Invoice/Bill of Supply/Cash Memo</b>(Original for Recipient)</div></div>' +
+    '<div class="inv-mid"><div>' +
+      '<p class="lbl">Sold By :</p><p>' + esc(seller.name) + '</p>' + seller.lines.map(function (l) { return '<p>' + esc(l) + '</p>'; }).join('') +
+      '<p class="gap">' + (seller.pan ? '<span class="lbl">PAN No:</span>' + esc(seller.pan) : '') + '</p>' +
+      (seller.gstin ? '<p><span class="lbl">GST Registration No:</span>' + esc(seller.gstin) + '</p>' : '') +
+      (seller.fssai ? '<p class="gap"><span class="lbl">FSSAI Reg. No.</span> ' + esc(seller.fssai) + '</p>' : '') +
+    '</div><div class="r">' + addrBlock('Billing Address') + '<div class="gap">' + addrBlock('Shipping Address') + '</div>' +
+      (place ? '<p><span class="lbl">Place of supply:</span>' + esc(place) + '</p><p><span class="lbl">Place of delivery:</span>' + esc(place) + '</p>' : '') +
+    '</div></div>' +
+    '<div class="inv-meta"><div><p><span class="lbl">Order Number:</span>' + esc(o.orderId) + '</p><p><span class="lbl">Order Date:</span>' + dateShow(o.orderDate) + '</p></div>' +
+      '<div class="r"><p><span class="lbl">Invoice Number :</span>INV-' + esc(o.orderId) + '</p><p><span class="lbl">Invoice Date :</span>' + dateShow(o.orderDate) + '</p>' +
+      '<p><span class="lbl">Payment :</span>' + esc(pay === 'PREPAID' ? 'Prepaid' : 'Not paid online') + '</p></div></div>' +
+    '<table class="lines"><thead><tr><th class="c">Sl.<br>No</th><th>Description</th><th class="n">Unit<br>Price</th><th class="c">Qty</th><th class="n">Net<br>Amount</th><th class="c">Tax<br>Rate</th><th class="c">Tax<br>Type</th><th class="n">Tax<br>Amount</th><th class="n">Total<br>Amount</th></tr></thead>' +
+    '<tbody>' + rows + '<tr class="tot"><td colspan="7">TOTAL:</td><td class="n">' + (taxKnown ? money(sumTax / 100) : '') + '</td><td class="n">' + money(sumTot / 100) + '</td></tr></tbody></table>' +
+    '<div class="words">Amount in Words:<br>' + esc(amountWords(sumTot / 100)) + '</div>' +
+    '<div class="sign"><div>For ' + esc(seller.name) + ':</div><div>Authorized Signatory</div></div>' +
+    '<p class="rc">Whether tax is payable under reverse charge - No</p>' +
+    '<div class="inv-foot">Please note that this invoice is not a demand for payment &middot; Page 1 of 1</div>' +
+  '</div>';
 }
 
-// ── Try localStorage first (fastest — works offline too) ──
+let currentOrder = null;
+
+function loadAndRender(order, info) {
+  const warnings = [];
+  const lines = buildLines(order, info, warnings);
+  if (!lines.length) { showError('This order has no item details.'); return; }
+  if (!info) warnings.push('Could not read the HSN, GST and payment details from the IBI server. Do not use this sheet as the invoice. Press F5 to try again.');
+
+  const addr = parseAddress(order.address);
+  if (!addr.state) warnings.push('The buyer state could not be read from the address, so CGST + SGST or IGST could not be chosen. Check the order address.');
+  if (!addr.pin) warnings.push('No 6-digit PIN code found in the address.');
+
+  const groups = {};
+  lines.forEach(function (l) { (groups[l.seller] = groups[l.seller] || []).push(l); });
+  const paid = info && info.payment && /paid/i.test(info.payment.status || '');
+  const pay = paid ? 'PREPAID' : 'NOT PAID ONLINE';
+  if (info && !paid) warnings.push('No online payment is recorded on this order. Confirm payment before you ship.');
+
+  document.getElementById('docContent').innerHTML = Object.keys(groups).map(function (k) {
+    let seller = IBI;
+    if (HOUSE.indexOf(k) === -1) {
+      const sb = order.soldBy || {};
+      seller = { name:String(sb.name || k).toUpperCase(), lines:sb.lines || [], oneLine:(sb.lines || []).join(', '), pan:sb.pan || '', gstin:sb.gstin || '', fssai:'', phone:sb.phone || '' };
+      if (!seller.gstin) warnings.push('Seller ' + seller.name + ' has no GSTIN available on this screen. Print this from that seller\'s own Seller Central.');
+    }
+    const shipMap = (info && info.shipments) || {};
+    const ship = shipMap[k] || order.shipment || null;
+    return '<div class="sheet' + (SOLO ? ' solo' : '') + '">' +
+      (SOLO ? '' : '<div class="cut-v"></div><div class="cut-h"></div>' + renderLabel(order, groups[k], seller, addr, pay, ship)) +
+      renderInvoice(order, groups[k], seller, addr, pay) + '</div>';
+  }).join('');
+
+  const box = document.getElementById('warnBox');
+  if (warnings.length) {
+    box.innerHTML = '<b>Check before use (this note does not print):</b>' + warnings.map(function (w) { return '<div>' + esc(w) + '</div>'; }).join('');
+    box.hidden = false;
+  } else box.hidden = true;
+
+  currentOrder = order;
+  const name = (SOLO ? 'Tax Invoice' : 'Label and Tax Invoice') + ' ' + order.orderId;
+  document.getElementById('docTitle').textContent = name;
+  document.title = name;
+  document.getElementById('btnPrint').disabled = false;
+  document.getElementById('btnPdf').disabled = false;
+  fitToScreen();
+}
+
+/* Phones see the whole A4 sheet, scaled; printing and the PDF always use true A4. */
+function fitToScreen() {
+  document.querySelectorAll('.sheet').forEach(function (s) {
+    s.style.zoom = '';
+    const w = s.offsetWidth, room = document.documentElement.clientWidth;
+    if (w > room) s.style.zoom = String(room / w);
+  });
+  document.querySelectorAll('.sheet:not(.solo)').forEach(function (s) {
+    const inv = s.querySelector('.inv'), cut = s.querySelector('.cut-h');
+    if (inv && cut && inv.offsetHeight > (s.querySelector('.lab') || inv).offsetHeight + 1) cut.style.right = '50%';
+  });
+}
+window.addEventListener('resize', fitToScreen);
+
+function loadScript(src) {
+  return new Promise(function (ok, bad) {
+    const s = document.createElement('script');
+    s.src = src; s.onload = ok; s.onerror = bad;
+    document.head.appendChild(s);
+  });
+}
+function downloadPdf() {
+  const btn = document.getElementById('btnPdf');
+  const was = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Preparing PDF…';
+  const sheets = Array.from(document.querySelectorAll('.sheet'));
+  sheets.forEach(function (s) { s.style.zoom = ''; s.style.boxShadow = 'none'; });
+  const libs = (window.html2canvas ? Promise.resolve() : loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'))
+    .then(function () { return window.jspdf ? null : loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'); });
+  return libs.then(function () {
+    const pdf = new window.jspdf.jsPDF({ unit:'mm', format:'a4', orientation:'portrait', compress:true });
+    return sheets.reduce(function (chain, s, i) {
+      return chain.then(function () {
+        return window.html2canvas(s, { scale:3, backgroundColor:'#ffffff', useCORS:true, logging:false, windowWidth:1100 });
+      }).then(function (canvas) {
+        if (i) pdf.addPage();
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, Math.min(297, 210 * canvas.height / canvas.width));
+      });
+    }, Promise.resolve()).then(function () {
+      pdf.save((SOLO ? 'Tax Invoice ' : 'Label and Tax Invoice ') + currentOrder.orderId + '.pdf');
+    });
+  }).catch(function () {
+    alert('The PDF could not be made here. Press Print and choose Save as PDF.');
+  }).then(function () {
+    sheets.forEach(function (s) { s.style.boxShadow = ''; });
+    btn.disabled = false; btn.textContent = was;
+    fitToScreen();
+  });
+}
+
+document.getElementById('btnPrint').addEventListener('click', function () { window.print(); });
+document.getElementById('btnPdf').addEventListener('click', downloadPdf);
+document.getElementById('btnClose').addEventListener('click', function () {
+  window.close();
+  setTimeout(function () { window.location.href = 'https://' + SITE + '/'; }, 200);
+});
+
 function loadFromLocalStorage() {
   try {
     const cache = JSON.parse(localStorage.getItem('ibi_order_cache') || '{}');
-    // Check same-origin (print.html on same domain as website)
-    const keys = Object.keys(cache);
-    // Try exact match first
     if (cache[orderId]) return cache[orderId];
-    // Try case-insensitive match
-    const match = keys.find(k => k.toLowerCase() === orderId.toLowerCase());
+    const match = Object.keys(cache).find(function (k) { return k.toLowerCase() === orderId.toLowerCase(); });
     return match ? cache[match] : null;
-  } catch(e) { return null; }
+  } catch (e) { return null; }
 }
-
-function loadAndRender(order) {
-  if (!order) return false;
-  const html = type === 'shipping' ? renderShipping(order) : renderInvoice(order);
-  document.getElementById('docContent').innerHTML = html;
-  document.getElementById('docTitle').textContent =
-    (type === 'shipping' ? 'Shipping Label' : 'Tax Invoice') + ' — ' + order.orderId;
-  setTimeout(function() { window.print(); }, 800);
-  return true;
+function renderWithInfo(order) {
+  return fetchInfo(order).then(function (info) { loadAndRender(order, info); });
 }
 
 if (!orderId) {
-  showError('No Order ID provided in the URL.<br><br>Please click the print link from your order confirmation email, or contact IBI on WhatsApp.');
+  showError('No Order ID in the link. Please use the link in your order email, or contact IBI on WhatsApp.');
 } else {
-  // Step 1: Try localStorage (instant)
   const cached = loadFromLocalStorage();
-  if (cached && loadAndRender(cached)) {
-    // done!
+  if (cached) {
+    renderWithInfo(cached);
   } else {
-    // Step 2: Try Google Sheets. Uses the CEO Auth token from this session —
-    // there is deliberately no admin key here; this page is served publicly,
-    // so anything embedded in it is readable by anyone. Without an unlocked
-    // session the backend refuses and we fall through to the error below.
-    ibi_fetch({ action:'getAdminOrders', ceoToken: (function(){
+    /* The admin session token, never a key in this public page. Without an unlocked session the backend refuses. */
+    const token = (function () {
       try { return sessionStorage.getItem('ibi_admin_token') || sessionStorage.getItem('ibi_ceo_token') || ''; }
       catch (e) { return ''; }
-    })() }, function(res) {
-      if (res && res.success) {
-        const order = (res.orders||[]).find(o => o.orderId === orderId);
-        if (order && loadAndRender(order)) return;
-      }
-      // Step 3: Show helpful error with options
-      showError(
-        'Order <strong>' + orderId + '</strong> not found.<br><br>' +
-        'This can happen if:<br>' +
-        '• You opened the link on a different device/browser<br>' +
-        '• The order was not saved yet<br><br>' +
-        'Please WhatsApp IBI with your Order ID to get the invoice.'
-      );
-    });
+    })();
+    fetch(SHEET_URL + '?' + new URLSearchParams({ action:'getAdminOrders', ceoToken:token }).toString())
+      .then(function (r) { return r.json(); })
+      .catch(function () { return null; })
+      .then(function (res) {
+        const order = res && res.success ? (res.orders || []).find(function (o) { return o.orderId === orderId; }) : null;
+        if (order) return renderWithInfo(order);
+        showError('Order <b>' + esc(orderId) + '</b> could not be opened on this device. Open it from Seller Central &rarr; Orders on the device you sell from, or WhatsApp IBI with your Order ID.');
+      });
   }
 }
 </script>

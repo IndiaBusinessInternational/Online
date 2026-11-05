@@ -3316,9 +3316,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.13';
-window.IBI_VERSION_DATE = '31 Oct 2026';
-window.IBI_VERSION_NOTE = 'v20.13 — 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.';
+window.IBI_VERSION      = 'v20.14';
+window.IBI_VERSION_DATE = '5 Nov 2026';
+window.IBI_VERSION_NOTE = 'v20.14 — 🧾 LABEL AND TAX INVOICE ON ONE SHEET, AMAZON STYLE. Seller Central Orders now has one button that opens one A4 sheet: the shipping label on the top left and a full Tax Invoice on the top right, with cut lines. The invoice shows PAN, GSTIN, HSN, CGST + SGST or IGST and the amount in words. The To Address is large and neat, line by line. The sheet has Print and Download PDF buttons.';
+window.IBI_VERSION_NOTE_PREV36 = 'v20.13 — 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.';
 window.IBI_VERSION_NOTE_PREV35 = 'v20.12 — 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.';
 window.IBI_VERSION_NOTE_PREV34 = 'v20.11 — 📱 THE WHOLE PHONE SCREEN SCROLLS. On phones the top bar no longer stays stuck to the top, where it took about half of the screen and left only the lower half to scroll. It is also one compact row now: the badge, the sound button, a smaller logo and the cart, menu and share icons, with the search box on its own row below.';
 window.IBI_VERSION_NOTE_PREV33 = 'v20.10 — ⌨️ ESC CLOSES THE CART AND THE PRODUCT PAGE. On a laptop the Esc key now closes the open cart drawer, then the product page, the same as the Back button and the close buttons do.';
@@ -18594,7 +18595,7 @@ function saveSellerProfile() {
     if (st === 'Pending') actions += btn('✅ Confirm order', 'ibiOrderAct(' + id + ',\'accept\')', '#16a34a') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
     if (st === 'Unshipped') actions += btn('🚚 Confirm shipment', 'ibiOrderShipForm(' + id + ')', '#131921') + (sh.status === 'Confirmed' ? btn('📦 Mark packed', 'ibiOrderAct(' + id + ',\'pack\')', '#fff', '#374151') : '') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
     if (st === 'Shipped') actions += btn('🎉 Mark delivered', 'ibiOrderAct(' + id + ',\'deliver\')', '#15803d');
-    if (st !== 'Cancelled') actions += btn('🧾 Packing slip / invoice', 'ibiSellerPrint(' + id + ',\'invoice\')', '#fff', '#374151') + btn('🏷️ Shipping label', 'ibiSellerPrint(' + id + ',\'shipping\')', '#fff', '#374151');
+    if (st !== 'Cancelled') actions += btn('🧾 Label + Tax Invoice', 'ibiSellerPrint(' + id + ',\'both\')', '#fff', '#374151');
     var ship = sh.awb ? '<div style="margin-top:6px;font-size:12px;"><b>Carrier:</b> ' + esc(sh.courier) + ' · <b>Tracking ID:</b> ' + esc(sh.awb) + (sh.trackUrl ? ' · <a href="' + esc(sh.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;">track</a>' : '') + '</div>' : '';
     var cancel = sh.cancelReason ? '<div style="margin-top:6px;font-size:12px;color:#b91c1c;"><b>Cancelled:</b> ' + esc(sh.cancelReason) + '</div>' : '';
     var rets = (o.returns || []).map(function (r) { return returnBlock(o, r); }).join('');
@@ -18655,7 +18656,7 @@ function saveSellerProfile() {
   window.ibiSellerPrint = function (orderId, type) {
     var o = O.orders.find(function (x) { return x.orderId === orderId; }); if (!o) return;
     try { var cache = JSON.parse(localStorage.getItem('ibi_order_cache') || '{}');
-      cache[orderId] = { orderId: orderId, orderDate: o.date, customerName: o.customer, customerMobile: o.mobile, customerEmail: o.email || '', address: o.address, total: o.gross, items: JSON.stringify((o.items || []).map(function (it) { return { title: it.title, qty: it.qty, price: it.price, total: it.total }; })), status: o.orderStatus, seller: session() ? session().bizName : '' };
+      cache[orderId] = { orderId: orderId, orderDate: o.date, customerName: o.customer, customerMobile: o.mobile, customerEmail: o.email || '', address: o.address, total: o.gross, items: JSON.stringify((o.items || []).map(function (it) { return { title: it.title, qty: it.qty, price: it.price, total: it.total }; })), status: o.orderStatus, seller: session() ? session().bizName : '', sellerId: session() ? session().sellerId : '', shipment: o.shipment || null, soldBy: (function () { var x = session() || {}; return { name: x.bizName || '', pan: x.pan || '', gstin: x.gstin || '', phone: x.mobile || '', lines: [x.addr1, x.area, x.city, [x.state, x.pincode].filter(Boolean).join(', ')].filter(Boolean) }; })() };
       localStorage.setItem('ibi_order_cache', JSON.stringify(cache)); } catch (e) {}
     window.open('/print.html?type=' + type + '&order=' + encodeURIComponent(orderId), '_blank');
   };

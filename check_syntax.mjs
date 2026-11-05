@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, unlinkSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 let bad = 0, blocks = 0;
-for (const file of ['index.html', 'admin.html']) {
+for (const file of ['index.html', 'admin.html', 'print.html']) {
   let html; try { html = readFileSync(file, 'utf8'); } catch { continue; }
   const re = /(<script(?![^>]*\bsrc=)[^>]*>)([\s\S]*?)<\/script>/gi; let m, i = 0;
   while ((m = re.exec(html))) {
