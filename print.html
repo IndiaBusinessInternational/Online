@@ -36,28 +36,28 @@
   .cancelled { border:.5mm solid #000; text-align:center; font-weight:800; font-size:1.25em; padding:1mm; margin-bottom:1.5mm; }
 
   /* ── Shipping label ── */
-  .lab { padding:4mm 4mm 3mm; font-size:8pt; line-height:1.25; min-height:148.5mm; display:flex; flex-direction:column; }
+  .lab { padding:3mm 4mm 1.5mm; font-size:8pt; line-height:1.25; min-height:148.5mm; display:flex; flex-direction:column; }
   .lab-top { display:grid; grid-template-columns:1fr 27mm; gap:2.5mm; align-items:start; }
-  .barcode img { display:block; width:100%; height:15mm; image-rendering:pixelated; }
+  .barcode img { display:block; width:100%; height:14mm; image-rendering:pixelated; }
   .barcode div { text-align:center; font-weight:800; font-size:9.5pt; letter-spacing:.2pt; margin-top:.8mm; }
   .tag { border:.4mm solid #000; text-align:center; font-weight:800; font-size:10pt; padding:1mm .5mm; margin-bottom:1mm; line-height:1.15; overflow-wrap:anywhere; }
   .tag.big { font-size:12.5pt; padding:1.4mm .5mm; }
-  .ship-to { margin-top:2.5mm; flex:0 0 auto; }
+  .ship-to { margin-top:1.5mm; flex:0 0 auto; }
   .ship-to .h { font-weight:800; font-size:9pt; }
-  .ship-to .name { font-weight:800; font-size:14pt; line-height:1.2; margin:.6mm 0 1mm; overflow-wrap:anywhere; }
-  .ship-to .ln { font-size:11pt; line-height:1.28; font-weight:600; overflow-wrap:anywhere; }
-  .ship-to .city { font-size:12.5pt; font-weight:800; line-height:1.3; margin-top:.5mm; }
-  .ship-to .ph { font-size:11pt; font-weight:800; margin-top:1mm; }
-  .ord { margin-top:2mm; font-weight:800; font-size:9pt; line-height:1.3; border-bottom:.3mm solid #000; padding-bottom:1.5mm; }
-  .from { display:grid; grid-template-columns:1fr 19mm; gap:2mm; margin-top:1.5mm; font-size:7pt; line-height:1.25; }
-  .from img { width:19mm; height:19mm; display:block; }
+  .ship-to .name { font-weight:800; font-size:13.5pt; line-height:1.15; margin:.4mm 0 .6mm; overflow-wrap:anywhere; }
+  .ship-to .ln { font-size:10.5pt; line-height:1.22; font-weight:600; overflow-wrap:anywhere; }
+  .ship-to .city { font-size:12pt; font-weight:800; line-height:1.22; margin-top:.3mm; }
+  .ship-to .ph { font-size:10.5pt; font-weight:800; margin-top:.6mm; }
+  .ord { margin-top:1.2mm; font-weight:800; font-size:8.5pt; line-height:1.25; border-bottom:.3mm solid #000; padding-bottom:1mm; }
+  .from { display:grid; grid-template-columns:1fr 19mm; gap:2mm; margin-top:1mm; font-size:7pt; line-height:1.25; }
+  .from img { width:17mm; height:17mm; display:block; }
   .from .scan { font-size:5.5pt; text-align:center; margin-top:.3mm; }
-  .contents { margin-top:1.5mm; font-size:7.5pt; line-height:1.28; border-top:.3mm solid #000; padding-top:1.2mm; }
-  .decl { margin-top:1.5mm; border-top:.3mm solid #000; padding-top:1.2mm; font-size:6.8pt; font-weight:700; text-align:center; }
+  .contents { margin-top:1mm; font-size:7.2pt; line-height:1.22; border-top:.3mm solid #000; padding-top:.8mm; }
+  .decl { margin-top:1mm; border-top:.3mm solid #000; padding-top:.8mm; font-size:6.8pt; font-weight:700; text-align:center; }
   .lab-tbl { width:100%; border-collapse:collapse; margin-top:1mm; table-layout:fixed; }
   .lab-tbl th, .lab-tbl td { border:.3mm solid #000; padding:.6mm .7mm; font-size:6pt; text-align:left; vertical-align:top; overflow-wrap:anywhere; }
   .lab-tbl th { font-size:6.4pt; text-align:center; }
-  .sold-on { margin-top:auto; padding-top:1.5mm; font-size:7pt; font-weight:800; }
+  .sold-on { padding-top:1mm; font-size:7pt; font-weight:800; }
 
   /* ── Tax invoice: em units so the full-page copy can scale up ── */
   .inv { padding:4mm 4mm 3mm; font-size:6.7pt; line-height:1.28; min-height:148.5mm; display:flex; flex-direction:column; }
@@ -137,7 +137,7 @@ document.getElementById('verTag').textContent = PRINT_VERSION;
 /* IBI's own details: exactly as on its Amazon tax invoice of 4 Nov 2026. */
 const IBI = {
   name:'INDIA BUSINESS INTERNATIONAL',
-  lines:['Plot No 8/9 B, Overseer eCommerce WareHouse,', 'Neeruvakuzhi - South, Karungal to Kurumpanai', 'Road, Kanyakumari District,', 'Palapallam Post Office, TAMIL NADU, 629159', 'IN'],
+  lines:['Plot No 8/9 B, Overseer eCommerce', 'WareHouse, Neeruvakuzhi - South,', 'Karungal to Kurumpanai Road,', 'Kanyakumari District,', 'Palapallam Post Office,', 'TAMIL NADU, 629159', 'IN'],
   oneLine:'Plot No 8/9 B, Overseer eCommerce WareHouse, Neeruvakuzhi - South, Karungal to Kurumpanai Road, Kanyakumari District, Palapallam Post Office, TAMIL NADU, 629159, India',
   pan:'AOLPP8759A', gstin:'33AOLPP8759A2ZO', fssai:'22419077000642', phone:'+91 89394 14799'
 };
@@ -379,7 +379,7 @@ function renderLabel(o, lines, seller, addr, pay, ship) {
       (qr ? '<div><img alt="Scan to track" src="' + qr + '"><div class="scan">Scan to track</div></div>' : '<div></div>') + '</div>' +
     '<div class="contents"><b>Contents:</b> ' + lines.map(function (l) { return esc(l.short) + ' &times; ' + l.qty; }).join('; ') + '</div>' +
     '<div class="decl">Customer Self Declaration: The goods sold are intended for end user consumption. Not for resale.</div>' +
-    '<table class="lab-tbl"><thead><tr><th style="width:6%;">#</th><th style="width:24%;">SELLER</th><th style="width:24%;">GSTIN</th><th style="width:18%;">INVOICE</th><th style="width:13%;">DATE</th><th style="width:15%;">ITEM TYPE</th></tr></thead>' +
+    '<table class="lab-tbl"><thead><tr><th style="width:5%;">#</th><th style="width:22%;">SELLER</th><th style="width:25%;">GSTIN</th><th style="width:24%;">INVOICE</th><th style="width:11%;">DATE</th><th style="width:13%;">ITEM TYPE</th></tr></thead>' +
     '<tbody><tr><td>1</td><td>' + esc(seller.name) + '</td><td>' + esc(seller.gstin || '') + '</td><td>' + esc(invNo) + '</td><td>' + dateShow(o.orderDate) + '</td><td>' + esc(itemType) + '</td></tr></tbody></table>' +
     '<div class="sold-on">Sold on: ' + SITE + '</div>' +
   '</div>';
