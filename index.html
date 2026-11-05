@@ -3316,9 +3316,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.15';
+window.IBI_VERSION      = 'v20.16';
 window.IBI_VERSION_DATE = '5 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.15 — 🏷️ SEPARATE PRINT-OUTS TOO. Seller Central Orders now has three buttons: Label + Tax Invoice on one sheet, Shipping Label only, and Tax Invoice only. The print page has the same three choices at the top, and Print and Download PDF work for each one.';
+window.IBI_VERSION_NOTE = 'v20.16 — 🚚 ST COURIER IN THE CARRIER LIST. Confirm shipment in Seller Central now offers ST Courier, and fills the ST Courier tracking link by itself when the link box is left empty.';
+window.IBI_VERSION_NOTE_PREV38 = 'v20.15 — 🏷️ SEPARATE PRINT-OUTS TOO. Seller Central Orders now has three buttons: Label + Tax Invoice on one sheet, Shipping Label only, and Tax Invoice only. The print page has the same three choices at the top, and Print and Download PDF work for each one.';
 window.IBI_VERSION_NOTE_PREV37 = 'v20.14 — 🧾 LABEL AND TAX INVOICE ON ONE SHEET, AMAZON STYLE. Seller Central Orders now has one button that opens one A4 sheet: the shipping label on the top left and a full Tax Invoice on the top right, with cut lines. The invoice shows PAN, GSTIN, HSN, CGST + SGST or IGST and the amount in words. The To Address is large and neat, line by line. The sheet has Print and Download PDF buttons.';
 window.IBI_VERSION_NOTE_PREV36 = 'v20.13 — 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.';
 window.IBI_VERSION_NOTE_PREV35 = 'v20.12 — 📱 PRODUCT PAGE TEXT NO LONGER TOUCHES THE PHONE EDGE. On phones and tablets the product name, price, options and description now keep a small gap from the screen edge, like the photo above them. The round help and WhatsApp buttons are a little smaller, and the page ends with extra room so the last lines can scroll clear of the floating buttons.';
@@ -18548,7 +18549,7 @@ function saveSellerProfile() {
   function parseIN(s) { var m = String(s || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], +m[2] - 1, +m[1]) : null; }
   function addWorkingDays(d, n) { var x = new Date(d); var added = 0; while (added < n) { x.setDate(x.getDate() + 1); if (x.getDay() !== 0) added++; } return x; }
   function fmtD(d) { return d ? d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ''; }
-  var CARRIERS = ['Delhivery', 'Blue Dart', 'DTDC', 'India Post / Speed Post', 'Ecom Express', 'Xpressbees', 'Ekart', 'Shadowfax', 'Amazon Shipping', 'Professional Couriers', 'Other'];
+  var CARRIERS = ['Delhivery', 'Blue Dart', 'DTDC', 'India Post / Speed Post', 'Ecom Express', 'Xpressbees', 'Ekart', 'Shadowfax', 'Amazon Shipping', 'Professional Couriers', 'ST Courier', 'Other'];
   var CANCEL_REASONS = ['Out of stock', 'Pricing error on the listing', 'Customer requested cancellation', 'Address is undeliverable', 'Other'];
   var RETURN_REASONS = ['Item defective or does not work', 'Item arrived damaged', 'Wrong item was sent', 'Missing parts or accessories', 'Item is different from the listing', 'Size or fit issue', 'Item arrived too late', 'Bought by mistake / no longer needed'];
   // Sheet status → what the seller sees (Amazon wording)
@@ -18638,6 +18639,7 @@ function saveSellerProfile() {
   window.ibiOrderShipSubmit = function (orderId) {
     var c = ($('shp_c_' + orderId) || {}).value, a = (($('shp_a_' + orderId) || {}).value || '').trim(), u = (($('shp_u_' + orderId) || {}).value || '').trim();
     if (!a) { showToast('⚠️ Enter the tracking ID from the courier'); return; }
+    if (!u && c === 'ST Courier') u = 'https://stcourier.com/track/shipment';
     ibiOrderAct(orderId, 'ship', { courier: c, awb: a, trackUrl: u });
   };
   window.ibiOrderCancel = function (orderId) {

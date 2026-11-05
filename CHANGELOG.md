@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.16
+- 🚚 ST Courier added to the carrier list in Confirm shipment. Its tracking link is filled automatically when the link box is left empty.
+
 ## v20.15
 - 🏷️ Separate print-outs too: Shipping Label only and Tax Invoice only, besides the one-sheet Label + Tax Invoice. Three buttons in Seller Central Orders and the same three choices on the print page. Print and Download PDF work for each.
 
