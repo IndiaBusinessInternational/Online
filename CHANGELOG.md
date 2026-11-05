@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.17
+- 🚀 Ship with Shiprocket in Seller Central Orders, IBI own orders only: real rates cheapest first, wallet balance, package size and weight, two-step confirm, AWB, courier label and WhatsApp link. A failed AWB can be retried without a second Shiprocket order.
+- ✏️ Correct courier on shipped and delivered orders. The buyer gets no second email.
+
 ## v20.16
 - 🚚 ST Courier added to the carrier list in Confirm shipment. Its tracking link is filled automatically when the link box is left empty.
 

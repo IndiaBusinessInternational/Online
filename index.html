@@ -3316,9 +3316,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.16';
+window.IBI_VERSION      = 'v20.17';
 window.IBI_VERSION_DATE = '5 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.16 — 🚚 ST COURIER IN THE CARRIER LIST. Confirm shipment in Seller Central now offers ST Courier, and fills the ST Courier tracking link by itself when the link box is left empty.';
+window.IBI_VERSION_NOTE = 'v20.17 — 🚀 SHIPROCKET IN SELLER CENTRAL. IBI own orders get a Ship with Shiprocket button: real rates, wallet balance, a two-step confirm, AWB, courier label and WhatsApp link. New Correct courier button fixes a wrong courier on a shipped order with no second email to the buyer.';
+window.IBI_VERSION_NOTE_PREV39 = 'v20.16 — 🚚 ST COURIER IN THE CARRIER LIST. Confirm shipment in Seller Central now offers ST Courier, and fills the ST Courier tracking link by itself when the link box is left empty.';
 window.IBI_VERSION_NOTE_PREV38 = 'v20.15 — 🏷️ SEPARATE PRINT-OUTS TOO. Seller Central Orders now has three buttons: Label + Tax Invoice on one sheet, Shipping Label only, and Tax Invoice only. The print page has the same three choices at the top, and Print and Download PDF work for each one.';
 window.IBI_VERSION_NOTE_PREV37 = 'v20.14 — 🧾 LABEL AND TAX INVOICE ON ONE SHEET, AMAZON STYLE. Seller Central Orders now has one button that opens one A4 sheet: the shipping label on the top left and a full Tax Invoice on the top right, with cut lines. The invoice shows PAN, GSTIN, HSN, CGST + SGST or IGST and the amount in words. The To Address is large and neat, line by line. The sheet has Print and Download PDF buttons.';
 window.IBI_VERSION_NOTE_PREV36 = 'v20.13 — 💻 A SLIM TOP BAR ON LAPTOPS. When you scroll down, the date strip and the department row now move away and only one slim bar stays at the top: the logo, the search box, account, orders and the cart. It is about 64px instead of 217px, so you see much more of the shop. Back at the top, the full header returns. Phones are unchanged.';
@@ -18595,10 +18596,13 @@ function saveSellerProfile() {
     var actions = '';
     var id = "'" + esc(o.orderId) + "'";
     if (st === 'Pending') actions += btn('✅ Confirm order', 'ibiOrderAct(' + id + ',\'accept\')', '#16a34a') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
-    if (st === 'Unshipped') actions += btn('🚚 Confirm shipment', 'ibiOrderShipForm(' + id + ')', '#131921') + (sh.status === 'Confirmed' ? btn('📦 Mark packed', 'ibiOrderAct(' + id + ',\'pack\')', '#fff', '#374151') : '') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
+    var booked = courierBooked(sh);
+    if (st === 'Unshipped' && !booked) actions += (isHouse() ? btn('🚀 Ship with Shiprocket', 'ibiSrOpen(' + id + ')', '#006994') : '') + btn('🚚 Confirm shipment', 'ibiOrderShipForm(' + id + ')', '#131921') + (sh.status === 'Confirmed' ? btn('📦 Mark packed', 'ibiOrderAct(' + id + ',\'pack\')', '#fff', '#374151') : '') + btn('✖ Cancel', 'ibiOrderCancel(' + id + ')', '#fff', '#b91c1c');
+    if (booked && (st === 'Unshipped' || st === 'Shipped')) actions += btn('🏷️ Courier label (PDF)', 'ibiOrderCourierLabel(' + id + ')', '#006994');
     if (st === 'Shipped') actions += btn('🎉 Mark delivered', 'ibiOrderAct(' + id + ',\'deliver\')', '#15803d');
+    if ((st === 'Shipped' || st === 'Delivered') && sh.awb && !booked) actions += btn('✏️ Correct courier', 'ibiOrderFixCourier(' + id + ')', '#fff', '#374151');
     if (st !== 'Cancelled') actions += btn('🧾 Label + Tax Invoice', 'ibiSellerPrint(' + id + ',\'both\')', '#fff', '#374151') + btn('🏷️ Shipping Label', 'ibiSellerPrint(' + id + ',\'shipping\')', '#fff', '#374151') + btn('📄 Tax Invoice', 'ibiSellerPrint(' + id + ',\'invoice\')', '#fff', '#374151');
-    var ship = sh.awb ? '<div style="margin-top:6px;font-size:12px;"><b>Carrier:</b> ' + esc(sh.courier) + ' · <b>Tracking ID:</b> ' + esc(sh.awb) + (sh.trackUrl ? ' · <a href="' + esc(sh.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;">track</a>' : '') + '</div>' : '';
+    var ship = sh.awb ? '<div style="margin-top:6px;font-size:12px;"><b>Carrier:</b> ' + esc(sh.courier) + ' · <b>Tracking ID:</b> ' + esc(sh.awb) + (sh.trackUrl ? ' · <a href="' + esc(sh.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;">track</a>' : '') + (sh.courierStatus ? ' · <b>Courier status:</b> ' + esc(sh.courierStatus) : '') + '</div>' : '';
     var cancel = sh.cancelReason ? '<div style="margin-top:6px;font-size:12px;color:#b91c1c;"><b>Cancelled:</b> ' + esc(sh.cancelReason) + '</div>' : '';
     var rets = (o.returns || []).map(function (r) { return returnBlock(o, r); }).join('');
     return '<div id="ord_' + esc(o.orderId) + '" style="background:#fff;border:1px solid ' + (late ? '#fca5a5' : '#e5e7eb') + ';border-radius:12px;padding:14px 16px;margin-bottom:12px;">' +
@@ -18623,7 +18627,7 @@ function saveSellerProfile() {
     post(params, function (res) {
       if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
       var o = O.orders.find(function (x) { return x.orderId === orderId; }); if (o) { o.shipment = res.shipment; o.orderStatus = res.orderStatus; }
-      showToast('✅ ' + orderId + ' is now ' + (LABEL[res.shipment.status] || res.shipment.status), 'success'); renderOrders(); ibiRenderOnboarding();
+      showToast(act === 'fixcourier' ? '✅ Courier corrected on ' + orderId + '. No email went to the buyer.' : '✅ ' + orderId + ' is now ' + (LABEL[res.shipment.status] || res.shipment.status), 'success'); renderOrders(); ibiRenderOnboarding();
     });
   };
   window.ibiOrderShipForm = function (orderId) {
@@ -18641,6 +18645,98 @@ function saveSellerProfile() {
     if (!a) { showToast('⚠️ Enter the tracking ID from the courier'); return; }
     if (!u && c === 'ST Courier') u = 'https://stcourier.com/track/shipment';
     ibiOrderAct(orderId, 'ship', { courier: c, awb: a, trackUrl: u });
+  };
+  // v20.17: correct a wrong courier on a parcel that has already left. The buyer is NOT emailed again.
+  window.ibiOrderFixCourier = function (orderId) {
+    var host = $('ordform_' + orderId); if (!host) return;
+    var o = O.orders.find(function (x) { return x.orderId === orderId; }) || {}; var sh = o.shipment || {}; var id = esc(orderId);
+    var list = CARRIERS.indexOf(sh.courier) === -1 && sh.courier ? [sh.courier].concat(CARRIERS) : CARRIERS;
+    host.innerHTML = '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-top:10px;display:grid;gap:8px;">' +
+      '<div style="font-weight:800;font-size:13px;">Correct the courier</div>' +
+      '<div style="font-size:12px;color:#4b5563;">The buyer gets no new email. Track My Order and the label show the corrected details at once.</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;"><div><label class="sc-label" style="font-size:11px;">Carrier</label><select id="fix_c_' + id + '" class="sc-input">' + list.map(function (c) { return '<option' + (c === sh.courier ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
+      '<div><label class="sc-label" style="font-size:11px;">Tracking ID / AWB</label><input id="fix_a_' + id + '" class="sc-input" value="' + esc(sh.awb || '') + '" autocomplete="off"></div></div>' +
+      '<div><label class="sc-label" style="font-size:11px;">Tracking link (optional)</label><input id="fix_u_' + id + '" class="sc-input" value="' + esc(sh.trackUrl || '') + '" placeholder="https://…"></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + btn('💾 Save correction', 'ibiOrderFixSubmit(\'' + id + '\')', '#131921') + btn('Cancel', 'document.getElementById(\'ordform_' + id + '\').innerHTML=\'\'', '#fff', '#374151') + '</div></div>';
+    host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  window.ibiOrderFixSubmit = function (orderId) {
+    var c = ($('fix_c_' + orderId) || {}).value, a = (($('fix_a_' + orderId) || {}).value || '').trim(), u = (($('fix_u_' + orderId) || {}).value || '').trim();
+    if (!a) { showToast('⚠️ Enter the tracking ID from the courier'); return; }
+    if (!u && c === 'ST Courier') u = 'https://stcourier.com/track/shipment';
+    ibiOrderAct(orderId, 'fixcourier', { courier: c, awb: a, trackUrl: u });
+  };
+
+  // v20.17: SHIP WITH SHIPROCKET. IBI own orders only: the booking spends the IBI wallet, so the backend refuses other sellers too.
+  var SR = {};
+  function isHouse() { var s = session() || {}; return ['IINTELLIGENCEI', 'IBI'].indexOf(String(s.sellerId || '').toUpperCase()) !== -1; }
+  function courierBooked(sh) { return !!(sh && sh.awb && (sh.carrier === 'shiprocket' || sh.carrier === 'delhivery')); }
+  function srBox(inner) { return '<div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-top:10px;display:grid;gap:10px;font-size:14px;">' + inner + '</div>'; }
+  function srClose(id) { return btn('Close', 'document.getElementById(\'ordform_' + id + '\').innerHTML=\'\'', '#fff', '#374151'); }
+  function srMoney(n) { return '₹' + (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-IN'); }
+  window.ibiSrOpen = function (orderId, useInputs) {
+    var s = session(); var host = $('ordform_' + orderId); if (!s || !host) return;
+    var id = esc(orderId); var params = { action: 'sellerShipQuote', sellerId: s.sellerId, pin: s.pin, orderId: orderId };
+    if (useInputs) { params.l = ($('sr_l_' + orderId) || {}).value; params.b = ($('sr_b_' + orderId) || {}).value; params.h = ($('sr_h_' + orderId) || {}).value; params.weightG = ($('sr_w_' + orderId) || {}).value; }
+    host.innerHTML = srBox('⏳ Getting courier rates…');
+    host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    post(params, function (res) {
+      var h = $('ordform_' + orderId); if (!h) return;
+      if (!res || (!res.success && !res.pkg)) { h.innerHTML = srBox('<div style="color:#b91c1c;font-weight:700;">❌ ' + esc(res && res.message ? res.message : 'No reply from the server. Please try again.') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;">' + btn('🔄 Try again', 'ibiSrOpen(\'' + id + '\')', '#131921') + srClose(id) + '</div>'); return; }
+      res.pick = -1; SR[orderId] = res; ibiSrRender(orderId);
+    }, 60000);
+  };
+  window.ibiSrRender = function (orderId) {
+    var host = $('ordform_' + orderId), q = SR[orderId]; if (!host || !q) return;
+    var id = esc(orderId), arg = '\'' + id + '\'', opts = q.options || [], p = q.pkg || {}, known = q.wallet !== null && q.wallet !== undefined;
+    if (q.pick >= 0 && opts[q.pick]) {
+      var c = opts[q.pick];
+      host.innerHTML = srBox('<div style="font-size:16px;font-weight:800;">Book ' + esc(c.courier) + ' for ' + srMoney(c.rate) + '?</div>' +
+        '<div style="color:#374151;">This charges the Shiprocket wallet now, schedules the pickup and emails the buyer the tracking number. It cannot be undone from here; a cancellation is done in the Shiprocket dashboard.</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + btn('✅ Yes, book ' + srMoney(c.rate), 'ibiSrBook(' + arg + ')', '#15803d') + btn('← Back to rates', 'ibiSrPick(' + arg + ',-1)', '#fff', '#374151') + '</div>');
+      return;
+    }
+    var fld = function (key, label, val) { return '<div><label class="sc-label" style="font-size:11px;">' + label + '</label><input id="sr_' + key + '_' + id + '" class="sc-input" type="number" min="1" inputmode="decimal" value="' + esc(val == null ? '' : val) + '"></div>'; };
+    var rows = opts.map(function (c, i) {
+      var low = known && c.carrier === 'shiprocket' && c.rate > q.wallet;
+      var tags = (i === 0 ? '<span style="background:#dcfce7;color:#166534;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px;">Cheapest</span>' : '') + (c.recommended ? '<span style="background:#e0f2fe;color:#075985;font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px;margin-left:6px;">Shiprocket pick</span>' : '');
+      var meta = [c.mode, c.days ? c.days + ' days' : '', c.etd ? 'by ' + c.etd : ''].filter(Boolean).map(esc).join(' · ');
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:10px;">' +
+        '<div style="flex:1 1 180px;min-width:0;"><div style="font-size:15px;font-weight:700;">' + esc(c.courier) + tags + '</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">' + meta + '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:10px;"><b style="font-size:16px;">' + srMoney(c.rate) + '</b>' + (low ? '<span style="font-size:12px;font-weight:700;color:#b91c1c;">Wallet too low</span>' : btn('Choose', 'ibiSrPick(' + arg + ',' + i + ')', '#006994')) + '</div></div>';
+    }).join('');
+    host.innerHTML = srBox('<div style="font-size:16px;font-weight:800;">🚀 Ship with Shiprocket</div>' +
+      '<div style="font-size:13px;color:#374151;">From PIN ' + esc(q.fromPin) + ' to PIN ' + esc(q.toPin) + ' · Order value ' + srMoney(q.value) + ' · Wallet ' + (known ? '<b>' + srMoney(q.wallet) + '</b>' : '<b>could not be read</b>') + '</div>' +
+      (q.paid ? '' : '<div style="font-size:13px;font-weight:700;color:#b45309;">⚠️ This order is not marked paid online. Check the payment before you book.</div>') +
+      (p.missing && p.missing.length ? '<div style="font-size:13px;font-weight:700;color:#b45309;">⚠️ No package size on the listing, so this is an estimate. Enter the real size and weight, then refresh the rates: ' + esc(p.missing.join(', ')) + '</div>' : '') +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:8px;align-items:end;">' + fld('l', 'L cm', p.l) + fld('b', 'B cm', p.b) + fld('h', 'H cm', p.h) + fld('w', 'Weight g', p.weightG) + '</div>' +
+      '<div>' + btn('🔄 Refresh rates', 'ibiSrOpen(' + arg + ',true)', '#fff', '#374151') + '</div>' +
+      (rows ? '<div style="display:grid;gap:8px;">' + rows + '</div>' : '<div style="color:#b91c1c;font-weight:700;">❌ ' + esc(q.message || 'No courier rates for this package.') + '</div>') +
+      '<div>' + srClose(id) + '</div>');
+  };
+  window.ibiSrPick = function (orderId, i) { var q = SR[orderId]; if (!q) return; q.pick = i; ibiSrRender(orderId); };
+  window.ibiSrBook = function (orderId) {
+    var s = session(), q = SR[orderId], host = $('ordform_' + orderId); if (!s || !q || !host || q.busy) return;
+    var c = (q.options || [])[q.pick]; if (!c) return;
+    var id = esc(orderId), p = q.pkg || {}; q.busy = true;
+    host.innerHTML = srBox('⏳ Booking ' + esc(c.courier) + '. Please keep this page open…');
+    post({ action: 'sellerShipBook', sellerId: s.sellerId, pin: s.pin, orderId: orderId, confirm: 'YES', carrier: c.carrier, courierId: c.courierId, courierName: c.courier, rate: c.rate, l: p.l, b: p.b, h: p.h, weightG: p.weightG }, function (res) {
+      q.busy = false;
+      var h = $('ordform_' + orderId);
+      if (!res) { if (h) h.innerHTML = srBox('<div style="color:#b45309;font-weight:700;">⚠️ No reply yet. The booking may still have gone through. Reload the orders and check for a tracking number before you try again.</div><div>' + btn('🔄 Reload orders', 'loadSellerOrders()', '#131921') + '</div>'); return; }
+      if (!res.success) { if (h) h.innerHTML = srBox('<div style="color:#b91c1c;font-weight:700;">❌ ' + esc(res.message || 'Booking failed') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap;">' + btn('← Back to rates', 'ibiSrOpen(\'' + id + '\')', '#131921') + srClose(id) + '</div>'); return; }
+      var o = O.orders.find(function (x) { return x.orderId === orderId; }); if (o) { o.shipment = res.shipment; if (res.orderStatus) o.orderStatus = res.orderStatus; }
+      delete SR[orderId];
+      showToast('✅ Booked ' + res.shipment.courier + ' · AWB ' + res.shipment.awb, 'success'); renderOrders(); ibiRenderOnboarding();
+      var after = $('ordform_' + orderId); if (!after) return;
+      after.innerHTML = srBox('<div style="font-size:16px;font-weight:800;color:#15803d;">✅ Booked with ' + esc(res.shipment.courier) + '</div><div>AWB <b>' + esc(res.shipment.awb) + '</b>' + (res.shipment.trackUrl ? ' · <a href="' + esc(res.shipment.trackUrl) + '" target="_blank" rel="noopener" style="color:#0098c9;">track</a>' : '') + '. The buyer has been emailed the tracking number.</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + btn('🏷️ Courier label (PDF)', 'ibiOrderCourierLabel(\'' + id + '\')', '#006994') + (res.wa ? '<a href="' + esc(res.wa) + '" target="_blank" rel="noopener" style="padding:8px 14px;border-radius:8px;background:#15803d;color:#fff;font-size:12.5px;font-weight:700;text-decoration:none;">💬 WhatsApp the buyer</a>' : '') + srClose(id) + '</div>');
+    }, 90000);
+  };
+  window.ibiOrderCourierLabel = function (orderId) {
+    var o = O.orders.find(function (x) { return x.orderId === orderId; }); var u = o && o.shipment && o.shipment.labelUrl;
+    if (!u) { showToast('⚠️ The courier label is not ready yet. Open it in the Shiprocket dashboard under Orders.'); return; }
+    window.open(u, '_blank', 'noopener');
   };
   window.ibiOrderCancel = function (orderId) {
     var host = $('ordform_' + orderId); if (!host) return;
