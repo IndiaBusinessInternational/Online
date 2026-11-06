@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.18
+- 🏢 About Us and Contact Us pages, linked from the storefront footer, product pages and policy pages.
+
 ## v20.17
 - 🚀 Ship with Shiprocket in Seller Central Orders, IBI own orders only: real rates cheapest first, wallet balance, package size and weight, two-step confirm, AWB, courier label and WhatsApp link. A failed AWB can be retried without a second Shiprocket order.
 - ✏️ Correct courier on shipped and delivered orders. The buyer gets no second email.
