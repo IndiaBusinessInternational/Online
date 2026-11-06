@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.19
+- 📍 About Us page states the address move from Thiruporur, Chennai to Kanyakumari.
+
 ## v20.18
 - 🏢 About Us and Contact Us pages, linked from the storefront footer, product pages and policy pages.
 
