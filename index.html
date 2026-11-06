@@ -2459,6 +2459,16 @@ table.cx-grid input.cx-prodsize { width: 130px; padding: 5px 6px; border: 1px so
       document.head.appendChild(s);
     }
   </script>
+  <!-- Meta Pixel, v20.20. Visits, product views, add to cart, verified purchases. No customer data is passed. -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+    s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','1032825588961100');fbq('track','PageView');
+    window.ibiPixel=function(ev,data,opts){try{window.fbq('track',ev,data||{},opts||{});}catch(e){}};
+    window.ibiPixelView=function(id,val){try{var k='ibi_vc_'+id;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');}catch(e){}
+      window.ibiPixel('ViewContent',{content_ids:[String(id)],content_type:'product',value:Number(val)||0,currency:'INR'});};
+  </script>
   <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
@@ -3317,9 +3327,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.19';
+window.IBI_VERSION      = 'v20.20';
 window.IBI_VERSION_DATE = '6 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.19 — 📍 ADDRESS MOVE ON ABOUT US. The About Us page now says our earlier address was at Thiruporur, Chennai and that we have moved to Kanyakumari.';
+window.IBI_VERSION_NOTE = 'v20.20 — 📈 META PIXEL. Counts visits, product views, add to cart and verified Razorpay purchases from our ads, with no customer data. Privacy Policy updated to say so.';
+window.IBI_VERSION_NOTE_PREV42 = 'v20.19 — 📍 ADDRESS MOVE ON ABOUT US. The About Us page now says our earlier address was at Thiruporur, Chennai and that we have moved to Kanyakumari.';
 window.IBI_VERSION_NOTE_PREV41 = 'v20.18 — 🏢 ABOUT US AND CONTACT US PAGES. New pages show who runs the Marketplace, the GSTIN, address, phone, WhatsApp, email and Grievance Officer. Both are linked from the footer and the policy pages.';
 window.IBI_VERSION_NOTE_PREV40 = 'v20.17 — 🚀 SHIPROCKET IN SELLER CENTRAL. IBI own orders get a Ship with Shiprocket button: real rates, wallet balance, a two-step confirm, AWB, courier label and WhatsApp link. New Correct courier button fixes a wrong courier on a shipped order with no second email to the buyer.';
 window.IBI_VERSION_NOTE_PREV39 = 'v20.16 — 🚚 ST COURIER IN THE CARRIER LIST. Confirm shipment in Seller Central now offers ST Courier, and fills the ST Courier tracking link by itself when the link box is left empty.';
@@ -8366,6 +8377,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
   // Stock is the one figure a shopper acts on, so this page never shows it on trust.
   // The answer lands behind the page and re-draws it only if a figure actually moved.
   if (!p._preview) _ppEnsureFreshStock();
+  if (!p._preview && !_isVarSwitch && window.ibiPixelView) window.ibiPixelView(p.productId || p.id, p.price);
 
   const disc       = Math.round((1 - p.price / p.mrp) * 100);
   const saving     = p.mrp - p.price;
@@ -13910,6 +13922,7 @@ function addToCart(id, qty = 1, variant) {
   renderCart();
   const nm = variant && variant.vlabel ? (p.title.substring(0,28) + ' — ' + variant.vlabel) : (p.title ? p.title.substring(0,35) + '...' : p.brand);
   showToast('✅ ' + nm + ' added to cart!', 'success');
+  if (window.ibiPixel) window.ibiPixel('AddToCart', { content_ids: [String(p.productId || p.id)], content_type: 'product', value: (Number(variant && variant.vprice) || Number(p.price) || 0) * qty, currency: 'INR' });
 }
 
 function addToCartFromCard(e, id) {
@@ -15156,6 +15169,7 @@ function ibiRzpDone(orderId, c, items, total, address, method, serverMail) {
     localStorage.setItem('ibi_order_cache', JSON.stringify(oc));
   } catch (e) {}
   setTimeout(function () { try { sendOrderEmail(orderId, c, items.map(function (i) { return { title: i.title, qty: i.qty, price: i.price, total: i.total }; }), total, null, { serverMail: !!serverMail }); } catch (e) {} }, 1000);
+  if (window.ibiPixel) window.ibiPixel('Purchase', { value: Number(total) || 0, currency: 'INR', content_type: 'product', num_items: items.reduce(function (n, i) { return n + (Number(i.qty) || 1); }, 0) }, { eventID: String(orderId) });
   showZohoPaymentSuccess(orderId, Number(total), c.name, 'via Razorpay' + (method ? ' · ' + String(method).toUpperCase() : '') + ' · verified by IBI');
 }
 

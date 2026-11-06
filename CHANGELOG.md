@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.20
+- 📈 Meta Pixel 1032825588961100 on the storefront and all /p/ pages (PAGE_TEMPLATE 4): PageView, ViewContent, AddToCart, Purchase after Razorpay verification only. No customer data passed. Privacy Policy sections 3 and 4 updated.
+
 ## v20.19
 - 📍 About Us page states the address move from Thiruporur, Chennai to Kanyakumari.
 

@@ -39,7 +39,7 @@ const FEED   = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_
 const BRAND  = 'iINTELLIGENCEi';
 // Bump when productPage() changes, so every /p/ page is rewritten on the next run
 // even if no listing changed (2 = v20.0: variation ?v= links, ProductGroup, policy links).
-const PAGE_TEMPLATE = 3;
+const PAGE_TEMPLATE = 4;
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 const esc = s => String(s == null ? '' : s)
@@ -357,7 +357,12 @@ function productPage(p, slug) {
     '.vt tr.sel td{background:#E3F3FA;border-color:#006994}\n' +
     '.foot{position:relative;background:#0A0D12;color:#9AA4B2;padding-top:22px}.foot a{color:#00C5FF}\n' +
     '@media(max-width:640px){.wrap{margin:0;border-radius:0;border-left:0;border-right:0;padding:14px 10px}h1{font-size:22px}.gal img{width:calc(50% - 5px);height:auto;aspect-ratio:1}}\n' +
-    '</style>\n</head>\n<body>\n' +
+    '</style>\n' +
+    '<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");' +
+    'fbq("init","1032825588961100");fbq("track","PageView");' +
+    '(function(){var k="ibi_vc_' + esc(p.productId || '') + '",seen=false;try{seen=!!sessionStorage.getItem(k);sessionStorage.setItem(k,"1");}catch(e){}' +
+    'if(!seen)fbq("track","ViewContent",{content_ids:["' + esc(p.productId || '') + '"],content_type:"product",value:' + (Number(pr.min) || 0) + ',currency:"INR"});})();</script>\n' +
+    '</head>\n<body>\n' +
     '<div class="top"><a href="/">🛍️ IBI Marketplace — India Business International</a></div>\n' +
     '<div class="wrap">\n' +
     '<div class="crumb"><a href="/">All Products</a> › ' + esc(title.slice(0, 60)) + '</div>\n' +
