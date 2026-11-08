@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.22
+- 💲 Bulk Price fix: bulkUpdatePrices clears the storefront product cache again after its writes (backend Version 111), so new prices show at once; the preview now says what to check before Apply.
+
 ## v20.21
 - 💲 Bulk Price Update tab in Seller Central: download the price sheet (every listing and size/colour row with live price and MRP), fill New price, upload, preview old to new with rises above 40% and mistakes marked, Apply. New backend action bulkUpdatePrices changes only price and MRP, all or nothing per listing, backup row first.
 
