@@ -3327,9 +3327,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.20';
-window.IBI_VERSION_DATE = '6 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.20 — 📈 META PIXEL. Counts visits, product views, add to cart and verified Razorpay purchases from our ads, with no customer data. Privacy Policy updated to say so.';
+window.IBI_VERSION      = 'v20.21';
+window.IBI_VERSION_DATE = '8 Nov 2026';
+window.IBI_VERSION_NOTE = 'v20.21 — 💲 BULK PRICE UPDATE. Seller Central has a new Bulk Price tab: download your price sheet, fill New price for any listing, size or colour, upload it, check the preview and apply. Only price and MRP change, MRP fills itself at 1.5 times the price, and each listing is backed up first.';
+window.IBI_VERSION_NOTE_PREV43 = 'v20.20 — 📈 META PIXEL. Counts visits, product views, add to cart and verified Razorpay purchases from our ads, with no customer data. Privacy Policy updated to say so.';
 window.IBI_VERSION_NOTE_PREV42 = 'v20.19 — 📍 ADDRESS MOVE ON ABOUT US. The About Us page now says our earlier address was at Thiruporur, Chennai and that we have moved to Kanyakumari.';
 window.IBI_VERSION_NOTE_PREV41 = 'v20.18 — 🏢 ABOUT US AND CONTACT US PAGES. New pages show who runs the Marketplace, the GSTIN, address, phone, WhatsApp, email and Grievance Officer. Both are linked from the footer and the policy pages.';
 window.IBI_VERSION_NOTE_PREV40 = 'v20.17 — 🚀 SHIPROCKET IN SELLER CENTRAL. IBI own orders get a Ship with Shiprocket button: real rates, wallet balance, a two-step confirm, AWB, courier label and WhatsApp link. New Correct courier button fixes a wrong courier on a shipped order with no second email to the buyer.';
@@ -4658,7 +4659,7 @@ function ibiRestoreBackup(input){
 }
 
 function switchDashTab(tab) {
-  ['products','add','orders','earnings','profile','catalog','bulk','reviews','videos'].forEach(t => {
+  ['products','add','orders','earnings','profile','catalog','bulk','price','reviews','videos'].forEach(t => {
     const el  = document.getElementById('dashTab_' + t);
     const btn = document.getElementById('tab_' + t);
     if (el)  el.style.display  = (t === tab) ? 'block' : 'none';
@@ -4674,6 +4675,7 @@ function switchDashTab(tab) {
   }
   if (tab === 'products') loadSellerProducts();
   if (tab === 'bulk' && typeof ibiBulkOpen === 'function') ibiBulkOpen();   // v14.0 bulk catalogue upload
+  if (tab === 'price' && typeof ibiPriceOpen === 'function') ibiPriceOpen();   // v20.21 bulk price update
   if (tab === 'reviews' && typeof ibiLoadSellerReviews === 'function') ibiLoadSellerReviews();   // v17.0
   if (tab === 'videos' && typeof ibiLoadSellerVideos === 'function') ibiLoadSellerVideos();   // v19.0 Watch & Shop
   if (typeof ibiRenderOnboarding === 'function') setTimeout(ibiRenderOnboarding, 50);   // v16.0 complete-your-setup + account health
@@ -4705,6 +4707,230 @@ function _catLoadLib(cb) {
   sc.onload = cb;
   sc.onerror = function() { showToast('⚠️ Could not load the Excel reader — check your internet and try again.'); };
   document.head.appendChild(sc);
+}
+
+/* ══════════════════════════════════════════════════════════
+   v20.21 BULK PRICE UPDATE (Seller Central → 💲 Bulk Price tab).
+   1. Download my price sheet: every listing and every size/colour row, with its live price and MRP.
+   2. Fill New price (and New MRP, or leave it blank for 1.5 × the new price, rounded up).
+   3. Upload it: a preview shows old → new for each row, rises above 40% in orange, mistakes in red.
+   4. Apply: only price and MRP change (backend bulkUpdatePrices), in groups of 20 products,
+      each row backed up first. Nothing else on the listing is touched.
+   ══════════════════════════════════════════════════════════ */
+window._bpPlan = null;
+function _bpSession() { try { return JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (e) { return null; } }
+function _bpEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function _bpMsg(html) { var el = document.getElementById('bp_meta'); if (el) el.innerHTML = html; }
+function _bpNum(v) {
+  if (v === null || v === undefined) return null;
+  var s = String(v).replace(/[^0-9.]/g, '');
+  if (!s) return null;
+  var n = parseFloat(s);
+  return isFinite(n) ? Math.round(n * 100) / 100 : null;
+}
+function _bpGrid(p) {
+  try { var v = JSON.parse(p.variations || '[]'); return (v && v._matrix && Array.isArray(v.combos)) ? v : null; } catch (e) { return null; }
+}
+function _bpLabel(opts) { return (opts || []).map(function (x) { return String(x).trim(); }).join(' / '); }
+
+/* Fresh product list straight from the sheet (never the cached copy: prices must be live). */
+function _bpFetch(cb) {
+  var s = _bpSession();
+  if (!s) { showToast('⚠️ Please sign in to Seller Central first.'); return; }
+  _bpMsg('⏳ Reading your live prices…');
+  ibi_fetch_retry({ action: 'getSellerProducts', sellerId: s.sellerId, pin: s.pin }, function (res) {
+    if (!res || !res.success || !Array.isArray(res.products)) { _bpMsg('<span style="color:#dc2626;">Could not read your products. Please try again.</span>'); return; }
+    cb(res.products);
+  }, 25000, 3);
+}
+
+function ibiPriceOpen() {
+  if (!window._bpPlan) _bpMsg('Step 1: download your price sheet. Step 2: fill the New price column. Step 3: upload it here and check the preview. Step 4: Apply.');
+}
+
+function ibiPriceDownload() {
+  _bpFetch(function (prods) {
+    _catLoadLib(function () {
+      var rows = [['Product ID', 'Variant', 'Title', 'Status', 'Current price', 'Current MRP', 'New price', 'New MRP']];
+      prods.forEach(function (p) {
+        rows.push([p.productId, '', p.title, p.status, _bpNum(p.price), _bpNum(p.mrp), '', '']);
+        var g = _bpGrid(p);
+        if (g) g.combos.forEach(function (c) {
+          rows.push([p.productId, _bpLabel(c.opts), c.title || p.title, (c.on === 0 || c.on === '0') ? 'Off' : p.status, _bpNum(c.price), _bpNum(c.mrp), '', '']);
+        });
+      });
+      var ws = XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [{ wch: 30 }, { wch: 22 }, { wch: 60 }, { wch: 10 }, { wch: 13 }, { wch: 13 }, { wch: 12 }, { wch: 12 }];
+      ws['!autofilter'] = { ref: 'A1:H' + rows.length };
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Prices');
+      var help = XLSX.utils.aoa_to_sheet([
+        ['IBI Marketplace: Bulk Price Update'], [''],
+        ['Fill New price on the rows you want to change. Leave New price blank to keep that row as it is.'],
+        ['New MRP is optional: if blank, MRP = 1.5 x the new price, rounded up.'],
+        ['Rows with a Variant are the size or colour rows of a listing. The row with a blank Variant is the listing price.'],
+        ['Do not change Product ID or Variant. Upload the file in Seller Central, Bulk Price tab, and check the preview before Apply.']
+      ]);
+      XLSX.utils.book_append_sheet(wb, help, 'How to use');
+      XLSX.writeFile(wb, 'IBI Price Sheet ' + new Date().toLocaleDateString('en-IN').replace(/\//g, '-') + '.xlsx');
+      _bpMsg('✅ Price sheet downloaded: ' + prods.length + ' listings, ' + (rows.length - 1) + ' rows. Fill New price, then upload it here.');
+    });
+  });
+}
+
+function ibiPriceFile(inp) {
+  var file = inp.files && inp.files[0];
+  inp.value = '';
+  if (!file) return;
+  _catLoadLib(function () {
+    var fr = new FileReader();
+    fr.onload = function (ev) {
+      var aoa;
+      try {
+        var wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+        var name = wb.SheetNames.indexOf('Prices') >= 0 ? 'Prices' : wb.SheetNames[0];
+        aoa = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: '' });
+      } catch (e) { _bpMsg('<span style="color:#dc2626;">Could not read this file. Please upload the price sheet from step 1.</span>'); return; }
+      var h = -1, col = {};
+      for (var i = 0; i < Math.min(aoa.length, 10); i++) {
+        var low = aoa[i].map(function (x) { return String(x).trim().toLowerCase(); });
+        if (low.indexOf('product id') >= 0 && low.indexOf('new price') >= 0) {
+          h = i;
+          ['product id', 'variant', 'new price', 'new mrp'].forEach(function (k) { col[k] = low.indexOf(k); });
+          break;
+        }
+      }
+      if (h < 0) { _bpMsg('<span style="color:#dc2626;">This file has no Product ID and New price columns. Please use the price sheet from step 1.</span>'); return; }
+      var want = [];
+      for (var r = h + 1; r < aoa.length; r++) {
+        var row = aoa[r];
+        var pid = String(row[col['product id']] || '').trim();
+        if (!pid) continue;
+        var np = _bpNum(row[col['new price']]), nm = col['new mrp'] >= 0 ? _bpNum(row[col['new mrp']]) : null;
+        if (np === null && nm === null) continue;
+        want.push({ row: r + 1, pid: pid, variant: col['variant'] >= 0 ? String(row[col['variant']] || '').trim() : '', np: np, nm: nm });
+      }
+      if (!want.length) { _bpMsg('No row in this file has a New price. Nothing to change.'); return; }
+      _bpFetch(function (prods) { _bpBuild(want, prods, file.name); });
+    };
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+function _bpBuild(want, prods, fname) {
+  var byId = {};
+  prods.forEach(function (p) { byId[String(p.productId)] = p; });
+  var lines = [], items = {};
+  want.forEach(function (w) {
+    var L = { row: w.row, pid: w.pid, variant: w.variant, title: '', op: null, om: null, np: w.np, nm: w.nm, err: '', warn: '' };
+    lines.push(L);
+    var p = byId[w.pid];
+    if (!p) { L.err = 'Product ID not found in your listings'; return; }
+    L.title = p.title;
+    var cur;
+    if (w.variant) {
+      var g = _bpGrid(p), c = null;
+      if (g) for (var k = 0; k < g.combos.length; k++) { if (_bpLabel(g.combos[k].opts).toLowerCase() === w.variant.toLowerCase()) { c = g.combos[k]; break; } }
+      if (!c) { L.err = 'Variant not found on this listing'; return; }
+      L.title = c.title || p.title;
+      cur = { p: _bpNum(c.price), m: _bpNum(c.mrp), opts: c.opts };
+    } else cur = { p: _bpNum(p.price), m: _bpNum(p.mrp) };
+    L.op = cur.p; L.om = cur.m;
+    if (L.np !== null && L.np <= 0) { L.err = 'New price must be above 0'; return; }
+    if (L.nm === null && L.np !== null) L.nm = Math.ceil(L.np * 1.5);
+    var effP = L.np !== null ? L.np : L.op, effM = L.nm !== null ? L.nm : L.om;
+    if (effP && effM && effM < effP) { L.err = 'MRP is below the price'; return; }
+    if (L.np !== null && L.op && L.np > L.op * 1.4) L.warn = 'Rise above 40%';
+    if (L.np !== null && L.op && L.np < L.op) L.warn = 'Price goes DOWN';
+    if (L.np === L.op && L.nm === L.om) { L.same = true; return; }
+    var it = items[w.pid] || (items[w.pid] = { productId: w.pid });
+    if (w.variant) { (it.combos = it.combos || []).push({ opts: cur.opts, price: L.np, mrp: L.nm }); }
+    else { if (L.np !== null) it.price = L.np; if (L.nm !== null) it.mrp = L.nm; }
+  });
+  /* A product with any bad row is held back whole, so a listing never ends half changed. */
+  lines.forEach(function (L) { if (L.err && items[L.pid]) { delete items[L.pid]; } });
+  lines.forEach(function (L) { if (!L.err && !L.same && !items[L.pid]) L.err = 'Held: another row of this product has a mistake'; });
+  window._bpPlan = { items: Object.keys(items).map(function (k) { return items[k]; }), lines: lines, fname: fname };
+  _bpRender();
+}
+
+function _bpRender(results) {
+  var P = window._bpPlan, box = document.getElementById('bp_review');
+  if (!P || !box) return;
+  var resBy = {};
+  (results || []).forEach(function (r) { resBy[r.productId] = r; });
+  var nErr = P.lines.filter(function (l) { return l.err; }).length;
+  var nSame = P.lines.filter(function (l) { return l.same; }).length;
+  var nWarn = P.lines.filter(function (l) { return !l.err && l.warn; }).length;
+  var nChg = P.lines.length - nErr - nSame;
+  var money = function (v) { return v === null || v === undefined ? '' : '₹' + Number(v).toLocaleString('en-IN'); };
+  var h = '<div style="font-size:13px;margin:6px 0 10px;"><b>' + _bpEsc(P.fname) + '</b>: ' + nChg + ' rows to change on ' + P.items.length + ' listings'
+    + (nSame ? ', ' + nSame + ' already at that price' : '') + (nWarn ? ', <span style="color:#c2410c;font-weight:700;">' + nWarn + ' to check</span>' : '')
+    + (nErr ? ', <span style="color:#dc2626;font-weight:700;">' + nErr + ' not applied (see red rows)</span>' : '') + '.</div>';
+  h += '<div style="overflow:auto;max-height:60vh;border:1px solid #e5e7eb;border-radius:8px;"><table style="border-collapse:collapse;width:100%;font-size:12.5px;">'
+    + '<thead><tr style="position:sticky;top:0;background:#131921;color:#fff;">'
+    + ['Row', 'Listing', 'Variant', 'Price now', 'New price', 'MRP now', 'New MRP', 'Change', 'Check', results ? 'Result' : ''].map(function (t) { return '<th style="padding:7px 8px;text-align:left;white-space:nowrap;">' + t + '</th>'; }).join('')
+    + '</tr></thead><tbody>';
+  P.lines.forEach(function (L) {
+    var pct = (L.np !== null && L.op) ? Math.round((L.np - L.op) / L.op * 1000) / 10 : null;
+    var bg = L.err ? '#fef2f2' : (L.warn ? '#fff7ed' : (L.same ? '#f8fafc' : '#fff'));
+    var rr = resBy[L.pid];
+    var resTxt = !results ? '' : (L.err || L.same ? '' : (rr ? (rr.ok ? '✅ ' + _bpEsc(rr.message) : '❌ ' + _bpEsc(rr.message)) : '❌ No reply'));
+    h += '<tr style="background:' + bg + ';border-bottom:1px solid #eee;">'
+      + '<td style="padding:6px 8px;">' + L.row + '</td>'
+      + '<td style="padding:6px 8px;min-width:200px;">' + _bpEsc(L.title || L.pid) + '</td>'
+      + '<td style="padding:6px 8px;">' + _bpEsc(L.variant) + '</td>'
+      + '<td style="padding:6px 8px;white-space:nowrap;">' + money(L.op) + '</td>'
+      + '<td style="padding:6px 8px;white-space:nowrap;font-weight:700;">' + money(L.np) + '</td>'
+      + '<td style="padding:6px 8px;white-space:nowrap;">' + money(L.om) + '</td>'
+      + '<td style="padding:6px 8px;white-space:nowrap;font-weight:700;">' + money(L.nm) + '</td>'
+      + '<td style="padding:6px 8px;white-space:nowrap;">' + (pct === null ? '' : (pct > 0 ? '+' : '') + pct + '%') + '</td>'
+      + '<td style="padding:6px 8px;color:' + (L.err ? '#dc2626' : '#c2410c') + ';">' + _bpEsc(L.err || L.warn || (L.same ? 'No change' : '')) + '</td>'
+      + (results ? '<td style="padding:6px 8px;">' + resTxt + '</td>' : '<td></td>')
+      + '</tr>';
+  });
+  h += '</tbody></table></div>';
+  box.innerHTML = h;
+  var ap = document.getElementById('bp_apply_btn');
+  if (ap) { ap.style.display = (P.items.length && !results) ? 'inline-block' : 'none'; ap.disabled = false; ap.textContent = '✅ Apply ' + nChg + ' price changes'; }
+  var cl = document.getElementById('bp_clear_btn');
+  if (cl) cl.style.display = 'inline-block';
+}
+
+function ibiPriceClear() {
+  window._bpPlan = null;
+  var box = document.getElementById('bp_review'); if (box) box.innerHTML = '';
+  ['bp_apply_btn', 'bp_clear_btn'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
+  ibiPriceOpen();
+}
+
+function ibiPriceApply() {
+  var P = window._bpPlan, s = _bpSession();
+  if (!P || !P.items.length || !s) return;
+  var warn = P.lines.filter(function (l) { return !l.err && l.warn; }).length;
+  if (!confirm('Change prices on ' + P.items.length + ' listings now?' + (warn ? '\n\n' + warn + ' rows are marked to check (rise above 40% or a price going down).' : '') + '\n\nOnly price and MRP change. Each listing is backed up first.')) return;
+  var btn = document.getElementById('bp_apply_btn');
+  btn.disabled = true;
+  var groups = [], all = [];
+  for (var i = 0; i < P.items.length; i += 20) groups.push(P.items.slice(i, i + 20));
+  var g = 0;
+  var next = function () {
+    if (g >= groups.length) {
+      try { sessionStorage.removeItem('ibi_prods_' + s.sellerId); } catch (e) {}
+      var ok = all.filter(function (r) { return r.ok; }).length;
+      _bpMsg((ok === P.items.length ? '✅ ' : '⚠️ ') + ok + ' of ' + P.items.length + ' listings updated. The storefront shows the new prices within a few minutes.');
+      _bpRender(all);
+      return;
+    }
+    btn.textContent = '⏳ Saving group ' + (g + 1) + ' of ' + groups.length + '…';
+    var grp = groups[g];
+    ibi_fetch_post({ action: 'bulkUpdatePrices', sellerId: s.sellerId, pin: s.pin, items: grp }, function (res) {
+      if (res && res.success && Array.isArray(res.results)) all = all.concat(res.results);
+      else grp.forEach(function (it) { all.push({ productId: it.productId, ok: false, message: (res && (res.message || res.error)) || 'No reply from the server, check this listing' }); });
+      g++; next();
+    }, 120000);
+  };
+  next();
 }
 
 function ibiCatalogUpload(inp) {
@@ -15948,6 +16174,7 @@ init();
           <button onclick="switchDashTab('profile')"  id="tab_profile"  class="sc-tab">👤 Profile</button>
           <button onclick="switchDashTab('catalog')"  id="tab_catalog"  class="sc-tab">📋 Catalogue</button>
           <button onclick="switchDashTab('bulk')"     id="tab_bulk"     class="sc-tab">⬆️ Bulk Upload</button>
+          <button onclick="switchDashTab('price')"    id="tab_price"    class="sc-tab">💲 Bulk Price</button>
           <button onclick="switchDashTab('reviews')"  id="tab_reviews"  class="sc-tab">⭐ Reviews</button>
           <button onclick="switchDashTab('videos')"   id="tab_videos"   class="sc-tab">▶ Videos</button>
         </div>
@@ -16870,6 +17097,25 @@ init();
             </button>
             <div style="text-align:center;font-size:11px;color:#888;margin-top:6px;">Cancel discards what is on this form and takes you back to My Products. Your live listing is not changed.</div>
           </div>
+        </div>
+      </div>
+
+      <!-- ═══ BULK PRICE UPDATE (v20.21): change price and MRP of many listings from one Excel sheet ═══ -->
+      <div id="dashTab_price" style="display:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px;">
+            <h3 style="margin:0;color:#131921;">💲 Bulk Price Update</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="ibiPriceDownload()" style="padding:8px 14px;background:#fff;color:#0098c9;border:1.5px solid #0098c9;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">📥 1. Download my price sheet</button>
+              <button onclick="document.getElementById('bp_file').click()" style="padding:8px 16px;background:#0098c9;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">📄 2. Upload filled sheet</button>
+              <button onclick="ibiPriceClear()" id="bp_clear_btn" style="display:none;padding:8px 12px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">Clear</button>
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:#666;margin:0 0 10px;">Change the price and MRP of many listings at once, including each size and colour. Fill <b>New price</b> in the sheet; leave <b>New MRP</b> blank for 1.5 × the new price. Only price and MRP change: title, photos, stock and status stay as they are, and each listing is backed up first.</p>
+          <input type="file" id="bp_file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="ibiPriceFile(this)"/>
+          <div id="bp_meta" style="font-size:12.5px;color:#555;margin:4px 0 10px;"></div>
+          <div id="bp_review"></div>
+          <div style="margin-top:14px;"><button id="bp_apply_btn" onclick="ibiPriceApply()" style="display:none;width:100%;padding:12px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;">✅ Apply</button></div>
         </div>
       </div>
 

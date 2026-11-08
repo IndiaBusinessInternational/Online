@@ -1,5 +1,8 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.21
+- 💲 Bulk Price Update tab in Seller Central: download the price sheet (every listing and size/colour row with live price and MRP), fill New price, upload, preview old to new with rises above 40% and mistakes marked, Apply. New backend action bulkUpdatePrices changes only price and MRP, all or nothing per listing, backup row first.
+
 ## v20.20
 - 📈 Meta Pixel 1032825588961100 on the storefront and all /p/ pages (PAGE_TEMPLATE 4): PageView, ViewContent, AddToCart, Purchase after Razorpay verification only. No customer data passed. Privacy Policy sections 3 and 4 updated.
 
