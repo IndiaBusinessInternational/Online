@@ -157,6 +157,19 @@ function variantAxes(p) {
   const v = parseVariations(p);
   return ((v.matrix && v.matrix.axes) || []).map(a => String(a && a.name || '').toLowerCase());
 }
+/* Returns policy, row "Size or fit (clothing, footwear)": 7 days, buyer pays the return.
+   Merchant Center holds that as the return policy exception "clothing-footwear"; every
+   other product stays on the account policy (returns for damaged or defective items).
+   Only wearable items with a size get the label: tools and accessories filed under a
+   clothing department (cobbler awl, scrunchies) do not. */
+const WEARABLE_RE = /\b(t-?shirts?|shirts?|polo|kurtas?|kurtis?|sarees?|dhotis?|lungis?|dress(es)?|trousers?|pants|jeans|shorts|shoes?|sandals?|slippers?)\b/i;
+const NOT_WEARABLE_RE = /\b(tools?|awl|needles?|stitching|repair|scrunchies?)\b/i;
+function returnPolicyLabel(p) {
+  if (!/^clothing/i.test(String(p.category || ''))) return '';
+  const title = String(p.title || '');
+  if (NOT_WEARABLE_RE.test(title)) return '';
+  return (variantAxes(p).includes('size') || WEARABLE_RE.test(title)) ? 'clothing-footwear' : '';
+}
 function googleFeed(list, slugs) {
   let skipped = 0;
   const items = [];
@@ -173,7 +186,7 @@ function googleFeed(list, slugs) {
         tag('image_link', pics[0]) + pics.slice(1, 11).map(u => tag('additional_image_link', u)).join('') +
         tag('availability', inStock ? 'in_stock' : 'out_of_stock') + tag('price', price.toFixed(2) + ' INR') +
         tag('condition', 'new') + tag('brand', p.brand || BRAND) + tag('identifier_exists', 'no') +
-        tag('product_type', String(p.category || '')) + (extra || '') +
+        tag('product_type', String(p.category || '')) + tag('return_policy_label', returnPolicyLabel(p)) + (extra || '') +
         '<g:shipping>' + tag('country', 'IN') + tag('price', '0.00 INR') + '</g:shipping></item>');
     };
     const vars = priceVariants(p);
