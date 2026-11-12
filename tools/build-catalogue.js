@@ -39,7 +39,7 @@ const FEED   = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_
 const BRAND  = 'iINTELLIGENCEi';
 // Bump when productPage() changes, so every /p/ page is rewritten on the next run
 // even if no listing changed (2 = v20.0: variation ?v= links, ProductGroup, policy links).
-const PAGE_TEMPLATE = 4;
+const PAGE_TEMPLATE = 5;
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 const esc = s => String(s == null ? '' : s)
@@ -240,12 +240,12 @@ function parseVariations(p) {
 // Price / stock across the whole listing (matrix combos override the base cells).
 function pricing(p) {
   const v = parseVariations(p);
-  let prices = [], stock = 0;
+  let prices = [], stock = 0, best = null;
   if (v.matrix) {
     (v.matrix.combos || []).forEach(c => {
       if (!c || c.on === 0) return;
       const pr = parseFloat(c.price);
-      if (pr > 0) prices.push(pr);
+      if (pr > 0) { prices.push(pr); if (!best || pr < parseFloat(best.price)) best = c; }
       stock += parseInt(c.stock, 10) || 0;
     });
   }
@@ -254,7 +254,7 @@ function pricing(p) {
   return {
     min: Math.min.apply(null, prices),
     max: Math.max.apply(null, prices),
-    mrp: parseFloat(p.mrp) || 0,
+    mrp: best ? (parseFloat(best.mrp) || 0) : (parseFloat(p.mrp) || 0),
     inStock: stock > 0,
   };
 }
@@ -269,7 +269,7 @@ function productPage(p, slug) {
   const desc   = String(p.description || '').replace(/\s+/g, ' ').trim();
   const metaD  = (desc || title).slice(0, 155);
   const bullets = String(p.bullets || '').split('|').map(s => s.trim()).filter(Boolean);
-  const priceTxt = pr.min === pr.max ? '₹' + pr.min : '₹' + pr.min + ' – ₹' + pr.max;
+  const priceTxt = pr.min === pr.max ? '₹' + pr.min : 'From ₹' + pr.min;
   const off    = pr.mrp > pr.min ? Math.round((1 - pr.min / pr.mrp) * 100) : 0;
 
   // JSON-LD Product — real data only; no ratings (the storefront's stars are cosmetic).
@@ -388,7 +388,7 @@ function productPage(p, slug) {
     (off ? '<span class="off">' + off + '% off</span>' : '') + '</div>\n' +
     '<span class="stock ' + (pr.inStock ? 'in">✓ In stock' : 'out">Out of stock') + '</span><br>\n' +
     '<p class="ship">🚚 Free delivery across India · dispatched in 1–2 working days · <a href="/shipping-policy.html">Shipping</a> · ' +
-    '↩️ 7-day returns · <a href="/returns-policy.html">Returns &amp; refunds</a> · 🔒 Prepaid: UPI, cards, net banking</p>\n' +
+    '↩️ 7-day returns for ' + (returnPolicyLabel(p) ? 'size or fit, ' : '') + 'damaged or wrong items · <a href="/returns-policy.html">Returns &amp; refunds</a> · 🔒 Prepaid: UPI, cards, net banking</p>\n' +
     '<a class="cta" href="/?p=' + encodeURIComponent(p.productId || '') + '">🛒 Buy on IBI Marketplace</a>' +
     '<a class="cta alt" href="/">Browse all products</a>\n' +
     (desc ? '<h2>About this item</h2><p class="d">' + esc(desc) + '</p>' : '') +

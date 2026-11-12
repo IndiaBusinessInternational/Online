@@ -1,5 +1,11 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.24
+- 🏷️ Honest discounts: a product with several packs or sizes shows the price and MRP of its lowest-priced option on cards, the photo badge, the /p pages, the home grid and the Meta feed (it used to pair the lowest price with the highest MRP). Returns lines match the Returns Policy (7 days for damaged, defective or wrong items); the quick-view box no longer says delivery tomorrow. Google feed carries return_policy_label clothing-footwear on wearable clothing. Backend label only.
+
+## v20.23
+- ℹ️ About Us page rewritten. Backend label only.
+
 ## v20.22
 - 💲 Bulk Price fix: bulkUpdatePrices clears the storefront product cache again after its writes (backend Version 111), so new prices show at once; the preview now says what to check before Apply.
 
