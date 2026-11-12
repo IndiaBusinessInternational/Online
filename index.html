@@ -3327,9 +3327,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.24';
+window.IBI_VERSION      = 'v20.25';
 window.IBI_VERSION_DATE = '12 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.24 — 🏷️ HONEST DISCOUNTS AND RETURNS WORDING. A product with several packs or sizes now shows the price and MRP of its lowest-priced option on cards, the photo badge and the product pages, so the percentage off is the real one (it used to compare the lowest price with the highest MRP). The returns lines now say what the Returns Policy says: 7 days for damaged, defective or wrong items. The quick-view box no longer says delivery tomorrow; delivery takes 3 to 7 working days.';
+window.IBI_VERSION_NOTE = 'v20.25 — ✅ PLAIN WORDS ON AUTHENTICITY. The product page no longer says 100% authentic. The answer to the question about genuine products now states the facts: every listing is sold by a registered seller whose business details are checked before the shop goes live, every product is sold new, and an item that differs from its listing can be returned within 7 days of delivery.';
+window.IBI_VERSION_NOTE_PREV47 = 'v20.24 — 🏷️ HONEST DISCOUNTS AND RETURNS WORDING. A product with several packs or sizes now shows the price and MRP of its lowest-priced option on cards, the photo badge and the product pages, so the percentage off is the real one (it used to compare the lowest price with the highest MRP). The returns lines now say what the Returns Policy says: 7 days for damaged, defective or wrong items. The quick-view box no longer says delivery tomorrow; delivery takes 3 to 7 working days.';
 window.IBI_VERSION_NOTE_PREV46 = 'v20.23 — ℹ️ ABOUT US. The About Us page is rewritten: who we are, what we sell (coconut and coir, clay and BIS-certified aluminium kitchenware, textiles, foods), the 11 platforms we sell on, and our founder.';
 window.IBI_VERSION_NOTE_PREV45 = 'v20.22 — 💲 BULK PRICE FIX. After a bulk price update the shop now shows the new prices at once (the product list is refreshed again after saving), and the preview says what to check before Apply.';
 window.IBI_VERSION_NOTE_PREV44 = 'v20.21 — 💲 BULK PRICE UPDATE. Seller Central has a new Bulk Price tab: download your price sheet, fill New price for any listing, size or colour, upload it, check the preview and apply. Only price and MRP change, MRP fills itself at 1.5 times the price, and each listing is backed up first.';
@@ -8777,7 +8778,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
         </div>
         <div style="display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:20px;">🔒</span>
-          <div style="font-size:13px;color:#333;"><strong>Secure Payment</strong> via Razorpay · UPI, cards, net banking · 100% authentic</div>
+          <div style="font-size:13px;color:#333;"><strong>Secure Payment</strong> via Razorpay · UPI, cards, net banking</div>
         </div>
       </div>
 
@@ -8890,7 +8891,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
         <div style="font-size:16px;font-weight:800;color:#131921;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #007185;display:inline-block;">❓ Customer Questions &amp; Answers</div>
         <div style="display:grid;gap:12px;margin-bottom:16px;">
           ${[
-            { q:'Is this product genuine and authentic?', a:'Yes, 100% authentic. All products on IBI Marketplace are sourced directly from verified sellers and quality-checked before listing.' },
+            { q:'Is this product genuine and authentic?', a:'Yes. Every listing on IBI Marketplace is sold by a registered seller whose business details we check before the shop goes live, and every product is sold new. If an item arrives different from its listing, you can return it within 7 days of delivery.' },
             { q:'What is the return policy?', a:'You can ask for a return or replacement within 7 days of delivery if the item is damaged, defective, wrong, missing or different from the listing. Change-of-mind returns are accepted only where the listing says returnable. Use Track My Order, or WhatsApp +91 89394 14799 with your order ID and photos. Full details: indiabusinessinternational.online/returns-policy.html' },
             { q:'Is free delivery available for this product?', a:'Yes! Free delivery is available on all products to any location in India. Estimated delivery in 3-7 working days.' }
           ].map(qa => `
