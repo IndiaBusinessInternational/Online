@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.26
+
+🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.
+
 ## v20.25
 - ✅ Authenticity wording: the product page no longer says 100% authentic; the genuine-product answer states the facts (registered sellers whose details are checked, products sold new, 7-day return if the item differs from its listing). Backend label only.
 

@@ -529,6 +529,7 @@ function ssrCard(p, slug) {
   // ── sitemap.xml ──
   const today = new Date().toISOString().slice(0, 10);
   const urls = [{ loc: ORIGIN + '/', pri: '1.0', freq: 'daily' }]
+    .concat(['/software/', '/ebooks/'].map(p => ({ loc: ORIGIN + p, pri: '0.7', freq: 'weekly' })))   // v20.26: the Software and eBooks pages
     .concat(list.map(p => ({ loc: ORIGIN + '/p/' + slugs[String(p.productId)] + '/', pri: '0.8', freq: 'weekly' })))
     .concat(['shipping-policy', 'returns-policy', 'privacy-policy', 'terms', 'about', 'contact'].map(n => ({ loc: ORIGIN + '/' + n + '.html', pri: '0.3', freq: 'yearly' })));
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'),
