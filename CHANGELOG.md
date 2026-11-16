@@ -2,7 +2,7 @@
 
 ## v20.28
 
-v20.28 — 🎬 Watch and Shop video titles use the same clean wording as the product pages (no BIS certified claim).
+v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).
 
 ## v20.27
 

@@ -3075,7 +3075,7 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 // ══════════════════════════════════════════════════════════
 window.IBI_VERSION      = 'v20.28';
 window.IBI_VERSION_DATE = '16 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.28 — 🎬 Watch and Shop video titles use the same clean wording as the product pages (no BIS certified claim).';
+window.IBI_VERSION_NOTE = 'v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).';
 window.IBI_VERSION_NOTE_PREV49 = 'v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.';
 window.IBI_VERSION_NOTE_PREV48 = 'v20.26 — 🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.';
 window.IBI_VERSION_NOTE_PREV47 = 'v20.24 — 🏷️ HONEST DISCOUNTS AND RETURNS WORDING. A product with several packs or sizes now shows the price and MRP of its lowest-priced option on cards, the photo badge and the product pages, so the percentage off is the real one (it used to compare the lowest price with the highest MRP). The returns lines now say what the Returns Policy says: 7 days for damaged, defective or wrong items. The quick-view box no longer says delivery tomorrow; delivery takes 3 to 7 working days.';
@@ -8260,7 +8260,7 @@ function showSearchSuggestions(q) {
   box.innerHTML = matches.map(p => `
     <div class="suggestion-item" onclick="selectSuggestion('${p.title.replace(/'/g, "'")}')">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      ${p.title.substring(0, 55)}${p.title.length > 55 ? '…' : ''}
+      ${ibiCleanTitle(p.title).substring(0, 55)}${ibiCleanTitle(p.title).length > 55 ? '…' : ''}
     </div>
   `).join('');
   box.classList.add('open');
@@ -8370,7 +8370,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
   if (_isVarSwitch) history.replaceState({ productId: id }, '', '#product-' + id);
   else              history.pushState({ productId: id }, '', '#product-' + id);
   document.getElementById('ppCategory').textContent   = catName;
-  document.getElementById('ppTitleShort').textContent = p.title.substring(0, 40) + (p.title.length > 40 ? '…' : '');
+  document.getElementById('ppTitleShort').textContent = ibiCleanTitle(p.title).substring(0, 40) + (ibiCleanTitle(p.title).length > 40 ? '…' : '');
   document.getElementById('ppCartCount').textContent  = cart.reduce((s,i) => s+i.qty, 0);
 
   // Similar products from same category — use the grid (family-collapsed) list and never
@@ -14005,7 +14005,7 @@ function renderCart() {
     const p = products.find(x => x.id === c.id);
     // Use the chosen combination's price when present, else the base product price.
     const unit = (c.vprice != null && c.vprice !== '') ? parseFloat(c.vprice) : p.price;
-    const unitMrp = (c.vmrp != null && c.vmrp !== '') ? parseFloat(c.vmrp) : p.mrp;
+    const unitMrp = unit;   // v20.28: no MRP-based savings line
     const lineTotal = unit * c.qty;
     subtotal += lineTotal;
     savings += Math.max(0, (unitMrp - unit)) * c.qty;
@@ -14015,7 +14015,7 @@ function renderCart() {
       <div class="cart-item">
         <div class="cart-item-img">${img ? `<img src="${img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (p.icon||'🛍️')}</div>
         <div class="cart-item-info">
-          <div class="cart-item-name">${p.title}</div>
+          <div class="cart-item-name">${ibiCleanTitle(p.title)}</div>
           ${c.vlabel ? `<div style="font-size:11px;color:#8B5CF6;font-weight:700;margin:2px 0;">${c.vlabel}</div>` : ''}
           <div class="cart-item-price">₹${formatPrice(lineTotal)}</div>
           <div class="cart-item-qty-row">
