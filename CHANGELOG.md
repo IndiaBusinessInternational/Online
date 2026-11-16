@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.30
+
+v20.30 — ⭐ One link for customer reviews: indiabusinessinternational.online/#review opens Track My Order directly, so a customer with a delivered order can enter the order ID and mobile number and rate it.
+
 ## v20.29
 
 v20.29 — 🖼️ Photo descriptions (alt text) on cards, product pages, quick view and cart use the same clean wording as the titles.

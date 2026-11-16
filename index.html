@@ -3073,9 +3073,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.29';
+window.IBI_VERSION      = 'v20.30';
 window.IBI_VERSION_DATE = '16 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.29 — 🖼️ Photo descriptions (alt text) on cards, product pages, quick view and cart use the same clean wording as the titles.';
+window.IBI_VERSION_NOTE = 'v20.30 — ⭐ One link for customer reviews: indiabusinessinternational.online/#review opens Track My Order directly, so a customer with a delivered order can enter the order ID and mobile number and rate it.';
+window.IBI_VERSION_NOTE_PREV51 = 'v20.29 — 🖼️ Photo descriptions (alt text) on cards, product pages, quick view and cart use the same clean wording as the titles.';
 window.IBI_VERSION_NOTE_PREV50 = 'v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).';
 window.IBI_VERSION_NOTE_PREV49 = 'v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.';
 window.IBI_VERSION_NOTE_PREV48 = 'v20.26 — 🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.';
@@ -18988,7 +18989,8 @@ function saveSellerProfile() {
     });
   };
   // deep link from the shipping label QR: #track-<orderId>
-  try { var mh = location.hash.match(/^#track-(.+)$/); if (mh && typeof openOrderTracking === 'function') setTimeout(function () { openOrderTracking(); var i = $('trackInput'); if (i) i.value = decodeURIComponent(mh[1]); }, 800); } catch (e) {}
+  // v20.30: also #review and #track (no order ID) open the same box, so the Founder can send ONE link to a customer who wants to rate a delivered order
+  try { var mh = location.hash.match(/^#(?:track|review)(?:-(.+))?$/); if (mh && typeof openOrderTracking === 'function') setTimeout(function () { openOrderTracking(); var i = $('trackInput'); if (i && mh[1]) i.value = decodeURIComponent(mh[1]); }, 800); } catch (e) {}
 
   // ═══════════════ REGISTRATION: EMAIL OTP ═══════════════
   var OTP = { verifiedEmail: '', code: '' };
