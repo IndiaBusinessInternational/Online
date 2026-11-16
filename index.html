@@ -3073,9 +3073,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.28';
+window.IBI_VERSION      = 'v20.29';
 window.IBI_VERSION_DATE = '16 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).';
+window.IBI_VERSION_NOTE = 'v20.29 — 🖼️ Photo descriptions (alt text) on cards, product pages, quick view and cart use the same clean wording as the titles.';
+window.IBI_VERSION_NOTE_PREV50 = 'v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).';
 window.IBI_VERSION_NOTE_PREV49 = 'v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.';
 window.IBI_VERSION_NOTE_PREV48 = 'v20.26 — 🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.';
 window.IBI_VERSION_NOTE_PREV47 = 'v20.24 — 🏷️ HONEST DISCOUNTS AND RETURNS WORDING. A product with several packs or sizes now shows the price and MRP of its lowest-priced option on cards, the photo badge and the product pages, so the percentage off is the real one (it used to compare the lowest price with the highest MRP). The returns lines now say what the Returns Policy says: 7 days for damaged, defective or wrong items. The quick-view box no longer says delivery tomorrow; delivery takes 3 to 7 working days.';
@@ -8392,7 +8393,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
     <div class="pp-images" style="position:sticky;top:70px;align-self:start;">
       <!-- Main image -->
       <div style="background:#f9f9f9;border-radius:14px;overflow:hidden;margin-bottom:10px;position:relative;border:1px solid #eee;">
-        <img id="ppMainImg" src="${p.img}" alt="${p.title}"
+        <img id="ppMainImg" src="${p.img}" alt="${ibiCleanTitle(p.title)}"
              title="Click to view this photo big"
              onclick="ibiZoomPhoto(window._ppGalleryImgs||[], window._ppImgIdx||0)"
              style="width:100%;aspect-ratio:1;object-fit:contain;padding:16px;cursor:zoom-in;transition:transform .3s;"
@@ -8663,7 +8664,7 @@ function openProductPage(idOrProd, _isVarSwitch) {
             const sdisc = Math.round((1 - sp.price/sp.mrp)*100);
             return `
             <div onclick="openProductPage(${sp.id})" style="cursor:pointer;border:1px solid #eee;border-radius:10px;overflow:hidden;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'">
-              <img src="${sp.img}" alt="${sp.title}" style="width:100%;aspect-ratio:1;object-fit:contain;padding:8px;background:#f9f9f9;" onerror="this.style.display='none'">
+              <img src="${sp.img}" alt="${ibiCleanTitle(sp.title)}" style="width:100%;aspect-ratio:1;object-fit:contain;padding:8px;background:#f9f9f9;" onerror="this.style.display='none'">
               <div style="padding:8px;">
                 <div style="font-size:11px;color:#333;line-height:1.4;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${sp.title}</div>
                 <div style="font-size:13px;font-weight:800;color:#131921;">₹${sp.price.toLocaleString('en-IN')}</div>
@@ -12696,7 +12697,7 @@ function productCard(p) {
       ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge==='bestseller'?'#1 Best Seller':p.badge==='new'?'New':'deal'===p.badge?'Deal':'Prime'}</span>` : ''}
       <div class="product-img-wrap">
         ${p.img
-          ? `<img src="${p.img}" alt="${p.title}"${ibiImgsAttr(p)}
+          ? `<img src="${p.img}" alt="${ibiCleanTitle(p.title)}"${ibiImgsAttr(p)}
                loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;"
                onerror="ibiImgFallback(this)">
              <div class="product-img-placeholder" style="display:none;">
@@ -13848,7 +13849,7 @@ function openProduct(id) {
   const saving = p.mrp - p.price;
 
   document.getElementById('modalMainImg').innerHTML = p.img
-    ? `<img src="${p.img}" alt="${p.title}" style="width:100%;height:100%;object-fit:contain;border-radius:8px;"
+    ? `<img src="${p.img}" alt="${ibiCleanTitle(p.title)}" style="width:100%;height:100%;object-fit:contain;border-radius:8px;"
          onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0f4ff;border-radius:8px;font-size:80px\">🛍️</div>')">`
     : p.icon || '🛍️';
 
@@ -14013,7 +14014,7 @@ function renderCart() {
     const img = c.vimg || p.img;
     return `
       <div class="cart-item">
-        <div class="cart-item-img">${img ? `<img src="${img}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (p.icon||'🛍️')}</div>
+        <div class="cart-item-img">${img ? `<img src="${img}" alt="${ibiCleanTitle(p.title)}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">` : (p.icon||'🛍️')}</div>
         <div class="cart-item-info">
           <div class="cart-item-name">${ibiCleanTitle(p.title)}</div>
           ${c.vlabel ? `<div style="font-size:11px;color:#8B5CF6;font-weight:700;margin:2px 0;">${c.vlabel}</div>` : ''}

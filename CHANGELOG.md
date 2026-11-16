@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.29
+
+v20.29 — 🖼️ Photo descriptions (alt text) on cards, product pages, quick view and cart use the same clean wording as the titles.
+
 ## v20.28
 
 v20.28 — 🎬 Watch and Shop video titles, the breadcrumb and the cart use the same clean wording as the product pages (no BIS certified claim, no Mars Polo).
