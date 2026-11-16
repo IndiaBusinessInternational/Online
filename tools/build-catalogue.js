@@ -32,6 +32,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const { ibiCleanText, ibiCleanTitle, ibiCleanBullet, ibiCutAtWord } = require('./ibi-clean.js');   // v20.27
 
 const ROOT   = path.join(__dirname, '..');
 const ORIGIN = 'https://www.indiabusinessinternational.online';
@@ -39,7 +40,7 @@ const FEED   = 'https://script.google.com/macros/s/AKfycbyJw77dIdd0f2e8UDJIRefW_
 const BRAND  = 'iINTELLIGENCEi';
 // Bump when productPage() changes, so every /p/ page is rewritten on the next run
 // even if no listing changed (2 = v20.0: variation ?v= links, ProductGroup, policy links).
-const PAGE_TEMPLATE = 5;
+const PAGE_TEMPLATE = 6;   // 6 = v20.27: no MRP/discount, cleaned titles and highlights, "eCommerce from India"
 
 // ── small helpers ─────────────────────────────────────────────────────────────
 const esc = s => String(s == null ? '' : s)
@@ -61,6 +62,11 @@ function imagesOf(p) {
     .map(fixImg).filter(u => /^https?:\/\//i.test(u))
     .filter((u, i, a) => a.indexOf(u) === i);
 }
+
+// v20.27: shopper-facing text of a listing, cleaned (slugs and the Sheet keep the raw text).
+const cTitle = p => ibiCleanTitle(p.title, p.category);
+const cDesc  = p => ibiCleanText(p.description);
+const cBullets = p => String(p.bullets || '').split('|').map(b => ibiCleanBullet(b.trim())).filter(Boolean);
 
 // ── Meta / WhatsApp Business catalogue feed ──────────────────────────────────
 // Meta Commerce Manager "scheduled data feed" layout (CSV, one row per item):
@@ -101,16 +107,16 @@ function metaFeed(list, slugs) {
     const pr    = pricing(p);                 // same price/stock roll-up the product page uses
     const price = pr.min || 0, mrp = pr.mrp || 0;
     if (!(price > 0) || !imgs[0]) { skipped++; return; }
-    const bullets = String(p.bullets || '').split('|').map(b => b.trim()).filter(Boolean).join(' • ');
-    const desc = plainText([p.description, bullets].filter(Boolean).join(' '), 5000) || plainText(p.title, 200);
+    const bullets = cBullets(p).join(' • ');
+    const desc = plainText([cDesc(p), bullets].filter(Boolean).join(' '), 5000) || plainText(cTitle(p), 200);
     rows.push([
       p.productId,
-      plainText(p.title, 200),
+      plainText(cTitle(p), 200),
       desc,
       pr.inStock ? 'in stock' : 'out of stock',
       'new',
-      (mrp > price ? mrp : price).toFixed(2) + ' INR',   // list price (MRP)
-      mrp > price ? price.toFixed(2) + ' INR' : '',       // selling price, shown struck against MRP
+      price.toFixed(2) + ' INR',                          // v20.27: price = what the buyer pays; no struck-through MRP (same as the Google feed and the pages)
+      '',
       ORIGIN + '/p/' + slugs[String(p.productId)] + '/',
       imgs[0],
       imgs.slice(1, 11).join(','),                        // Meta: comma-separated, max 10 extra
@@ -176,8 +182,8 @@ function googleFeed(list, slugs) {
   const tag = (k, v) => (v === '' || v == null) ? '' : '<g:' + k + '>' + xmlEsc(v) + '</g:' + k + '>';
   list.filter(isHouseBrand).forEach(p => {
     const imgs = imagesOf(p).map(gImg);
-    const bullets = String(p.bullets || '').split('|').map(b => b.trim()).filter(Boolean).join(' • ');
-    const desc = plainText([p.description, bullets].filter(Boolean).join(' '), 5000) || plainText(p.title, 150);
+    const bullets = cBullets(p).join(' • ');
+    const desc = plainText([cDesc(p), bullets].filter(Boolean).join(' '), 5000) || plainText(cTitle(p), 150);
     const link = ORIGIN + '/p/' + slugs[String(p.productId)] + '/';
     const one = (id, title, price, inStock, pics, url, extra) => {
       if (!(price > 0) || !pics[0]) { skipped++; return; }
@@ -192,7 +198,7 @@ function googleFeed(list, slugs) {
     const vars = priceVariants(p);
     if (!vars.length) {
       const pr = pricing(p);
-      one(p.productId, p.title, pr.min || 0, pr.inStock, imgs, link, '');
+      one(p.productId, cTitle(p), pr.min || 0, pr.inStock, imgs, link, '');
       return;
     }
     const axes = variantAxes(p);
@@ -205,7 +211,7 @@ function googleFeed(list, slugs) {
         else if (/^size$/.test(a)) extra += tag('size', opts[k]);
       });
       const stock = c.stock !== undefined && c.stock !== '' ? (parseInt(c.stock, 10) || 0) > 0 : pricing(p).inStock;
-      one(p.productId + '-' + i, c.title || (p.title + ' — ' + opts.join(' / ')), parseFloat(c.price), stock,
+      one(p.productId + '-' + i, ibiCleanTitle(c.title || (p.title + ' — ' + opts.join(' / ')), p.category), parseFloat(c.price), stock,
           own.length ? own : imgs, link + '?v=' + i, extra);
     });
   });
@@ -265,12 +271,12 @@ function productPage(p, slug) {
   const pr     = pricing(p);
   const v      = parseVariations(p);
   const url    = ORIGIN + '/p/' + slug + '/';
-  const title  = String(p.title || '').replace(/^iINTELLIGENCEi\s+/i, '');
-  const desc   = String(p.description || '').replace(/\s+/g, ' ').trim();
+  const title  = cTitle(p).replace(/^iINTELLIGENCEi\s+/i, '');
+  const desc   = cDesc(p).replace(/\s+/g, ' ').trim();
   const metaD  = (desc || title).slice(0, 155);
-  const bullets = String(p.bullets || '').split('|').map(s => s.trim()).filter(Boolean);
+  const bullets = cBullets(p);
   const priceTxt = pr.min === pr.max ? '₹' + pr.min : 'From ₹' + pr.min;
-  const off    = pr.mrp > pr.min ? Math.round((1 - pr.min / pr.mrp) * 100) : 0;
+  // v20.27: no struck-through MRP or "% off" on the pages - the MRP is our own 1.5x rule, never a price we charged.
 
   // JSON-LD Product — real data only; no ratings (the storefront's stars are cosmetic).
   const ld = {
@@ -294,7 +300,7 @@ function productPage(p, slug) {
       '@context': 'https://schema.org', '@type': 'ProductGroup', name: title, image: imgs, description: desc || title,
       productGroupID: String(p.productId || ''), brand: { '@type': 'Brand', name: p.brand || BRAND }, url: url,
       hasVariant: pv.map(({ c, i }) => ({
-        '@type': 'Product', sku: String(p.productId) + '-' + i, name: String(c.title || title),
+        '@type': 'Product', sku: String(p.productId) + '-' + i, name: ibiCleanTitle(c.title || title, p.category),
         image: (String(c.imgs || '').split(/[|,]/).map(fixImg).filter(u => /^https?:\/\//i.test(u))[0]) || imgs[0],
         offers: { '@type': 'Offer', url: url + '?v=' + i, price: String(parseFloat(c.price)), priceCurrency: 'INR',
           availability: 'https://schema.org/' + ((c.stock === undefined || c.stock === '' ? pr.inStock : (parseInt(c.stock, 10) || 0) > 0) ? 'InStock' : 'OutOfStock') },
@@ -312,15 +318,15 @@ function productPage(p, slug) {
 
   let variantRows = '';
   if (v.matrix && (v.matrix.combos || []).some(c => c && c.on !== 0)) {
-    variantRows = '<h2>Available options</h2><table class="vt"><tr><th>Option</th><th>Price</th><th>MRP</th></tr>' +
+    variantRows = '<h2>Available options</h2><table class="vt"><tr><th>Option</th><th>Price</th></tr>' +
       v.matrix.combos.map((c, i) => (!c || c.on === 0) ? '' :
-        '<tr id="v' + i + '" data-price="' + esc(c.price || p.price) + '" data-mrp="' + esc(c.mrp || p.mrp) + '"><td>' +
-        esc(c.title || (c.opts || []).join(' / ')) + '</td><td>₹' + esc(c.price || p.price) +
-        '</td><td class="mrp">₹' + esc(c.mrp || p.mrp) + '</td></tr>').join('') + '</table>' +
+        '<tr id="v' + i + '" data-price="' + esc(c.price || p.price) + '"><td>' +
+        esc(ibiCleanTitle(c.title || (c.opts || []).join(' / '), p.category)) + '</td><td>₹' + esc(c.price || p.price) +
+        '</td></tr>').join('') + '</table>' +
       // ?v=<n> (the Google feed's link for one variation) → that row is selected and its price shown.
       '<script>(function(){var m=location.search.match(/[?&]v=(\\d+)/),r=m&&document.getElementById("v"+m[1]);if(!r)return;' +
-      'r.className="sel";var e=document.querySelector(".price"),pr=r.getAttribute("data-price"),mr=r.getAttribute("data-mrp");' +
-      'if(e&&pr)e.innerHTML="\u20b9"+pr+(+mr>+pr?" <span class=\\"mrp\\">\u20b9"+mr+"</span><span class=\\"off\\">"+Math.round((1-pr/mr)*100)+"% off</span>":"");})();</script>';
+      'r.className="sel";var e=document.querySelector(".price"),pr=r.getAttribute("data-price");' +
+      'if(e&&pr)e.innerHTML="\u20b9"+pr;})();</script>';
   }
 
   const dims = [];
@@ -328,10 +334,10 @@ function productPage(p, slug) {
   if (p.packageDimensions) dims.push(['Package size', p.packageDimensions]);
 
   return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-    '<title>' + esc(title.slice(0, 60)) + ' — ' + BRAND + ' | IBI Marketplace</title>\n' +
+    '<title>' + esc(ibiCutAtWord(title, 60)) + ' — ' + BRAND + ' | IBI Marketplace</title>\n' +
     '<meta name="description" content="' + esc(metaD) + '">\n' +
     '<link rel="canonical" href="' + url + '">\n' +
-    '<meta property="og:type" content="product"><meta property="og:title" content="' + esc(title.slice(0, 70)) + '">' +
+    '<meta property="og:type" content="product"><meta property="og:title" content="' + esc(ibiCutAtWord(title, 70)) + '">' +
     '<meta property="og:description" content="' + esc(metaD) + '">' +
     (imgs[0] ? '<meta property="og:image" content="' + esc(imgs[0]) + '">' : '') +
     '<meta property="og:url" content="' + url + '"><meta property="og:site_name" content="IBI Marketplace">\n' +
@@ -383,9 +389,7 @@ function productPage(p, slug) {
     '<div class="gal">' + imgs.slice(0, 8).map((u, i) =>
       '<img src="' + esc(u) + '" alt="' + esc(title.slice(0, 60)) + (imgs.length > 1 ? ' — photo ' + (i + 1) : '') + '"' +
       (i ? ' loading="lazy" decoding="async"' : '') + '>').join('') + '</div>\n' +
-    '<div class="price">' + esc(priceTxt) +
-    (pr.mrp > pr.min ? ' <span class="mrp">₹' + pr.mrp + '</span>' : '') +
-    (off ? '<span class="off">' + off + '% off</span>' : '') + '</div>\n' +
+    '<div class="price">' + esc(priceTxt) + '</div>\n' +
     '<span class="stock ' + (pr.inStock ? 'in">✓ In stock' : 'out">Out of stock') + '</span><br>\n' +
     '<p class="ship">🚚 Free delivery across India · dispatched in 1–2 working days · <a href="/shipping-policy.html">Shipping</a> · ' +
     '↩️ 7-day returns for ' + (returnPolicyLabel(p) ? 'size or fit, ' : '') + 'damaged or wrong items · <a href="/returns-policy.html">Returns &amp; refunds</a> · 🔒 Prepaid: UPI, cards, net banking</p>\n' +
@@ -397,7 +401,7 @@ function productPage(p, slug) {
     (dims.length ? '<h2>Details</h2><table class="vt">' + dims.map(d =>
       '<tr><th>' + esc(d[0]) + '</th><td>' + esc(d[1]) + '</td></tr>').join('') + '</table>' : '') +
     '\n</div>\n' +
-    '<div class="foot">' + BRAND + ' · Kanyakumari, Tamil Nadu · <a href="/">indiabusinessinternational.online</a> — eCommerce for the World<br>' +
+    '<div class="foot">' + BRAND + ' · Kanyakumari, Tamil Nadu · <a href="/">indiabusinessinternational.online</a> — eCommerce from India<br>' +
     '<a href="/shipping-policy.html">Shipping policy</a> · <a href="/returns-policy.html">Returns &amp; refunds</a> · <a href="/privacy-policy.html">Privacy</a> · <a href="/terms.html">Terms of Use</a> · <a href="/about.html">About Us</a> · <a href="/contact.html">Contact Us</a> · ' +
     'Customer care <a href="tel:+918939414799">+91 8939414799</a></div>\n' +
     '</body>\n</html>\n';
@@ -419,15 +423,13 @@ function redirectStub(oldSlug, newSlug) {
 function ssrCard(p, slug) {
   const imgs = imagesOf(p);
   const pr = pricing(p);
-  const title = String(p.title || '').replace(/^iINTELLIGENCEi\s+/i, '');
+  const title = cTitle(p).replace(/^iINTELLIGENCEi\s+/i, '');
   return '<a class="product-card ibi-ssr-card" href="/p/' + slug + '/" style="text-decoration:none;color:inherit;display:block;">' +
     '<div class="product-img-wrap">' +
-    (imgs[0] ? '<img src="' + esc(imgs[0]) + '" alt="' + esc(title.slice(0, 70)) + '" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">' : '') +
+    (imgs[0] ? '<img src="' + esc(imgs[0]) + '" alt="' + esc(ibiCutAtWord(title, 70)) + '" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">' : '') +
     '</div><div class="product-info"><div class="product-brand">' + esc(p.brand || BRAND) + '</div>' +
-    '<h3 class="product-title">' + esc(title.slice(0, 90)) + '</h3>' +
-    '<div class="product-price"><span class="price-now">₹' + pr.min + '</span>' +
-    (pr.mrp > pr.min ? ' <span class="price-mrp" style="color:#888;text-decoration:line-through;font-size:13px;">₹' + pr.mrp + '</span>' : '') +
-    '</div></div></a>';
+    '<h3 class="product-title">' + esc(ibiCutAtWord(title, 90)) + '</h3>' +
+    '<div class="product-price"><span class="price-now">₹' + pr.min + '</span></div></div></a>';
 }
 
 // ── main ──────────────────────────────────────────────────────────────────────

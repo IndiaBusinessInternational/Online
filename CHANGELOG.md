@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.27
+
+v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.
+
 ## v20.26
 
 🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.
