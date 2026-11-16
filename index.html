@@ -3073,9 +3073,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.27';
+window.IBI_VERSION      = 'v20.28';
 window.IBI_VERSION_DATE = '16 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.';
+window.IBI_VERSION_NOTE = 'v20.28 — 🎬 Watch and Shop video titles use the same clean wording as the product pages (no BIS certified claim).';
+window.IBI_VERSION_NOTE_PREV49 = 'v20.27 — 🛡️ HONEST LISTINGS FOR GOOGLE. No more struck-through MRP or percent-off on cards, product pages and the feeds: you see the price you pay. The home page says eCommerce from India (physical goods ship in India only) and its description names Razorpay, not Zoho. Polo T-shirts no longer carry the name of another company, clothing titles no longer show the parcel size and weight, BIS certified claims are off until a licence number is shown, highlights are no longer cut mid-sentence, and the Returns Policy lists only the returns Google Merchant Center holds.';
 window.IBI_VERSION_NOTE_PREV48 = 'v20.26 — 🛍️💼📚 THREE PAGES: PRODUCTS, SOFTWARE AND EBOOKS. The home page now shows physical products only. All 17 IBI software apps moved to their own page, /software/, and our Kindle eBooks have a page of their own, /ebooks/, with Buy on Amazon buttons. A tab bar under the header moves between the three pages. On the Software and eBooks pages prices show in rupees to visitors in India and in US dollars to visitors from other countries, with a switch to change it.';
 window.IBI_VERSION_NOTE_PREV47 = 'v20.24 — 🏷️ HONEST DISCOUNTS AND RETURNS WORDING. A product with several packs or sizes now shows the price and MRP of its lowest-priced option on cards, the photo badge and the product pages, so the percentage off is the real one (it used to compare the lowest price with the highest MRP). The returns lines now say what the Returns Policy says: 7 days for damaged, defective or wrong items. The quick-view box no longer says delivery tomorrow; delivery takes 3 to 7 working days.';
 window.IBI_VERSION_NOTE_PREV46 = 'v20.23 — ℹ️ ABOUT US. The About Us page is rewritten: who we are, what we sell (coconut and coir, clay and BIS-certified aluminium kitchenware, textiles, foods), the 11 platforms we sell on, and our founder.';
@@ -19303,7 +19304,7 @@ function saveSellerProfile() {
       '<div class="ws-thumb">' + (th ? '<img src="' + esc(th) + '" alt="" loading="lazy" decoding="async">' : '') + '<div class="ws-play"><span>▶</span></div>' +
       '<span class="ws-tag' + (v.kind === 'live' ? ' live' : '') + '">' + (v.kind === 'live' ? 'Live' : 'Video') + '</span>' +
       (extra || (pins.length ? '<span class="ws-count">🛍 ' + pins.length + ' product' + (pins.length === 1 ? '' : 's') + '</span>' : '')) + '</div>' +
-      '<div class="ws-info"><div class="ws-title">' + esc(v.title) + '</div><div class="ws-host">' + avatar(s) + '<span style="font-weight:600;color:#333;">' + esc(s.name || s.shortName) + '</span><span style="color:#999;">·</span><span>' + dateLine(v) + '</span></div></div></div>';
+      '<div class="ws-info"><div class="ws-title">' + esc(ibiCleanText(v.title)) + '</div><div class="ws-host">' + avatar(s) + '<span style="font-weight:600;color:#333;">' + esc(s.name || s.shortName) + '</span><span style="color:#999;">·</span><span>' + dateLine(v) + '</span></div></div></div>';
   }
   function renderRail() {
     var sec = $('watchShopSection'), rail = $('watchShopRail'), nav = $('navWatchShop'); if (!sec || !rail) return;
@@ -19349,14 +19350,14 @@ function saveSellerProfile() {
     if (noHistory === 'deeplink') history.replaceState(null, '', location.pathname);   // shop underneath, so Back closes the video instead of leaving the site
     if (noHistory !== 'popstate') history.pushState({ watchId: v.videoId }, '', '#watch-' + v.videoId);
     var s = sellerOf(v);
-    $('wpTitleShort').textContent = v.title.length > 40 ? v.title.slice(0, 40) + '…' : v.title;
+    $('wpTitleShort').textContent = ibiCleanText(v.title).length > 40 ? ibiCleanText(v.title).slice(0, 40) + '…' : ibiCleanText(v.title);
     $('wpCartCount').textContent = cartTotal();
     $('wpGrid').innerHTML =
       '<div class="wp-main">' +
         '<div class="wp-player" id="wpPlayer"></div>' +
         '<div class="wp-meta">' +
           '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">' +
-            '<div style="min-width:0;"><h1 class="wp-title">' + esc(v.title) + '</h1><div class="wp-date">' + dateLine(v) + (v.views ? ' · ' + Number(v.views).toLocaleString('en-IN') + ' view' + (v.views === 1 ? '' : 's') : '') + '</div></div>' +
+            '<div style="min-width:0;"><h1 class="wp-title">' + esc(ibiCleanText(v.title)) + '</h1><div class="wp-date">' + dateLine(v) + (v.views ? ' · ' + Number(v.views).toLocaleString('en-IN') + ' view' + (v.views === 1 ? '' : 's') : '') + '</div></div>' +
             '<button class="wp-share" onclick="ibiWatchShare()" title="Share this video">⤴ Share</button>' +
           '</div>' +
           '<div class="wp-hostcard">' + avatar(s, 40) + '<div style="flex:1;min-width:0;"><div style="font-weight:800;color:#0F1111;">' + esc(s.name || s.shortName) + '</div><div style="font-size:12px;color:#666;">' + esc(s.tagline || 'Seller on IBI Marketplace') + '</div></div>' +
