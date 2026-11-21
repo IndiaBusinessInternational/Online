@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.31
+
+v20.31 — 🍽️ IBI Hospitality Industry PoS is renamed IBI Hotel Software on the Software page, with the new prices: first 3 months free, then ₹99 a month by Auto-Pay, ₹549 for 6 months, ₹999 for a year (Lifetime plan removed).
+
 ## v20.30
 
 v20.30 — ⭐ One link for customer reviews: indiabusinessinternational.online/#review opens Track My Order directly, so a customer with a delivered order can enter the order ID and mobile number and rate it.
