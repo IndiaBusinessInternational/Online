@@ -1542,7 +1542,10 @@ function shipRender() {
       (cur.trackUrl ? '<br><a href="' + _se(cur.trackUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;">Tracking page ↗</a>' : '') +
       (cur.labelUrl ? ' · <a href="' + _se(cur.labelUrl) + '" target="_blank" rel="noopener" style="color:#1d4ed8;">Print label (PDF) ↗</a>' : '') +
       (cur.shipCost ? '<br>Courier cost ₹' + _se(cur.shipCost) : '') + '</div>';
-    foot.innerHTML = '<button class="sm-btn sm-ghost" onclick="shipClose()">Close</button>'; return;
+    // v20.32: booked, not yet scanned by the courier → the admin can mark it Shipped
+    const canShip = ['Placed','Confirmed','Packed'].indexOf(cur.status || 'Placed') !== -1;
+    foot.innerHTML = '<button class="sm-btn sm-ghost" onclick="shipClose()">Close</button>' +
+      (canShip ? '<button class="sm-btn sm-primary" id="smMarkShipped" onclick="shipMarkShipped()">✅ Mark as Shipped</button>' : ''); return;
   }
   if (_ship.tab === 'manual') {
     body.innerHTML = tabs + '<p style="color:var(--muted);font-size:13px;margin-bottom:10px;">Booked outside this page? Type the courier and AWB — the buyer gets the tracking link by email at once.</p>' +
@@ -1577,6 +1580,15 @@ function shipRender() {
   }
 }
 function shipPick(i) { _ship.sel = i; _ship.step = ''; shipRender(); }
+function shipMarkShipped() {
+  if (!_ship || !confirm('Mark ' + _ship.orderId + ' as Shipped? Do this once the courier has collected the parcel. The buyer gets no second email.')) return;
+  const b = document.getElementById('smMarkShipped'); if (b) { b.disabled = true; b.textContent = '⏳ Saving…'; }
+  sheetFetch({ action:'adminMarkShipped', ceoToken: ceoToken(), orderId: _ship.orderId, sellerKey: (_ship.quote || {}).sellerKey || '' }, res => {
+    if (!_ship) return;
+    if (!res || !res.success) { toast('❌ ' + ((res && res.message) || 'No answer — try again')); if (b) { b.disabled = false; b.textContent = '✅ Mark as Shipped'; } return; }
+    _ship.quote.current = res.shipment; shipRender(); toast('✅ ' + _ship.orderId + ' is now ' + (res.orderStatus || 'Shipped')); loadOrdersData();
+  }, 30000);
+}
 function shipBook() {
   const o = (_ship.quote.options || [])[_ship.sel]; if (!o) return;
   const btn = document.getElementById('smBook'); if (btn) { btn.disabled = true; btn.textContent = '⏳ Booking…'; }
