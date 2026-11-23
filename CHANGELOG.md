@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.34
+
+v20.34 — 📦 Stock match fix: a product with no BIS mark takes its own stock figure from the Stock app (the 29x29 Non BIS food strainer was matched to the BIS 27x27 stock). Backend v20.34, Apps Script Version 120.
+
 ## v20.31
 
 v20.31 — 🍽️ IBI Hospitality Industry PoS is renamed IBI Hotel Software on the Software page, with the new prices: first 3 months free, then ₹99 a month by Auto-Pay, ₹549 for 6 months, ₹999 for a year (Lifetime plan removed).
