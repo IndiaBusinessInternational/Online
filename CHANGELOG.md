@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.36
+
+v20.36 — 🔐 A Seller Central tab signed in before v20.35 (plain PIN in sessionStorage) swaps the PIN for a session token on its first renewal, kept on the device, so nobody has to sign in again and the PIN leaves the browser. Frontend only; backend stays v20.35 (Apps Script Version 121).
+
 ## v20.35
 
 v20.35 — 🔐 Seller Central stays signed in all day, like Amazon Seller Central. Cause of the sign-outs: the sign-in was kept only in the tab (sessionStorage), so every new tab and every closed tab meant signing in again, and the plain PIN sat in that tab. Now the backend hands out a signed session token (HMAC-SHA256, secret in Script Property SELLER_SESSION_SECRET); the page keeps the token (never the PIN), shares it across tabs with Keep me signed in (ticked by default), and renews it every 30 minutes while in use. Ends on Sign Out, 48 h unused, 14 days after the PIN was typed, or a PIN change. Change PIN still needs the current PIN typed. Backups no longer carry the sign-in. Backend v20.35.
