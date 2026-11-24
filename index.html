@@ -3077,9 +3077,10 @@ window.IBI_IMGBB_KEY = 'a7f25107a84040c92604b2162818cd5d';   // ImgBB fallback k
 //   • big new feature     → bump the major:  'v4.x' → 'v5'  → 'v6'  …
 //   Also update IBI_VERSION_DATE (release date) and IBI_VERSION_NOTE (what changed).
 // ══════════════════════════════════════════════════════════
-window.IBI_VERSION      = 'v20.34';
-window.IBI_VERSION_DATE = '23 Nov 2026';
-window.IBI_VERSION_NOTE = 'v20.34 — 📦 Stock match fix. A product with no BIS mark now takes its own stock figure (the 29x29 food strainer was showing the stock of a BIS size). Backend v20.34.';
+window.IBI_VERSION      = 'v20.35';
+window.IBI_VERSION_DATE = '24 Nov 2026';
+window.IBI_VERSION_NOTE = 'v20.35 — 🔐 STAY SIGNED IN ALL DAY, LIKE AMAZON SELLER CENTRAL. Once you sign in to Seller Central, new tabs, page reloads and a browser restart keep you signed in. The sign-in renews itself while you use the page and ends only when you press Sign Out, after 48 hours unused, after 14 days, or when the PIN is changed. Your PIN is no longer kept in the browser. Untick Keep me signed in on a shared computer. Backend v20.35.';
+window.IBI_VERSION_NOTE_PREV55 = 'v20.34 — 📦 Stock match fix. A product with no BIS mark now takes its own stock figure (the 29x29 food strainer was showing the stock of a BIS size). Backend v20.34.';
 window.IBI_VERSION_NOTE_PREV54 = 'v20.32 — 🚚 MARK AS SHIPPED. Seller Central has a Mark as Shipped button on Unshipped orders that already have a tracking number, Shiprocket bookings included (Amazon Shipping, Delhivery, Xpressbees and others). The buyer gets no second email. Shiprocket orders also move to Shipped by themselves once the courier scans the pickup, and to Delivered later. The admin Ship window has the same button.';
 window.IBI_VERSION_NOTE_PREV53 = 'v20.31 — 🍽️ IBI HOSPITALITY INDUSTRY PoS IS NOW IBI HOTEL SOFTWARE. Same billing app for tea shops, tiffin centres, restaurants and small hotels, with a new name and new prices on the Software page: first 3 months free, then ₹99 a month by Auto-Pay, or ₹549 for 6 months and ₹999 for a year.';
 window.IBI_VERSION_NOTE_PREV52 = 'v20.30 — ⭐ One link for customer reviews: indiabusinessinternational.online/#review opens Track My Order directly, so a customer with a delivered order can enter the order ID and mobile number and rate it.';
@@ -3675,6 +3676,112 @@ function _clearSellerView() {
   try { sessionStorage.removeItem('ibi_seller_view'); } catch(e) {}
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// v20.35 — STAY SIGNED IN ALL DAY, LIKE AMAZON SELLER CENTRAL.
+// Founder, 24 Nov 2026: "once logged in should be open through out the day, just like Amazon Seller
+// DashBoard. It gets logged out too often".
+// CAUSE: the sign-in lived ONLY in sessionStorage, which belongs to one tab. Every new tab (and every
+// tab a helper opened) started signed out, and closing the tab signed the seller out. It also held
+// the plain PIN.
+// NOW: a correct PIN gets a signed session token from the backend (checkStatus, v20.35). The token,
+// never the PIN, is what this page keeps and sends (in the old `pin` field, so every Seller Central
+// call works unchanged). With "Keep me signed in" ticked, the token is also kept in localStorage
+// (IBI_SELLER_KEEP_KEY: seller ID, name, token, expiry only) so every tab, reload and browser restart
+// on this device stays signed in. While the page is in use the token is renewed every 30 minutes
+// (silent refresh); tabs share each renewal through the storage event. The session ends only on
+// Sign Out, after 48 hours with the page unused, 14 days after the PIN was typed, or a PIN change.
+// ══════════════════════════════════════════════════════════════════════════
+var IBI_SELLER_KEEP_KEY = 'ibi_seller_keep';
+var IBI_SELLER_RENEW_MS = 30 * 60 * 1000;
+function _ibiIsSessTok(t) { return typeof t === 'string' && t.indexOf('sst1.') === 0; }
+function _ibiGetKeep() { try { return JSON.parse(localStorage.getItem(IBI_SELLER_KEEP_KEY) || 'null'); } catch (e) { return null; } }
+function _ibiDropKeep() { try { localStorage.removeItem(IBI_SELLER_KEEP_KEY); } catch (e) {} }
+function _ibiKeepTicked() { var c = document.getElementById('sd_keep'); return c ? !!c.checked : true; }
+
+// Store the in-tab session after a sign-in or a renewal. `keep` true = also keep it on this device.
+function ibiSellerStoreSession(res, sellerId, pin, keep) {
+  var tok = res && res.sessionToken;
+  var s = Object.assign({}, res, { sellerId: (res && res.sellerId) || sellerId, pin: tok || pin });
+  delete s.sessionToken; delete s._fromKeep;
+  if (tok) { s.sessionExpiresAt = res.sessionExpiresAt || 0; s.sessionRenewedAt = Date.now(); }
+  try { sessionStorage.setItem('ibi_seller', JSON.stringify(s)); } catch (e) {}
+  if (tok && keep) {
+    try { localStorage.setItem(IBI_SELLER_KEEP_KEY, JSON.stringify({ sellerId: s.sellerId, bizName: s.bizName || '', token: tok, exp: s.sessionExpiresAt, renewedAt: s.sessionRenewedAt })); } catch (e) {}
+  } else if (tok && keep === false) { _ibiDropKeep(); }
+  return s;
+}
+
+// Page load: a new tab, a reload or a browser restart picks the kept session up again.
+(function () {
+  try {
+    if (sessionStorage.getItem('ibi_seller')) return;
+    var k = _ibiGetKeep();
+    if (!k || !k.sellerId || !_ibiIsSessTok(k.token)) return;
+    if (k.exp && k.exp <= Date.now()) { _ibiDropKeep(); return; }
+    sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId: k.sellerId, bizName: k.bizName || '', pin: k.token,
+      sessionExpiresAt: k.exp || 0, sessionRenewedAt: 0, _fromKeep: true }));
+    window._ibiProfileStale = true;       // profile details (address, bank, KYC) arrive with the first renewal
+  } catch (e) {}
+})();
+
+// The session really ended (expired, PIN changed, account no longer approved, or signed out in another tab).
+function ibiSellerSessionEnded(msg) {
+  try { sessionStorage.removeItem('ibi_seller'); } catch (e) {}
+  _ibiDropKeep();
+  var ov = document.getElementById('sellerDashOverlay');
+  if (ov && ov.style.display !== 'none' && ov.style.display !== '') {
+    var c = document.getElementById('sellerDashContent'); if (c) c.style.display = 'none';
+    var l = document.getElementById('sellerDashLogin');   if (l) l.style.display = 'flex';
+    var b = document.getElementById('scSellerBadge');     if (b) b.style.display = 'none';
+  }
+  if (msg && typeof showToast === 'function') showToast(msg);
+}
+
+// Silent refresh. Network trouble never signs anyone out; only a clear "session ended" answer does.
+var _ibiRenewBusy = false;
+function ibiSellerRenew(force) {
+  var s = null; try { s = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (e) {}
+  if (!s || !s.sellerId || !_ibiIsSessTok(s.pin) || _ibiRenewBusy) return;
+  if (!force && s.sessionRenewedAt && Date.now() - s.sessionRenewedAt < IBI_SELLER_RENEW_MS) return;
+  _ibiRenewBusy = true;
+  ibi_fetch_retry({ action: 'checkStatus', sellerId: s.sellerId, pin: s.pin }, function (res) {
+    _ibiRenewBusy = false;
+    if (!res) return;
+    var cur = null; try { cur = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (e) {}
+    if (!cur || cur.sellerId !== s.sellerId || cur.pin !== s.pin) return;       // signed out / renewed meanwhile
+    if (res.success && res.status === 'Approved' && res.sessionToken) {
+      ibiSellerStoreSession(res, s.sellerId, null, !!_ibiGetKeep());
+      if (s._fromKeep && window._ibiProfileStale && _getSellerView().tab === 'profile') {
+        var c = document.getElementById('sellerDashContent');
+        if (c && c.style.display !== 'none') { window._ibiProfileStale = false; renderSellerDashboard(JSON.parse(sessionStorage.getItem('ibi_seller'))); switchDashTab('profile'); }
+      }
+      return;
+    }
+    if (/^(SessionExpired|WrongPin|NotFound|Rejected|Pending)$/.test(res.status || ''))
+      ibiSellerSessionEnded('🔒 Your Seller Central session has ended. Please sign in again.');
+  }, 25000, 2);
+}
+setTimeout(function () { ibiSellerRenew(false); }, 1500);
+setInterval(function () { if (document.visibilityState === 'visible') ibiSellerRenew(false); }, 5 * 60 * 1000);
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') ibiSellerRenew(false); });
+
+// Tabs share one sign-in: a renewal or a sign-out in one tab reaches the others.
+window.addEventListener('storage', function (e) {
+  if (e.key !== IBI_SELLER_KEEP_KEY) return;
+  var s = null; try { s = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (x) {}
+  var k = null; try { k = JSON.parse(e.newValue || 'null'); } catch (x) {}
+  if (!k) { if (s && _ibiIsSessTok(s.pin)) ibiSellerSessionEnded('Signed out of Seller Central in another tab.'); return; }
+  if (!_ibiIsSessTok(k.token)) return;
+  if (s && s.sellerId === k.sellerId) {
+    s.pin = k.token; s.sessionExpiresAt = k.exp || 0; s.sessionRenewedAt = k.renewedAt || Date.now();
+    try { sessionStorage.setItem('ibi_seller', JSON.stringify(s)); } catch (x) {}
+  } else if (!s) {
+    try { sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId: k.sellerId, bizName: k.bizName || '', pin: k.token,
+      sessionExpiresAt: k.exp || 0, sessionRenewedAt: k.renewedAt || Date.now(), _fromKeep: true })); } catch (x) {}
+    window._ibiProfileStale = true;
+  }
+});
+
 // Called on page load — if Seller Central was open before a refresh, re-open it
 // (dashboard + last tab when logged in, else the login panel) so the seller stays put.
 function restoreSellerViewOnLoad() {
@@ -3746,6 +3853,7 @@ function confirmSellerSignOut() {
     document.getElementById('sellerDashContent').style.display = 'none';
     document.getElementById('sellerDashLogin').style.display = 'flex';
     sessionStorage.removeItem('ibi_seller');
+    _ibiDropKeep();                     // v20.35: Sign Out also ends the kept sign-in (every tab)
     ibiCeoLock();                       // owner controls hide again on sign-out
     _clearSellerView();
     var idEl  = document.getElementById('sd_seller_id'); if (idEl)  idEl.value  = '';
@@ -3762,6 +3870,7 @@ function closeSellerDashboard() {
   document.getElementById('sellerDashLogin').style.display = 'flex';
   // Clear session on sign-out
   sessionStorage.removeItem('ibi_seller');
+  _ibiDropKeep();                       // v20.35: ends the kept sign-in too
   ibiCeoLock();                         // owner controls hide again
   _clearSellerView();
   // Also reset seller ID / PIN fields
@@ -4040,7 +4149,7 @@ function sellerDashLogin() {
   function restore() { if (btn) { btn.textContent = 'Login to Seller Central →'; btn.disabled = false; } }
   function doLogin(data) {
     restore();
-    sessionStorage.setItem('ibi_seller', JSON.stringify({ sellerId, pin, ...data }));
+    ibiSellerStoreSession(data, sellerId, pin, _ibiKeepTicked());   // v20.35
     document.getElementById('scSellerName').textContent = data.bizName || sellerId;
     renderSellerDashboard(data);
   }
@@ -4231,7 +4340,9 @@ function handleSellerLoginResponse(res, sellerId, pin) {
     return;
   }
   if (res.success && res.status === 'Approved') {
-    sessionStorage.setItem('ibi_seller', JSON.stringify(Object.assign({}, res, { sellerId: res.sellerId||sellerId, pin: pin })));   // v15.0: PAN/address/bank/KYC ride along for the Profile tab
+    // v15.0: PAN/address/bank/KYC ride along for the Profile tab. v20.35: the session token (not the PIN) is kept.
+    ibiSellerStoreSession(res, sellerId, pin, _ibiKeepTicked());
+    window._ibiProfileStale = false;
     document.getElementById('scSellerName').textContent = res.bizName || sellerId;
     renderSellerDashboard(res);
     return;
@@ -4374,8 +4485,9 @@ function ibiDownloadBackup(){
   var btn = document.getElementById('ibiBackupBtn');
   if (btn){ btn.disabled = true; btn.textContent = '⏳ Preparing…'; }
   var ls = {}, ss = {};
-  try { for (var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); ls[k]=localStorage.getItem(k); } } catch(e){}
-  try { for (var j=0;j<sessionStorage.length;j++){ var k2=sessionStorage.key(j); ss[k2]=sessionStorage.getItem(k2); } } catch(e){}
+  // v20.35: the sign-in (session token) never goes into a backup file
+  try { for (var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if (k===IBI_SELLER_KEEP_KEY) continue; ls[k]=localStorage.getItem(k); } } catch(e){}
+  try { for (var j=0;j<sessionStorage.length;j++){ var k2=sessionStorage.key(j); if (k2==='ibi_seller') continue; ss[k2]=sessionStorage.getItem(k2); } } catch(e){}
   var session = null; try { session = JSON.parse(sessionStorage.getItem('ibi_seller')||'null'); } catch(e){}
   var bundle = {
     _meta: { app:'IBI eCommerce Marketplace', version:(window.IBI_VERSION||''), exportedAt:new Date().toLocaleString('en-IN'), origin:location.origin },
@@ -4411,8 +4523,8 @@ function ibiRestoreBackup(input){
     var ls = br && br.localStorage, ss = br && br.sessionStorage;
     if (!ls && !ss){ showToast('⚠️ This file is not an IBI backup'); return; }
     var n = 0;
-    if (ls){ for (var k in ls){ try { localStorage.setItem(k, ls[k]); n++; } catch(e){} } }
-    if (ss){ for (var k2 in ss){ try { sessionStorage.setItem(k2, ss[k2]); n++; } catch(e){} } }
+    if (ls){ for (var k in ls){ if (k===IBI_SELLER_KEEP_KEY) continue; try { localStorage.setItem(k, ls[k]); n++; } catch(e){} } }
+    if (ss){ for (var k2 in ss){ if (k2==='ibi_seller') continue; try { sessionStorage.setItem(k2, ss[k2]); n++; } catch(e){} } }
     showToast('✅ Restored '+n+' items — reloading…','success');
     setTimeout(function(){ location.reload(); }, 1300);
   };
@@ -4420,6 +4532,12 @@ function ibiRestoreBackup(input){
 }
 
 function switchDashTab(tab) {
+  // v20.35: a tab that picked up the kept sign-in shows the full profile once the first renewal has filled it in
+  if (tab === 'profile' && window._ibiProfileStale) {
+    var _ps = null; try { _ps = JSON.parse(sessionStorage.getItem('ibi_seller') || 'null'); } catch (e) {}
+    if (_ps && !_ps._fromKeep) { window._ibiProfileStale = false; renderSellerDashboard(_ps); }
+    else ibiSellerRenew(true);
+  }
   ['products','add','orders','earnings','profile','catalog','bulk','price','reviews','videos'].forEach(t => {
     const el  = document.getElementById('dashTab_' + t);
     const btn = document.getElementById('tab_' + t);
@@ -15925,6 +16043,12 @@ init();
             <button type="button" onclick="var i=document.getElementById('sd_pin');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';" title="Show / hide PIN" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#888;padding:4px;">👁</button>
           </div>
 
+          <!-- v20.35: Keep me signed in (Amazon Seller Central pattern) -->
+          <label for="sd_keep" style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#333;cursor:pointer;">
+            <input id="sd_keep" type="checkbox" checked style="width:18px;height:18px;accent-color:#006994;cursor:pointer;">
+            <span><b>Keep me signed in</b> on this device <span style="color:#888;font-size:11.5px;">(untick on a shared computer)</span></span>
+          </label>
+
           <!-- PIN helper (collapsible, keeps the form clean) -->
           <details style="margin-top:12px;background:#f6fbfe;border:1px solid #d8eef8;border-radius:10px;padding:0 12px;">
             <summary style="cursor:pointer;list-style:none;padding:10px 0;font-size:12px;font-weight:800;color:#0079a3;display:flex;align-items:center;gap:6px;">💡 Forgot your PIN? <span style="margin-left:auto;font-size:11px;color:#0098c9;font-weight:700;">Show help</span></summary>
@@ -19063,10 +19187,11 @@ function saveSellerProfile() {
   };
   window.ibiChangePin = function () {
     var s = session(); if (!s) return; var o = ($('cp_old') || {}).value || '', n = ($('cp_new') || {}).value || '', n2 = ($('cp_new2') || {}).value || '';
-    if (o !== s.pin) { showToast('⚠️ Current PIN is incorrect'); return; } if (n.length < 6) { showToast('⚠️ New PIN must be at least 6 characters'); return; } if (n !== n2) { showToast('⚠️ The two new PINs do not match'); return; }
+    if (!_ibiIsSessTok(s.pin) && o !== s.pin) { showToast('⚠️ Current PIN is incorrect'); return; }   // v20.35: with a session token the server checks it if (n.length < 6) { showToast('⚠️ New PIN must be at least 6 characters'); return; } if (n !== n2) { showToast('⚠️ The two new PINs do not match'); return; }
     post({ action: 'changePin', sellerId: s.sellerId, pin: o, newPin: n }, function (res) {
       if (!res || !res.success) { showToast('❌ ' + (res && res.message ? res.message : 'No reply — try again')); return; }
-      s.pin = n; sessionStorage.setItem('ibi_seller', JSON.stringify(s)); ['cp_old', 'cp_new', 'cp_new2'].forEach(function (id) { if ($(id)) $(id).value = ''; }); showToast('✅ PIN changed — use the new PIN from your next sign-in', 'success');
+      if (res.sessionToken) { s.pin = res.sessionToken; s.sessionExpiresAt = res.sessionExpiresAt || 0; s.sessionRenewedAt = Date.now(); if (_ibiGetKeep()) { try { localStorage.setItem(IBI_SELLER_KEEP_KEY, JSON.stringify({ sellerId: s.sellerId, bizName: s.bizName || '', token: s.pin, exp: s.sessionExpiresAt, renewedAt: s.sessionRenewedAt })); } catch (e) {} } } else { s.pin = n; }
+      sessionStorage.setItem('ibi_seller', JSON.stringify(s)); ['cp_old', 'cp_new', 'cp_new2'].forEach(function (id) { if ($(id)) $(id).value = ''; }); showToast('✅ PIN changed — use the new PIN from your next sign-in', 'success');
     });
   };
 
