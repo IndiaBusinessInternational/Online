@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.37
+
+v20.37 — 📦 Thulasi Mani Maalai back in stock. The two Thulasi listings (48 options + 5 sets) sit in Jewellery › Chains, so the stock sync asked the fashion jewellery register, found no row, and set all 53 options to 0 (STOCK_SYNC_ZERO_UNMATCHED). Their stock lives in the Stock Availability app (exact rows per option). `_fjIsJewellery` now sends titles with Thulasi / Tulasi / Tulsi to the Stock app (`FJ_STOCKAPP_TITLE_RE`). Backend v20.37.
+
 ## v20.36
 
 v20.36 — 🔐 A Seller Central tab signed in before v20.35 (plain PIN in sessionStorage) swaps the PIN for a session token on its first renewal, kept on the device, so nobody has to sign in again and the PIN leaves the browser. Frontend only; backend stays v20.35 (Apps Script Version 121).
