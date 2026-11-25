@@ -1,5 +1,9 @@
 # IBI eCommerce Marketplace — changelog
 
+## v20.38
+
+v20.38 — 📦 Clay curry pots and clay kadhai back to real stock. Founder: "Stock Available. Sort the issue". The stock sync matches listings to Stock app rows by title; three matched wrong: 9 inch curry pot WITH handle (336436) and the no-handle curry pot (387564) both took the empty "Clay Curry Pot with Lid, 24x24x15 cm" row (0; real 7 and 20), and the clay kadhai (383592) took the ALUMINIUM kadhai's 16 (real 24). Backend v20.38 (Apps Script Version 123) adds `STOCK_SYNC_PINS`: product id -> exact Stock app row id, which wins over the title match. Offline test: only these 3 change. Live 11:17 AM: 7 / 20 / 24.
+
 ## v20.37
 
 v20.37 — 📦 Thulasi Mani Maalai back in stock. The two Thulasi listings (48 options + 5 sets) sit in Jewellery › Chains, so the stock sync asked the fashion jewellery register, found no row, and set all 53 options to 0 (STOCK_SYNC_ZERO_UNMATCHED). Their stock lives in the Stock Availability app (exact rows per option). `_fjIsJewellery` now sends titles with Thulasi / Tulasi / Tulsi to the Stock app (`FJ_STOCKAPP_TITLE_RE`). Backend v20.37.
